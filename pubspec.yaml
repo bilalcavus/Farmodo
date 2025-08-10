@@ -18,6 +18,7 @@ dependencies:
   percent_indicator: ^4.2.5
   get_it: ^8.2.0
   hugeicons: ^0.0.11
+  iconsax: ^0.0.8
 
 dev_dependencies:
   flutter_test:

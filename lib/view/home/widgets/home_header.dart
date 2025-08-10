@@ -16,7 +16,7 @@ class HomeHeader extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text('Hello, Bilal!', style: Theme.of(context).textTheme.titleLarge?.copyWith(
+          Text('Hello, Bilal!', style: Theme.of(context).textTheme.headlineMedium?.copyWith(
             fontWeight: FontWeight.w400
           )),
           Container(

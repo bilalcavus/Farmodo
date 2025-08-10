@@ -16,7 +16,7 @@ class TimeStartButton extends StatelessWidget {
     return Center(
       child: Obx(() => ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.black87,
+              backgroundColor: Color(0xff2C2C2C),
               foregroundColor: Colors.white,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20),

@@ -6,6 +6,7 @@ import 'package:farmodo/view/home/widgets/time_start_button.dart';
 import 'package:farmodo/viewmodel/timer_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:iconsax/iconsax.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
 class HomeView extends StatefulWidget {
@@ -29,30 +30,42 @@ class _HomeViewState extends State<HomeView> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xffECECEC),
-      body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            HomeHeader(),
-            SizedBox(height: context.dynamicHeight(0.02)),
-            dailyGoalsTitle(context),
-            DailyGoalsContainer(),
-            SizedBox(height: context.dynamicHeight(0.07)),
-            PomodoroTimer(timerController: timerController),
-            SizedBox(height: context.dynamicHeight(0.04)),
-            TimeStartButton(timerController: timerController),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Column(
-                  children: [
-                    Icon(HugeIcons.strokeRoundedAlertDiamond)
-                  ],
-                )
-              ],
-            )
-          ],
-      )),
+      body: SingleChildScrollView(
+        child: SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              HomeHeader(),
+              SizedBox(height: context.dynamicHeight(0.02)),
+              dailyGoalsTitle(context),
+              DailyGoalsContainer(),
+              SizedBox(height: context.dynamicHeight(0.07)),
+              PomodoroTimer(timerController: timerController),
+              SizedBox(height: context.dynamicHeight(0.04)),
+              TimeStartButton(timerController: timerController),
+              SizedBox(height: context.dynamicHeight(0.04)),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  timerOptions(HugeIcons.strokeRoundedAlertDiamond, 'Strict Mode'),
+                  timerOptions(Iconsax.timer, 'Timer Mode'),
+                  timerOptions(HugeIcons.strokeRoundedFullScreen, 'Full Screen'),
+                ],
+              )
+            ],
+        )),
+      ),
+    );
+  }
+
+  Column timerOptions(IconData icon, String title) {
+    return Column(
+      children: [
+        InkWell(
+          onTap: () => timerController.toggleFullScreen(context),
+          child: Icon(icon)),
+        Text(title),
+      ],
     );
   }
 
@@ -91,7 +104,7 @@ class DailyGoalsContainer extends StatelessWidget {
                 lineWidth: 5.0,
                 percent: 1.0,
                 center: Text('%100'),
-                progressColor: Colors.deepPurple,
+                progressColor: Colors.deepPurple.shade200,
               ),
             ),
             Column(

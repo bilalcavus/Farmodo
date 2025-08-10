@@ -1,5 +1,8 @@
 import 'dart:async';
 
+import 'package:farmodo/view/home/full_screen_timer.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 class TimerController extends GetxController {
@@ -8,6 +11,7 @@ class TimerController extends GetxController {
   Timer? _timer;
   Timer? get timer => _timer;
   var isRunning = false.obs;
+  var isFullScreen = false.obs;
   double get progress => totalSeconds.value == 0 ? 0.0 : (totalSeconds.value - secondsRemaining.value) / totalSeconds.value;
 
 
@@ -34,6 +38,27 @@ class TimerController extends GetxController {
     _timer?.cancel();
     isRunning.value = false;
     secondsRemaining.value = totalSeconds.value;
+  }
+
+  void toggleFullScreen(BuildContext context) async {
+    await SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]);
+    await SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => FullScreenTimer(),
+      ),
+    ).then((_) async {
+      await SystemChrome.setPreferredOrientations([
+        DeviceOrientation.portraitUp,
+        DeviceOrientation.portraitDown,
+      ]);
+      await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+    });
   }
 
   String formatTime(int seconds) {

@@ -32,7 +32,7 @@ class PomodoroTimer extends StatelessWidget {
               width: 180,
               height: 180,
               decoration: BoxDecoration(
-                color: Colors.black87,
+                color: Color(0xff2C2C2C),
                 shape: BoxShape.circle,
                 boxShadow: [
                 BoxShadow(
