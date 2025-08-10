@@ -1,5 +1,7 @@
+import 'package:farmodo/core/di/injection.dart';
+import 'package:farmodo/core/theme/app_theme.dart';
 import 'package:farmodo/firebase_options.dart';
-import 'package:farmodo/home_view.dart';
+import 'package:farmodo/view/home/home_view.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
@@ -7,7 +9,8 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
-);
+  );
+  await setupDependencies();
   runApp(const MyApp());
 }
 
@@ -17,10 +20,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      ),
+      debugShowCheckedModeBanner: false,
+      title: 'Farmodo',
+      theme: AppTheme.light,
+      themeMode: ThemeMode.system,
       home: const HomeView(),
     );
   }
