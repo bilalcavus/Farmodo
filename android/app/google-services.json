@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "508514053433",
+    "project_id": "farmodo-34c9c",
+    "storage_bucket": "farmodo-34c9c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:508514053433:android:443715ad99b2a82435cce8",
+        "android_client_info": {
+          "package_name": "com.bilalcavus.farmodo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCfcXvGbY0qZksMDNGziLTDhBXrNtHuqPs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
