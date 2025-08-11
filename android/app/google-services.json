@@ -12,7 +12,20 @@
           "package_name": "com.bilalcavus.farmodo"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "508514053433-2lj7rreml3l828921lfn5qav8qbdb42t.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bilalcavus.farmodo",
+            "certificate_hash": "e2d99068264d401fafb32edd8834d3b606c840e5"
+          }
+        },
+        {
+          "client_id": "508514053433-s6vgql1jtr408a3u8vhnjugv7nqg7cgo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCfcXvGbY0qZksMDNGziLTDhBXrNtHuqPs"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "508514053433-s6vgql1jtr408a3u8vhnjugv7nqg7cgo.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "508514053433-qkbl867c253tq2jibq9u5tn72fj6ro9h.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.bilalcavus.farmodo"
+              }
+            }
+          ]
         }
       }
     }

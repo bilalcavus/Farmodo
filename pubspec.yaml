@@ -19,6 +19,7 @@ dependencies:
   get_it: ^8.2.0
   hugeicons: ^0.0.11
   iconsax: ^0.0.8
+  google_sign_in: ^6.2.1
 
 dev_dependencies:
   flutter_test:
@@ -36,6 +37,7 @@ flutter:
   assets:
     - assets/
     - assets/images/
+    - assets/logo/
   fonts:
     - family: Inter
       fonts:

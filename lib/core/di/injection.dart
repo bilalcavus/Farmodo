@@ -1,3 +1,6 @@
+import 'package:farmodo/data/services/auth_service.dart';
+import 'package:farmodo/viewmodel/auth/login/login_controller.dart';
+import 'package:farmodo/viewmodel/auth/register/register_controller.dart';
 import 'package:farmodo/viewmodel/timer_controller.dart';
 import 'package:get_it/get_it.dart';
 
@@ -6,8 +9,8 @@ final getIt = GetIt.instance;
 
 Future<void> setupDependencies() async {
 
-  //Constants
-  // getIt.registerLazySingleton(() => ThemeController());
+  //Data Services
+  getIt.registerLazySingleton(() => AuthService());
 
   // // DataSources
   // getIt.registerLazySingleton<MockCountryDataSources>(() => MockDataSourcesImpl());
@@ -28,5 +31,7 @@ Future<void> setupDependencies() async {
 
   // ViewModels
   getIt.registerLazySingleton(() => TimerController());
+  getIt.registerLazySingleton(() => LoginController(getIt()));
+  getIt.registerLazySingleton(() => RegisterController(getIt()));
 
 }

@@ -24,7 +24,6 @@ class _HomeViewState extends State<HomeView> {
     WidgetsBinding.instance.addPostFrameCallback((_){
 
     });
-    
   }
   @override
   Widget build(BuildContext context) {
@@ -111,11 +110,11 @@ class DailyGoalsContainer extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Your daily goals not completed yet'),
-                Text('2 of 10 completed', style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                Text('Your daily goals not completed yet', style: Theme.of(context).textTheme.labelMedium,),
+                Text('2 of 10 completed', style: Theme.of(context).textTheme.labelSmall?.copyWith(
                   color: Colors.grey.shade800
                 )),
-                Text('XP: 40/200')
+                Text('XP: 40/200', style: Theme.of(context).textTheme.labelMedium,)
               ],
             )
           ],

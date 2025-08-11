@@ -15,19 +15,21 @@ class AppNavigation extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Obx(() {
-      return Scaffold(
-        body: IndexedStack(
-          index: navController.currentIndex.value,
-          children:  [
-            HomeView(),
-            TaskView(),
-            StoreView(),
-            AccountView()
-          ],
-        ),
-        bottomNavigationBar: CustomBottomNavigation(
-          currentIndex: navController.currentIndex.value,
-          onTap: navController.changePage,
+      return SafeArea(
+        child: Scaffold(
+          body: IndexedStack(
+            index: navController.currentIndex.value,
+            children:  [
+              HomeView(),
+              TaskView(),
+              StoreView(),
+              AccountView()
+            ],
+          ),
+          bottomNavigationBar: CustomBottomNavigation(
+            currentIndex: navController.currentIndex.value,
+            onTap: navController.changePage,
+          ),
         ),
       );
     });

@@ -16,7 +16,7 @@ class HomeHeader extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text('Hello, Bilal!', style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+          Text('Hello, Bilal!', style: Theme.of(context).textTheme.headlineSmall?.copyWith(
             fontWeight: FontWeight.w400
           )),
           Container(
@@ -32,8 +32,8 @@ class HomeHeader extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Image.asset('assets/images/xp_star.png', height: context.dynamicHeight(0.1),),
-                Text('820 XP', style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                Image.asset('assets/images/xp_star.png', height: context.dynamicHeight(0.07),),
+                Text('820 XP', style: Theme.of(context).textTheme.titleSmall?.copyWith(
                   color: Colors.white
                 )),
               ],

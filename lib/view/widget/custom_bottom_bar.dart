@@ -68,7 +68,7 @@ class CustomBottomNavigation extends StatelessWidget {
     BuildContext context, {
     required int index,
     required IconData icon,
-    String? label,
+    // String? label,
     VoidCallback? onTapOverride,
   }) {
     final isSelected = currentIndex == index;
