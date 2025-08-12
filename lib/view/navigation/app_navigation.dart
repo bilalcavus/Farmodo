@@ -2,8 +2,8 @@ import 'package:farmodo/view/account/account_view.dart';
 import 'package:farmodo/view/home/home_view.dart';
 import 'package:farmodo/view/store/store_view.dart';
 import 'package:farmodo/view/tasks/task_view.dart';
-import 'package:farmodo/view/widget/custom_bottom_bar.dart';
-import 'package:farmodo/viewmodel/navigation_controller.dart';
+import 'package:farmodo/view/widgets/custom_bottom_bar.dart';
+import 'package:farmodo/viewmodel/navigation/navigation_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

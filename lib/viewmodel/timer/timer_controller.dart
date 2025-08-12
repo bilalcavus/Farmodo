@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:farmodo/view/home/full_screen_timer.dart';
+import 'package:farmodo/view/home/widgets/full_screen_timer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';

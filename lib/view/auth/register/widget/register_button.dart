@@ -1,5 +1,6 @@
 import 'package:farmodo/core/extension/dynamic_size_extension.dart';
-import 'package:farmodo/view/widget/loading_icon.dart';
+import 'package:farmodo/view/widgets/button_text.dart';
+import 'package:farmodo/view/widgets/loading_icon.dart';
 import 'package:farmodo/viewmodel/auth/register/register_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
@@ -28,19 +29,10 @@ class RegisterButton extends StatelessWidget {
             borderRadius: BorderRadius.circular(16)
           ),
           child: Obx((){
-            return registerController.isLoading.value ? LoadingIcon() : _logInText(context);
+            return registerController.isLoading.value ? LoadingIcon() : ButtonText(text: 'Sign up',);
           })
         ),
       ),
-    );
-  }
-
-  Text _logInText(BuildContext context) {
-    return Text(
-      'Sign up',
-      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-        color: Colors.white
-      )
     );
   }
 }

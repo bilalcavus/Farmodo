@@ -1,5 +1,7 @@
 
+import 'package:farmodo/core/di/injection.dart';
 import 'package:farmodo/core/extension/dynamic_size_extension.dart';
+import 'package:farmodo/data/services/auth_service.dart';
 import 'package:flutter/material.dart';
 
 class HomeHeader extends StatelessWidget {
@@ -9,6 +11,7 @@ class HomeHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final authService = getIt<AuthService>();
     return Padding(
       padding: EdgeInsets.symmetric(
         horizontal: context.dynamicWidth(0.05),
@@ -33,9 +36,9 @@ class HomeHeader extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Image.asset('assets/images/xp_star.png', height: context.dynamicHeight(0.07),),
-                Text('820 XP', style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                  color: Colors.white
-                )),
+                Text('${authService.currentUser!.xp} XP' , style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                    color: Colors.white
+                  ))
               ],
             ),
           )
