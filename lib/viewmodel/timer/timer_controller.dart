@@ -14,6 +14,9 @@ class TimerController extends GetxController {
   var isFullScreen = false.obs;
   double get progress => totalSeconds.value == 0 ? 0.0 : (totalSeconds.value - secondsRemaining.value) / totalSeconds.value;
 
+  VoidCallback? onTimerComplete;
+
+
 
   void startTimer(){
     if(isRunning.value) return;
@@ -24,6 +27,9 @@ class TimerController extends GetxController {
         _timer?.cancel();
         isRunning.value = false;
         secondsRemaining.value = totalSeconds.value;
+        if (onTimerComplete != null) {
+          onTimerComplete!();
+        }
       }
     });
     isRunning.value = true;

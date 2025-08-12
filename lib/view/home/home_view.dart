@@ -4,6 +4,7 @@ import 'package:farmodo/core/extension/route_helper.dart';
 import 'package:farmodo/view/home/widgets/daily_goals_container.dart';
 import 'package:farmodo/view/home/widgets/home_header.dart';
 import 'package:farmodo/view/home/widgets/pomodoro_timer.dart';
+import 'package:farmodo/view/home/widgets/recent_tasks.dart';
 import 'package:farmodo/view/home/widgets/time_start_button.dart';
 import 'package:farmodo/view/tasks/task_view.dart';
 import 'package:farmodo/viewmodel/tasks/tasks_controller.dart';
@@ -20,7 +21,13 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
-  final list = <String>['Flutter', 'Warming up'];
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      tasksController.getUserTasks();
+    });
+  }
   final timerController = getIt<TimerController>();
   final tasksController = getIt<TasksController>();
   @override
@@ -41,43 +48,38 @@ class _HomeViewState extends State<HomeView> {
               SizedBox(height: context.dynamicHeight(0.04)),
               TimeStartButton(timerController: timerController),
               SizedBox(height: context.dynamicHeight(0.04)),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  timerOptions(HugeIcons.strokeRoundedAlertDiamond, 'Strict Mode'),
-                  timerOptions(Iconsax.timer, 'Timer Mode'),
-                  timerOptions(HugeIcons.strokeRoundedFullScreen, 'Full Screen'),
-                ],
+              Center(
+                child: Container(
+                  height: context.dynamicHeight(0.075),
+                  width: context.dynamicWidth(0.9),
+                  padding: EdgeInsets.symmetric(horizontal: context.dynamicWidth(0.01), vertical: context.dynamicHeight(0.01)),
+                  decoration: BoxDecoration(
+                    color: Colors.black.withAlpha(7),
+                    borderRadius: BorderRadius.circular(16)
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      timerOptions(HugeIcons.strokeRoundedAlertDiamond, 'Strict Mode'),
+                      timerOptions(Iconsax.timer, 'Timer Mode'),
+                      timerOptions(HugeIcons.strokeRoundedFullScreen, 'Full Screen'),
+                    ],
+                  ),
+                ),
               ),
               SizedBox(height: context.dynamicHeight(0.04)),
               Center(
-                child: Text("Today's Tasks"),
+                child: Text("Recent Tasks"),
               ),
-              SizedBox(
-                height: context.dynamicHeight(0.5),
-                child: ListView.builder(
-                  itemCount: list.length,
-                  itemBuilder: (context, index) {
-                    final listItem = list[index];
-                    return Container(
-                      height: context.dynamicHeight(0.05),
-                      width: context.dynamicWidth(0.5),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(16),
-                        color: Colors.white
-                      ),
-                      child: ListTile(
-                        title: Text(listItem),
-                      ),
-                    );
-                  },
-                ),
-              )
+              RecentTasks(tasksController: tasksController, timerController: timerController)
             ],
         )),
       ),
-      floatingActionButton: FloatingActionButton(onPressed: (){
-        RouteHelper.push(context, TaskView());
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: const Color(0xffBB4F31),
+        child: Icon(Iconsax.add, color: Colors.white, size: context.dynamicHeight(0.03),),
+        onPressed: (){
+          RouteHelper.push(context, TaskView());
       }),
     );
   }
@@ -102,5 +104,4 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 }
-
 

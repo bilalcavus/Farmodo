@@ -16,7 +16,9 @@ class TimeStartButton extends StatelessWidget {
     return Center(
       child: Obx(() => ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: Color(0xff2C2C2C),
+              backgroundColor: timerController.isRunning.value 
+              ? Color.fromARGB(255, 153, 26, 26)
+              : Color(0xff2C2C2C),
               foregroundColor: Colors.white,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20),
@@ -24,7 +26,10 @@ class TimeStartButton extends StatelessWidget {
               padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
             ),
             onPressed: timerController.isRunning.value ? timerController.pauseTimer : timerController.startTimer,
-            child: Text(timerController.isRunning.value ? 'Pause' : 'Start', style: TextStyle(fontSize: 18)),
+            child: Text(timerController.isRunning.value ? 'Pause' : 'Start', style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+              color: Colors.white,
+              fontWeight: FontWeight.bold
+            )),
           )),
     );
   }

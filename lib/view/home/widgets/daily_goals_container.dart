@@ -15,7 +15,7 @@ class DailyGoalsContainer extends StatelessWidget {
         height: context.dynamicHeight(0.1),
         width: context.dynamicHeight(0.4),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Colors.grey.shade100,
           borderRadius: BorderRadius.circular(16)
         ),
         child: Row(

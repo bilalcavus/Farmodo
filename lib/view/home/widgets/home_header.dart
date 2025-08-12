@@ -19,7 +19,7 @@ class HomeHeader extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text('Hello, Bilal!', style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+          Text('Hello, ${authService.currentUser?.displayName}!', style: Theme.of(context).textTheme.headlineSmall?.copyWith(
             fontWeight: FontWeight.w400
           )),
           Container(

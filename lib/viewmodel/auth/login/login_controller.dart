@@ -10,6 +10,7 @@ class LoginController extends GetxController {
   final AuthService authService;
 
   LoginController(this.authService);
+  
 
   final _isLoading = false.obs;
   final _googleLoading = false.obs;
