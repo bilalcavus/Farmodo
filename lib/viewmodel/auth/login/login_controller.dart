@@ -22,6 +22,22 @@ class LoginController extends GetxController {
   final _obsecurePassword = true.obs;
   RxBool get obsecurePassword => _obsecurePassword;
 
+  final RxInt _userXp = 0.obs;
+  RxInt get userXp => _userXp;
+
+  @override
+  void onInit() {
+    _userXp.value = authService.currentUser?.xp ?? 0;
+    authService.fetchAndSetCurrentUser().then((_) {
+      _userXp.value = authService.currentUser?.xp ?? 0;
+    });
+    super.onInit();
+  }
+
+  void refreshUserXp() {
+    _userXp.value = authService.currentUser?.xp ?? 0;
+  }
+
   @override
   void onClose() {
     emailController.clear();
@@ -56,6 +72,7 @@ class LoginController extends GetxController {
     setLoading(true.obs);
     try {
       await authService.loginUser(email: emailController.text.trim(), password: passwordController.text);
+      _userXp.value = authService.currentUser?.xp ?? 0;
       if (context.mounted && authService.isLoggedIn) {
         RouteHelper.pushAndCloseOther(context, AppNavigation());
       }
@@ -78,6 +95,7 @@ class LoginController extends GetxController {
     
     try {
       await authService.signInWithGoogle();
+      _userXp.value = authService.currentUser?.xp ?? 0;
       if (context.mounted) {
         RouteHelper.pushAndCloseOther(context, AppNavigation());
       }

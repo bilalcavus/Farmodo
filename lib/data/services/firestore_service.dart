@@ -38,10 +38,45 @@ class FirestoreService {
         .orderBy('createdAt', descending: true)
         .get();
       final tasks = query.docs.map((doc) => UserTaskModel.fromFirestore(doc)).toList();
-      debugPrint('firestore response: $tasks');
       return tasks;
     } catch (e) {
       debugPrint('Error getting user tasks');
+      return [];
+    }
+  }
+
+  Future<List<UserTaskModel>?> getCompletedTask() async {
+    try {
+      final currentUserId = _auth.currentUser?.uid;
+      if(currentUserId == null) return [];
+    final snapshot = await _firestore
+          .collection('users')
+          .doc(currentUserId)
+          .collection('tasks')
+          .where('isCompleted', isEqualTo: true)
+          .orderBy('createdAt', descending: true)
+          .get();
+          return snapshot.docs.map((doc) => UserTaskModel.fromFirestore(doc)).toList();
+    } catch (e) {
+      Future.error(e);
+      return [];
+    }
+  }
+
+  Future<List<UserTaskModel>?> getActiveTask() async {
+    try {
+      final currentUserId = _auth.currentUser?.uid;
+      if(currentUserId == null) return [];
+      final snapshot = await _firestore
+          .collection('users')
+          .doc(currentUserId)
+          .collection('tasks')
+          .where('isCompleted', isEqualTo: false)
+          .orderBy('createdAt', descending: true)
+          .get();
+      return snapshot.docs.map((doc,) => UserTaskModel.fromFirestore(doc)).toList();
+    } catch (e) {
+      Future.error(e);
       return [];
     }
   }

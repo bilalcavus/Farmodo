@@ -1,4 +1,5 @@
 import 'package:farmodo/core/extension/dynamic_size_extension.dart';
+import 'package:farmodo/core/theme/app_colors.dart';
 import 'package:farmodo/view/widgets/button_text.dart';
 import 'package:farmodo/view/widgets/loading_icon.dart';
 import 'package:farmodo/viewmodel/tasks/tasks_controller.dart';
@@ -24,8 +25,8 @@ class TaskAddButton extends StatelessWidget {
           height: context.dynamicHeight(0.06),
           width: context.dynamicWidth(0.8),
           decoration: BoxDecoration(
-            color: Color(0xff2C2C2C),
-            borderRadius: BorderRadius.circular(16),
+            color: AppColors.primary,
+            borderRadius: BorderRadius.circular(14),
           ),
           child: Center(child: Obx((){
             return taskController.isLoading.value ? LoadingIcon() : ButtonText(text: 'Add',);

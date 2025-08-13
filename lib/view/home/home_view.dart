@@ -1,12 +1,10 @@
 import 'package:farmodo/core/di/injection.dart';
 import 'package:farmodo/core/extension/dynamic_size_extension.dart';
-import 'package:farmodo/core/extension/route_helper.dart';
 import 'package:farmodo/view/home/widgets/daily_goals_container.dart';
 import 'package:farmodo/view/home/widgets/home_header.dart';
 import 'package:farmodo/view/home/widgets/pomodoro_timer.dart';
 import 'package:farmodo/view/home/widgets/recent_tasks.dart';
 import 'package:farmodo/view/home/widgets/time_start_button.dart';
-import 'package:farmodo/view/tasks/task_view.dart';
 import 'package:farmodo/viewmodel/tasks/tasks_controller.dart';
 import 'package:farmodo/viewmodel/timer/timer_controller.dart';
 import 'package:flutter/material.dart';
@@ -33,65 +31,87 @@ class _HomeViewState extends State<HomeView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xffF2F5F9),
+      backgroundColor: const Color(0xFFF8FAFC),
       body: SingleChildScrollView(
         child: SafeArea(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               HomeHeader(),
-              SizedBox(height: context.dynamicHeight(0.02)),
+              SizedBox(height: context.dynamicHeight(0.015)),
               dailyGoalsTitle(context),
               DailyGoalsContainer(),
-              SizedBox(height: context.dynamicHeight(0.07)),
+              SizedBox(height: context.dynamicHeight(0.06)),
               PomodoroTimer(timerController: timerController),
-              SizedBox(height: context.dynamicHeight(0.04)),
+              SizedBox(height: context.dynamicHeight(0.03)),
               TimeStartButton(timerController: timerController),
-              SizedBox(height: context.dynamicHeight(0.04)),
+              SizedBox(height: context.dynamicHeight(0.03)),
               Center(
                 child: Container(
-                  height: context.dynamicHeight(0.075),
+                  height: context.dynamicHeight(0.085),
                   width: context.dynamicWidth(0.9),
-                  padding: EdgeInsets.symmetric(horizontal: context.dynamicWidth(0.01), vertical: context.dynamicHeight(0.01)),
+                  padding: EdgeInsets.symmetric(horizontal: context.dynamicWidth(0.03)),
                   decoration: BoxDecoration(
-                    color: Colors.black.withAlpha(7),
-                    borderRadius: BorderRadius.circular(16)
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(color: Colors.black12),
                   ),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      timerOptions(HugeIcons.strokeRoundedAlertDiamond, 'Strict Mode'),
-                      timerOptions(Iconsax.timer, 'Timer Mode'),
-                      timerOptions(HugeIcons.strokeRoundedFullScreen, 'Full Screen'),
+                      _timerOptionChip(HugeIcons.strokeRoundedAlertDiamond, 'Strict'),
+                      _timerOptionChip(Iconsax.timer, 'Timer'),
+                      _timerOptionChip(HugeIcons.strokeRoundedFullScreen, 'Fullscreen'),
                     ],
                   ),
                 ),
               ),
-              SizedBox(height: context.dynamicHeight(0.04)),
-              Center(
-                child: Text("Recent Tasks"),
+              SizedBox(height: context.dynamicHeight(0.03)),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: context.dynamicWidth(0.05)),
+                child: Text(
+                  "Recent Tasks",
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                        color: Colors.grey.shade800,
+                      ),
+                ),
               ),
               RecentTasks(tasksController: tasksController, timerController: timerController)
             ],
         )),
       ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: const Color(0xffBB4F31),
-        child: Icon(Iconsax.add, color: Colors.white, size: context.dynamicHeight(0.03),),
-        onPressed: (){
-          RouteHelper.push(context, TaskView());
-      }),
+      
     );
   }
 
-  Column timerOptions(IconData icon, String title) {
-    return Column(
-      children: [
-        InkWell(
-          onTap: () => timerController.toggleFullScreen(context),
-          child: Icon(icon)),
-        Text(title),
-      ],
+  Widget _timerOptionChip(IconData icon, String title) {
+    return InkWell(
+      onTap: () => timerController.toggleFullScreen(context),
+      borderRadius: BorderRadius.circular(24),
+      child: Row(
+        children: [
+          Container(
+            height: 36,
+            width: 36,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: Colors.black12),
+            ),
+            alignment: Alignment.center,
+            child: Icon(icon, size: 18, color: Colors.black87),
+          ),
+          SizedBox(width: 8),
+          Text(
+            title,
+            style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                  color: Colors.grey.shade700,
+                  fontWeight: FontWeight.w500,
+                ),
+          ),
+        ],
+      ),
     );
   }
 

@@ -1,6 +1,7 @@
 import 'package:farmodo/core/di/injection.dart';
 import 'package:farmodo/core/extension/dynamic_size_extension.dart';
 import 'package:farmodo/core/extension/route_helper.dart';
+import 'package:farmodo/core/theme/app_colors.dart';
 import 'package:farmodo/view/auth/login/widget/forgot_password.dart';
 import 'package:farmodo/view/auth/login/widget/login_button.dart';
 import 'package:farmodo/view/auth/login/widget/remember_me.dart';
@@ -25,7 +26,7 @@ class _LoginViewState extends State<LoginView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 255, 255, 255),
+      backgroundColor: AppColors.background,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
       ),

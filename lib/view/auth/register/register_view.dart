@@ -1,6 +1,7 @@
 import 'package:farmodo/core/di/injection.dart';
 import 'package:farmodo/core/extension/dynamic_size_extension.dart';
 import 'package:farmodo/core/extension/route_helper.dart';
+import 'package:farmodo/core/theme/app_colors.dart';
 import 'package:farmodo/view/auth/register/widget/register_button.dart';
 import 'package:farmodo/view/widgets/custom_text_field.dart';
 import 'package:farmodo/view/widgets/sign_options_section.dart';
@@ -24,7 +25,7 @@ class _RegisterViewState extends State<RegisterView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 255, 255, 255),
+      backgroundColor: AppColors.background,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
       ),

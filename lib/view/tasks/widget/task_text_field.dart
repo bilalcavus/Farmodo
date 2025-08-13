@@ -1,4 +1,5 @@
 import 'package:farmodo/core/extension/dynamic_size_extension.dart';
+import 'package:farmodo/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class TaskTextField extends StatelessWidget {
@@ -16,23 +17,23 @@ class TaskTextField extends StatelessWidget {
       controller: controller,
       textCapitalization: TextCapitalization.words,
       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-        color: Colors.black,
+        color: AppColors.textPrimary,
         fontSize: context.dynamicHeight(0.018)
       ),
       decoration: InputDecoration(
         hintText: hintText,
         hintStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
-          color: Colors.black.withAlpha(36)
+          color: AppColors.textSecondary,
         ),
         filled: true,
-        fillColor: Colors.black.withAlpha(7),
+        fillColor: AppColors.surface,
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(context.dynamicWidth(0.04)),
-          borderSide: BorderSide.none
+          borderSide: BorderSide(color: AppColors.border),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(context.dynamicWidth(0.04)),
-          borderSide: BorderSide(color: const Color(0xFFB983FF), width: context.dynamicWidth(0.005)),
+          borderSide: BorderSide(color: AppColors.primary, width: context.dynamicWidth(0.005)),
         ),
       ),
     );

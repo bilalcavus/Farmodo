@@ -1,4 +1,5 @@
 
+import 'package:farmodo/core/theme/app_colors.dart';
 import 'package:farmodo/viewmodel/timer/timer_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
@@ -14,48 +15,41 @@ class PomodoroTimer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Obx((){
+      child: Obx(() {
         return Stack(
           alignment: Alignment.center,
           children: [
             SizedBox(
-              width: 200,
-              height: 200,
+              width: 220,
+              height: 220,
               child: CircularProgressIndicator(
                 value: timerController.progress,
-                strokeWidth: 10,
-                backgroundColor: Colors.black45,
-                valueColor: AlwaysStoppedAnimation(Colors.black),
+                strokeWidth: 12,
+                backgroundColor: AppColors.border,
+                valueColor: const AlwaysStoppedAnimation(AppColors.primary),
               ),
             ),
             Container(
-              width: 180,
-              height: 180,
+              width: 190,
+              height: 190,
               decoration: BoxDecoration(
-                color: Color(0xff2C2C2C),
+                color: AppColors.surface,
                 shape: BoxShape.circle,
-                boxShadow: [
-                BoxShadow(
-                  color: Colors.black54,
-                  offset: Offset(2, 2),
-                  blurRadius: 5,
-                  )
-                ],
+                border: Border.all(color: AppColors.border),
               ),
               alignment: Alignment.center,
               child: Text(
                 timerController.formatTime(timerController.secondsRemaining.value),
-                style: TextStyle(
-                fontSize: 40,
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                  ),
+                style: const TextStyle(
+                  fontSize: 40,
+                  color: AppColors.textPrimary,
+                  fontWeight: FontWeight.w700,
                 ),
               ),
-            ],
-          );
-        }
-      ),
+            ),
+          ],
+        );
+      }),
     );
   }
 }

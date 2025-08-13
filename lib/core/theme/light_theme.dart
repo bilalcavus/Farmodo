@@ -1,13 +1,23 @@
+import 'package:farmodo/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
 final ThemeData lightTheme = ThemeData(
   brightness: Brightness.light,
-  scaffoldBackgroundColor: Colors.white,
+  scaffoldBackgroundColor: AppColors.background,
   fontFamily: 'Inter',
   appBarTheme: const AppBarTheme(
-    backgroundColor: Colors.white,
-    foregroundColor: Colors.black,
+    backgroundColor: AppColors.background,
+    foregroundColor: AppColors.textPrimary,
     elevation: 0,
+  ),
+  colorScheme: const ColorScheme.light(
+    primary: AppColors.primary,
+    onPrimary: AppColors.onPrimary,
+    surface: AppColors.surface,
+    onSurface: AppColors.textPrimary,
+    background: AppColors.background,
+    onBackground: AppColors.textPrimary,
+    error: AppColors.danger,
   ),
   textTheme: const TextTheme(
       bodyLarge: TextStyle(fontFamily: 'Inter'),

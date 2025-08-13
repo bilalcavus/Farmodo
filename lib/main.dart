@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Farmodo',
       theme: AppTheme.light,
-      themeMode: ThemeMode.system,
+      themeMode: ThemeMode.light,
       home: LoginView(),
     );
   }
