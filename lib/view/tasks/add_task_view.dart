@@ -61,10 +61,15 @@ class _AddTaskViewState extends State<AddTaskView> {
                 children: [
                   Image.asset('assets/images/xp_star.png', height: context.dynamicHeight(0.03),),
                   Obx((){
-                    return Text('XP Gain : ${taskController.xp.value}', style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.textPrimary,
-                    ),);
+                    final xp = taskController.xp.value;
+                    final hasSelection = taskController.selectedPomodoroTime.value != null;
+                    return Text(
+                      hasSelection ? 'XP Gain : $xp' : 'Select time to see XP',
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.textPrimary,
+                      ),
+                    );
                     }
                   ),
                 ],

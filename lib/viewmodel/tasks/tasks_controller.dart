@@ -1,5 +1,4 @@
 import 'package:farmodo/core/di/injection.dart';
-import 'package:farmodo/core/extension/route_helper.dart';
 import 'package:farmodo/data/models/user_task_model.dart';
 import 'package:farmodo/data/services/auth_service.dart';
 import 'package:farmodo/data/services/firestore_service.dart';
@@ -13,8 +12,8 @@ class TasksController extends GetxController {
   final titleController = TextEditingController();
   final focusTypeController = TextEditingController();
   final durationController = TextEditingController();
-  List<int> pomodoroTimes = [25, 30, 40, 45, 50];
-  var selectedPomodoroTime = 25.obs;
+  List<int> pomodoroTimes = [1,25, 30, 40, 45, 50];
+  RxnInt selectedPomodoroTime = RxnInt();
   var userTasks = <UserTaskModel>[].obs;
   var completedUserTasks = <UserTaskModel>[].obs;
   var activeUserTasks = <UserTaskModel>[].obs;
@@ -43,11 +42,16 @@ class TasksController extends GetxController {
   }
 
   void calculateXp(){
-    xp.value = 30 + (selectedPomodoroTime.value * 1.5);
+    final int? selected = selectedPomodoroTime.value;
+    if (selected == null) {
+      xp.value = 0;
+      return;
+    }
+    xp.value = 30 + (selected * 1.5);
     
   }
 
-  void setSelectedPomodoroTime(int duration){
+  void setSelectedPomodoroTime(int? duration){
     selectedPomodoroTime.value = duration;
     calculateXp();
   }
@@ -59,19 +63,20 @@ class TasksController extends GetxController {
     
     timerController.onTimerComplete = () async {
       completeTask(index);
-      RouteHelper.push(context, SucceedTaskPage());
+      Get.to(() => SucceedTaskPage());
     };
   }
 
   Future<void> completeTask(int index) async {
-    final task = userTasks[index];
+    final task = activeUserTasks[index];
     setLoading(_isLoading, true);
     try {
       final updatedTask = task.copyWith(isCompleted: true);
       await firestoreService.updateTask(updatedTask);
       await firestoreService.updateUserXp(task.xpReward);
-      userTasks[index] = updatedTask;
+      activeUserTasks[index] = updatedTask;
       await authService.fetchAndSetCurrentUser();
+
       try {
         final loginController = getIt<LoginController>();
         loginController.refreshUserXp();
@@ -92,13 +97,21 @@ class TasksController extends GetxController {
       );
       return;
     }
+    if (selectedPomodoroTime.value == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Select pomodoro time'))
+      );
+      return;
+    }
     setLoading(_isLoading, true);
     try {
       await firestoreService.addTask(
         titleController.text.trim(),
         focusTypeController.text.trim(),
-        selectedPomodoroTime.value,
+        selectedPomodoroTime.value!,
         xp.value.toInt());
+        await getActiveTask();
+        await getCompletedTask();
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(

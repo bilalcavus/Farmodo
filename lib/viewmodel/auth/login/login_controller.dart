@@ -25,13 +25,14 @@ class LoginController extends GetxController {
   final RxInt _userXp = 0.obs;
   RxInt get userXp => _userXp;
 
+
   @override
-  void onInit() {
+  void onReady() {
     _userXp.value = authService.currentUser?.xp ?? 0;
     authService.fetchAndSetCurrentUser().then((_) {
       _userXp.value = authService.currentUser?.xp ?? 0;
     });
-    super.onInit();
+    super.onReady();
   }
 
   void refreshUserXp() {

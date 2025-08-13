@@ -1,4 +1,5 @@
 import 'package:farmodo/core/extension/dynamic_size_extension.dart';
+import 'package:farmodo/core/extension/route_helper.dart';
 import 'package:farmodo/core/theme/app_colors.dart';
 import 'package:farmodo/view/widgets/button_text.dart';
 import 'package:farmodo/view/widgets/loading_icon.dart';
@@ -19,6 +20,9 @@ class TaskAddButton extends StatelessWidget {
     return InkWell(
       onTap: () async {
         await taskController.addUserTask(context);
+        if(context.mounted){
+          RouteHelper.pop(context);
+        }
       },
       child: Center(
         child: Container(

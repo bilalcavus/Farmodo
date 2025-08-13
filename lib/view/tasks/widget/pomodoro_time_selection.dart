@@ -38,8 +38,9 @@ class PomodoroTimeSelection extends StatelessWidget {
                   child: Text('$time minutes', style: TextStyle(fontSize: context.dynamicHeight(0.018), color: AppColors.textPrimary)),);
               }).toList(),
               onChanged: (value) {
-                taskController.setSelectedPomodoroTime(value!);
+                taskController.setSelectedPomodoroTime(value);
               },
+              hint: Text('Select time', style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary)),
             );
           }
           ),

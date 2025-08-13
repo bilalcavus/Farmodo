@@ -31,8 +31,9 @@ class DropMenu extends StatelessWidget {
           height: context.dynamicHeight(0.065),
           padding: EdgeInsets.symmetric(horizontal: context.dynamicWidth(0.025)),
           decoration: BoxDecoration(
-            color: Colors.black.withAlpha(7),
+            color: Colors.white,
             borderRadius: BorderRadius.circular(context.dynamicWidth(0.04)),
+            border: Border.all(color: Colors.black.withAlpha(20))
           ),
           child: DropdownButtonHideUnderline(
             child: DropdownButtonFormField<String>(
@@ -40,7 +41,7 @@ class DropMenu extends StatelessWidget {
               hint: Text(
                 hint,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Colors.black.withAlpha(36)
+                  color: Colors.black38
                 ),
               ),
               icon: Icon(Icons.keyboard_arrow_down, color: Colors.grey[600]),

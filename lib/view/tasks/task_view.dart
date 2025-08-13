@@ -5,6 +5,7 @@ import 'package:farmodo/core/theme/app_colors.dart';
 import 'package:farmodo/data/models/user_task_model.dart';
 import 'package:farmodo/view/tasks/add_task_view.dart';
 import 'package:farmodo/viewmodel/tasks/tasks_controller.dart';
+import 'package:farmodo/viewmodel/timer/timer_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
@@ -18,13 +19,17 @@ class TaskView extends StatefulWidget {
 }
 
 class _TaskViewState extends State<TaskView> {
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    taskController.getActiveTask();
-    taskController.getCompletedTask();
-  }
   final taskController = getIt<TasksController>();
+  final timerController = getIt<TimerController>();
+  
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      taskController.getActiveTask();
+      taskController.getCompletedTask();
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -63,12 +68,12 @@ class _TaskViewState extends State<TaskView> {
         body: TabBarView(children: [
           CustomTaskList(
             listType: taskController.activeUserTasks,
-            loadingType: taskController.activeTaskLoading.value,
-            taskController: taskController),
+            loadingType: taskController.activeTaskLoading,
+            taskController: taskController, timerController: timerController,),
           CustomTaskList(
             listType: taskController.completedUserTasks,
-            loadingType: taskController.completedTaskLoading.value,
-            taskController: taskController),
+            loadingType: taskController.completedTaskLoading,
+            taskController: taskController, timerController: timerController,),
         ]),
         floatingActionButton: FloatingActionButton(
         backgroundColor: AppColors.primary,
@@ -86,11 +91,13 @@ class CustomTaskList extends StatelessWidget {
     super.key,
     required this.taskController,
     required this.loadingType,
-    required this.listType,
+    required this.listType, 
+    required this.timerController,
   });
 
   final TasksController taskController;
-  final bool loadingType;
+  final TimerController timerController;
+  final RxBool loadingType;
   final RxList<UserTaskModel> listType;
   
 
@@ -99,7 +106,7 @@ class CustomTaskList extends StatelessWidget {
     return SizedBox(
       height: context.dynamicHeight(0.9),
       child: Obx((){
-        if (loadingType) {
+        if (loadingType.value) {
           return Center(child: CircularProgressIndicator());
         } else if (listType.isEmpty) {
           return Center(child: Text('No tasks yet', style: Theme.of(context).textTheme.labelLarge?.copyWith(color: AppColors.textSecondary)));
@@ -107,7 +114,7 @@ class CustomTaskList extends StatelessWidget {
           else {
             return ListView.builder(
               shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
+              // physics: NeverScrollableScrollPhysics(),
               itemCount: listType.length,
               itemBuilder: (context, index) {
                 final task = listType[index];
@@ -122,7 +129,48 @@ class CustomTaskList extends StatelessWidget {
                     border: Border.all(color: AppColors.border),
                 ),
                   child: ListTile(
-                  title: Text(task.title, style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: AppColors.textPrimary, fontWeight: FontWeight.w600)),
+                  title: Text(task.title, style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: AppColors.textPrimary, fontWeight: FontWeight.bold)),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('🔗 ${task.focusType}'),
+                      Text('⏰ ${task.duration} min'),
+                      Text('⭐️ ${task.xpReward} XP'),
+                    ],
+                  ),
+                  trailing: !task.isCompleted ? 
+                  Obx(() {
+                    return ElevatedButton(
+                    onPressed: () {
+                      final bool isThisTaskSelected = taskController.selctedTaskIndex.value == index;
+                      if (timerController.isRunning.value && isThisTaskSelected) {
+                        timerController.pauseTimer();
+                        return;
+                      }
+                      taskController.selectTask(index, task.duration, context);
+                      timerController.resetTimer();
+                      timerController.startTimer();
+                    },
+                    style: ElevatedButton.styleFrom(
+                    backgroundColor: (timerController.isRunning.value && (taskController.selctedTaskIndex.value == index))
+                      ? AppColors.danger
+                      : AppColors.primary,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                    padding: const EdgeInsets.symmetric(horizontal: 44, vertical: 16),
+                    elevation: 0,
+                  ),
+                    child: Text(
+                      timerController.isRunning.value && taskController.selctedTaskIndex.value == index ? 'Running' : 'Start',
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w700,
+                      ),
+                    ));
+                    }
+                  ) : null
               ),
             );
           });
