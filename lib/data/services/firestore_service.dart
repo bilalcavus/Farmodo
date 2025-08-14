@@ -27,59 +27,27 @@ class FirestoreService {
         });
   }
 
-  Future<List<UserTaskModel>?> getUserTasks() async {
-    try {
-      final currentUserId = _auth.currentUser?.uid;
-      if(currentUserId == null) return [];
-      final query = await _firestore
-        .collection('users')
-        .doc(currentUserId)
-        .collection('tasks')
-        .orderBy('createdAt', descending: true)
-        .get();
-      final tasks = query.docs.map((doc) => UserTaskModel.fromFirestore(doc)).toList();
-      return tasks;
-    } catch (e) {
-      debugPrint('Error getting user tasks');
-      return [];
-    }
+  Future<List<UserTaskModel>> _getTasks({bool? isCompleted}) async {
+  final uid = _auth.currentUser?.uid;
+  if (uid == null) return [];
+
+  var query = _firestore
+      .collection('users')
+      .doc(uid)
+      .collection('tasks')
+      .orderBy('createdAt', descending: true);
+
+  if (isCompleted != null) {
+    query = query.where('isCompleted', isEqualTo: isCompleted);
   }
 
-  Future<List<UserTaskModel>?> getCompletedTask() async {
-    try {
-      final currentUserId = _auth.currentUser?.uid;
-      if(currentUserId == null) return [];
-    final snapshot = await _firestore
-          .collection('users')
-          .doc(currentUserId)
-          .collection('tasks')
-          .where('isCompleted', isEqualTo: true)
-          .orderBy('createdAt', descending: true)
-          .get();
-          return snapshot.docs.map((doc) => UserTaskModel.fromFirestore(doc)).toList();
-    } catch (e) {
-      Future.error(e);
-      return [];
-    }
-  }
+  final snapshot = await query.get();
+  return snapshot.docs.map((doc) => UserTaskModel.fromFirestore(doc)).toList();
+}
 
-  Future<List<UserTaskModel>?> getActiveTask() async {
-    try {
-      final currentUserId = _auth.currentUser?.uid;
-      if(currentUserId == null) return [];
-      final snapshot = await _firestore
-          .collection('users')
-          .doc(currentUserId)
-          .collection('tasks')
-          .where('isCompleted', isEqualTo: false)
-          .orderBy('createdAt', descending: true)
-          .get();
-      return snapshot.docs.map((doc,) => UserTaskModel.fromFirestore(doc)).toList();
-    } catch (e) {
-      Future.error(e);
-      return [];
-    }
-  }
+  getUserTasks() => _getTasks();
+  getCompletedTask() => _getTasks(isCompleted: true);
+  getActiveTask() => _getTasks(isCompleted: false);
 
   Future<void> updateTask(UserTaskModel userTask) async {
     try {
@@ -94,7 +62,8 @@ class FirestoreService {
             'isCompleted' : true,
           });
     } catch (e) {
-      print("❌ Task güncellenirken hata oluştu: $e");
+      debugPrint("❌ Task güncellenirken hata oluştu: $e");
+      rethrow;
     }
   }
 
@@ -104,7 +73,7 @@ class FirestoreService {
       final userRef = _firestore.collection('users').doc(uid);
 
       final userDoc = await userRef.get();
-      final currentXp = userDoc.data()?['xp'] ?? 0;
+      final currentXp = (userDoc.data()?['xp'] as int?) ?? 0;
       final currentTotalPomodoro = userDoc.data()?['totalPomodoro'] ?? 0;
 
       await userRef.update({
@@ -112,7 +81,39 @@ class FirestoreService {
         'totalPomodoro': currentTotalPomodoro + 1
       });
     } catch (e) {
-      Future.error(e);
+      rethrow;
     }
+  }
+
+  Future<void> completeTaskAndUpdateXp(UserTaskModel task) async {
+    final String uid = _auth.currentUser!.uid;
+    final taskRef = _firestore
+          .collection('users')
+          .doc(uid)
+          .collection('tasks')
+          .doc(task.id);
+    final userRef = _firestore.collection('users').doc(uid);
+    
+    await _firestore.runTransaction((transaction) async {
+      final taskSnapshot = await transaction.get(taskRef);
+      if(!taskSnapshot.exists) {
+        throw Exception("Task bulunamadı");
+      }
+
+      final userSnapshot = await transaction.get(userRef);
+      if (!userSnapshot.exists) {
+        throw Exception("Kullanıcı bulunamadı");
+      }
+
+      final currentXp = (userSnapshot.data()?['xp'] ?? 0) as int;
+      final currentTotalPomodoro = (userSnapshot.data()?['totalPomodoro']) as int;
+
+      transaction.update(taskRef, {'isCompleted': true});
+
+      transaction.update(userRef, {
+        'xp': currentXp + task.xpReward,
+        'totalPomodoro': currentTotalPomodoro + 1
+      });
+    });
   }
 }

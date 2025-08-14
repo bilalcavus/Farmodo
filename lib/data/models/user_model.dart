@@ -61,9 +61,9 @@ class UserModel {
       id: doc.id,
       email: data['email'] ?? '',
       displayName: data['displayName'] ?? '',
-      level: data['level'] ?? '',
-      xp: data['xp'] ?? '',
-      totalPomodoro: data['totalPomodoro'] ?? '',
+      level: data['level'] ?? 0,
+      xp: data['xp'] ?? 0,
+      totalPomodoro: data['totalPomodoro'] ?? 0,
       avatarUrl: data['avatarUrl'],
       createdAt: (data['createdAt'] as Timestamp).toDate(),
       lastLoginAt: data['lastLoginAt'] != null 

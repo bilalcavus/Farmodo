@@ -68,11 +68,11 @@ class _TaskViewState extends State<TaskView> {
         body: TabBarView(children: [
           CustomTaskList(
             listType: taskController.activeUserTasks,
-            loadingType: taskController.activeTaskLoading,
+            loadingType: taskController.loadingStates[LoadingType.active] ?? false,
             taskController: taskController, timerController: timerController,),
           CustomTaskList(
             listType: taskController.completedUserTasks,
-            loadingType: taskController.completedTaskLoading,
+            loadingType: taskController.loadingStates[LoadingType.completed] ?? false,
             taskController: taskController, timerController: timerController,),
         ]),
         floatingActionButton: FloatingActionButton(
@@ -97,7 +97,7 @@ class CustomTaskList extends StatelessWidget {
 
   final TasksController taskController;
   final TimerController timerController;
-  final RxBool loadingType;
+  final bool loadingType;
   final RxList<UserTaskModel> listType;
   
 
@@ -106,7 +106,7 @@ class CustomTaskList extends StatelessWidget {
     return SizedBox(
       height: context.dynamicHeight(0.9),
       child: Obx((){
-        if (loadingType.value) {
+        if (loadingType) {
           return Center(child: CircularProgressIndicator());
         } else if (listType.isEmpty) {
           return Center(child: Text('No tasks yet', style: Theme.of(context).textTheme.labelLarge?.copyWith(color: AppColors.textSecondary)));
@@ -147,7 +147,7 @@ class CustomTaskList extends StatelessWidget {
                         timerController.pauseTimer();
                         return;
                       }
-                      taskController.selectTask(index, task.duration, context);
+                      taskController.selectTask(index, task.duration);
                       timerController.resetTimer();
                       timerController.startTimer();
                     },

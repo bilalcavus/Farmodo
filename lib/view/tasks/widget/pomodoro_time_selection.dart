@@ -25,7 +25,7 @@ class PomodoroTimeSelection extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text('Select pomodoro minutes', style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.textPrimary, fontWeight: FontWeight.w600)),
+          Text('Select farmodo minutes', style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.textPrimary, fontWeight: FontWeight.w600)),
           Obx(() {
             return DropdownButton<int>(
               borderRadius: BorderRadius.circular(16),

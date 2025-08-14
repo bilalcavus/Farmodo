@@ -108,6 +108,7 @@ class CustomBottomNavigation extends StatelessWidget {
     final double x = -1.0 + (2.0 * index / (itemCount - 1));
     return Alignment(x, 0);
   }
+  
 
   Widget _buildCircle(IconData icon, double size, double iconSize) {
     return Container(

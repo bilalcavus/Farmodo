@@ -5,7 +5,7 @@ import 'package:farmodo/view/widgets/button_text.dart';
 import 'package:farmodo/view/widgets/loading_icon.dart';
 import 'package:farmodo/viewmodel/tasks/tasks_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
+import 'package:get/state_manager.dart';
 
 class TaskAddButton extends StatelessWidget {
   const TaskAddButton({
@@ -20,7 +20,12 @@ class TaskAddButton extends StatelessWidget {
     return InkWell(
       onTap: () async {
         await taskController.addUserTask(context);
-        if(context.mounted){
+        if (taskController.errorMessage.isNotEmpty) {
+            ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(taskController.errorMessage.value))
+          );
+        }
+        if(context.mounted && taskController.errorMessage.isEmpty){
           RouteHelper.pop(context);
         }
       },
@@ -33,7 +38,7 @@ class TaskAddButton extends StatelessWidget {
             borderRadius: BorderRadius.circular(14),
           ),
           child: Center(child: Obx((){
-            return taskController.isLoading.value ? LoadingIcon() : ButtonText(text: 'Add',);
+            return (taskController.loadingStates[LoadingType.general] ?? false) ? LoadingIcon() : ButtonText(text: 'Add',);
           })),
         ),
       ),

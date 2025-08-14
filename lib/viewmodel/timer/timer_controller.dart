@@ -53,12 +53,7 @@ class TimerController extends GetxController {
     ]);
     await SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => FullScreenTimer(),
-      ),
-    ).then((_) async {
+    Get.to(() => FullScreenTimer())?.then((_) async {
       await SystemChrome.setPreferredOrientations([
         DeviceOrientation.portraitUp,
         DeviceOrientation.portraitDown,

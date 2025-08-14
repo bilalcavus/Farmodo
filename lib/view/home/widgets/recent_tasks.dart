@@ -19,7 +19,7 @@ class RecentTasks extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Obx(() {
-      if (tasksController.activeTaskLoading.value) {
+      if (tasksController.loadingStates[LoadingType.active] ?? false) {
         return Center(child: CircularProgressIndicator());
       } else if (tasksController.activeUserTasks.isEmpty) {
         return Center(
@@ -104,7 +104,7 @@ class RecentTasks extends StatelessWidget {
                               timerController.pauseTimer();
                               return;
                             }
-                            tasksController.selectTask(index, task.duration, context);
+                            tasksController.selectTask(index, task.duration);
                             timerController.resetTimer();
                             timerController.startTimer();
                           },

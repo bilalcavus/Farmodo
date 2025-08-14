@@ -1,4 +1,3 @@
-import 'package:farmodo/core/di/injection.dart';
 import 'package:farmodo/data/models/user_task_model.dart';
 import 'package:farmodo/data/services/auth_service.dart';
 import 'package:farmodo/data/services/firestore_service.dart';
@@ -7,6 +6,8 @@ import 'package:farmodo/viewmodel/auth/login/login_controller.dart';
 import 'package:farmodo/viewmodel/timer/timer_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
+enum LoadingType { general, active, completed}
 
 class TasksController extends GetxController {
   final titleController = TextEditingController();
@@ -18,18 +19,20 @@ class TasksController extends GetxController {
   var completedUserTasks = <UserTaskModel>[].obs;
   var activeUserTasks = <UserTaskModel>[].obs;
   var selctedTaskIndex = (-1).obs;
+  var errorMessage = ''.obs;
   RxDouble xp = 0.0.obs;
-  final _isLoading = false.obs;
-  final _activeTaskLoading = false.obs;
-  final _completedTaskLoading = false.obs;
-  RxBool get isLoading => _isLoading;
-  RxBool get activeTaskLoading => _activeTaskLoading;
-  RxBool get completedTaskLoading => _completedTaskLoading;
   final FirestoreService firestoreService;
   final AuthService authService;
   final TimerController timerController;
+  final LoginController loginController;
 
-  TasksController(this.firestoreService, this.authService, this.timerController);
+  final loadingStates = <LoadingType, bool>{
+    LoadingType.general: false,
+    LoadingType.active: false,
+    LoadingType.completed: false
+  }.obs;
+
+  TasksController(this.firestoreService, this.authService, this.timerController, this.loginController);
 
   @override
   void onInit() {
@@ -37,8 +40,8 @@ class TasksController extends GetxController {
     ever(selectedPomodoroTime, (_) => calculateXp());
     super.onInit();
   }
-  void setLoading(RxBool loadingType, bool value) {
-    loadingType.value = value;
+  void setLoading(LoadingType type, bool value) {
+    loadingStates[type] = value;
   }
 
   void calculateXp(){
@@ -47,7 +50,7 @@ class TasksController extends GetxController {
       xp.value = 0;
       return;
     }
-    xp.value = 30 + (selected * 1.5);
+    xp.value = (30 + (selected * 1.5)).roundToDouble();
     
   }
 
@@ -56,35 +59,31 @@ class TasksController extends GetxController {
     calculateXp();
   }
 
-  void selectTask(int index, int pomodoroMinutes, BuildContext context){
+  void selectTask(int index, int pomodoroMinutes){
     selctedTaskIndex.value = index;
     timerController.totalSeconds.value = pomodoroMinutes * 60;
     timerController.secondsRemaining.value = pomodoroMinutes * 60;
     
     timerController.onTimerComplete = () async {
-      completeTask(index);
+      await completeTask(index);
       Get.to(() => SucceedTaskPage());
     };
   }
 
   Future<void> completeTask(int index) async {
     final task = activeUserTasks[index];
-    setLoading(_isLoading, true);
+    setLoading(LoadingType.general, true);
     try {
-      final updatedTask = task.copyWith(isCompleted: true);
-      await firestoreService.updateTask(updatedTask);
-      await firestoreService.updateUserXp(task.xpReward);
-      activeUserTasks[index] = updatedTask;
+      await firestoreService.completeTaskAndUpdateXp(task);
+      activeUserTasks[index] = task.copyWith(isCompleted: true);
       await authService.fetchAndSetCurrentUser();
-
       try {
-        final loginController = getIt<LoginController>();
         loginController.refreshUserXp();
       } catch (_) {}
     } catch (e) {
-      Future.error(e);
+      rethrow;
     } finally {
-      setLoading(_isLoading, false);
+      setLoading(LoadingType.general, false);
     }
 
     // userTasks[index] = task;
@@ -92,18 +91,14 @@ class TasksController extends GetxController {
 
   Future<void> addUserTask(BuildContext context) async {
     if (titleController.text.isEmpty || focusTypeController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Fill all blanks'))
-      );
+      errorMessage.value = 'Fill all the blanks';
       return;
     }
     if (selectedPomodoroTime.value == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Select pomodoro time'))
-      );
+      errorMessage.value = 'Select farmodo minutes';
       return;
     }
-    setLoading(_isLoading, true);
+    setLoading(LoadingType.general, true);
     try {
       await firestoreService.addTask(
         titleController.text.trim(),
@@ -113,77 +108,71 @@ class TasksController extends GetxController {
         await getActiveTask();
         await getCompletedTask();
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(e.toString()),
-          backgroundColor: Colors.red,
-        ),
-      );
+      errorMessage.value = '$e';
     } finally {
       titleController.clear();
       focusTypeController.clear();
-      setLoading(_isLoading, false);
+      setLoading(LoadingType.general, false);
     }
   }
 
-  Future<void> getUserTasks() async {
-    setLoading(_isLoading, true);
+
+  Future<void> _fetchTasks({
+    required RxList<UserTaskModel> targetList,
+    required Future<List<UserTaskModel>> Function() fetchFunction,
+    required LoadingType loadingFlag
+  }) async {
+    setLoading(loadingFlag, true);
     try {
-      final tasks = await firestoreService.getUserTasks();
-      debugPrint('$tasks');
-      if (tasks!.isNotEmpty) {
-        userTasks.assignAll(tasks);
+      final tasks = await fetchFunction();
+      if (tasks.isNotEmpty) {
+        targetList.assignAll(tasks);
       } else {
-        userTasks.clear();
+        targetList.clear();
       }
     } catch (e) {
-      debugPrint('Error in controller getUserTasks: $e');
+      debugPrint('Error fetching tasks: $e');
     } finally {
-      setLoading(_isLoading, false);
+      setLoading(loadingFlag, false);
     }
   }
 
-  Future<void> getCompletedTask() async {
-    setLoading(_completedTaskLoading, true);
-    try {
-      final tasks = await firestoreService.getCompletedTask();
-      if (tasks!.isNotEmpty) {
-        completedUserTasks.assignAll(tasks);
-      } else {
-        completedUserTasks.clear();
-      }
-    } catch (e) {
-      Future.error(e);
-    } finally {
-      setLoading(_completedTaskLoading, false);
-    }
-  }
+  getUserTasks() => _fetchTasks(
+    targetList: userTasks,
+    fetchFunction: () => firestoreService.getUserTasks(),
+    loadingFlag: LoadingType.general
+  );
 
-  Future<void> getActiveTask() async {
-    setLoading(_activeTaskLoading, true);
-    try {
-      final tasks = await firestoreService.getActiveTask();
-      if (tasks!.isNotEmpty) {
-        activeUserTasks.assignAll(tasks);
-      } else {
-        activeUserTasks.clear();
-      }
-    } catch (e) {
-      Future.error(e);
-    } finally {
-      setLoading(_activeTaskLoading, false);
-    }
-  }
+  getActiveTask() => _fetchTasks(
+    targetList: activeUserTasks,
+    fetchFunction: () => firestoreService.getActiveTask(),
+    loadingFlag: LoadingType.active
+  );
+
+  getCompletedTask() => _fetchTasks(
+    targetList: completedUserTasks,
+    fetchFunction: () => firestoreService.getCompletedTask(),
+    loadingFlag: LoadingType.completed
+  );
+
 
 
   Future<void> updateUserTaskCompleted(UserTaskModel userTask) async {
-    setLoading(_isLoading, true);
+    setLoading(LoadingType.general, true);
     try {
       await firestoreService.updateTask(userTask);
     } catch (e) {
-      print("❌ Controller güncelleme hatası: $e");
+      debugPrint("Controller güncelleme hatası: $e");
     } finally{
-      setLoading(_isLoading, false);
+      setLoading(LoadingType.general, false);
     }
+  }
+
+  @override
+  void onClose() {
+    super.onClose();
+    titleController.dispose();
+    focusTypeController.dispose();
+    durationController.dispose();
   }
 }
