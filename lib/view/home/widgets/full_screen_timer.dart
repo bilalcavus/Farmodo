@@ -15,7 +15,9 @@ class FullScreenTimer extends StatelessWidget {
       body: Obx((){
         return Center(
           child: FlipTimer(
-            timeString: timerController.formatTime(timerController.secondsRemaining.value),
+            timeString: timerController.isOnBreak.value
+                ? timerController.formatTime(timerController.breakSecondsRemaining.value)
+                : timerController.formatTime(timerController.secondsRemaining.value),
             timerController: timerController,
           )
         );

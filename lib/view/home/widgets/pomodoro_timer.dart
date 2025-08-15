@@ -23,10 +23,12 @@ class PomodoroTimer extends StatelessWidget {
               width: 220,
               height: 220,
               child: CircularProgressIndicator(
-                value: timerController.progress,
+                value: timerController.displayProgress,
                 strokeWidth: 12,
                 backgroundColor: AppColors.border,
-                valueColor: const AlwaysStoppedAnimation(AppColors.primary),
+                valueColor: AlwaysStoppedAnimation(
+                  timerController.isOnBreak.value ? AppColors.secondary : AppColors.primary
+                ),
               ),
             ),
             Container(
@@ -38,13 +40,26 @@ class PomodoroTimer extends StatelessWidget {
                 border: Border.all(color: AppColors.border),
               ),
               alignment: Alignment.center,
-              child: Text(
-                timerController.formatTime(timerController.secondsRemaining.value),
-                style: const TextStyle(
-                  fontSize: 40,
-                  color: AppColors.textPrimary,
-                  fontWeight: FontWeight.w700,
-                ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    timerController.isOnBreak.value
+                        ? timerController.formatTime(timerController.breakSecondsRemaining.value)
+                        : timerController.formatTime(timerController.secondsRemaining.value),
+                    style: const TextStyle(
+                      fontSize: 40,
+                      color: AppColors.textPrimary,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  timerController.isOnBreak.value == true ?
+                  Text('Break Time', style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: AppColors.textPrimary,
+                    fontWeight: FontWeight.w700,
+                  )) :
+                  SizedBox.shrink()
+                ],
               ),
             ),
           ],

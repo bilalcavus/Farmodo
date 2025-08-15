@@ -14,6 +14,8 @@ class TasksController extends GetxController {
   final focusTypeController = TextEditingController();
   final durationController = TextEditingController();
   List<int> pomodoroTimes = [1,25, 30, 40, 45, 50];
+  List<int> totalSessions = [1,2,3,4,5];
+  RxnInt selectedTotalSession = RxnInt();
   RxnInt selectedPomodoroTime = RxnInt();
   var userTasks = <UserTaskModel>[].obs;
   var completedUserTasks = <UserTaskModel>[].obs;
@@ -51,51 +53,95 @@ class TasksController extends GetxController {
       return;
     }
     xp.value = (30 + (selected * 1.5)).roundToDouble();
-    
   }
+
+
 
   void setSelectedPomodoroTime(int? duration){
     selectedPomodoroTime.value = duration;
     calculateXp();
   }
 
-  void selectTask(int index, int pomodoroMinutes){
+  void setSelectedTotalSession(int? totalSessions){
+    selectedTotalSession.value = totalSessions;
+  }
+
+  void selectTask(int index, UserTaskModel task){
     selctedTaskIndex.value = index;
-    timerController.totalSeconds.value = pomodoroMinutes * 60;
-    timerController.secondsRemaining.value = pomodoroMinutes * 60;
-    
+    timerController.totalSeconds.value = task.duration * 60;
+    timerController.secondsRemaining.value = task.duration * 60;
+    final int breakMinutes = task.breakDuration > 0 ? task.breakDuration : (task.duration ~/ 5).clamp(1, 1000);
+    timerController.totalBreakSeconds.value = breakMinutes * 60;
+    timerController.breakSecondsRemaining.value = breakMinutes * 60;
     timerController.onTimerComplete = () async {
-      await completeTask(index);
-      Get.to(() => SucceedTaskPage());
+      timerController.onBreakComplete = () async {
+        await completeTask(index);
+        timerController.totalSeconds.value = 0;
+        timerController.secondsRemaining.value = 0;
+      };
     };
   }
 
   Future<void> completeTask(int index) async {
     final task = activeUserTasks[index];
     setLoading(LoadingType.general, true);
+    
+    final int newCompletedSessions = task.completedSessions + 1;
+    final bool willBeCompleted = newCompletedSessions >= task.totalSessions;
+    
     try {
       await firestoreService.completeTaskAndUpdateXp(task);
-      activeUserTasks[index] = task.copyWith(isCompleted: true);
-      await authService.fetchAndSetCurrentUser();
+      await getActiveTask();
+      await getCompletedTask();
+      
+      await authService.fetchAndSetCurrentUser(); 
       try {
         loginController.refreshUserXp();
-      } catch (_) {}
+      } catch (_) {
+        
+      }
+      
+      if (willBeCompleted) {
+        timerController.totalSeconds.value = 0;
+        timerController.secondsRemaining.value = 0;
+        Get.to(() => SucceedTaskPage());
+      } else {
+        final updatedTask = activeUserTasks[index];
+        timerController.totalSeconds.value = updatedTask.duration * 60;
+        timerController.secondsRemaining.value = updatedTask.duration * 60;
+        final int breakMinutes = updatedTask.breakDuration > 0 ? updatedTask.breakDuration : (updatedTask.duration ~/ 5).clamp(1, 1000);
+        timerController.totalBreakSeconds.value = breakMinutes * 60;
+        timerController.breakSecondsRemaining.value = breakMinutes * 60;
+
+        timerController.onTimerComplete = () async {
+          timerController.onBreakComplete = () async {
+            await completeTask(index);
+          };
+        };
+
+        timerController.startTimer();
+      }
     } catch (e) {
       rethrow;
     } finally {
       setLoading(LoadingType.general, false);
     }
-
-    // userTasks[index] = task;
   }
+
+
 
   Future<void> addUserTask(BuildContext context) async {
     if (titleController.text.isEmpty || focusTypeController.text.isEmpty) {
       errorMessage.value = 'Fill all the blanks';
       return;
     }
-    if (selectedPomodoroTime.value == null) {
-      errorMessage.value = 'Select farmodo minutes';
+    if (selectedPomodoroTime.value == null && selectedTotalSession.value == null) {
+      errorMessage.value = 'Select farmodo minutes or session';
+      return;
+    }
+
+    if (selectedTotalSession.value == null) {
+      errorMessage.value = 'Select farmodo session';
       return;
     }
     setLoading(LoadingType.general, true);
@@ -104,7 +150,9 @@ class TasksController extends GetxController {
         titleController.text.trim(),
         focusTypeController.text.trim(),
         selectedPomodoroTime.value!,
-        xp.value.toInt());
+        xp.value.toInt(),
+        selectedTotalSession.value!,
+      );
         await getActiveTask();
         await getCompletedTask();
     } catch (e) {
@@ -157,16 +205,16 @@ class TasksController extends GetxController {
 
 
 
-  Future<void> updateUserTaskCompleted(UserTaskModel userTask) async {
-    setLoading(LoadingType.general, true);
-    try {
-      await firestoreService.updateTask(userTask);
-    } catch (e) {
-      debugPrint("Controller güncelleme hatası: $e");
-    } finally{
-      setLoading(LoadingType.general, false);
-    }
-  }
+  // Future<void> updateUserTaskCompleted(UserTaskModel userTask) async {
+  //   setLoading(LoadingType.general, true);
+  //   try {
+  //     await firestoreService.updateTask(userTask);
+  //   } catch (e) {
+  //     debugPrint("Controller güncelleme hatası: $e");
+  //   } finally{
+  //     setLoading(LoadingType.general, false);
+  //   }
+  // }
 
   @override
   void onClose() {

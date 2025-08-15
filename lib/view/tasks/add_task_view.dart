@@ -55,6 +55,36 @@ class _AddTaskViewState extends State<AddTaskView> {
                 'Sport'
               ]),
               SizedBox(height: context.dynamicHeight(0.02)),
+               GridView.builder(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3,
+                    crossAxisSpacing: context.dynamicWidth(0.03),
+                    mainAxisSpacing: context.dynamicWidth(0.01),
+                    childAspectRatio: 3.1,
+                  ), 
+                  itemCount: taskController.totalSessions.length,
+                  itemBuilder: (context, index){
+                    final selectedSession = taskController.selectedTotalSession;
+                    final session = taskController.totalSessions[index];
+                    return InkWell(
+                      onTap: (){
+                        taskController.setSelectedTotalSession(session);
+                      },
+                      child: Obx((){
+                        return Container(
+                          decoration: BoxDecoration(
+                            color: selectedSession.value == session ? Colors.orange.shade400 : Colors.grey.shade200,
+                            borderRadius: BorderRadius.circular(16)
+                          ),
+                          child: Center(child: Text('$session session', textAlign: TextAlign.center,)),
+                        );
+                      }
+                      ),
+                    );
+                  }),
+              SizedBox(height: context.dynamicHeight(0.02)),
               PomodoroTimeSelection(taskController: taskController),
               SizedBox(height: context.dynamicHeight(0.02)),
               Row(

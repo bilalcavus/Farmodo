@@ -29,9 +29,17 @@ class TimeStartButton extends StatelessWidget {
             ),
             onPressed: timerController.isRunning.value
                 ? timerController.pauseTimer
-                : timerController.startTimer,
+                : () {
+                    if (timerController.isOnBreak.value) {
+                      timerController.startBreakTimer();
+                    } else {
+                      timerController.startTimer();
+                    }
+                  },
             child: Text(
-              timerController.isRunning.value ? 'Pause' : 'Start',
+              timerController.isRunning.value
+                  ? 'Pause'
+                  : (timerController.isOnBreak.value  ? 'Continue Break' : timerController.secondsRemaining.value == 0 ? 'Start' : 'Continue'),
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                     color: Colors.white,
                     fontWeight: FontWeight.w700,

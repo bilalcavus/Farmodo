@@ -8,6 +8,9 @@ class UserTaskModel {
   final int xpReward;
   final bool isCompleted;
   final int duration;
+  final int breakDuration;
+  final int totalSessions;
+  final int completedSessions;
   final DateTime createdAt;
 
   UserTaskModel({
@@ -17,6 +20,9 @@ class UserTaskModel {
     required this.xpReward,
     required this.isCompleted,
     required this.duration,
+    required this.breakDuration,
+    required this.totalSessions,
+    required this.completedSessions,
     required this.createdAt,
     
   });
@@ -29,6 +35,9 @@ class UserTaskModel {
       xpReward: json['xpReward'] ?? 0,
       isCompleted: json['isCompleted'] ?? false,
       duration: json['duration'] ?? 0,
+      breakDuration: json['breakDuration'] ?? 0,
+      totalSessions: json['totalSessions'] ?? 1,
+      completedSessions: json['completedSessions'] ?? 0,
       createdAt: DateTime.parse(json['created_at']),
     );
   }
@@ -42,6 +51,9 @@ class UserTaskModel {
       xpReward: data['xpReward'] ?? 0,
       isCompleted: data['isCompleted'] ?? false,
       duration: data['duration'] ?? 0,
+      breakDuration: data['breakDuration'] ?? 0,
+      totalSessions: data['totalSessions'] ?? 1,
+      completedSessions: data['completedSessions'] ?? 0,
       createdAt: (data['createdAt'] as Timestamp).toDate(),
     );
   }
@@ -54,6 +66,9 @@ class UserTaskModel {
       'xpReward': xpReward,
       'isCompleted': isCompleted,
       'duration': duration,
+      'breakDuration': breakDuration,
+      'totalSessions': totalSessions,
+      'completedSessions': completedSessions,
       'created_at': createdAt.toIso8601String(),
     };
   }
@@ -65,6 +80,9 @@ class UserTaskModel {
       'xpReward': xpReward,
       'isCompleted': isCompleted,
       'duration': duration,
+      'breakDuration': breakDuration,
+      'totalSessions': totalSessions,
+      'completedSessions': completedSessions,
       'createdAt': Timestamp.fromDate(createdAt),
     };
   }
@@ -76,6 +94,9 @@ class UserTaskModel {
     int? xpReward,
     bool? isCompleted,
     int? duration,
+    int? breakDuration,
+    int? totalSessions,
+    int? completedSessions,
     DateTime? createdAt,
   }) {
     return UserTaskModel(
@@ -85,6 +106,9 @@ class UserTaskModel {
       xpReward: xpReward ?? this.xpReward,
       isCompleted: isCompleted ?? this.isCompleted,
       duration: duration ?? this.duration,
+      breakDuration: breakDuration ?? this.breakDuration,
+      totalSessions: totalSessions ?? this.totalSessions,
+      completedSessions: completedSessions ?? this.completedSessions,
       createdAt: createdAt ?? this.createdAt,
     );
   }

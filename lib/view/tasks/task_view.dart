@@ -147,7 +147,7 @@ class CustomTaskList extends StatelessWidget {
                         timerController.pauseTimer();
                         return;
                       }
-                      taskController.selectTask(index, task.duration);
+                      taskController.selectTask(index, task);
                       timerController.resetTimer();
                       timerController.startTimer();
                     },

@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:farmodo/data/models/user_task_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 
 class FirestoreService {
   static final FirestoreService _instance = FirestoreService._internal();
@@ -11,7 +10,9 @@ class FirestoreService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  Future<void> addTask(String title, String focusType, int duration, int xpReward) async {
+  Future<void> addTask(String title, String focusType, int duration, int xpReward, int totalSessions) async {
+    final int computedBreakDurationRaw = (duration ~/ 5);
+    final int computedBreakDuration = computedBreakDurationRaw > 0 ? computedBreakDurationRaw : 1;
     await _firestore
         .collection('users')
         .doc(_auth.currentUser?.uid)
@@ -21,6 +22,9 @@ class FirestoreService {
           'title':title,
           'focusType': focusType,
           'duration': duration,
+          'breakDuration': computedBreakDuration,
+          'totalSessions': totalSessions,
+          'completedSessions': 0,
           'xpReward': xpReward,
           'isCompleted': false,
           'createdAt':FieldValue.serverTimestamp()
@@ -49,23 +53,6 @@ class FirestoreService {
   getCompletedTask() => _getTasks(isCompleted: true);
   getActiveTask() => _getTasks(isCompleted: false);
 
-  Future<void> updateTask(UserTaskModel userTask) async {
-    try {
-      final String uuid = _auth.currentUser!.uid;
-      final taskRef = _firestore
-          .collection('users')
-          .doc(uuid)
-          .collection('tasks')
-          .doc(userTask.id);
-
-          await taskRef.update({
-            'isCompleted' : true,
-          });
-    } catch (e) {
-      debugPrint("❌ Task güncellenirken hata oluştu: $e");
-      rethrow;
-    }
-  }
 
   Future<void> updateUserXp(int xpToAdd) async {
     try {
@@ -106,13 +93,18 @@ class FirestoreService {
       }
 
       final currentXp = (userSnapshot.data()?['xp'] ?? 0) as int;
-      final currentTotalPomodoro = (userSnapshot.data()?['totalPomodoro']) as int;
+      final currentTotalPomodoro = (userSnapshot.data()?['totalPomodoro'] ?? 0) as int;
+      int newCompletedSessions = task.completedSessions + 1;
+      bool taskDone = newCompletedSessions >= task.totalSessions;
 
-      transaction.update(taskRef, {'isCompleted': true});
+      transaction.update(taskRef, {
+        'isCompleted': taskDone,
+        'completedSessions': newCompletedSessions,
+        });
 
       transaction.update(userRef, {
         'xp': currentXp + task.xpReward,
-        'totalPomodoro': currentTotalPomodoro + 1
+        'totalPomodoro': currentTotalPomodoro + 1,
       });
     });
   }

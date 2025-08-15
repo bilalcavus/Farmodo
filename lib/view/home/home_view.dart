@@ -1,5 +1,6 @@
 import 'package:farmodo/core/di/injection.dart';
 import 'package:farmodo/core/extension/dynamic_size_extension.dart';
+import 'package:farmodo/view/home/widgets/current_task_progress.dart';
 import 'package:farmodo/view/home/widgets/home_header.dart';
 import 'package:farmodo/view/home/widgets/pomodoro_timer.dart';
 import 'package:farmodo/view/home/widgets/recent_tasks.dart';
@@ -38,9 +39,8 @@ class _HomeViewState extends State<HomeView> {
             children: [
               HomeHeader(),
               SizedBox(height: context.dynamicHeight(0.015)),
-              // dailyGoalsTitle(context),
-              // DailyGoalsContainer(),
-              SizedBox(height: context.dynamicHeight(0.06)),
+              CurrentTaskProgress(tasksController: tasksController),
+              SizedBox(height: context.dynamicHeight(0.02)),
               PomodoroTimer(timerController: timerController),
               SizedBox(height: context.dynamicHeight(0.03)),
               TimeStartButton(timerController: timerController),

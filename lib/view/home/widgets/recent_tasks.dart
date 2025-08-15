@@ -104,7 +104,7 @@ class RecentTasks extends StatelessWidget {
                               timerController.pauseTimer();
                               return;
                             }
-                            tasksController.selectTask(index, task.duration);
+                            tasksController.selectTask(index, task);
                             timerController.resetTimer();
                             timerController.startTimer();
                           },
