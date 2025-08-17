@@ -1,16 +1,19 @@
 
 import 'package:farmodo/core/theme/app_colors.dart';
+import 'package:farmodo/viewmodel/tasks/tasks_controller.dart';
 import 'package:farmodo/viewmodel/timer/timer_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
+import 'package:get/get.dart';
 
 class TimeStartButton extends StatelessWidget {
   const TimeStartButton({
     super.key,
     required this.timerController,
+    required this.tasksController,
   });
 
   final TimerController timerController;
+  final TasksController tasksController;
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +22,9 @@ class TimeStartButton extends StatelessWidget {
             style: ElevatedButton.styleFrom(
               backgroundColor: timerController.isRunning.value
                   ? AppColors.danger
-                  : AppColors.primary,
+                  : tasksController.selctedTaskIndex.value == -1
+                    ? AppColors.textSecondary.withOpacity(0.5)
+                    : AppColors.primary,
               foregroundColor: Colors.white,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(14),
@@ -30,16 +35,24 @@ class TimeStartButton extends StatelessWidget {
             onPressed: timerController.isRunning.value
                 ? timerController.pauseTimer
                 : () {
+                    if (tasksController.selctedTaskIndex.value == -1) {
+                      Get.snackbar('No task selected', 'Please select a task to start the timer');
+                      return;
+                    }
+                    
                     if (timerController.isOnBreak.value) {
                       timerController.startBreakTimer();
                     } else {
+                      tasksController.selectTask(tasksController.selctedTaskIndex.value, tasksController.activeUserTasks[tasksController.selctedTaskIndex.value]);
                       timerController.startTimer();
                     }
                   },
             child: Text(
               timerController.isRunning.value
                   ? 'Pause'
-                  : (timerController.isOnBreak.value  ? 'Continue Break' : timerController.secondsRemaining.value == 0 ? 'Start' : 'Continue'),
+                  : tasksController.selctedTaskIndex.value == -1 
+                    ? 'Select a Task'
+                    : (timerController.isOnBreak.value ? 'Continue Break' : timerController.secondsRemaining.value == 0 ? 'Start' : 'Continue'),
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                     color: Colors.white,
                     fontWeight: FontWeight.w700,

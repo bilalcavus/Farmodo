@@ -3,6 +3,7 @@ import 'package:farmodo/core/theme/app_colors.dart';
 import 'package:farmodo/viewmodel/tasks/tasks_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hugeicons/hugeicons.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 
 class CurrentTaskProgress extends StatelessWidget {
@@ -29,7 +30,7 @@ class CurrentTaskProgress extends StatelessWidget {
         padding: EdgeInsets.all(context.dynamicHeight(0.02)),
         decoration: BoxDecoration(
           color: AppColors.surface,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(context.dynamicHeight(0.04)),
           border: Border.all(color: AppColors.border),
           boxShadow: [
             BoxShadow(
@@ -51,7 +52,7 @@ class CurrentTaskProgress extends StatelessWidget {
                   ),
                   decoration: BoxDecoration(
                     color: AppColors.primary.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(context.dynamicHeight(0.02)),
                   ),
                   child: Text(
                     'Current Task',
@@ -68,17 +69,13 @@ class CurrentTaskProgress extends StatelessWidget {
                     vertical: context.dynamicHeight(0.005),
                   ),
                   decoration: BoxDecoration(
-                    color: task.focusType == 'Deep Focus' 
-                        ? AppColors.secondary.withOpacity(0.1)
-                        : AppColors.danger.withOpacity(0.1),
+                    color:  AppColors.danger.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(
                     task.focusType,
                     style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                          color: task.focusType == 'Deep Focus' 
-                              ? AppColors.secondary
-                              : AppColors.danger,
+                          color: AppColors.danger,
                           fontWeight: FontWeight.w600,
                         ),
                   ),
@@ -104,7 +101,7 @@ class CurrentTaskProgress extends StatelessWidget {
                     children: [
                       Text(
                         'Session Progress',
-                        style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                        style: Theme.of(context).textTheme.labelLarge?.copyWith(
                               color: AppColors.textSecondary,
                               fontWeight: FontWeight.w500,
                             ),
@@ -158,15 +155,15 @@ class CurrentTaskProgress extends StatelessWidget {
                   vertical: context.dynamicHeight(0.01),
                 ),
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withOpacity(0.1),
+                  color: AppColors.primary.withOpacity(0.05),
                   borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: AppColors.primary.withOpacity(0.3)),
+                  border: Border.all(color: AppColors.primary.withOpacity(0.1)),
                 ),
                 child: Row(
                   children: [
                     Icon(
-                      Icons.timer_outlined,
-                      size: 16,
+                      HugeIcons.strokeRoundedTimeQuarter02,
+                      size: context.dynamicHeight(0.02),
                       color: AppColors.primary,
                     ),
                     SizedBox(width: 8),
@@ -196,7 +193,7 @@ class CurrentTaskProgress extends StatelessWidget {
                   children: [
                     Icon(
                       Icons.check_circle_outline,
-                      size: 16,
+                      size: context.dynamicHeight(0.02),
                       color: AppColors.secondary,
                     ),
                     SizedBox(width: 8),

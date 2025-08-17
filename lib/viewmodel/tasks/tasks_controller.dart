@@ -47,12 +47,13 @@ class TasksController extends GetxController {
   }
 
   void calculateXp(){
-    final int? selected = selectedPomodoroTime.value;
-    if (selected == null) {
+    final int? pomodoroDurationXp = selectedPomodoroTime.value;
+    final int? sessionXp = selectedTotalSession.value;
+    if (pomodoroDurationXp == null || sessionXp == null) {
       xp.value = 0;
       return;
     }
-    xp.value = (30 + (selected * 1.5)).roundToDouble();
+    xp.value = (30 + (pomodoroDurationXp * sessionXp * 1.5)).roundToDouble();
   }
 
 
@@ -104,6 +105,9 @@ class TasksController extends GetxController {
       if (willBeCompleted) {
         timerController.totalSeconds.value = 0;
         timerController.secondsRemaining.value = 0;
+        timerController.totalBreakSeconds.value = 0;
+        timerController.breakSecondsRemaining.value = 0;
+        selctedTaskIndex.value = -1;
         Get.to(() => SucceedTaskPage());
       } else {
         final updatedTask = activeUserTasks[index];
@@ -144,6 +148,12 @@ class TasksController extends GetxController {
       errorMessage.value = 'Select farmodo session';
       return;
     }
+    
+    UserTaskModel? currentlySelectedTask;
+    if (selctedTaskIndex.value >= 0 && selctedTaskIndex.value < activeUserTasks.length) {
+      currentlySelectedTask = activeUserTasks[selctedTaskIndex.value];
+    }
+    
     setLoading(LoadingType.general, true);
     try {
       await firestoreService.addTask(
@@ -153,8 +163,12 @@ class TasksController extends GetxController {
         xp.value.toInt(),
         selectedTotalSession.value!,
       );
-        await getActiveTask();
-        await getCompletedTask();
+      await getActiveTask();
+      await getCompletedTask();
+      
+      if (currentlySelectedTask != null) {
+        _restoreTaskSelection(currentlySelectedTask);
+      }
     } catch (e) {
       errorMessage.value = '$e';
     } finally {
@@ -203,18 +217,19 @@ class TasksController extends GetxController {
     loadingFlag: LoadingType.completed
   );
 
-
-
-  // Future<void> updateUserTaskCompleted(UserTaskModel userTask) async {
-  //   setLoading(LoadingType.general, true);
-  //   try {
-  //     await firestoreService.updateTask(userTask);
-  //   } catch (e) {
-  //     debugPrint("Controller güncelleme hatası: $e");
-  //   } finally{
-  //     setLoading(LoadingType.general, false);
-  //   }
-  // }
+  void _restoreTaskSelection(UserTaskModel previousTask) {
+    for (int i = 0; i < activeUserTasks.length; i++) {
+      final task = activeUserTasks[i];
+      if (task.id == previousTask.id || 
+          (task.title == previousTask.title && 
+            task.duration == previousTask.duration &&
+            task.completedSessions == previousTask.completedSessions)) {
+        selctedTaskIndex.value = i;
+        return;
+      }
+    }
+    selctedTaskIndex.value = -1;
+  }
 
   @override
   void onClose() {

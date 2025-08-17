@@ -55,7 +55,7 @@ class _AddTaskViewState extends State<AddTaskView> {
                 'Sport'
               ]),
               SizedBox(height: context.dynamicHeight(0.02)),
-               GridView.builder(
+              GridView.builder(
                   shrinkWrap: true,
                   physics: NeverScrollableScrollPhysics(),
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -66,7 +66,6 @@ class _AddTaskViewState extends State<AddTaskView> {
                   ), 
                   itemCount: taskController.totalSessions.length,
                   itemBuilder: (context, index){
-                    final selectedSession = taskController.selectedTotalSession;
                     final session = taskController.totalSessions[index];
                     return InkWell(
                       onTap: (){
@@ -75,7 +74,7 @@ class _AddTaskViewState extends State<AddTaskView> {
                       child: Obx((){
                         return Container(
                           decoration: BoxDecoration(
-                            color: selectedSession.value == session ? Colors.orange.shade400 : Colors.grey.shade200,
+                            color: taskController.selectedTotalSession.value == session ? Colors.orange.shade400 : Colors.grey.shade200,
                             borderRadius: BorderRadius.circular(16)
                           ),
                           child: Center(child: Text('$session session', textAlign: TextAlign.center,)),

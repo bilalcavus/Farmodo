@@ -38,12 +38,12 @@ class _HomeViewState extends State<HomeView> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               HomeHeader(),
-              SizedBox(height: context.dynamicHeight(0.015)),
+              SizedBox(height: context.dynamicHeight(0.01)),
               CurrentTaskProgress(tasksController: tasksController),
-              SizedBox(height: context.dynamicHeight(0.02)),
+              SizedBox(height: context.dynamicHeight(0.04)),
               PomodoroTimer(timerController: timerController),
               SizedBox(height: context.dynamicHeight(0.03)),
-              TimeStartButton(timerController: timerController),
+              TimeStartButton(timerController: timerController, tasksController: tasksController),
               SizedBox(height: context.dynamicHeight(0.03)),
               Center(
                 child: Row(

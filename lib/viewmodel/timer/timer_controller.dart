@@ -23,6 +23,7 @@ class TimerController extends GetxController {
 
   void startTimer(){
     if(isRunning.value) return;
+    if(totalSeconds.value == 0) return;
     _timer = Timer.periodic(Duration(seconds: 1), (_){
       if(secondsRemaining.value > 0){
         secondsRemaining.value--;
@@ -42,6 +43,7 @@ class TimerController extends GetxController {
 
   void startBreakTimer(){
     if (isRunning.value) return;
+    if(totalBreakSeconds.value == 0) return;
     _timer = Timer.periodic(Duration(seconds: 1), (_){
       if(breakSecondsRemaining.value > 0){
         breakSecondsRemaining.value --;
