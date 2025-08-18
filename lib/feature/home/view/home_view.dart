@@ -1,5 +1,6 @@
 import 'package:farmodo/core/di/injection.dart';
 import 'package:farmodo/core/extension/dynamic_size_extension.dart';
+import 'package:farmodo/core/extension/sized_box_extension.dart';
 import 'package:farmodo/feature/home/widgets/current_task_progress.dart';
 import 'package:farmodo/feature/home/widgets/home_header.dart';
 import 'package:farmodo/feature/home/widgets/pomodoro_timer.dart';
@@ -37,25 +38,23 @@ class _HomeViewState extends State<HomeView> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              HomeHeader(),
-              SizedBox(height: context.dynamicHeight(0.01)),
+              const HomeHeader(),
+              context.dynamicHeight(0.01).height,
               CurrentTaskProgress(tasksController: tasksController),
-              SizedBox(height: context.dynamicHeight(0.04)),
+              context.dynamicHeight(0.04).height,
               PomodoroTimer(timerController: timerController),
               context.dynamicHeight(0.03).height,
               TimeStartButton(timerController: timerController, tasksController: tasksController),
-              SizedBox(height: context.dynamicHeight(0.03)),
-              Center(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    _timerOptionChip(HugeIcons.strokeRoundedAlertDiamond, 'Strict'),
-                    _timerOptionChip(Iconsax.timer, 'Timer'),
-                    _timerOptionChip(HugeIcons.strokeRoundedFullScreen, 'Fullscreen'),
-                  ],
-                ),
+              context.dynamicHeight(0.03).height,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  _timerOptionChip(HugeIcons.strokeRoundedAlertDiamond, 'Strict'),
+                  _timerOptionChip(Iconsax.timer, 'Timer'),
+                  _timerOptionChip(HugeIcons.strokeRoundedFullScreen, 'Fullscreen'),
+                ],
               ),
-              SizedBox(height: context.dynamicHeight(0.03)),
+              context.dynamicHeight(0.03).height,
               RecentTasks(tasksController: tasksController, timerController: timerController)
             ],
         )),
@@ -71,7 +70,7 @@ class _HomeViewState extends State<HomeView> {
       child: Row(
         children: [
           Icon(icon, size: 18, color: Colors.black87),
-          SizedBox(width: 8),
+          context.dynamicWidth(0.03).width,
           Text(
             title,
             style: Theme.of(context).textTheme.labelMedium?.copyWith(
@@ -83,18 +82,4 @@ class _HomeViewState extends State<HomeView> {
       ),
     );
   }
-
-  Padding dailyGoalsTitle(BuildContext context) {
-    return Padding(
-      padding:  EdgeInsets.symmetric(horizontal: context.dynamicHeight(0.025)),
-      child: Text('Daily Goals', style: Theme.of(context).textTheme.titleMedium?.copyWith(
-        color: Colors.grey.shade700,
-      )),
-    );
-  }
-}
-
-extension SpaceX on num {
-  SizedBox get height => SizedBox(height: toDouble());
-  SizedBox get width  => SizedBox(width: toDouble());
 }
