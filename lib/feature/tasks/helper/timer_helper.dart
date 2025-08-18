@@ -15,7 +15,7 @@ class TimerHelper {
     timerController.totalBreakSeconds.value = breakMinutes * 60;
     timerController.breakSecondsRemaining.value = breakMinutes * 60;
 
-    final taskId = task.id;
+    // final taskId = task.id;
     timerController.onTimerComplete = () async {
       timerController.onBreakComplete = () async {
         onComplete();

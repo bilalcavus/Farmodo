@@ -73,6 +73,16 @@ class TimerController extends GetxController {
     isOnBreak.value = false;
   }
 
+  void resetAll(){
+    _timer?.cancel();
+    totalSeconds.value = 0;
+    secondsRemaining.value = 0;
+    totalBreakSeconds.value = 0;
+    breakSecondsRemaining.value = 0;
+    onTimerComplete = null;
+    onBreakComplete = null;
+  }
+
   void toggleFullScreen(BuildContext context) async {
     await SystemChrome.setPreferredOrientations([
       DeviceOrientation.landscapeLeft,

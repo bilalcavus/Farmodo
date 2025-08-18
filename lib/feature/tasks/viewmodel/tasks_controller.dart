@@ -1,11 +1,14 @@
 import 'package:farmodo/data/models/user_task_model.dart';
 import 'package:farmodo/data/services/auth_service.dart';
 import 'package:farmodo/data/services/firestore_service.dart';
-import 'package:farmodo/view/success/succeed_task_page.dart';
+import 'package:farmodo/feature/tasks/helper/timer_helper.dart';
+import 'package:farmodo/feature/tasks/utility/xp_calculator.dart';
 import 'package:farmodo/feature/auth/login/viewmodel/login_controller.dart';
 import 'package:farmodo/feature/tasks/viewmodel/timer_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
+import '../../home/view/succeed_task_page.dart';
 
 enum LoadingType { general, active, completed}
 
@@ -38,66 +41,57 @@ class TasksController extends GetxController {
 
   @override
   void onInit() {
-    calculateXp();
-    ever(selectedPomodoroTime, (_) => calculateXp());
+    _updateXp();
+    ever(selectedPomodoroTime, (_) => _updateXp());
     super.onInit();
   }
   void setLoading(LoadingType type, bool value) {
     loadingStates[type] = value;
   }
 
-  void calculateXp(){
-    final int? pomodoroDurationXp = selectedPomodoroTime.value;
-    final int? sessionXp = selectedTotalSession.value;
-    if (pomodoroDurationXp == null || sessionXp == null) {
-      xp.value = 0;
-      return;
-    }
-    xp.value = (30 + (pomodoroDurationXp * sessionXp * 1.5)).roundToDouble();
+  void _updateXp() {
+    xp.value = XpCalculator.calculate(
+      duration: selectedPomodoroTime.value,
+      session: selectedTotalSession.value
+    );
   }
-
-
 
   void setSelectedPomodoroTime(int? duration){
     selectedPomodoroTime.value = duration;
-    calculateXp();
+    _updateXp();
   }
 
   void setSelectedTotalSession(int? totalSessions){
     selectedTotalSession.value = totalSessions;
-    calculateXp();
+    _updateXp();
   }
 
   void selectTask(int index, UserTaskModel task){
     selctedTaskIndex.value = index;
-    timerController.totalSeconds.value = task.duration * 60;
-    timerController.secondsRemaining.value = task.duration * 60;
-    final int breakMinutes = task.breakDuration > 0 ? task.breakDuration : (task.duration ~/ 5).clamp(1, 1000);
-    timerController.totalBreakSeconds.value = breakMinutes * 60;
-    timerController.breakSecondsRemaining.value = breakMinutes * 60;
+    // timerController.totalSeconds.value = task.duration * 60;
+    // timerController.secondsRemaining.value = task.duration * 60;
+    // final int breakMinutes = task.breakDuration > 0 ? task.breakDuration : (task.duration ~/ 5).clamp(1, 1000);
+    // timerController.totalBreakSeconds.value = breakMinutes * 60;
+    // timerController.breakSecondsRemaining.value = breakMinutes * 60;
     
-    final taskId = task.id;
-    timerController.onTimerComplete = () async {
-      timerController.onBreakComplete = () async {
-        await completeTaskById(taskId);
-      };
-    };
+    // final taskId = task.id;
+    // timerController.onTimerComplete = () async {
+    //   timerController.onBreakComplete = () async {
+    //     await completeTaskById(taskId);
+    //   };
+    // };
+    TimerHelper.setupTaskTimer(
+      timerController, task, () async => await completeTaskById(task.id));
   }
 
   Future<void> completeTaskById(String taskId) async {
     final index = activeUserTasks.indexWhere((task) => task.id == taskId);
-    if (index == -1) {
-      debugPrint('Task with ID $taskId not found in active tasks');
-      return;
-    }
+    if (index == -1) return;
     await completeTask(index);
   }
 
   Future<void> completeTask(int index) async {
-    if (index < 0 || index >= activeUserTasks.length) {
-      debugPrint('Invalid task index: $index');
-      return;
-    }
+    if (index < 0 || index >= activeUserTasks.length) return;
     final task = activeUserTasks[index];
     setLoading(LoadingType.general, true);
     
@@ -106,61 +100,65 @@ class TasksController extends GetxController {
     
     try {
       await firestoreService.completeTaskAndUpdateXp(task);
-      await getActiveTask();
-      await getCompletedTask();
-      
+      await _refreshTasks();
       await authService.fetchAndSetCurrentUser(); 
-      try {
-        loginController.refreshUserXp();
-      } catch (_) {
-        
-      }
+      loginController.refreshUserXp();
       
       if (willBeCompleted) {
-        timerController.totalSeconds.value = 0;
-        timerController.secondsRemaining.value = 0;
-        timerController.totalBreakSeconds.value = 0;
-        timerController.breakSecondsRemaining.value = 0;
-        timerController.onTimerComplete = null;
-        timerController.onBreakComplete = null;
-        selctedTaskIndex.value = -1;
+        _clearTimer();
         Get.to(() => SucceedTaskPage());
       } else {
-        final updatedIndex = _findTaskIndex(task);
-        if (updatedIndex == -1) {
-          debugPrint('Task not found after update');
-          selctedTaskIndex.value = -1;
-          return;
-        }
         
-        selctedTaskIndex.value = updatedIndex;
-        final updatedTask = activeUserTasks[updatedIndex];
-        timerController.totalSeconds.value = updatedTask.duration * 60;
-        timerController.secondsRemaining.value = updatedTask.duration * 60;
-        final int breakMinutes = updatedTask.breakDuration > 0 ? updatedTask.breakDuration : (updatedTask.duration ~/ 5).clamp(1, 1000);
-        timerController.totalBreakSeconds.value = breakMinutes * 60;
-        timerController.breakSecondsRemaining.value = breakMinutes * 60;
+        _restartTask(task);
+        // final updatedIndex = _findTaskIndex(task);
+        // if (updatedIndex == -1) {
+        //   debugPrint('Task not found after update');
+        //   selctedTaskIndex.value = -1;
+        //   return;
+        // }
+        
+        // selctedTaskIndex.value = updatedIndex;
+        // final updatedTask = activeUserTasks[updatedIndex];
+        // timerController.totalSeconds.value = updatedTask.duration * 60;
+        // timerController.secondsRemaining.value = updatedTask.duration * 60;
+        // final int breakMinutes = updatedTask.breakDuration > 0 ? updatedTask.breakDuration : (updatedTask.duration ~/ 5).clamp(1, 1000);
+        // timerController.totalBreakSeconds.value = breakMinutes * 60;
+        // timerController.breakSecondsRemaining.value = breakMinutes * 60;
 
-        final updatedTaskId = updatedTask.id;
-        timerController.onTimerComplete = () async {
-          timerController.onBreakComplete = () async {
-            await completeTaskById(updatedTaskId);
-          };
-        };
+        // final updatedTaskId = updatedTask.id;
+        // timerController.onTimerComplete = () async {
+        //   timerController.onBreakComplete = () async {
+        //     await completeTaskById(updatedTaskId);
+        //   };
+        // };
 
-        timerController.startTimer();
+        // timerController.startTimer();
       }
     } catch (e) {
-      rethrow;
+      errorMessage.value = "Task completion failed: $e";
     } finally {
       setLoading(LoadingType.general, false);
     }
   }
 
+  Future<void> _refreshTasks() async {
+    await getActiveTask();
+    await getCompletedTask();
+  }
+  
 
+  void _clearTimer(){
+    timerController.resetAll();
+    selctedTaskIndex.value = -1;
+  }
+
+  void _restartTask(UserTaskModel task){
+    final updatedTask = activeUserTasks.firstWhere((t) => t.id == task.id, orElse: () => task);
+    TimerHelper.setupTaskTimer(timerController, task, () async => await completeTaskById(updatedTask.id));
+    timerController.startTimer();
+  }
 
   Future<void> addUserTask(BuildContext context) async {
-    // Timer çalışırken yeni task eklenmesini engelle
     if (timerController.isRunning.value) {
       errorMessage.value = 'Cannot add task while timer is running. Please pause the timer first.';
       return;
@@ -170,6 +168,7 @@ class TasksController extends GetxController {
       errorMessage.value = 'Fill all the blanks';
       return;
     }
+
     if (selectedPomodoroTime.value == null && selectedTotalSession.value == null) {
       errorMessage.value = 'Select farmodo minutes or session';
       return;

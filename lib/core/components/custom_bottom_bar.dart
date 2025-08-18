@@ -34,71 +34,65 @@ class CustomBottomNavigation extends StatelessWidget {
       'Profile',
     ];
 
-    return Padding(
-      padding: EdgeInsets.symmetric(
-        horizontal: context.dynamicWidth(0.05),
-        vertical: context.dynamicHeight(0.01),
-      ),
-      child: Container(
-        height: barHeight,
-        decoration: BoxDecoration(
-          color: Colors.white, // arka plan siyah değil
-          borderRadius: BorderRadius.circular(context.dynamicHeight(0.03)),
-          boxShadow: [
-            BoxShadow(
-            color: Colors.black.withOpacity(0.2),
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-          ]
+    return Container(
+      height: barHeight,
+      decoration: BoxDecoration(
+        color: Colors.white, // arka plan siyah değil
+        // borderRadius: BorderRadius.circular(context.dynamicHeight(0.03)),
+        boxShadow: [
+          BoxShadow(
+          color: Colors.black.withOpacity(0.2),
+          blurRadius: 4,
+          offset: const Offset(0, 2),
         ),
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            return Stack(
-              alignment: Alignment.center,
-              children: [
-                // Slotlar: eşit alanlar, seçili olan boş bırakılır
-                Row(
-                  children: List.generate(itemCount, (index) {
-                    return Expanded(
-                      child: GestureDetector(
-                        onTap: () => onTap(index),
-                        behavior: HitTestBehavior.opaque,
-                        child: Center(
-                          child: AnimatedSwitcher(
-                            duration: const Duration(milliseconds: 150),
-                            switchInCurve: Curves.easeOut,
-                            switchOutCurve: Curves.easeIn,
-                            child: currentIndex == index
-                                ? SizedBox(
-                                    key: ValueKey('placeholder-$index'),
-                                    width: circleSize * 2.2, // pill yaklaşan genişlikte yer tutucu
-                                    height: circleSize,
-                                  )
-                                : _buildCircle(icons[index], circleSize, iconSize),
-                          ),
+        ]
+      ),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          return Stack(
+            alignment: Alignment.center,
+            children: [
+              // Slotlar: eşit alanlar, seçili olan boş bırakılır
+              Row(
+                children: List.generate(itemCount, (index) {
+                  return Expanded(
+                    child: GestureDetector(
+                      onTap: () => onTap(index),
+                      behavior: HitTestBehavior.opaque,
+                      child: Center(
+                        child: AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 150),
+                          switchInCurve: Curves.easeOut,
+                          switchOutCurve: Curves.easeIn,
+                          child: currentIndex == index
+                              ? SizedBox(
+                                  key: ValueKey('placeholder-$index'),
+                                  width: circleSize * 2.2,
+                                  height: circleSize,
+                                )
+                              : _buildCircle(icons[index], circleSize, iconSize),
                         ),
                       ),
-                    );
-                  }),
+                    ),
+                  );
+                }),
+              ),
+    
+              // Kayan sarı pill
+              AnimatedAlign(
+                duration: const Duration(milliseconds: 600),
+                curve: Curves.easeInOut,
+                alignment: _alignmentForIndex(currentIndex, itemCount),
+                child: _buildPill(
+                  icon: icons[currentIndex],
+                  label: labels[currentIndex],
+                  circleSize: circleSize,
+                  iconSize: iconSize,
                 ),
-
-                // Kayan sarı pill
-                AnimatedAlign(
-                  duration: const Duration(milliseconds: 300),
-                  curve: Curves.easeInOut,
-                  alignment: _alignmentForIndex(currentIndex, itemCount),
-                  child: _buildPill(
-                    icon: icons[currentIndex],
-                    label: labels[currentIndex],
-                    circleSize: circleSize,
-                    iconSize: iconSize,
-                  ),
-                ),
-              ],
-            );
-          },
-        ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
