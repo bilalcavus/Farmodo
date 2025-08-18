@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:farmodo/data/models/user_model.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fb;
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthService {
@@ -11,6 +11,7 @@ class AuthService {
 
   final fb.FirebaseAuth _firebaseAuth = fb.FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   User? get firebaseUser => _firebaseAuth.currentUser;
   String? get getCurrentUserId => firebaseUser?.uid;
@@ -18,6 +19,17 @@ class AuthService {
 
   UserModel? _currentUser;
   UserModel? get currentUser => _currentUser;
+
+  bool _isAuthStateReady = false;
+  bool get isAuthStateReady => _isAuthStateReady;
+
+  Future<void> initializeAuthState() async {
+    await Future.delayed(const Duration(milliseconds: 100));
+    _isAuthStateReady = true;
+    if (isLoggedIn) {
+      await loadCurrentUser();
+    }
+  }
 
   Future<void> fetchAndSetCurrentUser() async {
     if (firebaseUser == null) return;
@@ -122,8 +134,24 @@ class AuthService {
     }
   }
 
+   Future<void> loadCurrentUser() async {
+    final uid = firebaseUser?.uid;
+    if (uid == null) return;
+
+    try {
+      final doc = await _firestore.collection('users').doc(uid).get();
+      if (doc.exists) {
+        _currentUser = UserModel.fromFirestore(doc);
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<void> logout() async {
     await _firebaseAuth.signOut();
+    _currentUser = null;
+    _isAuthStateReady = false;
   }
 
   Future<UserModel> signInWithGoogle() async {

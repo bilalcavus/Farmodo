@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:farmodo/data/models/reward_model.dart';
 import 'package:farmodo/data/models/user_task_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -9,6 +10,7 @@ class FirestoreService {
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
+
 
   Future<void> addTask(String title, String focusType, int duration, int xpReward, int totalSessions) async {
     final int computedBreakDurationRaw = (duration ~/ 5);
@@ -48,6 +50,12 @@ class FirestoreService {
   final snapshot = await query.get();
   return snapshot.docs.map((doc) => UserTaskModel.fromFirestore(doc)).toList();
 }
+
+Future<List<Reward>> getStoreItems() async {
+    var query = _firestore.collection('rewards').orderBy('createdAt', descending: true).where('isAvailable', isEqualTo: true);
+    final snapshot = await query.get();
+    return snapshot.docs.map((doc) => Reward.fromFirestore(doc)).toList();
+  }
 
   getUserTasks() => _getTasks();
   getCompletedTask() => _getTasks(isCompleted: true);
@@ -108,4 +116,28 @@ class FirestoreService {
       });
     });
   }
+
+  Future<void> addStoreReward({
+    required String rewardId,
+    required String name,
+    required String imageUrl,
+    required int xpCost,
+    required String description,
+    String type = 'customization',
+    required bool isPremium,
+    Map<String, dynamic>? metadata
+  }) async {
+    await _firestore.collection('rewards').doc(rewardId).set({
+      'name': name,
+      'imageUrl': imageUrl,
+      'xpCost': xpCost,
+      'description': description,
+      'type': type,
+      'isAvailable': true,
+      'isPremium': isPremium,
+      'metadata' : metadata,
+      'createdAt': FieldValue.serverTimestamp(),
+    });
+  }
+  
 }

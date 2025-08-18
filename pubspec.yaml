@@ -20,6 +20,7 @@ dependencies:
   hugeicons: ^0.0.11
   iconsax: ^0.0.8
   google_sign_in: ^6.2.1
+  lottie: ^3.3.1
 
 dev_dependencies:
   flutter_test:
@@ -37,7 +38,10 @@ flutter:
   assets:
     - assets/
     - assets/images/
+    - assets/images/animals/
     - assets/logo/
+    - assets/lottie/
+    
   fonts:
     - family: Inter
       fonts:

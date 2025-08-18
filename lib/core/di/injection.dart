@@ -1,9 +1,10 @@
 import 'package:farmodo/data/services/auth_service.dart';
 import 'package:farmodo/data/services/firestore_service.dart';
-import 'package:farmodo/viewmodel/auth/login/login_controller.dart';
-import 'package:farmodo/viewmodel/auth/register/register_controller.dart';
-import 'package:farmodo/viewmodel/tasks/tasks_controller.dart';
-import 'package:farmodo/viewmodel/timer/timer_controller.dart';
+import 'package:farmodo/feature/auth/login/viewmodel/login_controller.dart';
+import 'package:farmodo/feature/auth/register/viewmodel/register_controller.dart';
+import 'package:farmodo/feature/store/viewmodel/reward_controller.dart';
+import 'package:farmodo/feature/tasks/viewmodel/tasks_controller.dart';
+import 'package:farmodo/feature/tasks/viewmodel/timer_controller.dart';
 import 'package:get_it/get_it.dart';
 
 
@@ -37,5 +38,6 @@ Future<void> setupDependencies() async {
   getIt.registerLazySingleton(() => LoginController(getIt()));
   getIt.registerLazySingleton(() => RegisterController(getIt()));
   getIt.registerLazySingleton(() => TasksController(getIt(), getIt(), getIt(), getIt()));
+  getIt.registerLazySingleton(() => RewardController(getIt()));
 
 }

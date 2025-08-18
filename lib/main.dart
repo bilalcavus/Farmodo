@@ -1,7 +1,7 @@
 import 'package:farmodo/core/di/injection.dart';
 import 'package:farmodo/core/theme/app_theme.dart';
 import 'package:farmodo/firebase_options.dart';
-import 'package:farmodo/view/auth/login/login_view.dart';
+import 'package:farmodo/feature/start/splash/splash_view.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
       title: 'Farmodo',
       theme: AppTheme.light,
       themeMode: ThemeMode.light,
-      home: LoginView(),
+      home: SplashView(),
     );
   }
 }
