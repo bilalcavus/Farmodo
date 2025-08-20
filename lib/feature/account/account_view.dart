@@ -1,11 +1,12 @@
 import 'package:farmodo/core/di/injection.dart';
 import 'package:farmodo/core/extension/dynamic_size_extension.dart';
 import 'package:farmodo/core/extension/route_helper.dart';
+import 'package:farmodo/core/extension/sized_box_extension.dart';
 import 'package:farmodo/core/theme/app_colors.dart';
 import 'package:farmodo/data/services/auth_service.dart';
 import 'package:farmodo/feature/auth/login/view/login_view.dart';
-import 'package:farmodo/feature/home/widgets/home_header.dart';
 import 'package:farmodo/feature/auth/login/viewmodel/login_controller.dart';
+import 'package:farmodo/feature/home/widgets/home_header.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
@@ -53,11 +54,9 @@ class _AccountViewState extends State<AccountView> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildUserProfileCard(),
-            SizedBox(height: context.dynamicHeight(0.04)),
-            
+            context.dynamicHeight(0.04).height,
             _buildTermsConditionSection(),
-            SizedBox(height: context.dynamicHeight(0.03)),
-            
+            context.dynamicHeight(0.03).height,
             _buildAccountsSubscriptionSection(),
           ],
         ),
@@ -94,7 +93,7 @@ class _AccountViewState extends State<AccountView> {
               ),
             ),
           ),
-          SizedBox(height: context.dynamicHeight(0.005)),
+          context.dynamicHeight(0.005).height,
           Padding(
             padding: EdgeInsets.symmetric(horizontal: context.dynamicWidth(0.015)),
             child: Text(
@@ -105,7 +104,7 @@ class _AccountViewState extends State<AccountView> {
               ),
             ),
           ),
-          SizedBox(height: context.dynamicHeight(0.005)),
+          context.dynamicHeight(0.005).height,
           LevelBar(authService: _authService)
         ],
       ),
@@ -124,7 +123,7 @@ class _AccountViewState extends State<AccountView> {
             fontWeight: FontWeight.w600,
           ),
         ),
-        SizedBox(height: context.dynamicHeight(0.02)),
+        context.dynamicHeight(0.02).height,
         Container(
           decoration: BoxDecoration(
             color: Colors.white,
@@ -182,7 +181,7 @@ class _AccountViewState extends State<AccountView> {
             fontWeight: FontWeight.w600,
           ),
         ),
-        SizedBox(height: context.dynamicHeight(0.02)),
+        context.dynamicHeight(0.02).height,
         Container(
           decoration: BoxDecoration(
             color: Colors.white,
@@ -282,7 +281,7 @@ class _AccountViewState extends State<AccountView> {
                   size: context.dynamicHeight(0.025),
                 ),
               ),
-              SizedBox(width: context.dynamicWidth(0.04)),
+              context.dynamicWidth(0.04).width,
               Expanded(
                 child: Text(
                   title,

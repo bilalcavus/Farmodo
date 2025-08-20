@@ -1,9 +1,9 @@
-import 'package:farmodo/feature/store/store_view.dart';
+import 'package:farmodo/core/components/custom_bottom_bar.dart';
 import 'package:farmodo/feature/account/account_view.dart';
 import 'package:farmodo/feature/home/view/home_view.dart';
-import 'package:farmodo/feature/tasks/view/task_view.dart';
-import 'package:farmodo/core/components/custom_bottom_bar.dart';
 import 'package:farmodo/feature/navigation/navigation_controller.dart';
+import 'package:farmodo/feature/store/store_view.dart';
+import 'package:farmodo/feature/tasks/view/task_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

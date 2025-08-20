@@ -45,11 +45,9 @@ class RewardController extends GetxController {
         type: 'customization',
         isPremium: false);
       
-      // Refresh store items after adding
       await getStoreItems();
     } catch (e) {
       errorMessage.value = e.toString();
-      print('Error adding reward: $e');
     } finally {
       setLoading(false);
       rewardIdController.clear();
@@ -63,18 +61,13 @@ class RewardController extends GetxController {
   Future<void> getStoreItems() async {
     setLoading(true);
     try {
-      print('Fetching store items...');
       final items = await firestoreService.getStoreItems();
-      print('Fetched ${items.length} items');
       if(items.isNotEmpty){
         storeItems.assignAll(items);
-        print('Store items assigned: ${storeItems.length}');
       } else {
         storeItems.clear();
-        print('No items found, clearing store items');
       }
     } catch (e) {
-      print('Error fetching store items: $e');
       errorMessage.value = e.toString();
     } finally {
       setLoading(false);

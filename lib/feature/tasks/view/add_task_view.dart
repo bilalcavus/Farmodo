@@ -1,11 +1,12 @@
+import 'package:farmodo/core/components/drop_menu.dart';
 import 'package:farmodo/core/di/injection.dart';
 import 'package:farmodo/core/extension/dynamic_size_extension.dart';
+import 'package:farmodo/core/extension/sized_box_extension.dart';
 import 'package:farmodo/core/theme/app_colors.dart';
+import 'package:farmodo/feature/tasks/viewmodel/tasks_controller.dart';
 import 'package:farmodo/feature/tasks/widget/pomodoro_time_selection.dart';
 import 'package:farmodo/feature/tasks/widget/task_add_button.dart';
 import 'package:farmodo/feature/tasks/widget/task_text_field.dart';
-import 'package:farmodo/core/components/drop_menu.dart';
-import 'package:farmodo/feature/tasks/viewmodel/tasks_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:hugeicons/hugeicons.dart';
@@ -74,18 +75,22 @@ class _AddTaskViewState extends State<AddTaskView> {
                       child: Obx((){
                         return Container(
                           decoration: BoxDecoration(
-                            color: taskController.selectedTotalSession.value == session ? Colors.orange.shade400 : Colors.grey.shade200,
+                            color: taskController.selectedTotalSession.value == session ? AppColors.secondary : Colors.grey.shade200,
                             borderRadius: BorderRadius.circular(16)
                           ),
-                          child: Center(child: Text('$session session', textAlign: TextAlign.center,)),
+                          child: Center(child: Text(
+                            '$session session',
+                            textAlign: TextAlign.center,
+                            style: Theme.of(context).textTheme.labelLarge,
+                          )),
                         );
                       }
                       ),
                     );
                   }),
-              SizedBox(height: context.dynamicHeight(0.02)),
+              context.dynamicHeight(0.02).height,
               PomodoroTimeSelection(taskController: taskController),
-              SizedBox(height: context.dynamicHeight(0.02)),
+              context.dynamicHeight(0.02).height,
               Row(
                 children: [
                   Image.asset('assets/images/xp_star.png', height: context.dynamicHeight(0.03),),

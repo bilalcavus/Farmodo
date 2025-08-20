@@ -146,13 +146,13 @@ class _StoreViewState extends State<StoreView> {
                                 ),
                               ),
                               // XP Cost
-                              Row(
+                              Column(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Image.asset('assets/images/xp_star.png', height: context.dynamicHeight(0.025),),
-                                      SizedBox(width: 4),
                                       Text(
                                         '${reward.xpCost} XP',
                                         style: Theme.of(context).textTheme.labelLarge?.copyWith(
@@ -167,7 +167,8 @@ class _StoreViewState extends State<StoreView> {
                                     },
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: AppColors.textPrimary,
-                                      foregroundColor: AppColors.surface
+                                      foregroundColor: AppColors.surface,
+                                      
                                     ),
                                     child: Text('Buy', style: TextStyle(fontSize: context.dynamicHeight(0.016))),
                                   ),
