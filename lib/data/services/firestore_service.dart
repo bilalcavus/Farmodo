@@ -33,6 +33,91 @@ class FirestoreService {
         });
   }
 
+  Future<void> buyStoreItem({
+    required String rewardId,
+    required int xpCost
+    }) async {
+      final uid = _auth.currentUser?.uid;
+      final userRef = _firestore.collection('users').doc(uid);
+      final rewardRef = _firestore.collection('rewards').doc(rewardId);
+
+      await _firestore.runTransaction((transaction) async {
+        final userSnapshot = await transaction.get(userRef);
+        final rewardSnapshot = await transaction.get(rewardRef);
+        if(!userSnapshot.exists) throw Exception('User not found');
+        if(!rewardSnapshot.exists) throw Exception('Reward not found');
+
+        final currentXp = userSnapshot['xp'] as int;
+
+        if(currentXp < xpCost) {
+          throw Exception('Not enough XP to buy this item');
+        }
+
+        transaction.update(userRef, {
+          'xp': currentXp - xpCost,
+        });
+        final userStoreItemRef = userRef.collection('userStoreItems').doc(rewardId);
+
+        transaction.set(userStoreItemRef, {
+          'rewardId': rewardId,
+          'xpCost': xpCost,
+          'purchasedAt': FieldValue.serverTimestamp(),
+          'isOwned': true,
+        });
+      });
+  }
+
+  Future<List<Reward>> getUserStoreItems() async {
+    final uid = _auth.currentUser?.uid;
+    if(uid == null) return [];
+
+    var query = _firestore
+        .collection('users')
+        .doc(uid)
+        .collection('userStoreItems')
+        .where('isOwned', isEqualTo: true)
+        .orderBy('purchasedAt', descending: true);
+
+    final snapshot = await query.get();
+    return snapshot.docs.map((doc) => Reward.fromFirestore(doc)).toList();
+  }
+
+  Future<List<Reward>> getUserPurchasedRewards() async {
+    final uid = _auth.currentUser?.uid;
+    if(uid == null) return [];
+
+    // Önce kullanıcının satın aldığı item ID'lerini al
+    final userItemsSnapshot = await _firestore
+        .collection('users')
+        .doc(uid)
+        .collection('userStoreItems')
+        .where('isOwned', isEqualTo: true)
+        .get();
+
+    if(userItemsSnapshot.docs.isEmpty) return [];
+
+    // Satın alınan reward ID'lerini topla
+    final List<String> rewardIds = userItemsSnapshot.docs
+        .map((doc) => doc.data()['rewardId'] as String)
+        .toList();
+
+    // Bu ID'lerle tam reward bilgilerini getir
+    final List<Reward> purchasedRewards = [];
+    for(String rewardId in rewardIds) {
+      try {
+        final rewardDoc = await _firestore.collection('rewards').doc(rewardId).get();
+        if(rewardDoc.exists) {
+          purchasedRewards.add(Reward.fromFirestore(rewardDoc));
+        }
+      } catch (e) {
+        // Eğer reward bulunamazsa atla
+        continue;
+      }
+    }
+
+    return purchasedRewards;
+  }
+
   Future<List<UserTaskModel>> _getTasks({bool? isCompleted}) async {
   final uid = _auth.currentUser?.uid;
   if (uid == null) return [];

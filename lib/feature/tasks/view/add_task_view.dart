@@ -1,7 +1,7 @@
 import 'package:farmodo/core/components/drop_menu.dart';
 import 'package:farmodo/core/di/injection.dart';
-import 'package:farmodo/core/extension/dynamic_size_extension.dart';
-import 'package:farmodo/core/extension/sized_box_extension.dart';
+import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
+import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
 import 'package:farmodo/core/theme/app_colors.dart';
 import 'package:farmodo/feature/tasks/viewmodel/tasks_controller.dart';
 import 'package:farmodo/feature/tasks/widget/pomodoro_time_selection.dart';

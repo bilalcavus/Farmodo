@@ -1,6 +1,6 @@
 import 'package:farmodo/core/di/injection.dart';
-import 'package:farmodo/core/extension/dynamic_size_extension.dart';
-import 'package:farmodo/core/extension/sized_box_extension.dart';
+import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
+import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
 import 'package:farmodo/feature/home/widgets/current_task_progress.dart';
 import 'package:farmodo/feature/home/widgets/home_header.dart';
 import 'package:farmodo/feature/home/widgets/pomodoro_timer.dart';

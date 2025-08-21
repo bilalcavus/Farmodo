@@ -1,8 +1,8 @@
 import 'package:farmodo/core/components/text_field/custom_text_field.dart';
-import 'package:farmodo/core/constants/text_strings.dart';
+import 'package:farmodo/core/utility/constants/text_strings.dart';
 import 'package:farmodo/core/di/injection.dart';
-import 'package:farmodo/core/extension/dynamic_size_extension.dart';
-import 'package:farmodo/core/extension/route_helper.dart';
+import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
+import 'package:farmodo/core/utility/extension/route_helper.dart';
 import 'package:farmodo/core/theme/app_colors.dart';
 import 'package:farmodo/feature/auth/login/viewmodel/login_controller.dart';
 import 'package:farmodo/feature/auth/login/widget/sign_options_section.dart';

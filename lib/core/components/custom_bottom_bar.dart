@@ -1,4 +1,4 @@
-import 'package:farmodo/core/extension/dynamic_size_extension.dart';
+import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:iconsax/iconsax.dart';

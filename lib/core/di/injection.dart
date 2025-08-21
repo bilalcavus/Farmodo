@@ -38,6 +38,6 @@ Future<void> setupDependencies() async {
   getIt.registerLazySingleton(() => LoginController(getIt()));
   getIt.registerLazySingleton(() => RegisterController(getIt()));
   getIt.registerLazySingleton(() => TasksController(getIt(), getIt(), getIt(), getIt()));
-  getIt.registerLazySingleton(() => RewardController(getIt()));
+  getIt.registerLazySingleton(() => RewardController(getIt(), getIt(), getIt()));
 
 }

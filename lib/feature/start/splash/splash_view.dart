@@ -1,5 +1,5 @@
 import 'package:farmodo/core/di/injection.dart';
-import 'package:farmodo/core/extension/route_helper.dart';
+import 'package:farmodo/core/utility/extension/route_helper.dart';
 import 'package:farmodo/data/services/auth_service.dart';
 import 'package:farmodo/feature/auth/login/view/login_view.dart';
 import 'package:farmodo/feature/navigation/app_navigation.dart';

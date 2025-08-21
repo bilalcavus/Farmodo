@@ -1,7 +1,7 @@
 import 'package:farmodo/core/di/injection.dart';
-import 'package:farmodo/core/extension/dynamic_size_extension.dart';
-import 'package:farmodo/core/extension/route_helper.dart';
-import 'package:farmodo/core/extension/sized_box_extension.dart';
+import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
+import 'package:farmodo/core/utility/extension/route_helper.dart';
+import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
 import 'package:farmodo/core/theme/app_colors.dart';
 import 'package:farmodo/data/services/auth_service.dart';
 import 'package:farmodo/feature/auth/login/view/login_view.dart';

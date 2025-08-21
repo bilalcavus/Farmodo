@@ -171,7 +171,7 @@ class UserReward {
     return UserReward(
       id: json['id'],
       userId: json['userId'],
-      rewardId: json['rewardId'],
+      rewardId: json['rewardId'], 
       purchasedAt: DateTime.parse(json['purchasedAt']),
       isActive: json['isActive'] ?? false,
       customization: json['customization'],

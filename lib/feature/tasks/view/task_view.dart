@@ -1,8 +1,7 @@
-import 'package:farmodo/core/di/injection.dart';
-import 'package:farmodo/core/extension/dynamic_size_extension.dart';
+import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/core/theme/app_colors.dart';
+import 'package:farmodo/feature/tasks/mixin/task_view_mixin.dart';
 import 'package:farmodo/feature/tasks/viewmodel/tasks_controller.dart';
-import 'package:farmodo/feature/tasks/viewmodel/timer_controller.dart';
 import 'package:farmodo/feature/tasks/widget/custom_task_list.dart';
 import 'package:farmodo/feature/tasks/widget/task_floating_button.dart';
 import 'package:flutter/material.dart';
@@ -14,18 +13,8 @@ class TaskView extends StatefulWidget {
   State<TaskView> createState() => _TaskViewState();
 }
 
-class _TaskViewState extends State<TaskView> {
-  final taskController = getIt<TasksController>();
-  final timerController = getIt<TimerController>();
-  
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      taskController.getActiveTask();
-      taskController.getCompletedTask();
-    });
-  }
+class _TaskViewState extends State<TaskView> with TaskViewMixin {
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(

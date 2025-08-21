@@ -1,5 +1,5 @@
-import 'package:farmodo/core/extension/dynamic_size_extension.dart';
-import 'package:farmodo/core/extension/route_helper.dart';
+import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
+import 'package:farmodo/core/utility/extension/route_helper.dart';
 import 'package:farmodo/core/theme/app_colors.dart';
 import 'package:farmodo/feature/tasks/view/add_task_view.dart';
 import 'package:flutter/material.dart';

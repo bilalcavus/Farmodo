@@ -1,4 +1,4 @@
-import 'package:farmodo/core/extension/dynamic_size_extension.dart';
+import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/core/components/button/button_text.dart';
 import 'package:farmodo/core/components/loading_icon.dart';
 import 'package:farmodo/feature/auth/register/viewmodel/register_controller.dart';
