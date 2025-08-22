@@ -157,6 +157,7 @@ class UserReward {
   final DateTime purchasedAt;
   final bool isActive;
   final Map<String, dynamic>? customization;
+  final int quantity;
 
   UserReward({
     required this.id,
@@ -165,6 +166,7 @@ class UserReward {
     required this.purchasedAt,
     this.isActive = false,
     this.customization,
+    required this.quantity,
   });
 
   factory UserReward.fromJson(Map<String, dynamic> json) {
@@ -175,6 +177,7 @@ class UserReward {
       purchasedAt: DateTime.parse(json['purchasedAt']),
       isActive: json['isActive'] ?? false,
       customization: json['customization'],
+      quantity: json['quantity']
     );
   }
 
@@ -187,6 +190,7 @@ class UserReward {
       purchasedAt: (data['purchasedAt'] as Timestamp).toDate(),
       isActive: data['isActive'] ?? false,
       customization: data['customization'],
+      quantity: data['quantity'] ?? 0,
     );
   }
 
@@ -198,6 +202,7 @@ class UserReward {
       'purchasedAt': purchasedAt.toIso8601String(),
       'isActive': isActive,
       'customization': customization,
+      'quantity': quantity
     };
   }
 
@@ -208,6 +213,7 @@ class UserReward {
       'purchasedAt': Timestamp.fromDate(purchasedAt),
       'isActive': isActive,
       'customization': customization,
+      'quantity': quantity,
     };
   }
 
@@ -218,6 +224,7 @@ class UserReward {
     DateTime? purchasedAt,
     bool? isActive,
     Map<String, dynamic>? customization,
+    int? quantity
   }) {
     return UserReward(
       id: id ?? this.id,
@@ -226,6 +233,7 @@ class UserReward {
       purchasedAt: purchasedAt ?? this.purchasedAt,
       isActive: isActive ?? this.isActive,
       customization: customization ?? this.customization,
+      quantity: quantity ?? this.quantity
     );
   }
 

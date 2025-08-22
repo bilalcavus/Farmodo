@@ -46,7 +46,7 @@ class FarmGame extends FlameGame {
     });
 
     // Configure asset prefix so we can load with 'animals/foo.png'
-    images.prefix = 'assets/images/';
+    images.prefix = '';
 
     // Load animal sprites
     final paletteNames = [

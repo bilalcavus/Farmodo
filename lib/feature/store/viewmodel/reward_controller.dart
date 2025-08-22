@@ -1,4 +1,5 @@
 import 'package:farmodo/data/models/reward_model.dart';
+import 'package:farmodo/data/services/animal_service.dart';
 import 'package:farmodo/data/services/auth_service.dart';
 import 'package:farmodo/data/services/firestore_service.dart';
 import 'package:farmodo/feature/auth/login/viewmodel/login_controller.dart';
@@ -9,6 +10,7 @@ class RewardController extends GetxController {
   final FirestoreService firestoreService;
   final LoginController loginController;
   final AuthService authService;
+  final AnimalService animalService = AnimalService();
   TextEditingController rewardIdController = TextEditingController();
   TextEditingController nameController = TextEditingController();
   TextEditingController imageUrlController = TextEditingController();
@@ -24,7 +26,7 @@ class RewardController extends GetxController {
   RxBool get isLoading => _isLoading;
   RxBool get purchaseSucceeded => _purchaseSucceeded;
   RxList storeItems = <Reward>[].obs;
-  RxList userPurchasedRewards = <Reward>[].obs;
+  RxList userPurchasedRewards = [].obs;
 
   @override
   void onReady() {
@@ -109,6 +111,11 @@ class RewardController extends GetxController {
       await authService.fetchAndSetCurrentUser(); 
       loginController.refreshUserXp();
       await getUserPurchasedRewards(); // Kullanıcının satın aldığı item'ları güncelle
+      
+      // Satın alınan hayvanı çiftliğe ekle
+      final reward = storeItems.firstWhere((item) => item.id == rewardId);
+      await animalService.addAnimalFromReward(reward);
+      
     } catch (e) {
       errorMessage.value = e.toString();
     } finally {

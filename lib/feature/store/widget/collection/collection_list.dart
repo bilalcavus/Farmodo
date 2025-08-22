@@ -1,6 +1,7 @@
 
 import 'package:farmodo/core/theme/app_colors.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
+import 'package:farmodo/data/models/reward_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 
@@ -26,7 +27,8 @@ class CollectionList extends StatelessWidget {
         itemCount: ownedItems.length,
         separatorBuilder: (context, index) => SizedBox(width: context.dynamicWidth(0.02)),
         itemBuilder: (context, index) {
-          final reward = ownedItems[index];
+          final reward = ownedItems[index]['reward'] as Reward;
+          final quantity = ownedItems[index]['quantity'] as int;
           return Container(
             width: context.dynamicWidth(0.25),
             decoration: BoxDecoration(
@@ -43,11 +45,12 @@ class CollectionList extends StatelessWidget {
                 ),
                 SizedBox(height: context.dynamicHeight(0.01)),
                 Text(
-                  reward.name,
+                  '${reward.name} x$quantity',
                   style: TextStyle(fontWeight: FontWeight.w500),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
+                
               ],
             ),
           );

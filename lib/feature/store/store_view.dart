@@ -62,7 +62,7 @@ class _StoreViewState extends State<StoreView> {
     try {
       await rewardController.buyStoreRewards(rewardId, xpCost);
       if (rewardController.purchaseSucceeded.value) {
-        SnackMessages(context).showSuccessSnack('Hayvan satın alındı: $name',);
+        SnackMessages(context).showSuccessSnack('Hayvan satın alındı ve çiftliğinize eklendi: $name',);
       } else {
         SnackMessages(context).showErrorSnack(rewardController.errorMessage.value);
       }

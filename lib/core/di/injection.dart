@@ -1,3 +1,4 @@
+import 'package:farmodo/data/services/animal_service.dart';
 import 'package:farmodo/data/services/auth_service.dart';
 import 'package:farmodo/data/services/firestore_service.dart';
 import 'package:farmodo/feature/auth/login/viewmodel/login_controller.dart';
@@ -15,6 +16,7 @@ Future<void> setupDependencies() async {
   //Data Services
   getIt.registerLazySingleton(() => AuthService());
   getIt.registerLazySingleton(() => FirestoreService());
+  getIt.registerLazySingleton(() => AnimalService());
 
   // // DataSources
   // getIt.registerLazySingleton<MockCountryDataSources>(() => MockDataSourcesImpl());
