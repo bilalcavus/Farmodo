@@ -33,94 +33,94 @@ class FirestoreService {
         });
   }
 
-  Future<void> buyStoreItem({
-    required String rewardId,
-    required int xpCost
-    }) async {
-      final uid = _auth.currentUser?.uid;
-      final userRef = _firestore.collection('users').doc(uid);
-      final rewardRef = _firestore.collection('rewards').doc(rewardId);
+  // Future<void> buyStoreItem({
+  //   required String rewardId,
+  //   required int xpCost
+  //   }) async {
+  //     final uid = _auth.currentUser?.uid;
+  //     final userRef = _firestore.collection('users').doc(uid);
+  //     final rewardRef = _firestore.collection('rewards').doc(rewardId);
 
-      await _firestore.runTransaction((transaction) async {
-        final userSnapshot = await transaction.get(userRef);
-        final rewardSnapshot = await transaction.get(rewardRef);
-        final userStoreItemRef = userRef.collection('userStoreItems').doc(rewardId);
-        final userStoreItemSnapshot = await transaction.get(userStoreItemRef);
-        if(!userSnapshot.exists) throw Exception('User not found');
-        if(!rewardSnapshot.exists) throw Exception('Reward not found');
+  //     await _firestore.runTransaction((transaction) async {
+  //       final userSnapshot = await transaction.get(userRef);
+  //       final rewardSnapshot = await transaction.get(rewardRef);
+  //       final userStoreItemRef = userRef.collection('userStoreItems').doc(rewardId);
+  //       final userStoreItemSnapshot = await transaction.get(userStoreItemRef);
+  //       if(!userSnapshot.exists) throw Exception('User not found');
+  //       if(!rewardSnapshot.exists) throw Exception('Reward not found');
 
-        final currentXp = userSnapshot['xp'] as int;
+  //       final currentXp = userSnapshot['xp'] as int;
 
-        if(currentXp < xpCost) {
-          throw Exception('Not enough XP to buy this item');
-        }
+  //       if(currentXp < xpCost) {
+  //         throw Exception('Not enough XP to buy this item');
+  //       }
 
-        transaction.update(userRef, {
-          'xp': currentXp - xpCost,
-        });
+  //       transaction.update(userRef, {
+  //         'xp': currentXp - xpCost,
+  //       });
         
-        if(userStoreItemSnapshot.exists){
-          int currentQuantity = userStoreItemSnapshot.exists ? (userStoreItemSnapshot['quantity'] as int) : 0;
-            transaction.update(userStoreItemRef, {
-            'quantity': currentQuantity + 1
-          });
-        } else {
-          transaction.set(userStoreItemRef, {
-            'rewardId': rewardId,
-            'xpCost': xpCost,
-            'rewardData': rewardSnapshot.data(),
-            'purchasedAt': FieldValue.serverTimestamp(),
-            'isOwned': true,
-            'quantity': FieldValue.increment(1)
-          });
-        }
-      });
-  }
+  //       if(userStoreItemSnapshot.exists){
+  //         int currentQuantity = userStoreItemSnapshot.exists ? (userStoreItemSnapshot['quantity'] as int) : 0;
+  //           transaction.update(userStoreItemRef, {
+  //           'quantity': currentQuantity + 1
+  //         });
+  //       } else {
+  //         transaction.set(userStoreItemRef, {
+  //           'rewardId': rewardId,
+  //           'xpCost': xpCost,
+  //           'rewardData': rewardSnapshot.data(),
+  //           'purchasedAt': FieldValue.serverTimestamp(),
+  //           'isOwned': true,
+  //           'quantity': FieldValue.increment(1)
+  //         });
+  //       }
+  //     });
+  // }
 
-  Future<List<Reward>> getUserStoreItems() async {
-    final uid = _auth.currentUser?.uid;
-    if(uid == null) return [];
+//   Future<List<Reward>> getUserStoreItems() async {
+//     final uid = _auth.currentUser?.uid;
+//     if(uid == null) return [];
 
-    var query = _firestore
-        .collection('users')
-        .doc(uid)
-        .collection('userStoreItems')
-        .where('isOwned', isEqualTo: true)
-        .orderBy('purchasedAt', descending: true);
+//     var query = _firestore
+//         .collection('users')
+//         .doc(uid)
+//         .collection('userStoreItems')
+//         .where('isOwned', isEqualTo: true)
+//         .orderBy('purchasedAt', descending: true);
 
-    final snapshot = await query.get();
-    return snapshot.docs.map((doc) => Reward.fromFirestore(doc)).toList();
-  }
+//     final snapshot = await query.get();
+//     return snapshot.docs.map((doc) => Reward.fromFirestore(doc)).toList();
+//   }
 
-  Future<List<Map<String, dynamic>>> getUserPurchasedRewards() async {
-  final uid = _auth.currentUser?.uid;
-  if (uid == null) return [];
+//   Future<List<Map<String, dynamic>>> getUserPurchasedRewards() async {
+//   final uid = _auth.currentUser?.uid;
+//   if (uid == null) return [];
 
-  final userItemsSnapshot = await _firestore
-      .collection('users')
-      .doc(uid)
-      .collection('userStoreItems')
-      .get();
+//   final userItemsSnapshot = await _firestore
+//       .collection('users')
+//       .doc(uid)
+//       .collection('userStoreItems')
+//       .get();
 
-  List<Map<String, dynamic>> result = [];
+//   List<Map<String, dynamic>> result = [];
 
-  for (var doc in userItemsSnapshot.docs) {
-    final userReward = UserReward.fromFirestore(doc);
+//   for (var doc in userItemsSnapshot.docs) {
+//     final userReward = UserReward.fromFirestore(doc);
 
-    final rewardDoc =
-        await _firestore.collection('rewards').doc(userReward.rewardId).get();
+//     final rewardDoc =
+//         await _firestore.collection('rewards').doc(userReward.rewardId).get();
 
-    if (rewardDoc.exists) {
-      final reward = Reward.fromFirestore(rewardDoc);
-      result.add({
-        "reward": reward,
-        "quantity": userReward.quantity,
-      });
-    }
-  }
+//     if (rewardDoc.exists) {
+//       final reward = Reward.fromFirestore(rewardDoc);
+//       result.add({
+//         "reward": reward,
+//         "quantity": userReward.quantity,
+//       });
+//     }
+//   }
 
-  return result;
-}
+//   return result;
+// }
 
 
   Future<List<UserTaskModel>> _getTasks({bool? isCompleted}) async {

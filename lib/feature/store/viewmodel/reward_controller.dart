@@ -32,7 +32,7 @@ class RewardController extends GetxController {
   void onReady() {
     super.onReady();
     getStoreItems();
-    getUserPurchasedRewards();
+    // getUserPurchasedRewards();
   }
 
   
@@ -88,34 +88,29 @@ class RewardController extends GetxController {
     }
   }
 
-  Future<void> getUserPurchasedRewards() async {
-    try {
-      final items = await firestoreService.getUserPurchasedRewards();
-      if(items.isNotEmpty){
-        userPurchasedRewards.assignAll(items);
-      } else {
-        userPurchasedRewards.clear();
-      }
-    } catch (e) {
-      errorMessage.value = e.toString();
-    }
-  }
+  // Future<void> getUserPurchasedRewards() async {
+  //   try {
+  //     final items = await firestoreService.getUserPurchasedRewards();
+  //     if(items.isNotEmpty){
+  //       userPurchasedRewards.assignAll(items);
+  //     } else {
+  //       userPurchasedRewards.clear();
+  //     }
+  //   } catch (e) {
+  //     errorMessage.value = e.toString();
+  //   }
+  // }
 
   Future<void> buyStoreRewards(String rewardId, int xpCost) async {
     setLoading(true);
     resetPurchaseState();
     purchasingRewardId.value = rewardId;
     try {
-      await firestoreService.buyStoreItem(rewardId: rewardId, xpCost: xpCost);
-      _purchaseSucceeded.value = true;
-      await authService.fetchAndSetCurrentUser(); 
-      loginController.refreshUserXp();
-      await getUserPurchasedRewards(); // Kullanıcının satın aldığı item'ları güncelle
-      
-      // Satın alınan hayvanı çiftliğe ekle
       final reward = storeItems.firstWhere((item) => item.id == rewardId);
       await animalService.addAnimalFromReward(reward);
-      
+      _purchaseSucceeded.value = true;
+      await authService.fetchAndSetCurrentUser();
+      loginController.refreshUserXp();
     } catch (e) {
       errorMessage.value = e.toString();
     } finally {

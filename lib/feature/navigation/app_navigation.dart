@@ -1,5 +1,6 @@
 import 'package:farmodo/core/components/custom_bottom_bar.dart';
 import 'package:farmodo/feature/account/account_view.dart';
+import 'package:farmodo/feature/farm/view/farm_view.dart';
 import 'package:farmodo/feature/home/view/home_view.dart';
 import 'package:farmodo/feature/navigation/navigation_controller.dart';
 import 'package:farmodo/feature/store/store_view.dart';
@@ -22,6 +23,7 @@ class AppNavigation extends StatelessWidget {
             children:  [
               HomeView(),
               TaskView(),
+              FarmView(),
               StoreView(),
               AccountView()
             ],

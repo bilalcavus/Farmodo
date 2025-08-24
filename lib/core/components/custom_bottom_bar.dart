@@ -42,7 +42,7 @@ class CustomBottomNavigation extends StatelessWidget {
             child: _buildNavItem(
               context,
               index: 1,
-              icon: Iconsax.note_favorite,
+              icon:HugeIcons.strokeRoundedStickyNote02,
               label: 'Tasks'
             ),
           ),
@@ -50,16 +50,24 @@ class CustomBottomNavigation extends StatelessWidget {
             child: _buildNavItem(
               context,
               index: 2,
-              icon: Iconsax.shop,
-              label: 'Store'
+              icon: Iconsax.pet,
+              label: 'Çiftlik'
             ),
           ),
           Expanded(
             child: _buildNavItem(
               context,
               index: 3,
+              icon: Iconsax.shop,
+              label: 'Mağaza'
+            ),
+          ),
+          Expanded(
+            child: _buildNavItem(
+              context,
+              index: 4,
               icon: HugeIcons.strokeRoundedUser,
-              label: 'Profile'
+              label: 'Profil'
             ),
           ),
         ],
@@ -92,14 +100,13 @@ class CustomBottomNavigation extends StatelessWidget {
             Icon(
               icon,
               color: isSelected ? const Color(0xff1A5CFF) : null,
-              size: context.dynamicWidth(0.06),
+              size: context.dynamicWidth(0.055),
             ),
-            SizedBox(height: context.dynamicHeight(0.005)),
             Text(
               label,
               style: TextStyle(
                 color:  isSelected ? const Color(0xff1A5CFF) : null,
-                fontSize: context.dynamicHeight(0.014),
+                fontSize: context.dynamicHeight(0.012),
                 fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
               ),
             ),

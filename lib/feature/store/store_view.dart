@@ -32,8 +32,6 @@ import 'package:farmodo/core/theme/app_colors.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/data/services/auth_service.dart';
 import 'package:farmodo/feature/store/viewmodel/reward_controller.dart';
-import 'package:farmodo/feature/store/widget/collection/collection_empty_state.dart';
-import 'package:farmodo/feature/store/widget/collection/collection_list.dart';
 import 'package:farmodo/feature/store/widget/store/store_card.dart';
 import 'package:farmodo/feature/store/widget/store/store_empty_state.dart';
 import 'package:farmodo/feature/tasks/widget/user_xp.dart';
@@ -77,7 +75,7 @@ class _StoreViewState extends State<StoreView> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await rewardController.getStoreItems();
-      await rewardController.getUserPurchasedRewards();
+      // await rewardController.getUserPurchasedRewards();
     });
   }
 
@@ -88,28 +86,7 @@ class _StoreViewState extends State<StoreView> {
       body: SafeArea(
         child: CustomScrollView(
           slivers: [
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: context.dynamicWidth(0.02),
-                  vertical: context.dynamicHeight(0.05)),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('My Collection',
-                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Obx(() {
-                      final ownedItems = rewardController.userPurchasedRewards;
-                      if (ownedItems.isEmpty) return CollectionEmptyState();
-                      return CollectionList(ownedItems: ownedItems);
-                    }),
-                  ],
-                ),
-              ),
-            ),
+            
             SliverToBoxAdapter(
               child: Padding(
                 padding: EdgeInsets.all(context.dynamicHeight(0.02)),

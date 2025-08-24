@@ -1,14 +1,16 @@
 import 'package:farmodo/core/di/injection.dart';
+import 'package:farmodo/core/theme/app_colors.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/core/utility/extension/route_helper.dart';
 import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
-import 'package:farmodo/core/theme/app_colors.dart';
 import 'package:farmodo/data/services/auth_service.dart';
 import 'package:farmodo/feature/auth/login/view/login_view.dart';
 import 'package:farmodo/feature/auth/login/viewmodel/login_controller.dart';
+import 'package:farmodo/feature/gamification/view/debug_gamification_view.dart';
 import 'package:farmodo/feature/home/widgets/home_header.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:hugeicons/hugeicons.dart';
 
 class AccountView extends StatefulWidget {
@@ -222,6 +224,11 @@ class _AccountViewState extends State<AccountView> {
                   inactiveThumbColor: Colors.grey[400],
                   inactiveTrackColor: Colors.grey[300],
                 ),
+              ),
+              _buildSettingsItem(
+                icon: Icons.bug_report,
+                title: 'Debug Gamification',
+                onTap: () => Get.to(() => const DebugGamificationView()),
               ),
               _buildSettingsItem(
                 icon: HugeIcons.strokeRoundedLogout04,

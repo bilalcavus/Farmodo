@@ -1,8 +1,10 @@
 import 'package:farmodo/data/services/animal_service.dart';
 import 'package:farmodo/data/services/auth_service.dart';
 import 'package:farmodo/data/services/firestore_service.dart';
+import 'package:farmodo/data/services/gamification_service.dart';
 import 'package:farmodo/feature/auth/login/viewmodel/login_controller.dart';
 import 'package:farmodo/feature/auth/register/viewmodel/register_controller.dart';
+import 'package:farmodo/feature/gamification/viewmodel/gamification_controller.dart';
 import 'package:farmodo/feature/store/viewmodel/reward_controller.dart';
 import 'package:farmodo/feature/tasks/viewmodel/tasks_controller.dart';
 import 'package:farmodo/feature/tasks/viewmodel/timer_controller.dart';
@@ -17,6 +19,7 @@ Future<void> setupDependencies() async {
   getIt.registerLazySingleton(() => AuthService());
   getIt.registerLazySingleton(() => FirestoreService());
   getIt.registerLazySingleton(() => AnimalService());
+  getIt.registerLazySingleton(() => GamificationService());
 
   // // DataSources
   // getIt.registerLazySingleton<MockCountryDataSources>(() => MockDataSourcesImpl());
@@ -41,5 +44,6 @@ Future<void> setupDependencies() async {
   getIt.registerLazySingleton(() => RegisterController(getIt()));
   getIt.registerLazySingleton(() => TasksController(getIt(), getIt(), getIt(), getIt()));
   getIt.registerLazySingleton(() => RewardController(getIt(), getIt(), getIt()));
+  getIt.registerLazySingleton(() => GamificationController());
 
 }

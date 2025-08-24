@@ -1,24 +1,25 @@
 import 'package:farmodo/data/models/animal_model.dart';
 import 'package:farmodo/data/models/reward_model.dart';
 import 'package:farmodo/data/services/animal_service.dart';
-import 'package:farmodo/data/services/firestore_service.dart';
+import 'package:farmodo/data/services/gamification_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class FarmController extends GetxController {
   final AnimalService _animalService = AnimalService();
-  final FirestoreService _firestoreService = FirestoreService();
+  final GamificationService _gamificationService = GamificationService();
   
   final RxList<FarmAnimal> animals = <FarmAnimal>[].obs;
   final RxBool isLoading = false.obs;
   final RxString errorMessage = ''.obs;
   final RxString selectedAnimalId = ''.obs;
   
-  // Hayvan bakım işlemleri için loading state'leri
   final RxString feedingAnimalId = ''.obs;
   final RxString lovingAnimalId = ''.obs;
   final RxString playingAnimalId = ''.obs;
   final RxString healingAnimalId = ''.obs;
+  final Rx<DateTime> lastStatusUpdate = DateTime.now().obs;
+
 
   @override
   void onInit() {
@@ -26,7 +27,6 @@ class FarmController extends GetxController {
     loadAnimals();
   }
 
-  // Hayvanları yükle
   Future<void> loadAnimals() async {
     isLoading.value = true;
     errorMessage.value = '';
@@ -41,43 +41,11 @@ class FarmController extends GetxController {
     }
   }
 
-  // Mevcut satın alınmış hayvanları çiftliğe ekle
   Future<void> syncPurchasedAnimalsToFarm() async {
     try {
-      print('Satın alınmış hayvanları senkronize etmeye başlıyor...');
-      
-      // Kullanıcının satın aldığı hayvanları al
-      final purchasedRewards = await _firestoreService.getUserPurchasedRewards();
-      print('Satın alınmış hayvan sayısı: ${purchasedRewards.length}');
-      
-      // Her satın alınmış hayvan için
-      for (final rewardData in purchasedRewards) {
-        final reward = rewardData['reward'] as Reward;
-        final quantity = rewardData['quantity'] as int;
-        
-        print('İşleniyor: ${reward.name} (ID: ${reward.id})');
-        
-        // Bu hayvanın çiftlikte olup olmadığını kontrol et
-        final existingAnimal = animals.cast<FarmAnimal?>().firstWhere(
-          (animal) => animal?.rewardId == reward.id,
-          orElse: () => null,
-        );
-        
-        // Eğer çiftlikte yoksa ekle
-        if (existingAnimal == null) {
-          print('Hayvan çiftlikte yok, ekleniyor: ${reward.name}');
-          await _animalService.addAnimalFromReward(reward);
-          print('Hayvan çiftliğe eklendi: ${reward.name}');
-        } else {
-          print('Hayvan zaten çiftlikte mevcut: ${reward.name}');
-        }
-      }
-      
-      // Hayvanları yeniden yükle
       await loadAnimals();
-      print('Senkronizasyon tamamlandı. Toplam hayvan sayısı: ${animals.length}');
     } catch (e) {
-      print('Satın alınmış hayvanları senkronize ederken hata: $e');
+      errorMessage.value = e.toString();
     }
   }
 
@@ -86,6 +54,9 @@ class FarmController extends GetxController {
     try {
       await _animalService.addAnimalFromReward(reward);
       await loadAnimals(); // Hayvanları yeniden yükle
+      
+      // Gamification tetikle - hayvan sayısı değişikliği
+      await _gamificationService.triggerAnimalCountChange(animals.length);
       
       Get.snackbar(
         'Başarılı!',
@@ -112,6 +83,9 @@ class FarmController extends GetxController {
     try {
       await _animalService.feedAnimal(animalId);
       await loadAnimals(); // Hayvanları yeniden yükle
+      
+      // Gamification tetikle
+      await _gamificationService.triggerCareAction('feedAnimals', animalId: animalId);
       
       Get.snackbar(
         'Başarılı!',
@@ -141,6 +115,9 @@ class FarmController extends GetxController {
       await _animalService.loveAnimal(animalId);
       await loadAnimals(); // Hayvanları yeniden yükle
       
+      // Gamification tetikle
+      await _gamificationService.triggerCareAction('loveAnimals', animalId: animalId);
+      
       Get.snackbar(
         'Başarılı!',
         'Hayvana sevgi gösterdiniz!',
@@ -169,6 +146,9 @@ class FarmController extends GetxController {
       await _animalService.playWithAnimal(animalId);
       await loadAnimals(); // Hayvanları yeniden yükle
       
+      // Gamification tetikle
+      await _gamificationService.triggerCareAction('playWithAnimals', animalId: animalId);
+      
       Get.snackbar(
         'Başarılı!',
         'Hayvanla oynadınız!',
@@ -196,6 +176,9 @@ class FarmController extends GetxController {
     try {
       await _animalService.healAnimal(animalId);
       await loadAnimals(); // Hayvanları yeniden yükle
+      
+      // Gamification tetikle
+      await _gamificationService.triggerCareAction('healAnimals', animalId: animalId);
       
       Get.snackbar(
         'Başarılı!',
@@ -302,6 +285,7 @@ class FarmController extends GetxController {
     try {
       await _animalService.updateAnimalStatusesOverTime();
       await loadAnimals(); // Hayvanları yeniden yükle
+      lastStatusUpdate.value = DateTime.now();
     } catch (e) {
       print('Error updating animal statuses over time: $e');
     }
@@ -355,4 +339,20 @@ class FarmController extends GetxController {
   int get totalTired => tiredAnimals.length;
   int get totalSick => sickAnimals.length;
   int get totalHappy => happyAnimals.length;
+
+  // Son güncelleme zamanını formatla
+  String get lastUpdateTimeString {
+    final now = DateTime.now();
+    final difference = now.difference(lastStatusUpdate.value);
+    
+    if (difference.inMinutes < 1) {
+      return 'Az önce';
+    } else if (difference.inMinutes < 60) {
+      return '${difference.inMinutes} dakika önce';
+    } else if (difference.inHours < 24) {
+      return '${difference.inHours} saat önce';
+    } else {
+      return '${difference.inDays} gün önce';
+    }
+  }
 }

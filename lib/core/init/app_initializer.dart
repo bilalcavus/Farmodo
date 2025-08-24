@@ -9,6 +9,7 @@ import 'package:logger/logger.dart';
 
 final class AppInitializer {
   Future<void> make() async {
+    WidgetsFlutterBinding.ensureInitialized();
     await runZonedGuarded<Future<void>>(_initialize, (error, stack){
       Logger().e(error);
     });
@@ -18,7 +19,7 @@ final class AppInitializer {
       FlutterError.onError = (details){
       Logger().e(details.exceptionAsString());
     };
-    WidgetsFlutterBinding.ensureInitialized();
+    
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
     statusBarIconBrightness: Brightness.dark,

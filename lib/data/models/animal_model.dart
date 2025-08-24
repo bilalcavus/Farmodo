@@ -275,7 +275,7 @@ class FarmAnimal {
 
   // Hayvan bakım metodları
   FarmAnimal feed() {
-    final newStatus = status.updateHunger(1.0);
+    final newStatus = status.updateHunger(0.2 + status.hunger);
     return copyWith(status: newStatus);
   }
 

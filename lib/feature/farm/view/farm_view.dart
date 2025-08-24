@@ -1,13 +1,25 @@
+import 'dart:async';
+
 import 'package:farmodo/core/di/injection.dart';
 import 'package:farmodo/core/theme/app_colors.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
+import 'package:farmodo/core/utility/extension/route_helper.dart';
+import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
+import 'package:farmodo/data/models/animal_model.dart';
 import 'package:farmodo/feature/farm/viewmodel/farm_controller.dart';
 import 'package:farmodo/feature/farm/widget/animal_card.dart';
-import 'package:farmodo/feature/farm/widget/animal_detail_sheet.dart';
 import 'package:farmodo/feature/farm/widget/farm_empty_state.dart';
+import 'package:farmodo/feature/farm/widget/sheet_animal_header.dart';
+import 'package:farmodo/feature/farm/widget/sheet_animal_status_card.dart';
+import 'package:farmodo/feature/gamification/view/gamification_view.dart';
+import 'package:farmodo/feature/gamification/widget/main/sheet_divider.dart';
 import 'package:farmodo/feature/store/viewmodel/reward_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hugeicons/hugeicons.dart';
+
+part 'animal_detail_sheet.dart';
+
 
 class FarmView extends StatefulWidget {
   const FarmView({super.key});
@@ -19,6 +31,7 @@ class FarmView extends StatefulWidget {
 class _FarmViewState extends State<FarmView> with TickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
+  Timer? _statusUpdateTimer;
   
   final FarmController farmController = Get.put(FarmController());
   final RewardController rewardController = getIt<RewardController>();
@@ -41,15 +54,20 @@ class _FarmViewState extends State<FarmView> with TickerProviderStateMixin {
     
     _animationController.forward();
     
-    // RewardController verilerini yükle ve hayvanları senkronize et
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await rewardController.getUserPurchasedRewards();
       await farmController.syncPurchasedAnimalsToFarm();
+      await farmController.updateAnimalStatusesOverTime();
+    });
+    
+    // Her 5 dakikada bir hayvan durumlarını güncelle
+    _statusUpdateTimer = Timer.periodic(const Duration(minutes: 5), (timer) {
+      farmController.updateAnimalStatusesOverTime();
     });
   }
 
   @override
   void dispose() {
+    _statusUpdateTimer?.cancel();
     _animationController.dispose();
     super.dispose();
   }
@@ -58,65 +76,92 @@ class _FarmViewState extends State<FarmView> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-             body: SafeArea(
-         child: FadeTransition(
-           opacity: _fadeAnimation,
-           child: Column(
-             children: [
-               // Header
-               _buildHeader(),
-               
-               // İstatistik kartları
-               _buildStatisticsCards(),
-               
-               // Hayvan listesi
-               Expanded(
-                 child: _buildAnimalList(),
-               ),
-             ],
-           ),
-         ),
-       ),
-    );
-  }
+      body: SafeArea(
+        child: FadeTransition(
+          opacity: _fadeAnimation,
+          child: Column(
+            children: [
+                _buildHeader(),
+                InkWell(
+                  onTap: () => RouteHelper.push(context, const GamificationView()),
+                  child: Container(
+                    width: context.dynamicWidth(0.8),
+                    padding: EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade100,
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(HugeIcons.strokeRoundedChampion,),
+                        context.dynamicWidth(0.02).width,
+                        Text('Başarılar ve Görevler'),
+                      ],
+                    ),
+                  ),
+                ),
+                _buildStatisticsCards(),
+                Expanded(
+                  child: _buildAnimalList(),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
 
   Widget _buildHeader() {
     return Container(
-      padding: EdgeInsets.all(context.dynamicWidth(0.05)),
+      padding: EdgeInsets.symmetric(
+        horizontal: context.dynamicWidth(0.05),
+        vertical: context.dynamicWidth(0.03),
+      ),
       child: Row(
         children: [
           Container(
-            padding: const EdgeInsets.all(12),
+            padding: EdgeInsets.all(context.dynamicWidth(0.025)),
             decoration: BoxDecoration(
               color: Colors.green.withOpacity(0.1),
               borderRadius: BorderRadius.circular(15),
             ),
-            child: const Icon(
+            child: Icon(
               Icons.pets,
               color: Colors.green,
-              size: 28,
+              size: context.dynamicHeight(0.03),
             ),
           ),
           
-          const SizedBox(width: 16),
+          SizedBox(width: context.dynamicWidth(0.04)),
           
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
+                Text(
                   'Çiftliğim',
-                  style: TextStyle(
-                    fontSize: 24,
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                Obx(() => Text(
-                  '${farmController.totalAnimals} hayvan (${rewardController.userPurchasedRewards.length} satın alındı)',
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.grey.shade600,
-                  ),
+                Obx(() => Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '${farmController.totalAnimals} hayvan',
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        color: Colors.grey.shade600,
+                      ),
+                    ),
+                    Text(
+                      'Son güncelleme: ${farmController.lastUpdateTimeString}',
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Colors.grey.shade500,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
                 )),
               ],
             ),
@@ -125,11 +170,28 @@ class _FarmViewState extends State<FarmView> with TickerProviderStateMixin {
           // Yenile butonu
           IconButton(
             onPressed: () async {
-              await rewardController.getUserPurchasedRewards();
+              // await rewardController.getUserPurchasedRewards();
               await farmController.syncPurchasedAnimalsToFarm();
             },
             icon: const Icon(Icons.refresh),
             tooltip: 'Yenile',
+          ),
+          
+          // Hayvan durumlarını güncelle butonu
+          IconButton(
+            onPressed: () async {
+              await farmController.updateAnimalStatusesOverTime();
+              Get.snackbar(
+                'Güncellendi!',
+                'Hayvan durumları güncellendi',
+                snackPosition: SnackPosition.TOP,
+                backgroundColor: Colors.green,
+                colorText: Colors.white,
+                duration: const Duration(seconds: 2),
+              );
+            },
+            icon: const Icon(Icons.update),
+            tooltip: 'Hayvan Durumlarını Güncelle',
           ),
         ],
       ),
@@ -137,24 +199,18 @@ class _FarmViewState extends State<FarmView> with TickerProviderStateMixin {
   }
 
   Widget _buildStatisticsCards() {
-    return Container(
-      height: 100,
-      padding: EdgeInsets.symmetric(horizontal: context.dynamicWidth(0.05)),
-      child: Obx(() => ListView(
+    return Obx(() => SizedBox(
+      height: 150,
+      child: ListView(
         scrollDirection: Axis.horizontal,
         children: [
-                     _buildStatCard(
-             'Toplam',
-             farmController.totalAnimals.toString(),
-             Icons.pets,
-             Colors.blue,
-           ),
-           _buildStatCard(
-             'Satın Alınan',
-             rewardController.userPurchasedRewards.length.toString(),
-             Icons.shopping_cart,
-             Colors.purple,
-           ),
+          _buildStatCard(
+            'Toplam',
+            farmController.totalAnimals.toString(),
+            Icons.pets,
+          Colors.blue,
+          ),
+          
           _buildStatCard(
             'Favori',
             farmController.totalFavorites.toString(),
@@ -192,41 +248,32 @@ class _FarmViewState extends State<FarmView> with TickerProviderStateMixin {
             Colors.green,
           ),
         ],
-      )),
-    );
+      ),
+    ));
   }
 
   Widget _buildStatCard(String title, String value, IconData icon, Color color) {
-    return Container(
-      width: 80,
-      margin: const EdgeInsets.only(right: 12),
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(15),
-        border: Border.all(color: color.withOpacity(0.3)),
-      ),
+    return SizedBox(
+      width: context.dynamicWidth(0.22),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(
             icon,
             color: color,
-            size: 24,
+            size: context.dynamicHeight(0.03),
           ),
-          const SizedBox(height: 4),
+          SizedBox(height: context.dynamicHeight(0.005)),
           Text(
             value,
-            style: TextStyle(
-              fontSize: 18,
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
               fontWeight: FontWeight.bold,
               color: color,
             ),
           ),
           Text(
             title,
-            style: TextStyle(
-              fontSize: 10,
+            style: Theme.of(context).textTheme.labelSmall?.copyWith(
               color: color.withOpacity(0.8),
             ),
             textAlign: TextAlign.center,
@@ -250,16 +297,17 @@ class _FarmViewState extends State<FarmView> with TickerProviderStateMixin {
       
       return RefreshIndicator(
         onRefresh: () async {
-          await rewardController.getUserPurchasedRewards();
+          // await rewardController.getUserPurchasedRewards();
           await farmController.syncPurchasedAnimalsToFarm();
+          await farmController.updateAnimalStatusesOverTime();
         },
         child: GridView.builder(
           padding: EdgeInsets.all(context.dynamicWidth(0.05)),
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
             crossAxisSpacing: context.dynamicWidth(0.03),
-            mainAxisSpacing: context.dynamicWidth(0.03),
-            childAspectRatio: 0.6,
+            mainAxisSpacing: context.dynamicWidth(0.02),
+            childAspectRatio: 0.7,
           ),
           itemCount: farmController.animals.length,
           itemBuilder: (context, index) {

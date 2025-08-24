@@ -25,7 +25,6 @@ class AnimalService {
 
       return snapshot.docs.map((doc) => FarmAnimal.fromFirestore(doc)).toList();
     } catch (e) {
-      print('Error getting user animals: $e');
       return [];
     }
   }
@@ -36,20 +35,34 @@ class AnimalService {
     if (uid == null) throw Exception('User not authenticated');
 
     try {
-      final animal = FarmAnimal.fromReward(
-        userId: uid,
-        rewardId: reward.id,
-        name: reward.name,
-        imageUrl: reward.imageUrl,
-        description: reward.description,
-      );
+      final userDoc = await _firestore.collection('users').doc(uid).get();
+      if (!userDoc.exists) throw Exception('User not found');
+      
+      final currentXp = (userDoc.data()?['xp'] as int?) ?? 0;
+      if (currentXp < reward.xpCost) {
+        throw Exception('Yetersiz XP. Gerekli: ${reward.xpCost}, Mevcut: $currentXp');
+      }
 
-      await _firestore
-          .collection('users')
-          .doc(uid)
-          .collection('animals')
-          .doc(animal.id)
-          .set({
+      await _firestore.runTransaction((transaction) async {
+        transaction.update(_firestore.collection('users').doc(uid), {
+          'xp': FieldValue.increment(-reward.xpCost),
+        });
+
+        final animal = FarmAnimal.fromReward(
+          userId: uid,
+          rewardId: reward.id,
+          name: reward.name,
+          imageUrl: reward.imageUrl,
+          description: reward.description,
+        );
+
+        transaction.set(
+          _firestore
+              .collection('users')
+              .doc(uid)
+              .collection('animals')
+              .doc(animal.id),
+          {
             'userId': animal.userId,
             'rewardId': animal.rewardId,
             'name': animal.name,
@@ -67,9 +80,10 @@ class AnimalService {
             'experience': animal.experience,
             'nickname': animal.nickname,
             'isFavorite': animal.isFavorite,
-          });
+          }
+        );
+      });
     } catch (e) {
-      print('Error adding animal: $e');
       rethrow;
     }
   }
@@ -109,7 +123,6 @@ class AnimalService {
             });
       }
     } catch (e) {
-      print('Error feeding animal: $e');
       rethrow;
     }
   }
@@ -147,7 +160,6 @@ class AnimalService {
             });
       }
     } catch (e) {
-      print('Error loving animal: $e');
       rethrow;
     }
   }
@@ -339,6 +351,7 @@ class AnimalService {
       for (final animal in animals) {
         final hoursSinceLastFed = now.difference(animal.status.lastFed).inHours;
         final hoursSinceLastPlayed = now.difference(animal.status.lastPlayed).inHours;
+        final hoursSinceLastLoving = now.difference(animal.status.lastLoved).inHours;
 
         // Her saat başı açlık %10 azalır
         final newHunger = (animal.status.hunger - (hoursSinceLastFed * 0.1)).clamp(0.0, 1.0);
@@ -346,10 +359,17 @@ class AnimalService {
         // Her 2 saat başı enerji %15 azalır
         final newEnergy = (animal.status.energy - (hoursSinceLastPlayed * 0.075)).clamp(0.0, 1.0);
 
-        if (newHunger != animal.status.hunger || newEnergy != animal.status.energy) {
+        ///her saat başı %20 azalır
+        final newLove = (animal.status.love - (hoursSinceLastLoving * 0.2)).clamp(0.0, 1.0);
+
+        final newHealth = (animal.status.health - ((1 - newHunger) * 0.05)).clamp(0.0, 1.0);
+
+        if (newHunger != animal.status.hunger || newEnergy != animal.status.energy || newLove != animal.status.love) {
           final updatedStatus = animal.status.copyWith(
             hunger: newHunger,
             energy: newEnergy,
+            love: newLove,
+            health: newHealth,
           );
 
           await _firestore
@@ -360,6 +380,8 @@ class AnimalService {
               .update({
                 'hunger': updatedStatus.hunger,
                 'energy': updatedStatus.energy,
+                'love': updatedStatus.love,
+                'health': updatedStatus.health,
               });
         }
       }

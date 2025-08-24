@@ -21,7 +21,7 @@ class NavigationController extends GetxController {
   // Bir önceki sayfaya dönmek için
   void goBack() {
     // Eğer lastIndex geçerli bir değerse oraya git
-    if (lastIndex.value >= 0 && lastIndex.value <= 5 && lastIndex.value != currentIndex.value) {
+    if (lastIndex.value >= 0 && lastIndex.value <= 4 && lastIndex.value != currentIndex.value) {
       currentIndex.value = lastIndex.value;
     } else {
       // Değilse ana sayfaya dön (0)

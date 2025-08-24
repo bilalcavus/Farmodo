@@ -1,9 +1,9 @@
-import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/core/theme/app_colors.dart';
+import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
+import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
 import 'package:farmodo/feature/tasks/viewmodel/tasks_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:hugeicons/hugeicons.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 
 class CurrentTaskProgress extends StatelessWidget {
@@ -28,11 +28,11 @@ class CurrentTaskProgress extends StatelessWidget {
       final progress = task.completedSessions / task.totalSessions;
       
       return Container(
-        margin: EdgeInsets.symmetric(horizontal: context.dynamicWidth(0.05)),
+        margin: EdgeInsets.symmetric(horizontal: context.dynamicWidth(0.04)),
         padding: EdgeInsets.all(context.dynamicHeight(0.02)),
         decoration: BoxDecoration(
           color: AppColors.surface,
-          borderRadius: BorderRadius.circular(context.dynamicHeight(0.04)),
+          borderRadius: BorderRadius.circular(context.dynamicHeight(0.03)),
           border: Border.all(color: AppColors.border),
           boxShadow: [
             BoxShadow(
@@ -84,7 +84,7 @@ class CurrentTaskProgress extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(height: context.dynamicHeight(0.015)),
+            context.dynamicHeight(0.01).height,
             Text(
               task.title,
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
@@ -94,7 +94,7 @@ class CurrentTaskProgress extends StatelessWidget {
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
-            SizedBox(height: context.dynamicHeight(0.02)),
+            context.dynamicHeight(0.01).height,
             Row(
               children: [
                 Expanded(
@@ -149,67 +149,6 @@ class CurrentTaskProgress extends StatelessWidget {
                 ),
               ],
             ),
-            if (task.completedSessions < task.totalSessions) ...[
-              SizedBox(height: context.dynamicHeight(0.015)),
-              Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: context.dynamicWidth(0.03),
-                  vertical: context.dynamicHeight(0.01),
-                ),
-                decoration: BoxDecoration(
-                  color: AppColors.primary.withOpacity(0.05),
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: AppColors.primary.withOpacity(0.1)),
-                ),
-                child: Row(
-                  children: [
-                    Icon(
-                      HugeIcons.strokeRoundedTimeQuarter02,
-                      size: context.dynamicHeight(0.02),
-                      color: AppColors.primary,
-                    ),
-                    SizedBox(width: 8),
-                    Text(
-                      '${task.totalSessions - task.completedSessions} sessions remaining',
-                      style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                            color: AppColors.primary,
-                            fontWeight: FontWeight.w600,
-                          ),
-                    ),
-                  ],
-                ),
-              ),
-            ] else ...[
-              SizedBox(height: context.dynamicHeight(0.015)),
-              Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: context.dynamicWidth(0.03),
-                  vertical: context.dynamicHeight(0.01),
-                ),
-                decoration: BoxDecoration(
-                  color: AppColors.secondary.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: AppColors.secondary.withOpacity(0.3)),
-                ),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.check_circle_outline,
-                      size: context.dynamicHeight(0.02),
-                      color: AppColors.secondary,
-                    ),
-                    SizedBox(width: 8),
-                    Text(
-                      'All sessions completed! 🎉',
-                      style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                            color: AppColors.secondary,
-                            fontWeight: FontWeight.w600,
-                          ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
           ],
         ),
       );

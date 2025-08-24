@@ -1,4 +1,5 @@
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
+import 'package:farmodo/feature/store/store_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -7,7 +8,8 @@ class FarmEmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return SingleChildScrollView(
+      padding: EdgeInsets.symmetric(vertical: context.dynamicHeight(0.02)),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -19,15 +21,15 @@ class FarmEmptyState extends StatelessWidget {
               return Transform.scale(
                 scale: 0.5 + (value * 0.5),
                 child: Container(
-                  width: 120,
-                  height: 120,
+                  width: context.dynamicWidth(0.25),
+                  height: context.dynamicHeight(0.12),
                   decoration: BoxDecoration(
                     color: Colors.green.withOpacity(0.1),
                     shape: BoxShape.circle,
                   ),
                   child: Icon(
                     Icons.pets,
-                    size: 60,
+                    size: context.dynamicHeight(0.06),
                     color: Colors.green.withOpacity(0.6),
                   ),
                 ),
@@ -35,7 +37,7 @@ class FarmEmptyState extends StatelessWidget {
             },
           ),
           
-          SizedBox(height: context.dynamicHeight(0.04)),
+          SizedBox(height: context.dynamicHeight(0.03)),
           
           // Başlık
           TweenAnimationBuilder<double>(
@@ -48,8 +50,7 @@ class FarmEmptyState extends StatelessWidget {
                   offset: Offset(0, 20 * (1 - value)),
                   child: Text(
                     'Çiftliğiniz Boş',
-                    style: TextStyle(
-                      fontSize: 24,
+                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                       fontWeight: FontWeight.bold,
                       color: Colors.grey.shade700,
                     ),
@@ -59,7 +60,7 @@ class FarmEmptyState extends StatelessWidget {
             },
           ),
           
-          SizedBox(height: context.dynamicHeight(0.02)),
+          SizedBox(height: context.dynamicHeight(0.015)),
           
           // Açıklama
           TweenAnimationBuilder<double>(
@@ -77,8 +78,7 @@ class FarmEmptyState extends StatelessWidget {
                     child: Text(
                       'Henüz hiç hayvanınız yok. Mağazadan hayvan satın alarak çiftliğinizi canlandırın!',
                       textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 16,
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
                         color: Colors.grey.shade600,
                         height: 1.5,
                       ),
@@ -89,7 +89,7 @@ class FarmEmptyState extends StatelessWidget {
             },
           ),
           
-          SizedBox(height: context.dynamicHeight(0.04)),
+          SizedBox(height: context.dynamicHeight(0.03)),
           
           // Mağaza butonu
           TweenAnimationBuilder<double>(
@@ -103,7 +103,7 @@ class FarmEmptyState extends StatelessWidget {
                   child: ElevatedButton.icon(
                     onPressed: () {
                       // Mağaza sayfasına yönlendir
-                      Get.toNamed('/store');
+                      Get.to(StoreView());
                     },
                     icon: const Icon(Icons.store),
                     label: const Text('Mağazaya Git'),
@@ -124,7 +124,7 @@ class FarmEmptyState extends StatelessWidget {
             },
           ),
           
-          SizedBox(height: context.dynamicHeight(0.06)),
+          SizedBox(height: context.dynamicHeight(0.04)),
           
           // Özellik listesi
           TweenAnimationBuilder<double>(
@@ -149,14 +149,13 @@ class FarmEmptyState extends StatelessWidget {
                       children: [
                         Text(
                           'Hayvan Bakım Özellikleri',
-                          style: TextStyle(
-                            fontSize: 18,
+                          style: Theme.of(context).textTheme.titleLarge?.copyWith(
                             fontWeight: FontWeight.bold,
                             color: Colors.grey.shade700,
                           ),
                         ),
                         
-                        SizedBox(height: context.dynamicHeight(0.02)),
+                        SizedBox(height: context.dynamicHeight(0.015)),
                         
                         _buildFeatureItem(
                           Icons.restaurant,
@@ -192,53 +191,56 @@ class FarmEmptyState extends StatelessWidget {
               );
             },
           ),
+          
+          // Bottom padding to ensure content doesn't get cut off
+          SizedBox(height: context.dynamicHeight(0.02)),
         ],
       ),
     );
   }
 
   Widget _buildFeatureItem(IconData icon, String title, String description, Color color) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: color.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(8),
+    return Builder(
+      builder: (context) => Padding(
+        padding: EdgeInsets.symmetric(vertical: context.dynamicHeight(0.008)),
+        child: Row(
+          children: [
+            Container(
+              padding: EdgeInsets.all(context.dynamicWidth(0.02)),
+              decoration: BoxDecoration(
+                color: color.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Icon(
+                icon,
+                color: color,
+                size: context.dynamicHeight(0.025),
+              ),
             ),
-            child: Icon(
-              icon,
-              color: color,
-              size: 20,
-            ),
-          ),
-          
-          const SizedBox(width: 12),
-          
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 14,
+            
+            SizedBox(width: context.dynamicWidth(0.03)),
+            
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-                Text(
-                  description,
-                  style: TextStyle(
-                    color: Colors.grey.shade600,
-                    fontSize: 12,
+                  Text(
+                    description,
+                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                      color: Colors.grey.shade600,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

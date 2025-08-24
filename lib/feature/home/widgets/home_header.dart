@@ -3,10 +3,8 @@ import 'package:farmodo/core/di/injection.dart';
 import 'package:farmodo/core/theme/app_colors.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/data/services/auth_service.dart';
-import 'package:farmodo/feature/farm/view/farm_view.dart';
 import 'package:farmodo/feature/tasks/widget/user_xp.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class HomeHeader extends StatelessWidget {
   const HomeHeader({
@@ -33,19 +31,9 @@ class HomeHeader extends StatelessWidget {
             ),
           ),
           SizedBox(height: context.dynamicHeight(0.017)),
-          Row(
-            children: [
-              Expanded(child: LevelBar(authService: authService)),
-              SizedBox(width: 16),
-              IconButton(
-                tooltip: 'Çiftlik',
-                onPressed: () => Get.to(() => const FarmView()),
-                icon: Icon(Icons.agriculture, color: AppColors.secondary),
-              ),
-              SizedBox(width: 8),
-              UserXp(authService: authService),
-            ],
-          ),
+          UserXp(authService: authService),
+          SizedBox(height: context.dynamicHeight(0.017)),
+          LevelBar(authService: authService),
           
         ],
       ),

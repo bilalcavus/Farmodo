@@ -109,7 +109,7 @@ class StoreCard extends StatelessWidget {
                             child: const CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
                           )
                         : Text('Buy', style: TextStyle(fontSize: buttonFont)),
-                  ),
+                  )
                 ],
               ),
             ],
@@ -117,5 +117,6 @@ class StoreCard extends StatelessWidget {
         ),
       ),
     );
+    
   }
 }

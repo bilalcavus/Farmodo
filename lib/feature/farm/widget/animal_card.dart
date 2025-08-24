@@ -1,8 +1,6 @@
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/data/models/animal_model.dart';
-import 'package:farmodo/feature/farm/viewmodel/farm_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class AnimalCard extends StatelessWidget {
   final FarmAnimal animal;
@@ -18,8 +16,6 @@ class AnimalCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final farmController = Get.find<FarmController>();
-    
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -31,7 +27,7 @@ class AnimalCard extends StatelessWidget {
             end: Alignment.bottomRight,
             colors: [
               Colors.white,
-              Colors.grey.shade50,
+              Colors.grey.shade100,
             ],
           ),
           boxShadow: [
@@ -67,38 +63,40 @@ class AnimalCard extends StatelessWidget {
                   // Favori işareti
                   if (animal.isFavorite)
                     Positioned(
-                      top: 8,
-                      right: 8,
+                      top: context.dynamicHeight(0.01),
+                      right: context.dynamicWidth(0.02),
                       child: Container(
-                        padding: const EdgeInsets.all(4),
+                        padding: EdgeInsets.all(context.dynamicWidth(0.01)),
                         decoration: const BoxDecoration(
                           color: Colors.red,
                           shape: BoxShape.circle,
                         ),
-                        child: const Icon(
+                        child: Icon(
                           Icons.favorite,
                           color: Colors.white,
-                          size: 16,
+                          size: context.dynamicHeight(0.02),
                         ),
                       ),
                     ),
                   
                   // Seviye göstergesi
                   Positioned(
-                    top: 8,
-                    left: 8,
+                    top: context.dynamicHeight(0.01),
+                    left: context.dynamicWidth(0.02),
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: context.dynamicWidth(0.02), 
+                        vertical: context.dynamicHeight(0.005)
+                      ),
                       decoration: BoxDecoration(
                         color: Colors.orange.withOpacity(0.9),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Text(
                         'Lv.${animal.level}',
-                        style: const TextStyle(
+                        style: Theme.of(context).textTheme.labelSmall?.copyWith(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
-                          fontSize: 12,
                         ),
                       ),
                     ),
@@ -106,9 +104,9 @@ class AnimalCard extends StatelessWidget {
                   
                   // Durum göstergeleri
                   Positioned(
-                    bottom: 8,
-                    left: 8,
-                    right: 8,
+                    bottom: context.dynamicHeight(0.002),
+                    left: context.dynamicWidth(0.02),
+                    right: context.dynamicWidth(0.02),
                     child: Row(
                       children: [
                         _buildStatusIndicator(
@@ -117,21 +115,21 @@ class AnimalCard extends StatelessWidget {
                           Colors.orange,
                           Icons.restaurant,
                         ),
-                        const SizedBox(width: 4),
+                        SizedBox(width: context.dynamicWidth(0.01)),
                         _buildStatusIndicator(
                           'Sevgi',
                           animal.status.love,
                           Colors.pink,
                           Icons.favorite,
                         ),
-                        const SizedBox(width: 4),
+                        SizedBox(width: context.dynamicWidth(0.01)),
                         _buildStatusIndicator(
                           'Enerji',
                           animal.status.energy,
                           Colors.blue,
                           Icons.flash_on,
                         ),
-                        const SizedBox(width: 4),
+                        SizedBox(width: context.dynamicWidth(0.01)),
                         _buildStatusIndicator(
                           'Sağlık',
                           animal.status.health,
@@ -159,21 +157,19 @@ class AnimalCard extends StatelessWidget {
                         Expanded(
                           child: Text(
                             animal.nickname.isNotEmpty ? animal.nickname : animal.name,
-                            style: const TextStyle(
+                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
                               fontWeight: FontWeight.bold,
-                              fontSize: 15,
-                            ),
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 1,
                           ),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                        ),
                         ),
                         if (animal.nickname.isNotEmpty)
                           Flexible(
                             child: Text(
                               '(${animal.name})',
-                              style: TextStyle(
+                              style: Theme.of(context).textTheme.labelSmall?.copyWith(
                                 color: Colors.grey.shade600,
-                                fontSize: 11,
                               ),
                               overflow: TextOverflow.ellipsis,
                               maxLines: 1,
@@ -182,7 +178,7 @@ class AnimalCard extends StatelessWidget {
                       ],
                     ),
                     
-                    const SizedBox(height: 4),
+                    SizedBox(height: context.dynamicHeight(0.005)),
                     
                     // Deneyim çubuğu
                     LinearProgressIndicator(
@@ -191,64 +187,18 @@ class AnimalCard extends StatelessWidget {
                       valueColor: const AlwaysStoppedAnimation<Color>(Colors.blue),
                     ),
                     
-                    const SizedBox(height: 4),
+                    SizedBox(height: context.dynamicHeight(0.005)),
                     
                     Text(
                       '${animal.experience % 100}/100 XP',
-                      style: TextStyle(
+                      style: Theme.of(context).textTheme.labelMedium?.copyWith(
                         color: Colors.grey.shade600,
-                        fontSize: 13,
                       ),
                     ),
                     
                     const Spacer(),
                     
                     // Aksiyon butonları
-                    if (showActions)
-                      Obx(() => Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Expanded(
-                            child: _buildActionButton(
-                              icon: Icons.restaurant,
-                              color: Colors.orange,
-                              isLoading: farmController.feedingAnimalId.value == animal.id,
-                              onTap: () => farmController.feedAnimal(animal.id),
-                              tooltip: 'Besle',
-                            ),
-                          ),
-                          const SizedBox(width: 4),
-                          Expanded(
-                            child: _buildActionButton(
-                              icon: Icons.favorite,
-                              color: Colors.pink,
-                              isLoading: farmController.lovingAnimalId.value == animal.id,
-                              onTap: () => farmController.loveAnimal(animal.id),
-                              tooltip: 'Sev',
-                            ),
-                          ),
-                          const SizedBox(width: 4),
-                          Expanded(
-                            child: _buildActionButton(
-                              icon: Icons.sports_esports,
-                              color: Colors.blue,
-                              isLoading: farmController.playingAnimalId.value == animal.id,
-                              onTap: () => farmController.playWithAnimal(animal.id),
-                              tooltip: 'Oyna',
-                            ),
-                          ),
-                          const SizedBox(width: 4),
-                          Expanded(
-                            child: _buildActionButton(
-                              icon: Icons.healing,
-                              color: Colors.green,
-                              isLoading: farmController.healingAnimalId.value == animal.id,
-                              onTap: () => farmController.healAnimal(animal.id),
-                              tooltip: 'İyileştir',
-                            ),
-                          ),
-                        ],
-                      )),
                   ],
                 ),
               ),
@@ -260,63 +210,23 @@ class AnimalCard extends StatelessWidget {
   }
 
   Widget _buildStatusIndicator(String label, double value, Color color, IconData icon) {
-    return Expanded(
-      child: Column(
-        children: [
-          Icon(
-            icon,
-            color: color,
-            size: 16,
-          ),
-          const SizedBox(height: 2),
-          LinearProgressIndicator(
-            value: value,
-            backgroundColor: Colors.grey.shade300,
-            valueColor: AlwaysStoppedAnimation<Color>(color),
-            minHeight: 3,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildActionButton({
-    required IconData icon,
-    required Color color,
-    required bool isLoading,
-    required VoidCallback onTap,
-    required String tooltip,
-  }) {
-    return Tooltip(
-      message: tooltip,
-      child: GestureDetector(
-        onTap: isLoading ? null : onTap,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: isLoading ? Colors.grey.shade300 : color.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(6),
-            border: Border.all(
-              color: isLoading ? Colors.grey.shade400 : color.withOpacity(0.3),
+    return Builder(
+      builder: (context) => Expanded(
+        child: Column(
+          children: [
+            Icon(
+              icon,
+              color: color,
+              size: context.dynamicHeight(0.02),
             ),
-          ),
-          child: Center(
-            child: isLoading
-                ? SizedBox(
-                    width: 14,
-                    height: 14,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      valueColor: AlwaysStoppedAnimation<Color>(color),
-                    ),
-                  )
-                : Icon(
-                    icon,
-                    color: color,
-                    size: 16,
-                  ),
-          ),
+            SizedBox(height: context.dynamicHeight(0.003)),
+            LinearProgressIndicator(
+              value: value,
+              backgroundColor: Colors.grey.shade300,
+              valueColor: AlwaysStoppedAnimation<Color>(color),
+              minHeight: context.dynamicHeight(0.004),
+            ),
+          ],
         ),
       ),
     );
