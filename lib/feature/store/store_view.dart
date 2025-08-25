@@ -32,8 +32,8 @@ import 'package:farmodo/core/theme/app_colors.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/data/services/auth_service.dart';
 import 'package:farmodo/feature/store/viewmodel/reward_controller.dart';
-import 'package:farmodo/feature/store/widget/store/store_card.dart';
-import 'package:farmodo/feature/store/widget/store/store_empty_state.dart';
+import 'package:farmodo/feature/store/widget/store_card.dart';
+import 'package:farmodo/feature/store/widget/store_empty_state.dart';
 import 'package:farmodo/feature/tasks/widget/user_xp.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -61,6 +61,8 @@ class _StoreViewState extends State<StoreView> {
       await rewardController.buyStoreRewards(rewardId, xpCost);
       if (rewardController.purchaseSucceeded.value) {
         SnackMessages(context).showSuccessSnack('Hayvan satın alındı ve çiftliğinize eklendi: $name',);
+        // Refresh the store to show updated ownership
+        setState(() {});
       } else {
         SnackMessages(context).showErrorSnack(rewardController.errorMessage.value);
       }
@@ -75,6 +77,7 @@ class _StoreViewState extends State<StoreView> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await rewardController.getStoreItems();
+      await rewardController.loadOwnedRewards();
       // await rewardController.getUserPurchasedRewards();
     });
   }

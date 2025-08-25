@@ -49,13 +49,11 @@ class FarmController extends GetxController {
     }
   }
 
-  // Store'dan satın alınan hayvanı çiftliğe ekle
   Future<void> addAnimalFromReward(Reward reward) async {
     try {
       await _animalService.addAnimalFromReward(reward);
-      await loadAnimals(); // Hayvanları yeniden yükle
+      await loadAnimals();
       
-      // Gamification tetikle - hayvan sayısı değişikliği
       await _gamificationService.triggerAnimalCountChange(animals.length);
       
       Get.snackbar(
@@ -287,7 +285,7 @@ class FarmController extends GetxController {
       await loadAnimals(); // Hayvanları yeniden yükle
       lastStatusUpdate.value = DateTime.now();
     } catch (e) {
-      print('Error updating animal statuses over time: $e');
+      errorMessage.value = e.toString();
     }
   }
 

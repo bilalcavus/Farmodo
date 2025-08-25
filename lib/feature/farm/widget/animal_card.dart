@@ -178,6 +178,26 @@ class AnimalCard extends StatelessWidget {
                       ],
                     ),
                     
+                    // Deneyim puanı
+                    SizedBox(height: context.dynamicHeight(0.005)),
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.star,
+                          size: context.dynamicHeight(0.015),
+                          color: Colors.amber,
+                        ),
+                        SizedBox(width: context.dynamicWidth(0.01)),
+                        Text(
+                          '${animal.experience} XP',
+                          style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                            color: Colors.grey.shade700,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                    
                     SizedBox(height: context.dynamicHeight(0.005)),
                     
                     // Deneyim çubuğu
@@ -196,9 +216,6 @@ class AnimalCard extends StatelessWidget {
                       ),
                     ),
                     
-                    const Spacer(),
-                    
-                    // Aksiyon butonları
                   ],
                 ),
               ),

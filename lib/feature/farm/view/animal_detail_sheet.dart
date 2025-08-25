@@ -264,6 +264,8 @@ class _AnimalDetailSheetState extends State<AnimalDetailSheet> {
               children: [
                 _buildDetailRow('Tür', updatedAnimal.name),
                 _buildDetailRow('Açıklama', updatedAnimal.description),
+                _buildDetailRow('Seviye', '${updatedAnimal.level}'),
+                _buildDetailRow('Deneyim Puanı', '${updatedAnimal.experience} XP'),
                 _buildDetailRow('Edinilme Tarihi', 
                   '${updatedAnimal.acquiredAt.day}/${updatedAnimal.acquiredAt.month}/${updatedAnimal.acquiredAt.year}'),
                 _buildDetailRow('Son Beslenme', 

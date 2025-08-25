@@ -21,17 +21,21 @@ class RewardController extends GetxController {
   final _isPremium = false.obs;
   final _isLoading = false.obs;
   final _purchaseSucceeded = false.obs;
+  final _isOwnedAnimal = false.obs; // legacy single-flag (kept for compatibility)
+  final RxSet<String> ownedRewardIds = <String>{}.obs;
   final RxnString purchasingRewardId = RxnString();
   RxBool get isPremium => _isPremium;
   RxBool get isLoading => _isLoading;
   RxBool get purchaseSucceeded => _purchaseSucceeded;
   RxList storeItems = <Reward>[].obs;
   RxList userPurchasedRewards = [].obs;
+  RxBool get isOwnedAnimal => _isOwnedAnimal;
 
   @override
   void onReady() {
     super.onReady();
     getStoreItems();
+    loadOwnedRewards();
     // getUserPurchasedRewards();
   }
 
@@ -72,6 +76,37 @@ class RewardController extends GetxController {
     }
   }
 
+  Future<void> ownedAnimal(String rewardId) async {
+    errorMessage.value = '';
+    try {
+      final value = await animalService.userOwnedAnimal(rewardId);
+      _isOwnedAnimal.value = value;
+      if (value) {
+        ownedRewardIds.add(rewardId);
+      } else {
+        ownedRewardIds.remove(rewardId);
+      }
+    } catch (e) {
+      errorMessage.value = e.toString();
+    }
+  }
+
+  Future<void> loadOwnedRewards() async {
+    try {
+      final animals = await animalService.getUserAnimals();
+      ownedRewardIds
+        ..clear()
+        ..addAll(animals.map((a) => a.rewardId));
+    } catch (e) {
+      errorMessage.value = e.toString();
+    }
+  }
+
+  bool isRewardOwned(String rewardId) {
+    final isOwned = ownedRewardIds.contains(rewardId);
+    return isOwned;
+  }
+
   Future<void> getStoreItems() async {
     setLoading(true);
     try {
@@ -109,8 +144,10 @@ class RewardController extends GetxController {
       final reward = storeItems.firstWhere((item) => item.id == rewardId);
       await animalService.addAnimalFromReward(reward);
       _purchaseSucceeded.value = true;
+      ownedRewardIds.add(rewardId);
       await authService.fetchAndSetCurrentUser();
       loginController.refreshUserXp();
+      await loadOwnedRewards();
     } catch (e) {
       errorMessage.value = e.toString();
     } finally {

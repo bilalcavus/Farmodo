@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:farmodo/data/models/animal_model.dart';
 import 'package:farmodo/data/models/reward_model.dart';
+import 'package:farmodo/data/services/gamification_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 
 class AnimalService {
   static final AnimalService _instance = AnimalService._internal();
@@ -10,8 +12,8 @@ class AnimalService {
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final GamificationService _gamificationService = GamificationService();
 
-  // Kullanıcının hayvanlarını getir
   Future<List<FarmAnimal>> getUserAnimals() async {
     final uid = _auth.currentUser?.uid;
     if (uid == null) return [];
@@ -29,7 +31,23 @@ class AnimalService {
     }
   }
 
-  // Yeni hayvan ekle (store'dan satın alındığında)
+  Future<bool> userOwnedAnimal(String rewardId) async {
+    final uid = _auth.currentUser?.uid;
+    if(uid == null) return false;
+    try {
+      final snapshot = await _firestore
+          .collection('users')
+          .doc(uid)
+          .collection('animals')
+          .where('rewardId', isEqualTo: rewardId)
+          .limit(1)
+          .get();
+      return snapshot.docs.isNotEmpty;
+    } catch (e) {
+      return false;
+    }
+  }
+
   Future<void> addAnimalFromReward(Reward reward) async {
     final uid = _auth.currentUser?.uid;
     if (uid == null) throw Exception('User not authenticated');
@@ -83,14 +101,16 @@ class AnimalService {
           }
         );
       });
+
+      final updatedAnimals = await getUserAnimals();
+      await _gamificationService.triggerAnimalCountChange(updatedAnimals.length);
+      await _gamificationService.triggerAnimalPurchase(reward.id);
     } catch (e) {
       rethrow;
     }
   }
 
 
-
-  // Hayvanı besle
   Future<void> feedAnimal(String animalId) async {
     final uid = _auth.currentUser?.uid;
     if (uid == null) throw Exception('User not authenticated');
@@ -106,6 +126,7 @@ class AnimalService {
       if (animalDoc.exists) {
         final animal = FarmAnimal.fromFirestore(animalDoc);
         final updatedAnimal = animal.feed();
+        final levelGained = updatedAnimal.level - animal.level;
         
         await _firestore
             .collection('users')
@@ -120,14 +141,19 @@ class AnimalService {
               'lastFed': Timestamp.fromDate(updatedAnimal.status.lastFed),
               'lastLoved': Timestamp.fromDate(updatedAnimal.status.lastLoved),
               'lastPlayed': Timestamp.fromDate(updatedAnimal.status.lastPlayed),
+              'experience': updatedAnimal.experience,
+              'level': updatedAnimal.level,
             });
+        if (levelGained > 0) {
+          await _triggerLevelUpGamification(updatedAnimal.level);
+        }
       }
     } catch (e) {
       rethrow;
     }
   }
 
-  // Hayvana sevgi göster
+
   Future<void> loveAnimal(String animalId) async {
     final uid = _auth.currentUser?.uid;
     if (uid == null) throw Exception('User not authenticated');
@@ -143,6 +169,7 @@ class AnimalService {
       if (animalDoc.exists) {
         final animal = FarmAnimal.fromFirestore(animalDoc);
         final updatedAnimal = animal.love();
+        final levelGained = updatedAnimal.level - animal.level;
         
         await _firestore
             .collection('users')
@@ -157,14 +184,19 @@ class AnimalService {
               'lastFed': Timestamp.fromDate(updatedAnimal.status.lastFed),
               'lastLoved': Timestamp.fromDate(updatedAnimal.status.lastLoved),
               'lastPlayed': Timestamp.fromDate(updatedAnimal.status.lastPlayed),
+              'experience': updatedAnimal.experience,
+              'level': updatedAnimal.level,
             });
+            
+        if (levelGained > 0) {
+          await _gamificationService.triggerAnimalLevelUp(updatedAnimal.level);
+        }
       }
     } catch (e) {
       rethrow;
     }
   }
 
-  // Hayvanla oyna
   Future<void> playWithAnimal(String animalId) async {
     final uid = _auth.currentUser?.uid;
     if (uid == null) throw Exception('User not authenticated');
@@ -180,6 +212,7 @@ class AnimalService {
       if (animalDoc.exists) {
         final animal = FarmAnimal.fromFirestore(animalDoc);
         final updatedAnimal = animal.play();
+        final levelGained = updatedAnimal.level - animal.level;
         
         await _firestore
             .collection('users')
@@ -194,15 +227,19 @@ class AnimalService {
               'lastFed': Timestamp.fromDate(updatedAnimal.status.lastFed),
               'lastLoved': Timestamp.fromDate(updatedAnimal.status.lastLoved),
               'lastPlayed': Timestamp.fromDate(updatedAnimal.status.lastPlayed),
+              'experience': updatedAnimal.experience,
+              'level': updatedAnimal.level,
             });
+        
+        if (levelGained > 0) {
+          await _triggerLevelUpGamification(updatedAnimal.level);
+        }
       }
     } catch (e) {
-      print('Error playing with animal: $e');
       rethrow;
     }
   }
 
-  // Hayvanı iyileştir
   Future<void> healAnimal(String animalId) async {
     final uid = _auth.currentUser?.uid;
     if (uid == null) throw Exception('User not authenticated');
@@ -218,6 +255,7 @@ class AnimalService {
       if (animalDoc.exists) {
         final animal = FarmAnimal.fromFirestore(animalDoc);
         final updatedAnimal = animal.heal();
+        final levelGained = updatedAnimal.level - animal.level;
         
         await _firestore
             .collection('users')
@@ -232,15 +270,34 @@ class AnimalService {
               'lastFed': Timestamp.fromDate(updatedAnimal.status.lastFed),
               'lastLoved': Timestamp.fromDate(updatedAnimal.status.lastLoved),
               'lastPlayed': Timestamp.fromDate(updatedAnimal.status.lastPlayed),
+              'experience': updatedAnimal.experience,
+              'level': updatedAnimal.level,
             });
+            
+        
+        if (levelGained > 0) {
+          await _triggerLevelUpGamification(updatedAnimal.level);
+        }
       }
     } catch (e) {
-      print('Error healing animal: $e');
       rethrow;
     }
   }
 
-  // Hayvan takma adını güncelle
+  Future<void> _triggerLevelUpGamification(int newLevel) async {
+    try {
+      final animals = await getUserAnimals();
+      final totalLevel = animals.fold<int>(0, (sum, animal) => sum + animal.level);
+      await _gamificationService.triggerAnimalLevelUp(newLevel);
+      if (totalLevel > 0) {
+        await _gamificationService.triggerAnimalLevelUp(totalLevel);
+      }
+    } catch (e) {
+      debugPrint('Error triggering level up gamification: $e');
+    }
+  }
+
+
   Future<void> updateAnimalNickname(String animalId, String nickname) async {
     final uid = _auth.currentUser?.uid;
     if (uid == null) throw Exception('User not authenticated');
@@ -253,12 +310,10 @@ class AnimalService {
           .doc(animalId)
           .update({'nickname': nickname});
     } catch (e) {
-      print('Error updating animal nickname: $e');
       rethrow;
     }
   }
 
-  // Hayvanı favori olarak işaretle/çıkar
   Future<void> toggleAnimalFavorite(String animalId) async {
     final uid = _auth.currentUser?.uid;
     if (uid == null) throw Exception('User not authenticated');
@@ -283,12 +338,10 @@ class AnimalService {
             .update({'isFavorite': updatedAnimal.isFavorite});
       }
     } catch (e) {
-      print('Error toggling animal favorite: $e');
       rethrow;
     }
   }
 
-  // Hayvana deneyim puanı ekle
   Future<void> addAnimalExperience(String animalId, int experience) async {
     final uid = _auth.currentUser?.uid;
     if (uid == null) throw Exception('User not authenticated');
@@ -316,12 +369,10 @@ class AnimalService {
             });
       }
     } catch (e) {
-      print('Error adding animal experience: $e');
       rethrow;
     }
   }
 
-  // Hayvanı sil
   Future<void> deleteAnimal(String animalId) async {
     final uid = _auth.currentUser?.uid;
     if (uid == null) throw Exception('User not authenticated');
@@ -334,12 +385,10 @@ class AnimalService {
           .doc(animalId)
           .delete();
     } catch (e) {
-      print('Error deleting animal: $e');
       rethrow;
     }
   }
 
-  // Zamanla hayvan durumlarını güncelle (açlık, enerji azalması)
   Future<void> updateAnimalStatusesOverTime() async {
     final uid = _auth.currentUser?.uid;
     if (uid == null) return;
@@ -386,7 +435,7 @@ class AnimalService {
         }
       }
     } catch (e) {
-      print('Error updating animal statuses over time: $e');
+      rethrow;
     }
   }
 }

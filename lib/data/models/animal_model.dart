@@ -273,25 +273,24 @@ class FarmAnimal {
     );
   }
 
-  // Hayvan bakım metodları
   FarmAnimal feed() {
     final newStatus = status.updateHunger(0.2 + status.hunger);
-    return copyWith(status: newStatus);
+    return copyWith(status: newStatus).addExperience(4); // Besleme: 10 XP
   }
 
   FarmAnimal love() {
     final newStatus = status.updateLove(status.love + 0.2);
-    return copyWith(status: newStatus);
+    return copyWith(status: newStatus).addExperience(4); // Sevgi: 15 XP
   }
 
   FarmAnimal play() {
     final newStatus = status.updateEnergy(status.energy + 0.3);
-    return copyWith(status: newStatus);
+    return copyWith(status: newStatus).addExperience(4); // Oynama: 20 XP
   }
 
   FarmAnimal heal() {
     final newStatus = status.updateHealth(1.0);
-    return copyWith(status: newStatus);
+    return copyWith(status: newStatus).addExperience(4); // İyileştirme: 25 XP
   }
 
   FarmAnimal updateNickname(String newNickname) {

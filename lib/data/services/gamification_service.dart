@@ -403,14 +403,17 @@ class GamificationService {
     try {
       // Başarıları kontrol et
       final achievements = await getAchievements();
+      int achievementCount = 0;
       for (final achievement in achievements) {
         if (achievement.type == AchievementType.animalLevel) {
           await updateAchievementProgress(achievement.id, level);
+          achievementCount++;
         }
       }
 
       // Görevleri kontrol et
       final quests = await getQuests();
+      int questCount = 0;
       for (final quest in quests) {
         if (quest.action == QuestAction.levelUpAnimals && quest.isActive) {
           final userQuests = await getUserQuests();
@@ -419,11 +422,13 @@ class GamificationService {
           );
           
           final currentProgress = userQuest?.progress ?? 0;
-          await updateQuestProgress(quest.id, currentProgress + 1);
+          final newProgress = currentProgress + 1;
+          await updateQuestProgress(quest.id, newProgress);
+          questCount++;
         }
       }
     } catch (e) {
-      print('Error triggering animal level up: $e');
+      debugPrint('Error triggering animal level up: $e');
     }
   }
 
@@ -445,6 +450,42 @@ class GamificationService {
     } catch (e) {
       print('Error getting user stats: $e');
       return {'xp': 0, 'coins': 0};
+    }
+  }
+
+  // Hayvan satın alma için gamification tetikle
+  Future<void> triggerAnimalPurchase(String rewardId) async {
+    try {
+      // Başarıları kontrol et
+      final achievements = await getAchievements();
+      for (final achievement in achievements) {
+        if (achievement.type == AchievementType.animalCount || 
+            achievement.type == AchievementType.careActions) {
+          final userAchievements = await getUserAchievements();
+          final userAchievement = userAchievements.firstWhereOrNull(
+            (ua) => ua.achievementId == achievement.id,
+          );
+          
+          final currentProgress = userAchievement?.progress ?? 0;
+          await updateAchievementProgress(achievement.id, currentProgress + 1);
+        }
+      }
+
+      // Görevleri kontrol et
+      final quests = await getQuests();
+      for (final quest in quests) {
+        if (quest.action == QuestAction.buyAnimals && quest.isActive) {
+          final userQuests = await getUserQuests();
+          final userQuest = userQuests.firstWhereOrNull(
+            (uq) => uq.questId == quest.id,
+          );
+          
+          final currentProgress = userQuest?.progress ?? 0;
+          await updateQuestProgress(quest.id, currentProgress + 1);
+        }
+      }
+    } catch (e) {
+      print('Error triggering animal purchase: $e');
     }
   }
 
