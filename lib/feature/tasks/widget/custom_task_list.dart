@@ -1,6 +1,6 @@
 
-import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/core/theme/app_colors.dart';
+import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/data/models/user_task_model.dart';
 import 'package:farmodo/feature/tasks/viewmodel/tasks_controller.dart';
 import 'package:farmodo/feature/tasks/viewmodel/timer_controller.dart';
@@ -15,13 +15,14 @@ class CustomTaskList extends StatelessWidget {
     required this.loadingType,
     required this.listType, 
     required this.timerController,
+    required this.scrollController,
   });
 
   final TasksController taskController;
   final TimerController timerController;
   final LoadingType loadingType;
   final RxList<UserTaskModel> listType;
-  
+  final ScrollController scrollController;
 
   @override
   Widget build(BuildContext context) {
@@ -29,13 +30,30 @@ class CustomTaskList extends StatelessWidget {
       height: context.dynamicHeight(0.9),
       child: Obx((){
         final bool isLoading = taskController.loadingStates[loadingType] == true;
-        if (isLoading) {
+        if (isLoading && listType.isEmpty) {
           return Center(child: CircularProgressIndicator());
         } else if (listType.isEmpty) {
           return Center(child: Text('No tasks yet', style: Theme.of(context).textTheme.labelLarge?.copyWith(color: AppColors.textSecondary)));
         }
           else {
-            return TaskList(listType: listType, taskController: taskController, timerController: timerController);
+            return Stack(
+              children: [
+                TaskList(
+                  listType: listType,
+                  taskController: taskController,
+                  timerController: timerController,
+                  scrollController: scrollController
+                ),
+                if (isLoading)
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: context.dynamicHeight(0.015)),
+                      child: CircularProgressIndicator(),
+                    ),
+                  )
+              ],
+            );
         }
     }));
   }
@@ -47,15 +65,18 @@ class TaskList extends StatelessWidget {
     required this.listType,
     required this.taskController,
     required this.timerController,
+    required this.scrollController,
   });
 
   final RxList<UserTaskModel> listType;
   final TasksController taskController;
   final TimerController timerController;
+  final ScrollController scrollController;
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
+      controller: scrollController,
       shrinkWrap: true,
       itemCount: listType.length,
       itemBuilder: (context, index) {

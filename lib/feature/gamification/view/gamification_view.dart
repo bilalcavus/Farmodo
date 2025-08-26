@@ -111,13 +111,6 @@ class _GamificationViewState extends State<GamificationView>
           subtitle: 'Başarılar yakında eklenecek!',
           context: context);
         }
-      // if (gamificationController.filteredAchievements.isEmpty) {
-      //   return EmptyState(
-      //     context: context,
-      //     title: 'Filtrelenmiş başarı yok',
-      //     subtitle: 'Seçilen filtrelere uygun başarı bulunamadı',
-      //     icon: HugeIcons.strokeRoundedChampion);
-      //   }
 
       return RefreshIndicator(
         onRefresh: () => gamificationController.refresh(),

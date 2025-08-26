@@ -108,11 +108,13 @@ class _FarmViewState extends State<FarmView> with TickerProviderStateMixin {
           borderRadius: BorderRadius.circular(16),
         ),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Icon(HugeIcons.strokeRoundedChampion,),
             context.dynamicWidth(0.02).width,
             Text('Başarılar ve Görevler'),
+            Spacer(),
+            Icon(HugeIcons.strokeRoundedArrowRight01)
           ],
         ),
       ),

@@ -14,6 +14,7 @@ class TaskView extends StatefulWidget {
 }
 
 class _TaskViewState extends State<TaskView> with TaskViewMixin {
+  
 
   @override
   Widget build(BuildContext context) {
@@ -54,13 +55,17 @@ class _TaskViewState extends State<TaskView> with TaskViewMixin {
           CustomTaskList(
             listType: taskController.activeUserTasks,
             loadingType: LoadingType.active,
-            taskController: taskController, timerController: timerController,
-            ),
+            taskController: taskController,
+            timerController: timerController,
+            scrollController: activeScrollController,
+          ),
           CustomTaskList(
             listType: taskController.completedUserTasks,
             loadingType: LoadingType.completed,
-            taskController: taskController, timerController: timerController,
-            ),
+            taskController: taskController,
+            timerController: timerController,
+            scrollController: completedScrollController,
+          ),
         ]),
         floatingActionButton: TaskFloatingButton(),
       ),

@@ -10,6 +10,8 @@ class FirestoreService {
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  DocumentSnapshot? lastActiveDoc;
+  DocumentSnapshot? lastCompletedDoc;
 
 
   Future<void> addTask(String title, String focusType, int duration, int xpReward, int totalSessions) async {
@@ -33,97 +35,7 @@ class FirestoreService {
         });
   }
 
-  // Future<void> buyStoreItem({
-  //   required String rewardId,
-  //   required int xpCost
-  //   }) async {
-  //     final uid = _auth.currentUser?.uid;
-  //     final userRef = _firestore.collection('users').doc(uid);
-  //     final rewardRef = _firestore.collection('rewards').doc(rewardId);
-
-  //     await _firestore.runTransaction((transaction) async {
-  //       final userSnapshot = await transaction.get(userRef);
-  //       final rewardSnapshot = await transaction.get(rewardRef);
-  //       final userStoreItemRef = userRef.collection('userStoreItems').doc(rewardId);
-  //       final userStoreItemSnapshot = await transaction.get(userStoreItemRef);
-  //       if(!userSnapshot.exists) throw Exception('User not found');
-  //       if(!rewardSnapshot.exists) throw Exception('Reward not found');
-
-  //       final currentXp = userSnapshot['xp'] as int;
-
-  //       if(currentXp < xpCost) {
-  //         throw Exception('Not enough XP to buy this item');
-  //       }
-
-  //       transaction.update(userRef, {
-  //         'xp': currentXp - xpCost,
-  //       });
-        
-  //       if(userStoreItemSnapshot.exists){
-  //         int currentQuantity = userStoreItemSnapshot.exists ? (userStoreItemSnapshot['quantity'] as int) : 0;
-  //           transaction.update(userStoreItemRef, {
-  //           'quantity': currentQuantity + 1
-  //         });
-  //       } else {
-  //         transaction.set(userStoreItemRef, {
-  //           'rewardId': rewardId,
-  //           'xpCost': xpCost,
-  //           'rewardData': rewardSnapshot.data(),
-  //           'purchasedAt': FieldValue.serverTimestamp(),
-  //           'isOwned': true,
-  //           'quantity': FieldValue.increment(1)
-  //         });
-  //       }
-  //     });
-  // }
-
-//   Future<List<Reward>> getUserStoreItems() async {
-//     final uid = _auth.currentUser?.uid;
-//     if(uid == null) return [];
-
-//     var query = _firestore
-//         .collection('users')
-//         .doc(uid)
-//         .collection('userStoreItems')
-//         .where('isOwned', isEqualTo: true)
-//         .orderBy('purchasedAt', descending: true);
-
-//     final snapshot = await query.get();
-//     return snapshot.docs.map((doc) => Reward.fromFirestore(doc)).toList();
-//   }
-
-//   Future<List<Map<String, dynamic>>> getUserPurchasedRewards() async {
-//   final uid = _auth.currentUser?.uid;
-//   if (uid == null) return [];
-
-//   final userItemsSnapshot = await _firestore
-//       .collection('users')
-//       .doc(uid)
-//       .collection('userStoreItems')
-//       .get();
-
-//   List<Map<String, dynamic>> result = [];
-
-//   for (var doc in userItemsSnapshot.docs) {
-//     final userReward = UserReward.fromFirestore(doc);
-
-//     final rewardDoc =
-//         await _firestore.collection('rewards').doc(userReward.rewardId).get();
-
-//     if (rewardDoc.exists) {
-//       final reward = Reward.fromFirestore(rewardDoc);
-//       result.add({
-//         "reward": reward,
-//         "quantity": userReward.quantity,
-//       });
-//     }
-//   }
-
-//   return result;
-// }
-
-
-  Future<List<UserTaskModel>> _getTasks({bool? isCompleted}) async {
+  Future<List<UserTaskModel>> _getTasks({required isCompleted, bool loadMore = false} ) async {
   final uid = _auth.currentUser?.uid;
   if (uid == null) return [];
 
@@ -131,26 +43,38 @@ class FirestoreService {
       .collection('users')
       .doc(uid)
       .collection('tasks')
-      .orderBy('createdAt', descending: true);
+      .orderBy('createdAt', descending: true)
+      .limit(10);
 
   if (isCompleted != null) {
     query = query.where('isCompleted', isEqualTo: isCompleted);
   }
 
+  final lastDoc = isCompleted ? lastCompletedDoc : lastActiveDoc;
+
+  if(loadMore && lastDoc != null){
+    query = query.startAfterDocument(lastDoc);
+  }
+
   final snapshot = await query.get();
+  if(snapshot.docs.isNotEmpty){
+    if(isCompleted){
+      lastCompletedDoc = snapshot.docs.last;
+    } else {
+      lastActiveDoc = snapshot.docs.last;
+    }
+  }
   return snapshot.docs.map((doc) => UserTaskModel.fromFirestore(doc)).toList();
 }
+
+  Future<List<UserTaskModel>> getCompletedTask({bool loadMore = false}) => _getTasks(isCompleted: true, loadMore: loadMore);
+  Future<List<UserTaskModel>> getActiveTask({bool loadMore = false}) => _getTasks(isCompleted: false, loadMore: loadMore);
 
 Future<List<Reward>> getStoreItems() async {
     var query = _firestore.collection('rewards').orderBy('createdAt', descending: true).where('isAvailable', isEqualTo: true);
     final snapshot = await query.get();
     return snapshot.docs.map((doc) => Reward.fromFirestore(doc)).toList();
   }
-
-  getUserTasks() => _getTasks();
-  getCompletedTask() => _getTasks(isCompleted: true);
-  getActiveTask() => _getTasks(isCompleted: false);
-
 
   Future<void> updateUserXp(int xpToAdd) async {
     try {

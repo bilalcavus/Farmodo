@@ -1,9 +1,9 @@
 import 'package:farmodo/data/models/user_task_model.dart';
 import 'package:farmodo/data/services/auth_service.dart';
 import 'package:farmodo/data/services/firestore_service.dart';
+import 'package:farmodo/feature/auth/login/viewmodel/login_controller.dart';
 import 'package:farmodo/feature/tasks/helper/timer_helper.dart';
 import 'package:farmodo/feature/tasks/utility/xp_calculator.dart';
-import 'package:farmodo/feature/auth/login/viewmodel/login_controller.dart';
 import 'package:farmodo/feature/tasks/viewmodel/timer_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -43,6 +43,9 @@ class TasksController extends GetxController {
   void onInit() {
     _updateXp();
     ever(selectedPomodoroTime, (_) => _updateXp());
+    // Trigger initial task loads
+    getActiveTask();
+    getCompletedTask();
     super.onInit();
   }
   void setLoading(LoadingType type, bool value) {
@@ -68,18 +71,6 @@ class TasksController extends GetxController {
 
   void selectTask(int index, UserTaskModel task){
     selctedTaskIndex.value = index;
-    // timerController.totalSeconds.value = task.duration * 60;
-    // timerController.secondsRemaining.value = task.duration * 60;
-    // final int breakMinutes = task.breakDuration > 0 ? task.breakDuration : (task.duration ~/ 5).clamp(1, 1000);
-    // timerController.totalBreakSeconds.value = breakMinutes * 60;
-    // timerController.breakSecondsRemaining.value = breakMinutes * 60;
-    
-    // final taskId = task.id;
-    // timerController.onTimerComplete = () async {
-    //   timerController.onBreakComplete = () async {
-    //     await completeTaskById(taskId);
-    //   };
-    // };
     TimerHelper.setupTaskTimer(
       timerController, task, () async => await completeTaskById(task.id));
   }
@@ -108,31 +99,7 @@ class TasksController extends GetxController {
         _clearTimer();
         Get.to(() => SucceedTaskPage());
       } else {
-        
         _restartTask(task);
-        // final updatedIndex = _findTaskIndex(task);
-        // if (updatedIndex == -1) {
-        //   debugPrint('Task not found after update');
-        //   selctedTaskIndex.value = -1;
-        //   return;
-        // }
-        
-        // selctedTaskIndex.value = updatedIndex;
-        // final updatedTask = activeUserTasks[updatedIndex];
-        // timerController.totalSeconds.value = updatedTask.duration * 60;
-        // timerController.secondsRemaining.value = updatedTask.duration * 60;
-        // final int breakMinutes = updatedTask.breakDuration > 0 ? updatedTask.breakDuration : (updatedTask.duration ~/ 5).clamp(1, 1000);
-        // timerController.totalBreakSeconds.value = breakMinutes * 60;
-        // timerController.breakSecondsRemaining.value = breakMinutes * 60;
-
-        // final updatedTaskId = updatedTask.id;
-        // timerController.onTimerComplete = () async {
-        //   timerController.onBreakComplete = () async {
-        //     await completeTaskById(updatedTaskId);
-        //   };
-        // };
-
-        // timerController.startTimer();
       }
     } catch (e) {
       errorMessage.value = "Task completion failed: $e";
@@ -213,18 +180,22 @@ class TasksController extends GetxController {
 
   Future<void> _fetchTasks({
     required RxList<UserTaskModel> targetList,
-    required Future<List<UserTaskModel>> Function() fetchFunction,
-    required LoadingType loadingFlag
+    required Future<List<UserTaskModel>> Function({bool loadMore}) fetchFunction,
+    required LoadingType loadingFlag,
+    bool loadMore = false
   }) async {
     setLoading(loadingFlag, true);
     try {
-      final tasks = await fetchFunction();
+      final tasks = await fetchFunction(loadMore: loadMore);
       if (tasks.isNotEmpty) {
-        targetList.assignAll(tasks);
-      } else {
+        if (loadMore) {
+          targetList.addAll(tasks);
+        } else {
+          targetList.assignAll(tasks);
+        }
+      } else if (!loadMore) {
         targetList.clear();
       }
-      
       if (loadingFlag == LoadingType.active && targetList == activeUserTasks) {
         if (selctedTaskIndex.value >= activeUserTasks.length) {
           selctedTaskIndex.value = -1;
@@ -237,22 +208,19 @@ class TasksController extends GetxController {
     }
   }
 
-  getUserTasks() => _fetchTasks(
-    targetList: userTasks,
-    fetchFunction: () => firestoreService.getUserTasks(),
-    loadingFlag: LoadingType.general
-  );
 
-  getActiveTask() => _fetchTasks(
+  Future<void> getActiveTask({bool loadMore = false}) => _fetchTasks(
     targetList: activeUserTasks,
-    fetchFunction: () => firestoreService.getActiveTask(),
-    loadingFlag: LoadingType.active
+    fetchFunction: ({bool loadMore = false}) => firestoreService.getActiveTask(loadMore: loadMore),
+    loadingFlag: LoadingType.active,
+    loadMore: loadMore
   );
 
-  getCompletedTask() => _fetchTasks(
+  Future<void> getCompletedTask({bool loadMore = false}) => _fetchTasks(
     targetList: completedUserTasks,
-    fetchFunction: () => firestoreService.getCompletedTask(),
-    loadingFlag: LoadingType.completed
+    fetchFunction: ({bool loadMore = false}) => firestoreService.getCompletedTask(loadMore: loadMore),
+    loadingFlag: LoadingType.completed,
+    loadMore: loadMore
   );
 
   int _findTaskIndex(UserTaskModel targetTask) {
