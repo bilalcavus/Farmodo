@@ -400,9 +400,10 @@ class AnimalSprite extends PositionComponent {
 
   bool get fromPalette => gridRow == null || gridCol == null;
 
+  @override
   bool containsPoint(Vector2 point) {
     final rect = Rect.fromCenter(
-      center: Offset(this.position.x, this.position.y),
+      center: Offset(position.x, position.y),
       width: size.x,
       height: size.y,
     );
@@ -464,7 +465,7 @@ class BackgroundGrassComponent extends PositionComponent {
 }
 
 class TreeComponent extends DecorationComponent {
-  TreeComponent({required Vector2 position}) : super(position: position);
+  TreeComponent({required super.position});
 
   @override
   void render(Canvas canvas) {
@@ -491,7 +492,7 @@ class TreeComponent extends DecorationComponent {
 }
 
 class PondComponent extends DecorationComponent {
-  PondComponent({required Vector2 position}) : super(position: position);
+  PondComponent({required super.position});
 
   // @override
   // void render(Canvas canvas) {
@@ -512,7 +513,7 @@ class PondComponent extends DecorationComponent {
 }
 
 class RockComponent extends DecorationComponent {
-  RockComponent({required Vector2 position}) : super(position: position);
+  RockComponent({required super.position});
 
   @override
   void render(Canvas canvas) {

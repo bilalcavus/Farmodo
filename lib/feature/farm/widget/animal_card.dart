@@ -32,7 +32,7 @@ class AnimalCard extends StatelessWidget {
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: Colors.black.withAlpha(25),
               blurRadius: 10,
               offset: const Offset(0, 5),
             ),
@@ -89,7 +89,7 @@ class AnimalCard extends StatelessWidget {
                         vertical: context.dynamicHeight(0.005)
                       ),
                       decoration: BoxDecoration(
-                        color: Colors.orange.withOpacity(0.9),
+                        color: Colors.orange.withAlpha(230),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Text(

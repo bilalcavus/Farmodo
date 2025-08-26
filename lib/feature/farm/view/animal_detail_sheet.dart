@@ -74,7 +74,7 @@ class _AnimalDetailSheetState extends State<AnimalDetailSheet> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Takma Ad',
+          'Nickname',
           style: Theme.of(context).textTheme.bodyLarge?.copyWith(
             fontWeight: FontWeight.bold,
           ),
@@ -88,7 +88,7 @@ class _AnimalDetailSheetState extends State<AnimalDetailSheet> {
               child: TextField(
                 controller: _nicknameController,
                 decoration: InputDecoration(
-                  hintText: 'Takma ad girin...',
+                  hintText: 'Enter nickname...',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -122,7 +122,7 @@ class _AnimalDetailSheetState extends State<AnimalDetailSheet> {
                   vertical: 12,
                 ),
               ),
-              child: const Text('Kaydet'),
+              child: const Text('Save'),
             ),
           ],
         ),
@@ -135,7 +135,7 @@ class _AnimalDetailSheetState extends State<AnimalDetailSheet> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Aksiyonlar',
+          'Actions',
           style: Theme.of(context).textTheme.bodyLarge?.copyWith(
             fontWeight: FontWeight.bold,
           ),
@@ -152,28 +152,28 @@ class _AnimalDetailSheetState extends State<AnimalDetailSheet> {
           childAspectRatio: 3,
           children: [
             _buildActionButton(
-              'Besle',
+              'Feed',
               Icons.restaurant,
               Colors.orange,
               _farmController.feedingAnimalId.value == widget.animal.id,
               () => _farmController.feedAnimal(widget.animal.id),
             ),
             _buildActionButton(
-              'Sev',
+              'Love',
               Icons.favorite,
               Colors.pink,
               _farmController.lovingAnimalId.value == widget.animal.id,
               () => _farmController.loveAnimal(widget.animal.id),
             ),
             _buildActionButton(
-              'Oyna',
+              'Play',
               Icons.sports_esports,
               Colors.blue,
               _farmController.playingAnimalId.value == widget.animal.id,
               () => _farmController.playWithAnimal(widget.animal.id),
             ),
             _buildActionButton(
-              'İyileştir',
+              'Heal',
               Icons.healing,
               Colors.green,
               _farmController.healingAnimalId.value == widget.animal.id,
@@ -197,10 +197,10 @@ class _AnimalDetailSheetState extends State<AnimalDetailSheet> {
       child: Container(
         padding: EdgeInsets.all(context.dynamicWidth(0.04)),
         decoration: BoxDecoration(
-          color: isLoading ? Colors.grey.shade300 : color.withOpacity(0.1),
+          color: isLoading ? Colors.grey.shade300 : color.withAlpha(25),
           borderRadius: BorderRadius.circular(15),
           border: Border.all(
-            color: isLoading ? Colors.grey.shade400 : color.withOpacity(0.3),
+            color: isLoading ? Colors.grey.shade400 : color.withAlpha(75),
           ),
         ),
         child: Row(
@@ -245,7 +245,7 @@ class _AnimalDetailSheetState extends State<AnimalDetailSheet> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Detay Bilgileri',
+            'Detail Info',
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
               fontWeight: FontWeight.bold,
             ),
@@ -262,17 +262,17 @@ class _AnimalDetailSheetState extends State<AnimalDetailSheet> {
             ),
             child: Column(
               children: [
-                _buildDetailRow('Tür', updatedAnimal.name),
-                _buildDetailRow('Açıklama', updatedAnimal.description),
-                _buildDetailRow('Seviye', '${updatedAnimal.level}'),
-                _buildDetailRow('Deneyim Puanı', '${updatedAnimal.experience} XP'),
-                _buildDetailRow('Edinilme Tarihi', 
+                _buildDetailRow('Name', updatedAnimal.name),
+                _buildDetailRow('Descriptipn', updatedAnimal.description),
+                _buildDetailRow('Level', '${updatedAnimal.level}'),
+                _buildDetailRow('Experience Point ', '${updatedAnimal.experience} XP'),
+                _buildDetailRow('Acquire At', 
                   '${updatedAnimal.acquiredAt.day}/${updatedAnimal.acquiredAt.month}/${updatedAnimal.acquiredAt.year}'),
-                _buildDetailRow('Son Beslenme', 
+                _buildDetailRow('Last Feeding', 
                   '${updatedAnimal.status.lastFed.hour}:${updatedAnimal.status.lastFed.minute.toString().padLeft(2, '0')}'),
-                _buildDetailRow('Son Sevgi', 
+                _buildDetailRow('Last Loving', 
                   '${updatedAnimal.status.lastLoved.hour}:${updatedAnimal.status.lastLoved.minute.toString().padLeft(2, '0')}'),
-                _buildDetailRow('Son Oyun', 
+                _buildDetailRow('Last Gaming', 
                   '${updatedAnimal.status.lastPlayed.hour}:${updatedAnimal.status.lastPlayed.minute.toString().padLeft(2, '0')}'),
               ],
             ),

@@ -22,6 +22,22 @@
           }
         },
         {
+          "client_id": "508514053433-408goh70e7ije68d9dcscc6kgtert470.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bilalcavus.farmodo",
+            "certificate_hash": "d0e28b253a1ad6da767c01e0a78261292c2d19ce"
+          }
+        },
+        {
+          "client_id": "508514053433-k664k7db17oimfm6dtkoh3l21lppomrb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bilalcavus.farmodo",
+            "certificate_hash": "6ae19a13d80d8ecfe6d9ff9a308d46e09fa34d8f"
+          }
+        },
+        {
           "client_id": "508514053433-s6vgql1jtr408a3u8vhnjugv7nqg7cgo.apps.googleusercontent.com",
           "client_type": 3
         }

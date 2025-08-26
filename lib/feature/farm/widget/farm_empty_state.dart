@@ -24,13 +24,13 @@ class FarmEmptyState extends StatelessWidget {
                   width: context.dynamicWidth(0.25),
                   height: context.dynamicHeight(0.12),
                   decoration: BoxDecoration(
-                    color: Colors.green.withOpacity(0.1),
+                    color: Colors.green.withAlpha(25),
                     shape: BoxShape.circle,
                   ),
                   child: Icon(
                     Icons.pets,
                     size: context.dynamicHeight(0.06),
-                    color: Colors.green.withOpacity(0.6),
+                    color: Colors.green.withAlpha(25),
                   ),
                 ),
               );
@@ -208,7 +208,7 @@ class FarmEmptyState extends StatelessWidget {
             Container(
               padding: EdgeInsets.all(context.dynamicWidth(0.02)),
               decoration: BoxDecoration(
-                color: color.withOpacity(0.1),
+                color: color.withAlpha(25),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Icon(

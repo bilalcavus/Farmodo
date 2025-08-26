@@ -1,6 +1,6 @@
 class TextStrings {
   // Privacy Policy
-  static const String PRIVACY_POLICY = '''
+  static const String privacyPolicy = '''
 Farmodo uygulaması kullanıcılarının gizliliğini korumaya kararlıdır. Kişisel bilgilerinizi nasıl topladığımızı, kullandığımızı ve koruduğumuzu bu gizlilik sözleşmesi açıklar.
 
 • Google hesabı ile giriş yaptığınızda email adresi, ad ve profil fotoğrafı toplarız
@@ -12,7 +12,7 @@ Daha fazla bilgi için tam gizlilik politikamızı inceleyebilirsiniz.
 ''';
 
   // Terms and Conditions
-  static const String TERMS_AND_CONDITIONS = '''
+  static const String termsAndConditions = '''
 Farmodo uygulamasını kullanarak aşağıdaki şartları kabul etmiş olursunuz:
 
 • Uygulamayı yalnızca yasal amaçlar için kullanacaksınız

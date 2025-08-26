@@ -73,7 +73,7 @@ class SheetHeader extends StatelessWidget {
                             borderRadius: BorderRadius.circular(15),
                           ),
                           child: Text(
-                            'Seviye ${updatedAnimal.level}',
+                            'Level ${updatedAnimal.level}',
                             style: Theme.of(context).textTheme.labelLarge?.copyWith(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
@@ -86,7 +86,7 @@ class SheetHeader extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Deneyim: ${updatedAnimal.experience} XP',
+                                'Experience: ${updatedAnimal.experience} XP',
                                 style: Theme.of(context).textTheme.labelLarge?.copyWith(
                                   fontWeight: FontWeight.w500,
                                 ),
@@ -118,7 +118,7 @@ class SheetHeader extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withAlpha(25),
             blurRadius: 10,
             offset: const Offset(0, 5)),
             ],

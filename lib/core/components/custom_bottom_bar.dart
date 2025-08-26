@@ -18,10 +18,10 @@ class CustomBottomNavigation extends StatelessWidget {
     return Container(
       height: context.dynamicHeight(0.08),
       decoration: BoxDecoration(
-        color: Colors.grey.shade300,
+        color: Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withAlpha(15),
             blurRadius: 10,
             offset: const Offset(0, -5),
           ),
@@ -51,7 +51,7 @@ class CustomBottomNavigation extends StatelessWidget {
               context,
               index: 2,
               icon: Iconsax.pet,
-              label: 'Çiftlik'
+              label: 'Farm'
             ),
           ),
           Expanded(
@@ -59,7 +59,7 @@ class CustomBottomNavigation extends StatelessWidget {
               context,
               index: 3,
               icon: Iconsax.shop,
-              label: 'Mağaza'
+              label: 'Store'
             ),
           ),
           Expanded(
@@ -67,7 +67,7 @@ class CustomBottomNavigation extends StatelessWidget {
               context,
               index: 4,
               icon: HugeIcons.strokeRoundedUser,
-              label: 'Profil'
+              label: 'Profile'
             ),
           ),
         ],

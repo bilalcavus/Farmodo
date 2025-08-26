@@ -102,7 +102,7 @@ class _FlipDigitState extends State<FlipDigit>
         borderRadius: BorderRadius.circular(context.dynamicHeight(0.05)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.3),
+            color: Colors.black.withAlpha(75),
             blurRadius: 4,
             offset: const Offset(0, 2),
           ),

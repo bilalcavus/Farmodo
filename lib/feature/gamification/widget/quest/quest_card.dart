@@ -33,30 +33,30 @@ class QuestCard extends StatelessWidget {
             end: Alignment.bottomRight,
             colors: isCompleted
                 ? [
-                    Colors.green.withOpacity(0.1),
-                    Colors.green.withOpacity(0.05),
+                    Colors.green.withAlpha(25),
+                    Colors.green.withAlpha(15),
                   ]
                 : isExpired
                     ? [
-                        Colors.red.withOpacity(0.1),
-                        Colors.red.withOpacity(0.05),
+                        Colors.red.withAlpha(25),
+                        Colors.red.withAlpha(15),
                       ]
                     : [
-                        quest.typeColor.withOpacity(0.1),
-                        quest.typeColor.withOpacity(0.05),
+                        quest.typeColor.withAlpha(25),
+                        quest.typeColor.withAlpha(15),
                       ],
           ),
           border: Border.all(
             color: isCompleted
-                ? Colors.green.withOpacity(0.3)
+                ? Colors.green.withAlpha(75)
                 : isExpired
-                    ? Colors.red.withOpacity(0.3)
-                    : quest.typeColor.withOpacity(0.3),
+                    ? Colors.red.withAlpha(75)
+                    : quest.typeColor.withAlpha(75),
             width: 2,
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: Colors.black.withAlpha(25),
               blurRadius: 8,
               offset: const Offset(0, 4),
             ),
@@ -76,7 +76,7 @@ class QuestCard extends StatelessWidget {
                     width: context.dynamicWidth(0.08),
                     height: context.dynamicHeight(0.05),
                     decoration: BoxDecoration(
-                      color: quest.typeColor.withOpacity(0.2),
+                      color: quest.typeColor.withAlpha(50),
                       shape: BoxShape.circle,
                     ),
                     child: Icon(
@@ -206,7 +206,7 @@ class QuestCard extends StatelessWidget {
                             vertical: context.dynamicHeight(0.005)
                           ),
                           decoration: BoxDecoration(
-                            color: Colors.blue.withOpacity(0.1),
+                            color: Colors.blue.withAlpha(25),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Row(
@@ -239,7 +239,7 @@ class QuestCard extends StatelessWidget {
                             vertical: context.dynamicHeight(0.005)
                           ),
                           decoration: BoxDecoration(
-                            color: Colors.orange.withOpacity(0.1),
+                            color: Colors.orange.withAlpha(25),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Row(

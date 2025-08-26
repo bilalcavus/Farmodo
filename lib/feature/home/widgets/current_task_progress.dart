@@ -36,7 +36,7 @@ class CurrentTaskProgress extends StatelessWidget {
           border: Border.all(color: AppColors.border),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: Colors.black.withAlpha(15),
               blurRadius: 8,
               offset: Offset(0, 2),
             ),
@@ -53,7 +53,7 @@ class CurrentTaskProgress extends StatelessWidget {
                     vertical: context.dynamicHeight(0.005),
                   ),
                   decoration: BoxDecoration(
-                    color: AppColors.primary.withOpacity(0.1),
+                    color: AppColors.primary.withAlpha(25),
                     borderRadius: BorderRadius.circular(context.dynamicHeight(0.02)),
                   ),
                   child: Text(
@@ -71,7 +71,7 @@ class CurrentTaskProgress extends StatelessWidget {
                     vertical: context.dynamicHeight(0.005),
                   ),
                   decoration: BoxDecoration(
-                    color:  AppColors.danger.withOpacity(0.1),
+                    color:  AppColors.danger.withAlpha(25),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(

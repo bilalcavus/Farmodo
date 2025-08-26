@@ -85,7 +85,7 @@ class _AchievementUnlockAnimationState extends State<AchievementUnlockAnimation>
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: Colors.black.withOpacity(0.8),
+      color: Colors.black.withAlpha(200),
       child: Stack(
         children: [
           // Particle effects
@@ -116,7 +116,7 @@ class _AchievementUnlockAnimationState extends State<AchievementUnlockAnimation>
                         borderRadius: BorderRadius.circular(20),
                         boxShadow: [
                           BoxShadow(
-                            color: widget.achievement.rarityColor.withOpacity(0.3),
+                            color: widget.achievement.rarityColor.withAlpha(75),
                             blurRadius: 20,
                             spreadRadius: 5,
                           ),
@@ -133,8 +133,8 @@ class _AchievementUnlockAnimationState extends State<AchievementUnlockAnimation>
                               shape: BoxShape.circle,
                               gradient: RadialGradient(
                                 colors: [
-                                  widget.achievement.rarityColor.withOpacity(0.3),
-                                  widget.achievement.rarityColor.withOpacity(0.1),
+                                  widget.achievement.rarityColor.withAlpha(75),
+                                  widget.achievement.rarityColor.withAlpha(25),
                                   Colors.transparent,
                                 ],
                               ),
@@ -144,7 +144,7 @@ class _AchievementUnlockAnimationState extends State<AchievementUnlockAnimation>
                                 width: context.dynamicWidth(0.14),
                                 height: context.dynamicHeight(0.08),
                                 decoration: BoxDecoration(
-                                  color: widget.achievement.rarityColor.withOpacity(0.2),
+                                  color: widget.achievement.rarityColor.withAlpha(50),
                                   shape: BoxShape.circle,
                                 ),
                                 child: Icon(
@@ -203,7 +203,7 @@ class _AchievementUnlockAnimationState extends State<AchievementUnlockAnimation>
                                   vertical: context.dynamicHeight(0.008),
                                 ),
                                 decoration: BoxDecoration(
-                                  color: widget.achievement.rarityColor.withOpacity(0.1),
+                                  color: widget.achievement.rarityColor.withAlpha(25),
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                                 child: Row(
@@ -233,7 +233,7 @@ class _AchievementUnlockAnimationState extends State<AchievementUnlockAnimation>
                                   vertical: context.dynamicHeight(0.008),
                                 ),
                                 decoration: BoxDecoration(
-                                  color: Colors.blue.withOpacity(0.1),
+                                  color: Colors.blue.withAlpha(25),
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                                 child: Row(
@@ -319,7 +319,7 @@ class ParticlePainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
       ..style = PaintingStyle.fill
-      ..color = Colors.yellow.withOpacity(0.8);
+      ..color = Colors.yellow.withAlpha(200);
 
     for (final particle in particles) {
       final x = size.width * particle.x + (particle.velocityX * progress * 200);
@@ -330,6 +330,7 @@ class ParticlePainter extends CustomPainter {
         canvas.drawCircle(
           Offset(x, y),
           radius,
+          // ignore: deprecated_member_use
           paint..color = particle.color.withOpacity((1 - progress) * 0.8),
         );
       }

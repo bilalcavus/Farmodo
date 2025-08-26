@@ -287,7 +287,7 @@ class AnimalService {
   Future<void> _triggerLevelUpGamification(int newLevel) async {
     try {
       final animals = await getUserAnimals();
-      final totalLevel = animals.fold<int>(0, (sum, animal) => sum + animal.level);
+      final totalLevel = animals.fold<int>(0, (total, animal) => total + animal.level);
       await _gamificationService.triggerAnimalLevelUp(newLevel);
       if (totalLevel > 0) {
         await _gamificationService.triggerAnimalLevelUp(totalLevel);

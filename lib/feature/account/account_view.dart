@@ -75,7 +75,7 @@ class _AccountViewState extends State<AccountView> {
         borderRadius: BorderRadius.circular(context.dynamicHeight(0.03)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withAlpha(13),
             blurRadius: 10,
             offset: const Offset(0, 2),
           ),
@@ -132,7 +132,7 @@ class _AccountViewState extends State<AccountView> {
             borderRadius: BorderRadius.circular(context.dynamicHeight(0.02)),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.05),
+                color: Colors.black.withAlpha(13),
                 blurRadius: context.dynamicHeight(0.012),
                 offset: Offset(0, context.dynamicHeight(0.002)),
               ),
@@ -190,7 +190,7 @@ class _AccountViewState extends State<AccountView> {
             borderRadius: BorderRadius.circular(context.dynamicHeight(0.02)),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.05),
+                color: Colors.black.withAlpha(13),
                 blurRadius: context.dynamicHeight(0.012),
                 offset: Offset(0, context.dynamicHeight(0.002)),
               ),
@@ -252,7 +252,7 @@ class _AccountViewState extends State<AccountView> {
     return Container(
       height: 1,
       margin: EdgeInsets.symmetric(horizontal: context.dynamicWidth(0.04)),
-      color: Colors.grey.withOpacity(0.1),
+      color: Colors.grey.withAlpha(25),
     );
   }
 
@@ -279,7 +279,7 @@ class _AccountViewState extends State<AccountView> {
               Container(
                 padding: EdgeInsets.all(context.dynamicHeight(0.01)),
                 decoration: BoxDecoration(
-                  color: title == 'Logout' ? AppColors.danger.withOpacity(0.1) : AppColors.primary.withOpacity(0.1),
+                  color: title == 'Logout' ? AppColors.danger.withAlpha(25) : AppColors.primary.withAlpha(25),
                   borderRadius: BorderRadius.circular(context.dynamicHeight(0.01)),
                 ),
                 child: Icon(

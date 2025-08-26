@@ -39,7 +39,7 @@ class StoreCard extends StatelessWidget {
             color: AppColors.surface,
             borderRadius: BorderRadius.circular(cardRadius),
             border: Border.all(
-              color: isOwned ? Colors.green : AppColors.primary.withOpacity(0.1)
+              color: isOwned ? Colors.green : AppColors.primary.withAlpha(25),
             ),
           ),
           child: Padding(

@@ -86,7 +86,7 @@ class _FarmViewState extends State<FarmView> with TickerProviderStateMixin {
             children: [
                 _FarmHeader(context: context, farmController: farmController),
                 _achievementsAndQuests(context),
-                _StatsCards(farmController: farmController),
+                _StatsCards(),
                 Expanded(
                   child: _UserAnimalList(farmController: farmController, context: context)
                 ),
@@ -112,7 +112,7 @@ class _FarmViewState extends State<FarmView> with TickerProviderStateMixin {
           children: [
             Icon(HugeIcons.strokeRoundedChampion,),
             context.dynamicWidth(0.02).width,
-            Text('Başarılar ve Görevler'),
+            Text('Achievements and Quests'),
             Spacer(),
             Icon(HugeIcons.strokeRoundedArrowRight01)
           ],

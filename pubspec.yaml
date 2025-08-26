@@ -46,6 +46,8 @@ flutter:
     - assets/images/animals/
     - assets/logo/
     - assets/lottie/
+    - assets/icons/
+    - assets/icons/achievements/
     
   fonts:
     - family: Inter

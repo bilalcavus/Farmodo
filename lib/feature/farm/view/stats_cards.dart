@@ -1,10 +1,8 @@
 part of 'farm_view.dart';
 
 class _StatsCards extends StatelessWidget {
-  _StatsCards({
-    required this.farmController
-  });
-  FarmController farmController = getIt<FarmController>();
+  _StatsCards();
+  final FarmController farmController = Get.find<FarmController>();
   @override
   Widget build(BuildContext context) {
     return Obx(() => SizedBox(
@@ -14,49 +12,49 @@ class _StatsCards extends StatelessWidget {
         children: [
           _buildStatCard(
             context,
-            'Toplam',
+            'Total',
             farmController.totalAnimals.toString(),
             Icons.pets,
           Colors.blue,
           ),
           _buildStatCard(
             context,
-            'Favori',
+            'Favourite',
             farmController.totalFavorites.toString(),
             Icons.favorite,
             Colors.red,
           ),
           _buildStatCard(
             context,
-            'Aç',
+            'Hunger',
             farmController.totalHungry.toString(),
             Icons.restaurant,
             Colors.orange,
           ),
           _buildStatCard(
             context,
-            'Sevgi',
+            'Love',
             farmController.totalNeedingLove.toString(),
             Icons.favorite_border,
             Colors.pink,
           ),
           _buildStatCard(
             context,
-            'Yorgun',
+            'Tired',
             farmController.totalTired.toString(),
             Icons.bedtime,
             Colors.purple,
           ),
           _buildStatCard(
             context,
-            'Hasta',
+            'Sick',
             farmController.totalSick.toString(),
             Icons.healing,
             Colors.red,
           ),
           _buildStatCard(
             context,
-            'Mutlu',
+            'Happy',
             farmController.totalHappy.toString(),
             Icons.sentiment_satisfied,
             Colors.green,
@@ -88,7 +86,7 @@ class _StatsCards extends StatelessWidget {
           Text(
             title,
             style: Theme.of(context).textTheme.labelSmall?.copyWith(
-              color: color.withOpacity(0.8),
+              color: color
             ),
             textAlign: TextAlign.center,
           ),

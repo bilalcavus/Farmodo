@@ -21,7 +21,7 @@ class _FarmHeader extends StatelessWidget {
           Container(
             padding: EdgeInsets.all(context.dynamicWidth(0.025)),
             decoration: BoxDecoration(
-              color: Colors.green.withOpacity(0.1),
+              color: Colors.green.withAlpha(25),
               borderRadius: BorderRadius.circular(15),
             ),
             child: Icon(
@@ -38,7 +38,7 @@ class _FarmHeader extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Çiftliğim',
+                  'My Farm',
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
@@ -47,13 +47,13 @@ class _FarmHeader extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      '${farmController.totalAnimals} hayvan',
+                      '${farmController.totalAnimals} animal',
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
                         color: Colors.grey.shade600,
                       ),
                     ),
                     Text(
-                      'Son güncelleme: ${farmController.lastUpdateTimeString}',
+                      'Last Updated: ${farmController.lastUpdateTimeString}',
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: Colors.grey.shade500,
                         fontSize: 12,
@@ -68,17 +68,17 @@ class _FarmHeader extends StatelessWidget {
             farmController: farmController,
             onTap: () async => await farmController.syncPurchasedAnimalsToFarm(),
             icon: Icons.refresh,
-            toolTip: 'Yenile',
+            toolTip: 'Refresh',
           ),
           RefreshButton(
             farmController: farmController,
             icon: Icons.update,
-            toolTip: 'Hayvan Durumlarını Güncelle',
+            toolTip: 'Update animal status',
             onTap:  () async {
               await farmController.updateAnimalStatusesOverTime();
               Get.snackbar(
-                'Güncellendi!',
-                'Hayvan durumları güncellendi',
+                'Updated!',
+                'Updated animal status!',
                 snackPosition: SnackPosition.TOP,
                 backgroundColor: Colors.green,
                 colorText: Colors.white,

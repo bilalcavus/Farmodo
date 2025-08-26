@@ -70,7 +70,7 @@ class LevelBar extends StatelessWidget {
           Container(
             padding: EdgeInsets.symmetric(horizontal: context.dynamicWidth(0.02), vertical: context.dynamicHeight(0.005)),
             decoration: BoxDecoration(
-              color: AppColors.danger.withOpacity(0.1),
+              color: AppColors.danger.withAlpha(25),
               borderRadius: BorderRadius.circular(16),
             ),
             child: Text(

@@ -1,7 +1,6 @@
 part of 'farm_view.dart';
 class _UserAnimalList extends StatelessWidget {
   const _UserAnimalList({
-    super.key,
     required this.farmController,
     required this.context,
   });

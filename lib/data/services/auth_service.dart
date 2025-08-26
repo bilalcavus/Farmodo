@@ -156,6 +156,12 @@ class AuthService {
 
   Future<UserModel> signInWithGoogle() async {
     try {
+      // Check if Google Play Services is available
+      if (!await _googleSignIn.isSignedIn()) {
+        // Force sign out to clear any cached state
+        await _googleSignIn.signOut();
+      }
+
       // Google Sign-In'i başlat
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
       
@@ -245,6 +251,12 @@ class AuthService {
       if (e.toString().contains('network')) {
         throw Exception('İnternet bağlantısı hatası. Lütfen bağlantınızı kontrol edin.');
       }
+      
+      // Handle Google Sign-In specific errors
+      if (e.toString().contains('ApiException: 10')) {
+        throw Exception('Google Sign-In yapılandırma hatası. Lütfen SHA-1 sertifika parmak izini kontrol edin.');
+      }
+      
       throw Exception('Google Sign-In hatası: $e');
     }
   }

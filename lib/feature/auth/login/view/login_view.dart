@@ -115,7 +115,7 @@ class _LoginViewState extends State<LoginView> {
       child: Text(
         'or continue with',
         style: TextStyle(
-          color: Colors.black.withOpacity(0.6),
+          color: Colors.black.withAlpha(150),
           fontSize: context.dynamicWidth(0.035),
         ),
       ),
@@ -126,7 +126,7 @@ class _LoginViewState extends State<LoginView> {
     return Expanded(
       child: Container(
         height: 1,
-        color: Colors.black.withOpacity(0.2),
+        color: Colors.black.withAlpha(50),
       ),
     );
   }
@@ -192,7 +192,7 @@ class _LoginViewState extends State<LoginView> {
           title: Text('Gizlilik Sözleşmesi'),
           content: SingleChildScrollView(
             child: Text(
-              TextStrings.PRIVACY_POLICY,
+              TextStrings.termsAndConditions,
               style: TextStyle(fontSize: 14),
             ),
           ),
@@ -215,7 +215,7 @@ class _LoginViewState extends State<LoginView> {
           title: Text('Kullanım Şartları'),
           content: SingleChildScrollView(
             child: Text(
-              TextStrings.TERMS_AND_CONDITIONS,
+              TextStrings.privacyPolicy,
               style: TextStyle(fontSize: 14),
             ),
           ),

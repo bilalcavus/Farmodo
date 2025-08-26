@@ -21,7 +21,7 @@ class SheetAnimalStatus extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Durum',
+              'Status',
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                 fontWeight: FontWeight.bold
               )
@@ -45,28 +45,28 @@ class SheetAnimalStatus extends StatelessWidget {
                 children: [
                   _buildStatusCard(
                     context,
-                    'Açlık',
+                    'Hungery',
                     updatedAnimal.status.hunger,
                     Colors.orange,
                     Icons.restaurant,
                   ),
                   _buildStatusCard(
                     context,
-                    'Sevgi',
+                    'Love',
                     updatedAnimal.status.love,
                     Colors.pink,
                     Icons.favorite,
                   ),
                   _buildStatusCard(
                     context,
-                    'Enerji',
+                    'Energy',
                     updatedAnimal.status.energy,
                     Colors.blue,
                     Icons.flash_on,
                   ),
                   _buildStatusCard(
                     context,
-                    'Sağlık',
+                    'Health',
                     updatedAnimal.status.health,
                     Colors.green,
                     Icons.health_and_safety,
@@ -82,9 +82,9 @@ class SheetAnimalStatus extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(context.dynamicWidth(0.04)),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withAlpha(25),
         borderRadius: BorderRadius.circular(15),
-        border: Border.all(color: color.withOpacity(0.3)),
+        border: Border.all(color: color.withAlpha(75)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

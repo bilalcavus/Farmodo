@@ -24,7 +24,7 @@ class TimeStartButton extends StatelessWidget {
               backgroundColor: timerController.isRunning.value
                   ? AppColors.danger
                   : tasksController.selctedTaskIndex.value == -1
-                    ? AppColors.textSecondary.withOpacity(0.5)
+                    ? AppColors.textSecondary.withAlpha(125)
                     : AppColors.primary,
               foregroundColor: Colors.white,
               shape: RoundedRectangleBorder(
