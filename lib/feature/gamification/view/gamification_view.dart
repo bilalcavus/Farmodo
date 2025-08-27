@@ -49,7 +49,7 @@ class _GamificationViewState extends State<GamificationView>
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh_sharp, color: Colors.white),
-            onPressed: () => gamificationController.refresh(),
+            onPressed: () => gamificationController.refreshGamification(),
           ),
         ],
         bottom: TabBar(

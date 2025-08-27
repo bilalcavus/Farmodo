@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 
 enum AchievementType {
   animalCount,      // Belirli sayıda hayvan sahibi olma
-  careActions,      // Bakım aksiyonları (besleme, sevgi, oyun)
+  feedAnimals,      // feeding
+  loveAnimals,
+  playWithAnimals,
+  healAnimals,
   animalLevel,      // Hayvan seviyesi
   streak,           // Ardışık günler
   collection,       // Koleksiyon tamamlama

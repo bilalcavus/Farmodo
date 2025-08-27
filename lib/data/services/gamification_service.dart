@@ -16,19 +16,16 @@ class GamificationService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  // Simple in-memory caches with TTL to reduce Firestore reads
   List<Achievement>? _cachedAchievements;
   DateTime? _achievementsFetchedAt;
   List<Quest>? _cachedQuests;
   DateTime? _questsFetchedAt;
 
-  // User-scoped caches (short TTL due to frequent changes)
   List<UserAchievement>? _cachedUserAchievements;
   DateTime? _userAchievementsFetchedAt;
   List<UserQuest>? _cachedUserQuests;
   DateTime? _userQuestsFetchedAt;
 
-  // Cache control
   static const Duration _defaultTtl = Duration(seconds: 60);
   static const Duration _userTtl = Duration(seconds: 20);
 
@@ -39,13 +36,21 @@ class GamificationService {
 
   Future<List<Achievement>> getAchievements({bool forceRefresh = false}) async {
     if (!forceRefresh && _isFresh(_achievementsFetchedAt, _defaultTtl) && _cachedAchievements != null) {
+      debugPrint('achievements cache get edildi');
       return _cachedAchievements!;
     }
     try {
       final snapshot = await _firestore.collection('achievements').get();
-      _cachedAchievements = snapshot.docs.map((doc) => Achievement.fromFirestore(doc)).toList();
-      _achievementsFetchedAt = DateTime.now();
-      return _cachedAchievements!;
+      final fetched = snapshot.docs.map((doc) => Achievement.fromFirestore(doc)).toList();
+      if (fetched.isNotEmpty) {
+        _cachedAchievements = fetched;
+        _achievementsFetchedAt = DateTime.now();
+        debugPrint('achievements get edildi');
+        return _cachedAchievements!;
+      } else {
+        debugPrint('achievements fetch boş, cache döndürüldü');
+        return _cachedAchievements ?? [];
+      }
     } catch (e) {
       return _cachedAchievements ?? [];
     }
@@ -57,6 +62,7 @@ class GamificationService {
     if (uid == null) return [];
 
     if (!forceRefresh && _isFresh(_userAchievementsFetchedAt, _userTtl) && _cachedUserAchievements != null) {
+      debugPrint('user achievements cache get edildi');
       return _cachedUserAchievements!;
     }
 
@@ -66,9 +72,16 @@ class GamificationService {
           .doc(uid)
           .collection('achievements')
           .get();
-      _cachedUserAchievements = snapshot.docs.map((doc) => UserAchievement.fromFirestore(doc)).toList();
-      _userAchievementsFetchedAt = DateTime.now();
-      return _cachedUserAchievements!;
+      final fetched = snapshot.docs.map((doc) => UserAchievement.fromFirestore(doc)).toList();
+      if (fetched.isNotEmpty) {
+        _cachedUserAchievements = fetched;
+        _userAchievementsFetchedAt = DateTime.now();
+        debugPrint('user achievements get edildi');
+        return _cachedUserAchievements!;
+      } else {
+        debugPrint('user achievements fetch boş, cache döndürüldü');
+        return _cachedUserAchievements ?? [];
+      }
     } catch (e) {
       return _cachedUserAchievements ?? [];
     }
@@ -77,13 +90,21 @@ class GamificationService {
   // Görevleri getir
   Future<List<Quest>> getQuests({bool forceRefresh = false}) async {
     if (!forceRefresh && _isFresh(_questsFetchedAt, _defaultTtl) && _cachedQuests != null) {
+      debugPrint('quests cache get edildi');
       return _cachedQuests!;
     }
     try {
       final snapshot = await _firestore.collection('quests').get();
-      _cachedQuests = snapshot.docs.map((doc) => Quest.fromFirestore(doc)).toList();
-      _questsFetchedAt = DateTime.now();
-      return _cachedQuests!;
+      final fetched = snapshot.docs.map((doc) => Quest.fromFirestore(doc)).toList();
+      if (fetched.isNotEmpty) {
+        _cachedQuests = fetched;
+        _questsFetchedAt = DateTime.now();
+        debugPrint('quests get edildi');
+        return _cachedQuests!;
+      } else {
+        debugPrint('quests fetch boş, cache döndürüldü');
+        return _cachedQuests ?? [];
+      }
     } catch (e) {
       return _cachedQuests ?? [];
     }
@@ -95,6 +116,7 @@ class GamificationService {
     if (uid == null) return [];
 
     if (!forceRefresh && _isFresh(_userQuestsFetchedAt, _userTtl) && _cachedUserQuests != null) {
+      debugPrint('user quests cache get edildi');
       return _cachedUserQuests!;
     }
 
@@ -104,9 +126,16 @@ class GamificationService {
           .doc(uid)
           .collection('quests')
           .get();
-      _cachedUserQuests = snapshot.docs.map((doc) => UserQuest.fromFirestore(doc)).toList();
-      _userQuestsFetchedAt = DateTime.now();
-      return _cachedUserQuests!;
+      final fetched = snapshot.docs.map((doc) => UserQuest.fromFirestore(doc)).toList();
+      if (fetched.isNotEmpty) {
+        _cachedUserQuests = fetched;
+        _userQuestsFetchedAt = DateTime.now();
+        debugPrint('user quests get edildi');
+        return _cachedUserQuests!;
+      } else {
+        debugPrint('user quests fetch boş, cache döndürüldü');
+        return _cachedUserQuests ?? [];
+      }
     } catch (e) {
       return _cachedUserQuests ?? [];
     }
@@ -163,8 +192,6 @@ class GamificationService {
               'lastUpdated': Timestamp.fromDate(DateTime.now()),
             });
       }
-
-      // Invalidate user cache entry for accuracy
       _userAchievementsFetchedAt = null;
     } catch (e) {
       // Error updating achievement progress
@@ -390,9 +417,9 @@ class GamificationService {
     try {
       // Başarıları ve kullanıcı ilerlemelerini tek seferde al
       final achievements = await getAchievements();
-      final userAchievements = await getUserAchievements();
+      final userAchievements = await getUserAchievements(forceRefresh: true);
       for (final achievement in achievements) {
-        if (achievement.type == AchievementType.careActions) {
+        if (achievement.type.toString().contains(actionType) ) {
           final userAchievement = userAchievements.firstWhereOrNull(
             (ua) => ua.achievementId == achievement.id,
           );
@@ -408,7 +435,7 @@ class GamificationService {
 
       // Görevleri ve kullanıcı görev ilerlemelerini tek seferde al
       final quests = await getQuests();
-      final userQuests = await getUserQuests();
+      final userQuests = await getUserQuests(forceRefresh: true);
       for (final quest in quests) {
         if (quest.action.toString().contains(actionType) && quest.isActive) {
           final userQuest = userQuests.firstWhereOrNull(
@@ -433,7 +460,7 @@ class GamificationService {
     try {
       // Başarıları tek seferde al
       final achievements = await getAchievements();
-      final userAchievements = await getUserAchievements();
+      final userAchievements = await getUserAchievements(forceRefresh: true);
       for (final achievement in achievements) {
         if (achievement.type == AchievementType.animalCount) {
           final userAchievement = userAchievements.firstWhereOrNull(
@@ -450,7 +477,7 @@ class GamificationService {
 
       // Görevleri tek seferde al
       final quests = await getQuests();
-      final userQuests = await getUserQuests();
+      final userQuests = await getUserQuests(forceRefresh: true);
       for (final quest in quests) {
         if (quest.action == QuestAction.collectAnimals && quest.isActive) {
           final userQuest = userQuests.firstWhereOrNull(
@@ -473,7 +500,7 @@ class GamificationService {
   Future<void> triggerAnimalLevelUp(int level) async {
     try {
       // Başarıları kontrol et (tek seferde al)
-      final achievements = await getAchievements();
+      final achievements = await getAchievements(forceRefresh: true);
       for (final achievement in achievements) {
         if (achievement.type == AchievementType.animalLevel) {
           await updateAchievementProgress(
@@ -534,8 +561,7 @@ class GamificationService {
       final achievements = await getAchievements();
       final userAchievements = await getUserAchievements();
       for (final achievement in achievements) {
-        if (achievement.type == AchievementType.animalCount || 
-            achievement.type == AchievementType.careActions) {
+        if (achievement.type == AchievementType.animalCount) {
           final userAchievement = userAchievements.firstWhereOrNull(
             (ua) => ua.achievementId == achievement.id,
           );

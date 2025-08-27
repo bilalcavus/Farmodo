@@ -1,8 +1,8 @@
 import 'package:farmodo/core/components/drop_menu.dart';
 import 'package:farmodo/core/di/injection.dart';
+import 'package:farmodo/core/theme/app_colors.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
-import 'package:farmodo/core/theme/app_colors.dart';
 import 'package:farmodo/feature/tasks/viewmodel/tasks_controller.dart';
 import 'package:farmodo/feature/tasks/widget/pomodoro_time_selection.dart';
 import 'package:farmodo/feature/tasks/widget/task_add_button.dart';
@@ -56,38 +56,7 @@ class _AddTaskViewState extends State<AddTaskView> {
                 'Sport'
               ]),
               SizedBox(height: context.dynamicHeight(0.02)),
-              GridView.builder(
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
-                    crossAxisSpacing: context.dynamicWidth(0.03),
-                    mainAxisSpacing: context.dynamicWidth(0.01),
-                    childAspectRatio: 3.1,
-                  ), 
-                  itemCount: taskController.totalSessions.length,
-                  itemBuilder: (context, index){
-                    final session = taskController.totalSessions[index];
-                    return InkWell(
-                      onTap: (){
-                        taskController.setSelectedTotalSession(session);
-                      },
-                      child: Obx((){
-                        return Container(
-                          decoration: BoxDecoration(
-                            color: taskController.selectedTotalSession.value == session ? AppColors.secondary : Colors.grey.shade200,
-                            borderRadius: BorderRadius.circular(16)
-                          ),
-                          child: Center(child: Text(
-                            '$session session',
-                            textAlign: TextAlign.center,
-                            style: Theme.of(context).textTheme.labelLarge,
-                          )),
-                        );
-                      }
-                      ),
-                    );
-                  }),
+              SessionSelection(taskController: taskController),
               context.dynamicHeight(0.02).height,
               PomodoroTimeSelection(taskController: taskController),
               context.dynamicHeight(0.02).height,
@@ -115,6 +84,51 @@ class _AddTaskViewState extends State<AddTaskView> {
         )),
       ),
     );
+  }
+}
+
+class SessionSelection extends StatelessWidget {
+  const SessionSelection({
+    super.key,
+    required this.taskController,
+  });
+
+  final TasksController taskController;
+
+  @override
+  Widget build(BuildContext context) {
+    return GridView.builder(
+        shrinkWrap: true,
+        physics: NeverScrollableScrollPhysics(),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 3,
+          crossAxisSpacing: context.dynamicWidth(0.03),
+          mainAxisSpacing: context.dynamicWidth(0.01),
+          childAspectRatio: 3.1,
+        ), 
+        itemCount: taskController.totalSessions.length,
+        itemBuilder: (context, index){
+          final session = taskController.totalSessions[index];
+          return InkWell(
+            onTap: (){
+              taskController.setSelectedTotalSession(session);
+            },
+            child: Obx((){
+              return Container(
+                decoration: BoxDecoration(
+                  color: taskController.selectedTotalSession.value == session ? const Color.fromARGB(255, 24, 202, 78) : Colors.grey.shade200,
+                  borderRadius: BorderRadius.circular(16)
+                ),
+                child: Center(child: Text(
+                  '$session session',
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.labelLarge,
+                )),
+              );
+            }
+            ),
+          );
+        });
   }
 }
 
