@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/widget_background"
+    android:padding="8dp">
+
+    <!-- Progress Circle -->
+    <ProgressBar
+        android:id="@+id/progress_circle"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/progress_background"
+        android:progressDrawable="@drawable/progress_drawable"
+        android:rotation="-90" />
+
+    <!-- Timer Text -->
+    <TextView
+        android:id="@+id/timer_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/progress_circle"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="8dp"
+        android:text="00:00"
+        android:textColor="#FFFFFF"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <!-- Task Title -->
+    <TextView
+        android:id="@+id/task_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/timer_text"
+        android:layout_marginTop="4dp"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxLines="1"
+        android:text="No active task"
+        android:textColor="#CCCCCC"
+        android:textSize="12sp" />
+
+    <!-- Status Text (Break/Work) -->
+    <TextView
+        android:id="@+id/status_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/task_title"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="2dp"
+        android:text="Work"
+        android:textColor="#4CAF50"
+        android:textSize="10sp" />
+
+    <!-- Play/Pause Button -->
+    <ImageButton
+        android:id="@+id/play_pause_button"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/button_background"
+        android:contentDescription="Play/Pause"
+        android:src="@drawable/ic_play" />
+
+</RelativeLayout>

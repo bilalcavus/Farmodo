@@ -13,9 +13,9 @@ class FlipDigit extends StatefulWidget {
   const FlipDigit({
     super.key,
     required this.digit,
-    this.width = 120,
-    this.height = 150,
-    this.fontSize = 60,
+    required this.width,
+    required this.height,
+    required this.fontSize
   });
 
   @override
@@ -134,7 +134,7 @@ class FlipTimer extends StatelessWidget {
     required this.timeString,
     this.digitWidth = 120,
     this.digitHeight = 180,
-    this.fontSize = 100,
+    required this.fontSize,
     required this.timerController,
   });
 
@@ -167,7 +167,7 @@ class FlipTimer extends StatelessWidget {
               fontSize: fontSize,
             ),
             SizedBox(
-              width: 40,
+              width: 50,
               height: digitHeight,
               child: Center(
                 child: Text(
@@ -196,7 +196,7 @@ class FlipTimer extends StatelessWidget {
             ),
           ],
         ),
-        SizedBox(height: context.dynamicHeight(0.04)),
+        SizedBox(height: context.dynamicHeight(0.05)),
         Obx((){
           return Row(
             mainAxisAlignment: MainAxisAlignment.center,

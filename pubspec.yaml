@@ -26,6 +26,7 @@ dependencies:
 
     #Utility
   logger: ^2.6.1
+  home_widget: ^0.8.0
 
 dev_dependencies:
   flutter_test:

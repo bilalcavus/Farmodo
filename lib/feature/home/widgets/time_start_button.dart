@@ -1,10 +1,12 @@
 
 import 'package:farmodo/core/theme/app_colors.dart';
+import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/feature/tasks/view/add_task_view.dart';
 import 'package:farmodo/feature/tasks/viewmodel/tasks_controller.dart';
 import 'package:farmodo/feature/tasks/viewmodel/timer_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 class TimeStartButton extends StatelessWidget {
   const TimeStartButton({
@@ -19,7 +21,11 @@ class TimeStartButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Obx(() => ElevatedButton(
+      child: Obx(() => Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          // Start/Pause Button
+          ElevatedButton(
             style: ElevatedButton.styleFrom(
               backgroundColor: timerController.isRunning.value
                   ? AppColors.danger
@@ -34,7 +40,10 @@ class TimeStartButton extends StatelessWidget {
               elevation: 0,
             ),
             onPressed: timerController.isRunning.value
-                ? timerController.pauseTimer
+                ? () {
+                    timerController.pauseTimer();
+                    debugPrint('Pause button pressed');
+                  }
                 : () {
                     final selectedIndex = tasksController.selctedTaskIndex.value;
                     if (selectedIndex == -1 || 
@@ -65,7 +74,29 @@ class TimeStartButton extends StatelessWidget {
                     fontWeight: FontWeight.w700,
                   ),
             ),
-          )),
+          ),
+          
+          // Reset Button
+          if (tasksController.selctedTaskIndex.value != -1) ...[
+            SizedBox(width: context.dynamicWidth(0.03)),
+            InkWell(
+              onTap: () {
+                timerController.resetTimer();
+                debugPrint('Reset button pressed');
+              },
+              child: CircleAvatar(
+                radius: context.dynamicHeight(0.025),
+                backgroundColor: Colors.grey.shade800,
+                child: Icon(
+                  HugeIcons.strokeRoundedRefresh,
+                  color: Colors.white,
+                  size: context.dynamicHeight(0.025),
+                ),
+              ),
+            ),
+          ],
+        ],
+      )),
     );
   }
 }

@@ -60,15 +60,15 @@ class _StoreViewState extends State<StoreView> {
     try {
       await rewardController.buyStoreRewards(rewardId, xpCost);
       if (rewardController.purchaseSucceeded.value) {
-        SnackMessages(context).showSuccessSnack('Hayvan satın alındı ve çiftliğinize eklendi: $name',);
+        SnackMessages().showSuccessSnack('Hayvan satın alındı ve çiftliğinize eklendi: $name',);
         // Refresh the store to show updated ownership
         setState(() {});
       } else {
-        SnackMessages(context).showErrorSnack(rewardController.errorMessage.value);
+        SnackMessages().showErrorSnack(rewardController.errorMessage.value);
       }
     } catch (e) {
       Get.closeAllSnackbars();
-      SnackMessages(context).showErrorSnack(e.toString());
+      SnackMessages().showErrorSnack(e.toString());
     }
   }
 

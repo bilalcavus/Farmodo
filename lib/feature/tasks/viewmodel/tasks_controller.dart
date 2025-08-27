@@ -71,6 +71,7 @@ class TasksController extends GetxController {
 
   void selectTask(int index, UserTaskModel task){
     selctedTaskIndex.value = index;
+    timerController.setTaskTitle(task.title); // Görev başlığını ayarla
     TimerHelper.setupTaskTimer(
       timerController, task, () async => await completeTaskById(task.id));
   }

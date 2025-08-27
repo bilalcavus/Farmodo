@@ -1,6 +1,7 @@
 // ignore_for_file: unused_local_variable
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:farmodo/core/components/message/gamification_notifications.dart';
 import 'package:farmodo/data/models/achievement_model.dart';
 import 'package:farmodo/data/models/quest_model.dart';
 import 'package:farmodo/feature/gamification/widget/achievements/achievement_unlock_animation.dart';
@@ -28,6 +29,9 @@ class GamificationService {
 
   static const Duration _defaultTtl = Duration(seconds: 60);
   static const Duration _userTtl = Duration(seconds: 20);
+
+  // Notification service
+  final GamificationNotifications _notifications = GamificationNotifications();
 
   bool _isFresh(DateTime? fetchedAt, Duration ttl) {
     if (fetchedAt == null) return false;
@@ -281,17 +285,8 @@ class GamificationService {
       // Başarı açılma animasyonu göster
       _showAchievementUnlockAnimation(achievement);
       
-      // Başarı bildirimi göster (animasyon sonrası)
-      Future.delayed(const Duration(seconds: 4), () {
-        Get.snackbar(
-          '🎉 Başarı Açıldı!',
-          '${achievement.title}\n+${achievement.xpReward} XP kazandınız!',
-          snackPosition: SnackPosition.TOP,
-          backgroundColor: achievement.rarityColor,
-          colorText: Colors.white,
-          duration: const Duration(seconds: 3),
-        );
-      });
+      // UI'ya bildir
+      _notifications.showAchievementUnlocked(achievement);
     } catch (e) {
       // Error unlocking achievement
     }
@@ -323,20 +318,8 @@ class GamificationService {
         await _giveCoinReward(quest.coinReward);
       }
       
-      // Görev tamamlama bildirimi göster
-      String rewardText = '+${quest.xpReward} XP';
-      if (quest.coinReward > 0) {
-        rewardText += ' +${quest.coinReward} Coin';
-      }
-      
-      Get.snackbar(
-        '✅ Görev Tamamlandı!',
-        '${quest.title}\n$rewardText kazandınız!',
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: quest.typeColor,
-        colorText: Colors.white,
-        duration: const Duration(seconds: 3),
-      );
+      // UI'ya bildir
+      _notifications.showQuestCompleted(quest);
     } catch (e) {
       // Error completing quest
     }

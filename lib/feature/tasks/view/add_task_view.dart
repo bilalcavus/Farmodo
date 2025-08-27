@@ -110,19 +110,19 @@ class SessionSelection extends StatelessWidget {
         itemBuilder: (context, index){
           final session = taskController.totalSessions[index];
           return InkWell(
-            onTap: (){
-              taskController.setSelectedTotalSession(session);
-            },
+            onTap: () => taskController.setSelectedTotalSession(session),
             child: Obx((){
               return Container(
                 decoration: BoxDecoration(
-                  color: taskController.selectedTotalSession.value == session ? const Color.fromARGB(255, 24, 202, 78) : Colors.grey.shade200,
+                  color: taskController.selectedTotalSession.value == session ? AppColors.primary : Colors.grey.shade200,
                   borderRadius: BorderRadius.circular(16)
                 ),
                 child: Center(child: Text(
                   '$session session',
                   textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.labelLarge,
+                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                    color: taskController.selectedTotalSession.value == session ? Colors.white : Colors.black
+                  ),
                 )),
               );
             }

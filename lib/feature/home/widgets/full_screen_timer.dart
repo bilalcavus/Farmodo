@@ -1,4 +1,5 @@
 import 'package:farmodo/core/di/injection.dart';
+import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/feature/home/widgets/flip_digit.dart';
 import 'package:farmodo/feature/tasks/viewmodel/timer_controller.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +22,9 @@ class FullScreenTimer extends StatelessWidget {
       body: Obx((){
         return Center(
           child: FlipTimer(
+            fontSize: context.dynamicHeight(0.37),
+            digitHeight: context.dynamicHeight(0.6),
+            digitWidth: context.dynamicWidth(0.18),
             timeString: timerController.isOnBreak.value
                 ? timerController.formatTime(timerController.breakSecondsRemaining.value)
                 : timerController.formatTime(timerController.secondsRemaining.value),

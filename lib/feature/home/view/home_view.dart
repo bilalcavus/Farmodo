@@ -6,9 +6,11 @@ import 'package:farmodo/feature/home/widgets/home_header.dart';
 import 'package:farmodo/feature/home/widgets/pomodoro_timer.dart';
 import 'package:farmodo/feature/home/widgets/recent_tasks.dart';
 import 'package:farmodo/feature/home/widgets/time_start_button.dart';
+import 'package:farmodo/feature/home/widgets/widget_settings_page.dart';
 import 'package:farmodo/feature/tasks/viewmodel/tasks_controller.dart';
 import 'package:farmodo/feature/tasks/viewmodel/timer_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:iconsax/iconsax.dart';
 
@@ -52,6 +54,7 @@ class _HomeViewState extends State<HomeView> {
                   _timerOptionChip(HugeIcons.strokeRoundedAlertDiamond, 'Strict'),
                   _timerOptionChip(Iconsax.timer, 'Timer'),
                   _timerOptionChip(HugeIcons.strokeRoundedFullScreen, 'Fullscreen'),
+                  _timerOptionChip(Icons.widgets, 'Widget'),
                 ],
               ),
               context.dynamicHeight(0.03).height,
@@ -65,7 +68,13 @@ class _HomeViewState extends State<HomeView> {
 
   Widget _timerOptionChip(IconData icon, String title) {
     return InkWell(
-      onTap: () => timerController.toggleFullScreen(context),
+      onTap: () {
+        if (title == 'Widget') {
+          Get.to(() => const WidgetSettingsPage());
+        } else if (title == 'Fullscreen') {
+          timerController.toggleFullScreen(context);
+        }
+      },
       borderRadius: BorderRadius.circular(24),
       child: Row(
         children: [
