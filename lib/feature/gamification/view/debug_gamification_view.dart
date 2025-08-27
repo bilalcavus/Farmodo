@@ -169,7 +169,7 @@ class _DebugGamificationViewState extends State<DebugGamificationView> {
 
     try {
       await _sampleDataService.uploadSampleAchievements();
-      await _gamificationController.refresh();
+      await _gamificationController.refreshGamification();
       setState(() {
         _statusMessage = 'Başarılar başarıyla yüklendi!';
       });
@@ -192,7 +192,7 @@ class _DebugGamificationViewState extends State<DebugGamificationView> {
 
     try {
       await _sampleDataService.uploadSampleQuests();
-      await _gamificationController.refresh();
+      await _gamificationController.refreshGamification();
       setState(() {
         _statusMessage = 'Görevler başarıyla yüklendi!';
       });
@@ -215,7 +215,7 @@ class _DebugGamificationViewState extends State<DebugGamificationView> {
 
     try {
       await _sampleDataService.uploadAllSampleData();
-      await _gamificationController.refresh();
+      await _gamificationController.refreshGamification();
       setState(() {
         _statusMessage = 'Tüm veriler başarıyla yüklendi!';
       });
@@ -237,7 +237,7 @@ class _DebugGamificationViewState extends State<DebugGamificationView> {
     });
 
     try {
-      await _gamificationController.refresh();
+      await _gamificationController.refreshGamification();
       setState(() {
         _statusMessage = 'Veriler yenilendi!';
       });
@@ -260,7 +260,7 @@ class _DebugGamificationViewState extends State<DebugGamificationView> {
 
     try {
       final gamificationService = GamificationService();
-      await gamificationService.printUserStats();
+      // await gamificationService.printUserStats();
       setState(() {
         _statusMessage = 'İstatistikler konsola yazdırıldı!';
       });
@@ -304,7 +304,7 @@ class _DebugGamificationViewState extends State<DebugGamificationView> {
 
     try {
       await _sampleDataService.clearSampleData();
-      await _gamificationController.refresh();
+      await _gamificationController.refreshGamification();
       setState(() {
         _statusMessage = 'Veriler başarıyla temizlendi!';
       });

@@ -1,6 +1,7 @@
-import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/core/theme/app_colors.dart';
+import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/feature/tasks/viewmodel/tasks_controller.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 
@@ -27,20 +28,24 @@ class PomodoroTimeSelection extends StatelessWidget {
         children: [
           Text('Select farmodo minutes', style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.textPrimary, fontWeight: FontWeight.w600)),
           Obx(() {
-            return DropdownButton<int>(
-              borderRadius: BorderRadius.circular(16),
-              dropdownColor: AppColors.surface,
-              value: taskController.selectedPomodoroTime.value,
-              menuWidth: context.dynamicWidth(.5),
-              items: taskController.pomodoroTimes.map((time) {
-                return DropdownMenuItem(
-                  value: time,
-                  child: Text('$time minutes', style: TextStyle(fontSize: context.dynamicHeight(0.018), color: AppColors.textPrimary)),);
-              }).toList(),
-              onChanged: (value) {
-                taskController.setSelectedPomodoroTime(value);
-              },
-              hint: Text('Select time', style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary)),
+            return SizedBox(
+              height: context.dynamicHeight(0.08),
+              width: context.dynamicWidth(0.35),
+              child: CupertinoPicker(
+                itemExtent: 28,
+                scrollController: FixedExtentScrollController(
+                  initialItem: taskController.pomodoroTimes.indexOf(taskController.selectedPomodoroTime.value ?? 5),
+                ),
+                onSelectedItemChanged: (index){
+                  taskController.setSelectedPomodoroTime(taskController.pomodoroTimes[index]);
+                },
+                children: taskController.pomodoroTimes.map((time) => 
+                  Center(
+                    child: Text('$time minutes',
+                      style: Theme.of(context).textTheme.bodyLarge)
+                  )
+                ).toList()
+              ),
             );
           }
           ),

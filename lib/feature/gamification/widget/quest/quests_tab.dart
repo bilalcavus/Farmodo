@@ -39,7 +39,7 @@ class QuestsTab extends StatelessWidget {
       
     
       return RefreshIndicator(
-        onRefresh: () => gamificationController.refresh(),
+        onRefresh: () => gamificationController.refreshGamification(),
         child: Column(
           children: [
             QuestFilters(context: context, controller: gamificationController),

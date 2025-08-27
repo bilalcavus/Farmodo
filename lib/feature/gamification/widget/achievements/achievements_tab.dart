@@ -36,7 +36,7 @@ class AchievementsTab extends StatelessWidget {
         }
     
       return RefreshIndicator(
-        onRefresh: () => gamificationController.refresh(),
+        onRefresh: () => gamificationController.refreshGamification(),
         child: Column(
           children: [
             AchievementsFilters(context: context, controller: gamificationController),

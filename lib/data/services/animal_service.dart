@@ -3,7 +3,6 @@ import 'package:farmodo/data/models/animal_model.dart';
 import 'package:farmodo/data/models/reward_model.dart';
 import 'package:farmodo/data/services/gamification_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 
 class AnimalService {
   static final AnimalService _instance = AnimalService._internal();
@@ -293,7 +292,7 @@ class AnimalService {
         await _gamificationService.triggerAnimalLevelUp(totalLevel);
       }
     } catch (e) {
-      debugPrint('Error triggering level up gamification: $e');
+      // Error triggering level up gamification
     }
   }
 

@@ -26,7 +26,6 @@ class GamificationController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    print('🎯 GamificationController başlatıldı. Başlangıç filtresi: ${achievementFilter.value}');
     loadAllData();
   }
 
@@ -44,16 +43,9 @@ class GamificationController extends GetxController {
     isLoadingAchievements.value = true;
     try {
       final achievementsList = await _gamificationService.getAchievements();
-      print('Loaded ${achievementsList.length} achievements');
-      
-      // Debug: Başarıların nadirlik dağılımını göster
-      for (final achievement in achievementsList) {
-        print('🏆 ${achievement.title}: ${achievement.rarity}');
-      }
-      
       achievements.assignAll(achievementsList);
     } catch (e) {
-      print('Error loading achievements: $e');
+      // Error loading achievements
     } finally {
       isLoadingAchievements.value = false;
     }
@@ -64,10 +56,9 @@ class GamificationController extends GetxController {
     isLoadingQuests.value = true;
     try {
       final questsList = await _gamificationService.getQuests();
-      print('Loaded ${questsList.length} quests');
       quests.assignAll(questsList);
     } catch (e) {
-      print('Error loading quests: $e');
+      // Error loading quests
     } finally {
       isLoadingQuests.value = false;
     }
@@ -83,7 +74,7 @@ class GamificationController extends GetxController {
       userAchievements.assignAll(userAchievementsList);
       userQuests.assignAll(userQuestsList);
     } catch (e) {
-      print('Error loading user data: $e');
+      // Error loading user data
     } finally {
       isLoadingUserData.value = false;
     }
@@ -95,7 +86,7 @@ class GamificationController extends GetxController {
       await _gamificationService.updateAchievementProgress(achievementId, progress);
       await loadUserData(); // Kullanıcı verilerini yenile
     } catch (e) {
-      print('Error updating achievement progress: $e');
+      // Error updating achievement progress
     }
   }
 
@@ -105,7 +96,7 @@ class GamificationController extends GetxController {
       await _gamificationService.updateQuestProgress(questId, progress);
       await loadUserData(); // Kullanıcı verilerini yenile
     } catch (e) {
-      print('Error updating quest progress: $e');
+      // Error updating quest progress
     }
   }
 
@@ -129,18 +120,12 @@ class GamificationController extends GetxController {
 
   // Açılan başarıları getir
   List<Achievement> get unlockedAchievements {
-    print('🔓 Açık başarılar aranıyor...');
-    print('🔓 Toplam başarı sayısı: ${achievements.length}');
-    print('🔓 Kullanıcı başarı sayısı: ${userAchievements.length}');
-    
     final unlocked = achievements.where((achievement) {
       final userAchievement = getUserAchievement(achievement.id);
       final isUnlocked = userAchievement?.isUnlocked ?? false;
-      print('🔓 ${achievement.title}: isUnlocked = $isUnlocked');
       return isUnlocked;
     }).toList();
     
-    print('🔓 Açık başarı sayısı: ${unlocked.length}');
     return unlocked;
   }
 
@@ -154,54 +139,36 @@ class GamificationController extends GetxController {
 
   // Filtrelenmiş başarıları getir
   List<Achievement> get filteredAchievements {
-    print('🎯 Filtreleme çağrıldı. Aktif filtre: ${achievementFilter.value}');
-    print('🎯 Toplam başarı sayısı: ${achievements.length}');
-    
-    // Debug: Mevcut başarıların nadirliklerini göster
-    for (final achievement in achievements) {
-      print('🏆 ${achievement.title}: ${achievement.rarity}');
-    }
-    
     List<Achievement> result;
     switch (achievementFilter.value) {
       case 'Tümü':
         result = achievements;
-        print('🎯 Tümü filtresi seçildi');
         break;
       case 'Açık':
         result = unlockedAchievements;
-        print('🎯 Açık filtresi seçildi. Açık başarı sayısı: ${unlockedAchievements.length}');
         break;
       case 'Kilitli':
         result = lockedAchievements;
-        print('🎯 Kilitli filtresi seçildi. Kilitli başarı sayısı: ${lockedAchievements.length}');
         break;
       case 'Yaygın':
         result = achievements.where((a) => a.rarity == AchievementRarity.common).toList();
-        print('🎯 Yaygın filtresi seçildi. Yaygın başarı sayısı: ${result.length}');
         break;
       case 'Nadir':
         result = achievements.where((a) => a.rarity == AchievementRarity.rare).toList();
-        print('🎯 Nadir filtresi seçildi. Nadir başarı sayısı: ${result.length}');
         break;
       case 'Az Bulunur':
         result = achievements.where((a) => a.rarity == AchievementRarity.epic).toList();
-        print('🎯 Az Bulunur filtresi seçildi. Az Bulunur başarı sayısı: ${result.length}');
         break;
       case 'Efsanevi':
         result = achievements.where((a) => a.rarity == AchievementRarity.legendary).toList();
-        print('🎯 Efsanevi filtresi seçildi. Efsanevi başarı sayısı: ${result.length}');
         break;
       case 'Efsane':
         result = achievements.where((a) => a.rarity == AchievementRarity.legendary).toList();
-        print('🎯 Efsane filtresi seçildi. Efsane başarı sayısı: ${result.length}');
         break;
       default:
         result = achievements;
-        print('🎯 Varsayılan filtre seçildi');
     }
     
-    print('🎯 Filtrelenmiş başarı sayısı: ${result.length}');
     return result;
   }
 
@@ -352,9 +319,7 @@ class GamificationController extends GetxController {
 
   // Başarı filtresini değiştir
   void setAchievementFilter(String filter) {
-    print('🎯 Başarı filtresi değiştiriliyor: $filter');
     achievementFilter.value = filter;
-    print('🎯 Filtrelenmiş başarı sayısı: ${filteredAchievements.length}');
   }
 
   // Görev filtresini değiştir
@@ -363,7 +328,7 @@ class GamificationController extends GetxController {
   }
 
   // Yenile
-  Future<void> refresh() async {
+  Future<void> refreshGamification() async {
     await loadAllData();
   }
 }

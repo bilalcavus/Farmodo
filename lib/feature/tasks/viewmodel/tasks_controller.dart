@@ -16,7 +16,7 @@ class TasksController extends GetxController {
   final titleController = TextEditingController();
   final focusTypeController = TextEditingController();
   final durationController = TextEditingController();
-  List<int> pomodoroTimes = [1,25, 30, 40, 45, 50];
+  List<int> pomodoroTimes = List.generate(20, (index) => (index + 1) * 5);
   List<int> totalSessions = [1,2,3,4,5];
   RxnInt selectedTotalSession = RxnInt();
   RxnInt selectedPomodoroTime = RxnInt();
@@ -169,7 +169,6 @@ class TasksController extends GetxController {
       errorMessage.value = '';
     } catch (e) {
       errorMessage.value = '$e';
-      debugPrint('Error adding task: $e');
     } finally {
       titleController.clear();
       focusTypeController.clear();
@@ -202,7 +201,7 @@ class TasksController extends GetxController {
         }
       }
     } catch (e) {
-      debugPrint('Error fetching tasks: $e');
+      // Error fetching tasks
     } finally {
       setLoading(loadingFlag, false);
     }

@@ -16,22 +16,49 @@ class GamificationService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  Future<List<Achievement>> getAchievements() async {
+  // Simple in-memory caches with TTL to reduce Firestore reads
+  List<Achievement>? _cachedAchievements;
+  DateTime? _achievementsFetchedAt;
+  List<Quest>? _cachedQuests;
+  DateTime? _questsFetchedAt;
+
+  // User-scoped caches (short TTL due to frequent changes)
+  List<UserAchievement>? _cachedUserAchievements;
+  DateTime? _userAchievementsFetchedAt;
+  List<UserQuest>? _cachedUserQuests;
+  DateTime? _userQuestsFetchedAt;
+
+  // Cache control
+  static const Duration _defaultTtl = Duration(seconds: 60);
+  static const Duration _userTtl = Duration(seconds: 20);
+
+  bool _isFresh(DateTime? fetchedAt, Duration ttl) {
+    if (fetchedAt == null) return false;
+    return DateTime.now().difference(fetchedAt) < ttl;
+  }
+
+  Future<List<Achievement>> getAchievements({bool forceRefresh = false}) async {
+    if (!forceRefresh && _isFresh(_achievementsFetchedAt, _defaultTtl) && _cachedAchievements != null) {
+      return _cachedAchievements!;
+    }
     try {
-      print('Fetching achievements from Firestore...');
       final snapshot = await _firestore.collection('achievements').get();
-      print('Found ${snapshot.docs.length} achievements in Firestore');
-      return snapshot.docs.map((doc) => Achievement.fromFirestore(doc)).toList();
+      _cachedAchievements = snapshot.docs.map((doc) => Achievement.fromFirestore(doc)).toList();
+      _achievementsFetchedAt = DateTime.now();
+      return _cachedAchievements!;
     } catch (e) {
-      print('Error getting achievements: $e');
-      return [];
+      return _cachedAchievements ?? [];
     }
   }
 
   // Kullanıcının başarılarını getir
-  Future<List<UserAchievement>> getUserAchievements() async {
+  Future<List<UserAchievement>> getUserAchievements({bool forceRefresh = false}) async {
     final uid = _auth.currentUser?.uid;
     if (uid == null) return [];
+
+    if (!forceRefresh && _isFresh(_userAchievementsFetchedAt, _userTtl) && _cachedUserAchievements != null) {
+      return _cachedUserAchievements!;
+    }
 
     try {
       final snapshot = await _firestore
@@ -39,30 +66,37 @@ class GamificationService {
           .doc(uid)
           .collection('achievements')
           .get();
-      return snapshot.docs.map((doc) => UserAchievement.fromFirestore(doc)).toList();
+      _cachedUserAchievements = snapshot.docs.map((doc) => UserAchievement.fromFirestore(doc)).toList();
+      _userAchievementsFetchedAt = DateTime.now();
+      return _cachedUserAchievements!;
     } catch (e) {
-      print('Error getting user achievements: $e');
-      return [];
+      return _cachedUserAchievements ?? [];
     }
   }
 
   // Görevleri getir
-  Future<List<Quest>> getQuests() async {
+  Future<List<Quest>> getQuests({bool forceRefresh = false}) async {
+    if (!forceRefresh && _isFresh(_questsFetchedAt, _defaultTtl) && _cachedQuests != null) {
+      return _cachedQuests!;
+    }
     try {
-      print('Fetching quests from Firestore...');
       final snapshot = await _firestore.collection('quests').get();
-      print('Found ${snapshot.docs.length} quests in Firestore');
-      return snapshot.docs.map((doc) => Quest.fromFirestore(doc)).toList();
+      _cachedQuests = snapshot.docs.map((doc) => Quest.fromFirestore(doc)).toList();
+      _questsFetchedAt = DateTime.now();
+      return _cachedQuests!;
     } catch (e) {
-      print('Error getting quests: $e');
-      return [];
+      return _cachedQuests ?? [];
     }
   }
 
   // Kullanıcının görevlerini getir
-  Future<List<UserQuest>> getUserQuests() async {
+  Future<List<UserQuest>> getUserQuests({bool forceRefresh = false}) async {
     final uid = _auth.currentUser?.uid;
     if (uid == null) return [];
+
+    if (!forceRefresh && _isFresh(_userQuestsFetchedAt, _userTtl) && _cachedUserQuests != null) {
+      return _cachedUserQuests!;
+    }
 
     try {
       final snapshot = await _firestore
@@ -70,35 +104,41 @@ class GamificationService {
           .doc(uid)
           .collection('quests')
           .get();
-      return snapshot.docs.map((doc) => UserQuest.fromFirestore(doc)).toList();
+      _cachedUserQuests = snapshot.docs.map((doc) => UserQuest.fromFirestore(doc)).toList();
+      _userQuestsFetchedAt = DateTime.now();
+      return _cachedUserQuests!;
     } catch (e) {
-      print('Error getting user quests: $e');
-      return [];
+      return _cachedUserQuests ?? [];
     }
   }
 
   // Başarı ilerlemesini güncelle
-  Future<void> updateAchievementProgress(String achievementId, int progress) async {
+  Future<void> updateAchievementProgress(
+    String achievementId,
+    int progress, {
+    Achievement? achievement,
+    UserAchievement? existingUserAchievement,
+  }) async {
     final uid = _auth.currentUser?.uid;
     if (uid == null) return;
 
     try {
-      final userAchievementDoc = await _firestore
-          .collection('users')
-          .doc(uid)
-          .collection('achievements')
-          .doc(achievementId)
-          .get();
+      final userAchievementExists = existingUserAchievement != null ||
+          (await _firestore
+                  .collection('users')
+                  .doc(uid)
+                  .collection('achievements')
+                  .doc(achievementId)
+                  .get())
+              .exists;
 
-      if (userAchievementDoc.exists) {
-        final userAchievement = UserAchievement.fromFirestore(userAchievementDoc);
-        final achievement = await _getAchievementById(achievementId);
-        
-        if (achievement != null && progress >= achievement.targetValue && !userAchievement.isUnlocked) {
-          // Başarıyı aç
-          await _unlockAchievement(achievementId, achievement);
+      final resolvedAchievement = achievement ?? await _getAchievementById(achievementId);
+
+      if (userAchievementExists) {
+        final isUnlocked = existingUserAchievement?.isUnlocked ?? false;
+        if (resolvedAchievement != null && progress >= resolvedAchievement.targetValue && !isUnlocked) {
+          await _unlockAchievement(achievementId, resolvedAchievement);
         } else {
-          // Sadece ilerlemeyi güncelle
           await _firestore
               .collection('users')
               .doc(uid)
@@ -110,7 +150,6 @@ class GamificationService {
               });
         }
       } else {
-        // Yeni başarı kaydı oluştur
         await _firestore
             .collection('users')
             .doc(uid)
@@ -124,33 +163,41 @@ class GamificationService {
               'lastUpdated': Timestamp.fromDate(DateTime.now()),
             });
       }
+
+      // Invalidate user cache entry for accuracy
+      _userAchievementsFetchedAt = null;
     } catch (e) {
-      print('Error updating achievement progress: $e');
+      // Error updating achievement progress
     }
   }
 
   // Görev ilerlemesini güncelle
-  Future<void> updateQuestProgress(String questId, int progress) async {
+  Future<void> updateQuestProgress(
+    String questId,
+    int progress, {
+    Quest? quest,
+    UserQuest? existingUserQuest,
+  }) async {
     final uid = _auth.currentUser?.uid;
     if (uid == null) return;
 
     try {
-      final userQuestDoc = await _firestore
-          .collection('users')
-          .doc(uid)
-          .collection('quests')
-          .doc(questId)
-          .get();
+      final userQuestExists = existingUserQuest != null ||
+          (await _firestore
+                  .collection('users')
+                  .doc(uid)
+                  .collection('quests')
+                  .doc(questId)
+                  .get())
+              .exists;
 
-      if (userQuestDoc.exists) {
-        final userQuest = UserQuest.fromFirestore(userQuestDoc);
-        final quest = await _getQuestById(questId);
-        
-        if (quest != null && progress >= quest.targetValue && userQuest.status != QuestStatus.completed) {
-          // Görevi tamamla
-          await _completeQuest(questId, quest);
+      final resolvedQuest = quest ?? await _getQuestById(questId);
+
+      if (userQuestExists) {
+        final isCompleted = existingUserQuest?.status == QuestStatus.completed;
+        if (resolvedQuest != null && progress >= resolvedQuest.targetValue && !isCompleted) {
+          await _completeQuest(questId, resolvedQuest);
         } else {
-          // Sadece ilerlemeyi güncelle
           await _firestore
               .collection('users')
               .doc(uid)
@@ -162,7 +209,6 @@ class GamificationService {
               });
         }
       } else {
-        // Yeni görev kaydı oluştur
         await _firestore
             .collection('users')
             .doc(uid)
@@ -176,8 +222,11 @@ class GamificationService {
               'lastUpdated': Timestamp.fromDate(DateTime.now()),
             });
       }
+
+      // Invalidate user cache entry for accuracy
+      _userQuestsFetchedAt = null;
     } catch (e) {
-      print('Error updating quest progress: $e');
+      // Error updating quest progress
     }
   }
 
@@ -217,7 +266,7 @@ class GamificationService {
         );
       });
     } catch (e) {
-      print('Error unlocking achievement: $e');
+      // Error unlocking achievement
     }
   }
 
@@ -262,7 +311,7 @@ class GamificationService {
         duration: const Duration(seconds: 3),
       );
     } catch (e) {
-      print('Error completing quest: $e');
+      // Error completing quest
     }
   }
 
@@ -275,9 +324,8 @@ class GamificationService {
       await _firestore.collection('users').doc(uid).update({
         'xp': FieldValue.increment(xpAmount),
       });
-      print('✅ XP ödülü verildi: +$xpAmount XP');
     } catch (e) {
-      print('Error giving XP reward: $e');
+      // Error giving XP reward
     }
   }
 
@@ -290,9 +338,8 @@ class GamificationService {
       await _firestore.collection('users').doc(uid).update({
         'coins': FieldValue.increment(coinAmount),
       });
-      print('✅ Coin ödülü verildi: +$coinAmount Coin');
     } catch (e) {
-      print('Error giving coin reward: $e');
+      // Error giving coin reward
     }
   }
 
@@ -306,7 +353,6 @@ class GamificationService {
           achievement: achievement,
           onComplete: () {
             // Animasyon tamamlandıktan sonra yapılacak işlemler
-            print('Achievement unlock animation completed: ${achievement.title}');
           },
         ),
       );
@@ -322,7 +368,6 @@ class GamificationService {
       }
       return null;
     } catch (e) {
-      print('Error getting achievement by ID: $e');
       return null;
     }
   }
@@ -336,7 +381,6 @@ class GamificationService {
       }
       return null;
     } catch (e) {
-      print('Error getting quest by ID: $e');
       return null;
     }
   }
@@ -344,92 +388,122 @@ class GamificationService {
   // Hayvan bakım aksiyonları için gamification tetikle
   Future<void> triggerCareAction(String actionType, {String? animalId}) async {
     try {
-      // Başarıları kontrol et
+      // Başarıları ve kullanıcı ilerlemelerini tek seferde al
       final achievements = await getAchievements();
+      final userAchievements = await getUserAchievements();
       for (final achievement in achievements) {
         if (achievement.type == AchievementType.careActions) {
-          final userAchievements = await getUserAchievements();
           final userAchievement = userAchievements.firstWhereOrNull(
             (ua) => ua.achievementId == achievement.id,
           );
-          
           final currentProgress = userAchievement?.progress ?? 0;
-          await updateAchievementProgress(achievement.id, currentProgress + 1);
+          await updateAchievementProgress(
+            achievement.id,
+            currentProgress + 1,
+            achievement: achievement,
+            existingUserAchievement: userAchievement,
+          );
         }
       }
 
-      // Görevleri kontrol et
+      // Görevleri ve kullanıcı görev ilerlemelerini tek seferde al
       final quests = await getQuests();
+      final userQuests = await getUserQuests();
       for (final quest in quests) {
         if (quest.action.toString().contains(actionType) && quest.isActive) {
-          final userQuests = await getUserQuests();
           final userQuest = userQuests.firstWhereOrNull(
             (uq) => uq.questId == quest.id,
           );
-          
           final currentProgress = userQuest?.progress ?? 0;
-          await updateQuestProgress(quest.id, currentProgress + 1);
+          await updateQuestProgress(
+            quest.id,
+            currentProgress + 1,
+            quest: quest,
+            existingUserQuest: userQuest,
+          );
         }
       }
     } catch (e) {
-      print('Error triggering care action: $e');
+      // Error triggering care action
     }
   }
 
   // Hayvan sayısı değişikliği için gamification tetikle
   Future<void> triggerAnimalCountChange(int animalCount) async {
     try {
-      // Başarıları kontrol et
+      // Başarıları tek seferde al
       final achievements = await getAchievements();
+      final userAchievements = await getUserAchievements();
       for (final achievement in achievements) {
         if (achievement.type == AchievementType.animalCount) {
-          await updateAchievementProgress(achievement.id, animalCount);
+          final userAchievement = userAchievements.firstWhereOrNull(
+            (ua) => ua.achievementId == achievement.id,
+          );
+          await updateAchievementProgress(
+            achievement.id,
+            animalCount,
+            achievement: achievement,
+            existingUserAchievement: userAchievement,
+          );
         }
       }
 
-      // Görevleri kontrol et
+      // Görevleri tek seferde al
       final quests = await getQuests();
+      final userQuests = await getUserQuests();
       for (final quest in quests) {
         if (quest.action == QuestAction.collectAnimals && quest.isActive) {
-          await updateQuestProgress(quest.id, animalCount);
+          final userQuest = userQuests.firstWhereOrNull(
+            (uq) => uq.questId == quest.id,
+          );
+          await updateQuestProgress(
+            quest.id,
+            animalCount,
+            quest: quest,
+            existingUserQuest: userQuest,
+          );
         }
       }
     } catch (e) {
-      print('Error triggering animal count change: $e');
+      // Error triggering animal count change
     }
   }
 
   // Hayvan seviye atlaması için gamification tetikle
   Future<void> triggerAnimalLevelUp(int level) async {
     try {
-      // Başarıları kontrol et
+      // Başarıları kontrol et (tek seferde al)
       final achievements = await getAchievements();
-      int achievementCount = 0;
       for (final achievement in achievements) {
         if (achievement.type == AchievementType.animalLevel) {
-          await updateAchievementProgress(achievement.id, level);
-          achievementCount++;
+          await updateAchievementProgress(
+            achievement.id,
+            level,
+            achievement: achievement,
+          );
         }
       }
 
-      // Görevleri kontrol et
+      // Görevleri kontrol et (tek seferde al)
       final quests = await getQuests();
-      int questCount = 0;
+      final userQuests = await getUserQuests();
       for (final quest in quests) {
         if (quest.action == QuestAction.levelUpAnimals && quest.isActive) {
-          final userQuests = await getUserQuests();
           final userQuest = userQuests.firstWhereOrNull(
             (uq) => uq.questId == quest.id,
           );
-          
           final currentProgress = userQuest?.progress ?? 0;
           final newProgress = currentProgress + 1;
-          await updateQuestProgress(quest.id, newProgress);
-          questCount++;
+          await updateQuestProgress(
+            quest.id,
+            newProgress,
+            quest: quest,
+            existingUserQuest: userQuest,
+          );
         }
       }
     } catch (e) {
-      debugPrint('Error triggering animal level up: $e');
+      // Error triggering animal level up
     }
   }
 
@@ -449,7 +523,6 @@ class GamificationService {
       }
       return {'xp': 0, 'coins': 0};
     } catch (e) {
-      print('Error getting user stats: $e');
       return {'xp': 0, 'coins': 0};
     }
   }
@@ -457,44 +530,50 @@ class GamificationService {
   // Hayvan satın alma için gamification tetikle
   Future<void> triggerAnimalPurchase(String rewardId) async {
     try {
-      // Başarıları kontrol et
+      // Başarıları ve kullanıcı ilerlemelerini tek seferde al
       final achievements = await getAchievements();
+      final userAchievements = await getUserAchievements();
       for (final achievement in achievements) {
         if (achievement.type == AchievementType.animalCount || 
             achievement.type == AchievementType.careActions) {
-          final userAchievements = await getUserAchievements();
           final userAchievement = userAchievements.firstWhereOrNull(
             (ua) => ua.achievementId == achievement.id,
           );
-          
           final currentProgress = userAchievement?.progress ?? 0;
-          await updateAchievementProgress(achievement.id, currentProgress + 1);
+          await updateAchievementProgress(
+            achievement.id,
+            currentProgress + 1,
+            achievement: achievement,
+            existingUserAchievement: userAchievement,
+          );
         }
       }
 
-      // Görevleri kontrol et
+      // Görevleri ve kullanıcı görev ilerlemelerini tek seferde al
       final quests = await getQuests();
+      final userQuests = await getUserQuests();
       for (final quest in quests) {
         if (quest.action == QuestAction.buyAnimals && quest.isActive) {
-          final userQuests = await getUserQuests();
           final userQuest = userQuests.firstWhereOrNull(
             (uq) => uq.questId == quest.id,
           );
-          
           final currentProgress = userQuest?.progress ?? 0;
-          await updateQuestProgress(quest.id, currentProgress + 1);
+          await updateQuestProgress(
+            quest.id,
+            currentProgress + 1,
+            quest: quest,
+            existingUserQuest: userQuest,
+          );
         }
       }
     } catch (e) {
-      print('Error triggering animal purchase: $e');
+      // Error triggering animal purchase
     }
   }
 
   // Kullanıcının mevcut XP ve coin bilgilerini yazdır
   Future<void> printUserStats() async {
     final stats = await getUserStats();
-    print('📊 Kullanıcı İstatistikleri:');
-    print('   XP: ${stats['xp']}');
-    print('   Coin: ${stats['coins']}');
+    // User stats available but not printed
   }
 }

@@ -18,13 +18,9 @@ class SampleDataService {
             .collection('achievements')
             .doc(achievement.id)
             .set(achievement.toFirestore());
-        
-        print('Achievement uploaded: ${achievement.title}');
       }
-      
-      print('✅ All sample achievements uploaded successfully!');
     } catch (e) {
-      print('❌ Error uploading sample achievements: $e');
+      // Error uploading sample achievements
     }
   }
 
@@ -38,24 +34,16 @@ class SampleDataService {
             .collection('quests')
             .doc(quest.id)
             .set(quest.toFirestore());
-        
-        print('Quest uploaded: ${quest.title}');
       }
-      
-      print('✅ All sample quests uploaded successfully!');
     } catch (e) {
-      print('❌ Error uploading sample quests: $e');
+      // Error uploading sample quests
     }
   }
 
   // Tüm örnek verileri yükle
   Future<void> uploadAllSampleData() async {
-    print('🚀 Starting sample data upload...');
-    
     await uploadSampleAchievements();
     await uploadSampleQuests();
-    
-    print('🎉 All sample data uploaded successfully!');
   }
 
   // Mevcut verileri kontrol et
@@ -63,20 +51,14 @@ class SampleDataService {
     try {
       final achievementsCount = await _firestore.collection('achievements').get();
       final questsCount = await _firestore.collection('quests').get();
-      
-      print('📊 Current data:');
-      print('   Achievements: ${achievementsCount.docs.length}');
-      print('   Quests: ${questsCount.docs.length}');
     } catch (e) {
-      print('❌ Error checking existing data: $e');
+      // Error checking existing data
     }
   }
 
   // Örnek verileri sil
   Future<void> clearSampleData() async {
     try {
-      print('🗑️ Clearing sample data...');
-      
       // Başarıları sil
       final achievements = await _firestore.collection('achievements').get();
       for (final doc in achievements.docs) {
@@ -88,10 +70,8 @@ class SampleDataService {
       for (final doc in quests.docs) {
         await doc.reference.delete();
       }
-      
-      print('✅ Sample data cleared successfully!');
     } catch (e) {
-      print('❌ Error clearing sample data: $e');
+      // Error clearing sample data
     }
   }
 }

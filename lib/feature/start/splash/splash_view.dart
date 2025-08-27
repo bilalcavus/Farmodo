@@ -43,16 +43,13 @@ class _SplashViewState extends State<SplashView> {
         await _initializeUser();
         if (mounted) {
           RouteHelper.pushAndCloseOther(context, AppNavigation());
-          debugPrint('✅ Kullanıcı zaten giriş yapmış: ${_authService.firebaseUser?.displayName}');
         }
       } else {
         if (mounted) {
           RouteHelper.pushAndCloseOther(context, const LoginView());
-          debugPrint('❌ Kullanıcı giriş yapmamış, login sayfasına yönlendiriliyor');
         }
       }
     } catch (e) {
-      debugPrint('❌ Auth initialization hatası: $e');
       if (mounted) {
         RouteHelper.pushAndCloseOther(context, const LoginView());
       }
