@@ -14,10 +14,25 @@ class HomeHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final authService = getIt<AuthService>();
-    return Padding(
-      padding: EdgeInsets.symmetric(
+    return Container(
+      height: context.dynamicHeight(0.22),
+      padding:EdgeInsets.symmetric(
         horizontal: context.dynamicWidth(0.05),
-        vertical: context.dynamicHeight(0.02)),
+        vertical: context.dynamicHeight(0.02)), 
+        decoration: BoxDecoration(
+          color: AppColors.header,
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(context.dynamicHeight(0.05)),
+            bottomRight: Radius.circular(context.dynamicHeight(0.05))
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.07),
+              blurRadius: 10,
+              offset: const Offset(0, 5),
+            ),
+          ],
+        ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

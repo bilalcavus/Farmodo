@@ -51,4 +51,15 @@ class SnackMessages {
       duration: const Duration(seconds: 3),
     );
   }
+
+  void showUpdateSnack(){
+    Get.snackbar(
+      'Updated!',
+      'Updated animal status!',
+      snackPosition: SnackPosition.TOP,
+      backgroundColor: Colors.green,
+      colorText: Colors.white,
+      duration: const Duration(seconds: 2),
+    );
+  }
 }

@@ -438,10 +438,8 @@ class GamificationService {
     }
   }
 
-  // Hayvan sayısı değişikliği için gamification tetikle
   Future<void> triggerAnimalCountChange(int animalCount) async {
     try {
-      // Başarıları tek seferde al
       final achievements = await getAchievements();
       final userAchievements = await getUserAchievements(forceRefresh: true);
       for (final achievement in achievements) {
@@ -458,7 +456,6 @@ class GamificationService {
         }
       }
 
-      // Görevleri tek seferde al
       final quests = await getQuests();
       final userQuests = await getUserQuests(forceRefresh: true);
       for (final quest in quests) {
@@ -479,10 +476,8 @@ class GamificationService {
     }
   }
 
-  // Hayvan seviye atlaması için gamification tetikle
   Future<void> triggerAnimalLevelUp(int level) async {
     try {
-      // Başarıları kontrol et (tek seferde al)
       final achievements = await getAchievements(forceRefresh: true);
       for (final achievement in achievements) {
         if (achievement.type == AchievementType.animalLevel) {
@@ -494,7 +489,6 @@ class GamificationService {
         }
       }
 
-      // Görevleri kontrol et (tek seferde al)
       final quests = await getQuests();
       final userQuests = await getUserQuests();
       for (final quest in quests) {
@@ -517,7 +511,6 @@ class GamificationService {
     }
   }
 
-  // Kullanıcının mevcut XP ve coin bilgilerini getir
   Future<Map<String, int>> getUserStats() async {
     final uid = _auth.currentUser?.uid;
     if (uid == null) return {'xp': 0, 'coins': 0};
@@ -537,10 +530,8 @@ class GamificationService {
     }
   }
 
-  // Hayvan satın alma için gamification tetikle
   Future<void> triggerAnimalPurchase(String rewardId) async {
     try {
-      // Başarıları ve kullanıcı ilerlemelerini tek seferde al
       final achievements = await getAchievements();
       final userAchievements = await getUserAchievements();
       for (final achievement in achievements) {
@@ -558,7 +549,6 @@ class GamificationService {
         }
       }
 
-      // Görevleri ve kullanıcı görev ilerlemelerini tek seferde al
       final quests = await getQuests();
       final userQuests = await getUserQuests();
       for (final quest in quests) {
@@ -580,9 +570,7 @@ class GamificationService {
     }
   }
 
-  // Kullanıcının mevcut XP ve coin bilgilerini yazdır
   Future<void> printUserStats() async {
     final stats = await getUserStats();
-    // User stats available but not printed
   }
 }

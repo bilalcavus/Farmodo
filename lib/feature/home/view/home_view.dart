@@ -41,7 +41,7 @@ class _HomeViewState extends State<HomeView> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const HomeHeader(),
-              context.dynamicHeight(0.01).height,
+              context.dynamicHeight(0.03).height,
               CurrentTaskProgress(tasksController: tasksController),
               context.dynamicHeight(0.04).height,
               PomodoroTimer(timerController: timerController),

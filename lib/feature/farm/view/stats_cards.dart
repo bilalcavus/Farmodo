@@ -5,17 +5,24 @@ class _StatsCards extends StatelessWidget {
   final FarmController farmController = Get.find<FarmController>();
   @override
   Widget build(BuildContext context) {
-    return Obx(() => SizedBox(
-      height: context.dynamicHeight(0.12),
-      child: ListView(
-        scrollDirection: Axis.horizontal,
+    return Obx(() => Container(
+      constraints: BoxConstraints(
+        maxHeight: context.dynamicHeight(0.6),
+        maxWidth: context.dynamicWidth(0.9),
+      ),
+      child: GridView.count(
+        shrinkWrap: true,
+        crossAxisCount: 3,
+        crossAxisSpacing: context.dynamicWidth(0.02),
+        mainAxisSpacing: context.dynamicHeight(0.02),
+        childAspectRatio: 0.9,
         children: [
           _buildStatCard(
             context,
             'Total',
             farmController.totalAnimals.toString(),
             Icons.pets,
-          Colors.blue,
+            Colors.blue,
           ),
           _buildStatCard(
             context,
@@ -65,33 +72,30 @@ class _StatsCards extends StatelessWidget {
   }
 
   Widget _buildStatCard(BuildContext context, String title, String value, IconData icon, Color color) {
-    return SizedBox(
-      width: context.dynamicWidth(0.22),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            icon,
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(
+          icon,
+          color: color,
+          size: context.dynamicHeight(0.04),
+        ),
+        Text(
+          value,
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+            fontWeight: FontWeight.bold,
             color: color,
-            size: context.dynamicHeight(0.03),
           ),
-          SizedBox(height: context.dynamicHeight(0.005)),
-          Text(
-            value,
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: color,
-            ),
+        ),
+        Text(
+          title,
+          style: Theme.of(context).textTheme.labelSmall?.copyWith(
+            color: color,
+            fontWeight: FontWeight.w500,
           ),
-          Text(
-            title,
-            style: Theme.of(context).textTheme.labelSmall?.copyWith(
-              color: color
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ],
-      ),
+          textAlign: TextAlign.center,
+        ),
+      ],
     );
   }
 }

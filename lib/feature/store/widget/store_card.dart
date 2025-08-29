@@ -38,9 +38,9 @@ class StoreCard extends StatelessWidget {
           decoration: BoxDecoration(
             color: AppColors.surface,
             borderRadius: BorderRadius.circular(cardRadius),
-            border: Border.all(
-              color: isOwned ? Colors.green : AppColors.primary.withAlpha(25),
-            ),
+            // border: Border.all(
+            //   color: isOwned ? Colors.green : AppColors.primary.withAlpha(25),
+            // ),
           ),
           child: Padding(
             padding: EdgeInsets.all(padding),
@@ -49,13 +49,19 @@ class StoreCard extends StatelessWidget {
               children: [
                 Expanded(
                   flex: 3,
-                  child: Center(
-                    child: Image.asset(
-                      reward.imageUrl,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Icon(Icons.image_not_supported, size: context.dynamicHeight(0.04));
-                      },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade100,
+                      borderRadius: BorderRadius.circular(context.dynamicHeight(0.016))
+                    ),
+                    child: Center(
+                      child: Image.asset(
+                        reward.imageUrl,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Icon(Icons.image_not_supported, size: context.dynamicHeight(0.04));
+                        },
+                      ),
                     ),
                   ),
                 ),
@@ -71,17 +77,7 @@ class StoreCard extends StatelessWidget {
                     textAlign: TextAlign.center,
                   ),
                 ),
-                Expanded(
-                  flex: 1,
-                  child: Text(
-                    reward.description,
-                    style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                      color: Colors.grey[600],
-                    ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
+                
                 Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -110,7 +106,7 @@ class StoreCard extends StatelessWidget {
                     ElevatedButton(
                       onPressed: isBuying ? null : onBuy,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primary,
+                        backgroundColor: AppColors.textPrimary,
                         foregroundColor: AppColors.surface,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10)
