@@ -1,4 +1,6 @@
+import 'package:farmodo/core/components/card/show_exit_dialog.dart';
 import 'package:farmodo/core/components/message/snack_messages.dart';
+import 'package:farmodo/core/di/injection.dart';
 import 'package:farmodo/core/theme/app_colors.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/core/utility/extension/route_helper.dart';
@@ -12,6 +14,7 @@ import 'package:farmodo/feature/farm/widget/sheet_animal_header.dart';
 import 'package:farmodo/feature/farm/widget/sheet_animal_status_card.dart';
 import 'package:farmodo/feature/gamification/view/gamification_view.dart';
 import 'package:farmodo/feature/gamification/widget/main/sheet_divider.dart';
+import 'package:farmodo/feature/navigation/navigation_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hugeicons/hugeicons.dart';
@@ -29,6 +32,7 @@ class FarmView extends StatefulWidget {
 }
 
 class _FarmViewState extends State<FarmView> with TickerProviderStateMixin, FarmViewMixin {
+  final navigationController = getIt<NavigationController>();
   
   void _showStatsDialog(BuildContext context) {
     showDialog(
@@ -82,16 +86,26 @@ class _FarmViewState extends State<FarmView> with TickerProviderStateMixin, Farm
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      body: SafeArea(
-        child: Column(
-          children: [
-            _buildModernHeader(),
-            Expanded(
-              child: _UserAnimalList(farmController: farmController, context: context),
-            ),
-          ],
+    return WillPopScope(
+      onWillPop: () async {
+        if (navigationController.currentIndex.value != 0) {
+          navigationController.goBack();
+          return false;
+        }
+        bool? shouldExit = await showExitDialog(context);
+          return shouldExit ?? false;
+      },
+      child: Scaffold(
+        backgroundColor: AppColors.background,
+        body: SafeArea(
+          child: Column(
+            children: [
+              _buildModernHeader(),
+              Expanded(
+                child: _UserAnimalList(farmController: farmController, context: context),
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -1,6 +1,9 @@
+import 'package:farmodo/core/components/card/show_exit_dialog.dart';
+import 'package:farmodo/core/di/injection.dart';
 import 'package:farmodo/core/theme/app_colors.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/data/models/user_task_model.dart';
+import 'package:farmodo/feature/navigation/navigation_controller.dart';
 import 'package:farmodo/feature/tasks/mixin/task_view_mixin.dart';
 import 'package:farmodo/feature/tasks/viewmodel/tasks_controller.dart';
 import 'package:farmodo/feature/tasks/widget/custom_task_list.dart';
@@ -16,16 +19,27 @@ class TaskView extends StatefulWidget {
 }
 
 class _TaskViewState extends State<TaskView> with TaskViewMixin {
+  final navigationController = getIt<NavigationController>();
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      initialIndex: 0,
-      length: 2,
-      child: Scaffold(
-        backgroundColor: AppColors.background,
-        appBar: _buildAppBar(),
-        body: _buildTabBarView(),
-        floatingActionButton: const TaskFloatingButton(),
+    return WillPopScope(
+      onWillPop: () async {
+        if (navigationController.currentIndex.value != 0) {
+          navigationController.goBack();
+          return false;
+        }
+        bool? shouldExit = await showExitDialog(context);
+          return shouldExit ?? false;
+      },
+      child: DefaultTabController(
+        initialIndex: 0,
+        length: 2,
+        child: Scaffold(
+          backgroundColor: AppColors.background,
+          appBar: _buildAppBar(),
+          body: _buildTabBarView(),
+          floatingActionButton: const TaskFloatingButton(),
+        ),
       ),
     );
   }

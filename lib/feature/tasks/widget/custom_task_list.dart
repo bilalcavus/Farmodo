@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:iconsax/iconsax.dart';
 
 class CustomTaskList extends StatelessWidget {
   const CustomTaskList({
@@ -114,11 +115,40 @@ class CustomTaskList extends StatelessWidget {
         ],
       ),
       child: Padding(
-        padding: EdgeInsets.all(context.dynamicHeight(0.02)),
+        padding: EdgeInsets.symmetric(vertical:  context.dynamicHeight(0.01)),
         child: Row(
           children: [
-            _buildTaskInfo(context, task),
-            const Spacer(),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      !task.isCompleted ?Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: const Icon(Icons.circle_outlined, color: AppColors.danger,),
+                      ) :  Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: const Icon(Icons.check_circle, color: AppColors.danger,),
+                      ),
+                      Text(
+                        task.title,
+                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          color: AppColors.textPrimary,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: context.dynamicWidth(0.04)),
+                    child: Text('#${task.focusType}'),
+                  ),
+                  context.dynamicHeight(0.01).height,
+                  _buildTaskMetaInfo(context, task),
+                ],
+              ),
+            ),
             if (!task.isCompleted) _buildActionButtons(context, task, index),
           ],
         ),
@@ -126,88 +156,73 @@ class CustomTaskList extends StatelessWidget {
     );
   }
 
-  Widget _buildTaskInfo(BuildContext context, UserTaskModel task) {
-    return Expanded(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            task.title,
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              color: AppColors.textPrimary,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          context.dynamicHeight(0.01).height,
-          _buildTaskMetaInfo(context, task),
-        ],
-      ),
-    );
-  }
 
   Widget _buildTaskMetaInfo(BuildContext context, UserTaskModel task) {
     return Row(
       children: [
-        _buildMetaItem(context, Icons.link, task.focusType),
-        context.dynamicWidth(0.01).width,
-        _buildMetaItem(context, Icons.timer_outlined, '${task.duration} min'),
+        _buildMetaItem(context, Iconsax.timer, '${task.duration} min'),
         context.dynamicWidth(0.01).width, 
-        _buildMetaItem(context, Icons.star_outline, '${task.xpReward} XP'),
+        _buildMetaItem(context, Iconsax.star, '${task.xpReward} XP'),
       ],
     );
   }
 
   Widget _buildMetaItem(BuildContext context, IconData icon, String text) {
-    return Column(
-      children: [
-        Icon(
-          icon,
-          size: 16,
-          color: AppColors.textSecondary,
-        ),
-        Text(
-          text,
-          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-            color: AppColors.textSecondary,
-            fontWeight: FontWeight.w500,
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        children: [
+          CircleAvatar(
+            backgroundColor: Colors.deepPurpleAccent,
+            radius: 12,
+            child: Icon(
+              icon,
+              size: 16,
+              color: AppColors.surface,
+            ),
           ),
-        ),
-      ],
+          Text(
+            text,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: AppColors.textSecondary,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
+      ),
     );
   }
 
   Widget _buildActionButtons(BuildContext context, UserTaskModel task, int index) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        _buildActionButton(context, task, index, false),
-        context.dynamicWidth(0.01).width,
-        _buildActionButton(context, task, index, true),
-      ],
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          _buildActionButton(context, task, index),
+          context.dynamicWidth(0.01).width,
+        ],
+      ),
     );
   }
 
-  Widget _buildActionButton(BuildContext context, UserTaskModel task, int index, bool isResetButton) {
+  Widget _buildActionButton(BuildContext context, UserTaskModel task, int index) {
     return Obx(() {
       final bool isSelected = taskController.selctedTaskIndex.value == index;
       final bool isRunning = timerController.isRunning.value;
 
       return InkWell(
-        onTap: () => _handleTaskAction(task, index, isSelected, isRunning, isResetButton),
+        onTap: () => _handleTaskAction(task, index, isSelected, isRunning),
         child: CircleAvatar(
           radius: context.dynamicHeight(0.02),
-          backgroundColor: isResetButton 
-            ? Colors.grey.shade200
-            : (isRunning && isSelected) 
+          backgroundColor: (isRunning && isSelected) 
               ? AppColors.danger
               : AppColors.primary,
           child: Icon(
-            isResetButton 
-              ? HugeIcons.strokeRoundedRefresh
-              : (isRunning && isSelected) 
+             (isRunning && isSelected) 
                 ? HugeIcons.strokeRoundedPause
                 : HugeIcons.strokeRoundedPlay,
-            color: isResetButton ? Colors.black : Colors.white,
+            color: Colors.white,
             size: context.dynamicHeight(0.025),
           ),
         ),
@@ -215,12 +230,7 @@ class CustomTaskList extends StatelessWidget {
     });
   }
 
-  void _handleTaskAction(UserTaskModel task, int index, bool isSelected, bool isRunning, bool isResetButton) {
-    if (isResetButton) {
-      timerController.resetTimer();
-      return;
-    }
-
+  void _handleTaskAction(UserTaskModel task, int index, bool isSelected, bool isRunning) {
     if (isRunning && isSelected) {
       timerController.pauseTimer();
       return;

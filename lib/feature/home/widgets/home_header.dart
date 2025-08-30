@@ -2,7 +2,10 @@
 import 'package:farmodo/core/di/injection.dart';
 import 'package:farmodo/core/theme/app_colors.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
+import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
 import 'package:farmodo/data/services/auth_service.dart';
+import 'package:farmodo/feature/home/widgets/pomodoro_timer.dart';
+import 'package:farmodo/feature/tasks/viewmodel/timer_controller.dart';
 import 'package:farmodo/feature/tasks/widget/user_xp.dart';
 import 'package:flutter/material.dart';
 
@@ -14,45 +17,48 @@ class HomeHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final authService = getIt<AuthService>();
-    return Container(
-      height: context.dynamicHeight(0.22),
-      padding:EdgeInsets.symmetric(
-        horizontal: context.dynamicWidth(0.05),
-        vertical: context.dynamicHeight(0.02)), 
-        decoration: BoxDecoration(
-          color: AppColors.header,
-          borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(context.dynamicHeight(0.05)),
-            bottomRight: Radius.circular(context.dynamicHeight(0.05))
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.07),
-              blurRadius: 10,
-              offset: const Offset(0, 5),
-            ),
-          ],
+    final timerController = getIt<TimerController>();
+    return Stack(
+      children: [
+        CustomPaint(
+        painter: _HeaderPainter(),
+        child: SizedBox(
+          height: 250,
+          width: double.infinity,
         ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: EdgeInsets.all(context.dynamicHeight(0.01)),
-            child: Text(
-              'Welcome, ${authService.currentUser?.displayName ?? ''} 👋',
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
-          SizedBox(height: context.dynamicHeight(0.017)),
-          UserXp(authService: authService),
-          SizedBox(height: context.dynamicHeight(0.017)),
-          LevelBar(authService: authService),
-          
-        ],
       ),
+      Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          context.dynamicHeight(0.017).height,
+          UserXp(authService: authService),
+          // context.dynamicHeight(0.017).height,
+          // LevelBar(authService: authService),
+          context.dynamicHeight(0.05).height,
+          PomodoroTimer(timerController: timerController),
+      ],
+      )
+      ]
     );
+  }
+}
+
+class _HeaderPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()..color = AppColors.primary;
+    final path = Path()
+      ..lineTo(0, size.height - 40)
+      ..quadraticBezierTo(size.width / 2 , size.height, size.width, size.height - 40)
+      ..lineTo(size.width, 0)
+      ..close();
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return false;
   }
 }
 
@@ -74,6 +80,7 @@ class LevelBar extends StatelessWidget {
 
     return Container(
       height: context.dynamicHeight(0.05),
+      width: context.dynamicWidth(0.85),
       padding: EdgeInsets.symmetric(horizontal: context.dynamicHeight(0.012)),
       decoration: BoxDecoration(
         color: AppColors.surface,
@@ -97,7 +104,8 @@ class LevelBar extends StatelessWidget {
             ),
           ),
           SizedBox(width: context.dynamicWidth(0.015)),
-          Expanded(
+          SizedBox(
+            width: context.dynamicWidth(0.45),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(12),
               child: Stack(

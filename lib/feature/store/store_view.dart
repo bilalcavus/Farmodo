@@ -1,8 +1,10 @@
+import 'package:farmodo/core/components/card/show_exit_dialog.dart';
 import 'package:farmodo/core/components/message/snack_messages.dart';
 import 'package:farmodo/core/di/injection.dart';
 import 'package:farmodo/core/theme/app_colors.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/data/services/auth_service.dart';
+import 'package:farmodo/feature/navigation/navigation_controller.dart';
 import 'package:farmodo/feature/store/viewmodel/reward_controller.dart';
 import 'package:farmodo/feature/store/widget/store_card.dart';
 import 'package:farmodo/feature/store/widget/store_empty_state.dart';
@@ -22,6 +24,7 @@ class StoreView extends StatefulWidget {
 class _StoreViewState extends State<StoreView> {
   final rewardController = getIt<RewardController>();
   final authService = getIt<AuthService>();
+  final navigationController = getIt<NavigationController>();
 
   Future<void> _handlePurchase({
     required String rewardId,
@@ -55,68 +58,78 @@ class _StoreViewState extends State<StoreView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      appBar: AppBar(
-        centerTitle: true,
-        backgroundColor: Colors.transparent,
-        title: Text(
-          'Store',
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.w500,
+    return WillPopScope(
+      onWillPop: () async {
+        if (navigationController.currentIndex.value != 0) {
+          navigationController.goBack();
+          return false;
+        }
+        bool? shouldExit = await showExitDialog(context);
+          return shouldExit ?? false;
+      },
+      child: Scaffold(
+        backgroundColor: AppColors.background,
+        appBar: AppBar(
+          centerTitle: true,
+          backgroundColor: Colors.transparent,
+          title: Text(
+            'Store',
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+              fontWeight: FontWeight.w500,
+            ),
           ),
         ),
-      ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Padding(
-                padding: EdgeInsets.all(context.dynamicHeight(0.02)),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    
-                    UserXp(authService: authService)
-                  ],
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                Padding(
+                  padding: EdgeInsets.all(context.dynamicHeight(0.02)),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      
+                      UserXp(authService: authService)
+                    ],
+                  ),
                 ),
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: context.dynamicWidth(0.02)),
-                child: Obx(() {
-                  final allItems = rewardController.storeItems;
-                  
-                  if (rewardController.isLoading.value) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-                  if (allItems.isEmpty) return StoreEmptyState();
-                  return GridView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: context.dynamicWidth(0.024),
-                      mainAxisSpacing: context.dynamicWidth(0.024),
-                      childAspectRatio: 0.85,
-                    ),
-                    itemCount: allItems.length,
-                    itemBuilder: (context, index) {
-                      final reward = allItems[index];
-                      return StoreCard(
-                        reward: reward,
-                        cardRadius: context.dynamicHeight(0.02),
-                        isBuying: rewardController.purchasingRewardId.value == reward.id,
-                        onBuy: () => _handlePurchase(
-                          rewardId: reward.id,
-                          xpCost: reward.xpCost,
-                          name: reward.name,
-                        ),
-                      );
-                    },
-                  );
-                }),
-              ),
-            ],
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: context.dynamicWidth(0.02)),
+                  child: Obx(() {
+                    final allItems = rewardController.storeItems;
+                    
+                    if (rewardController.isLoading.value) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                    if (allItems.isEmpty) return StoreEmptyState();
+                    return GridView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        crossAxisSpacing: context.dynamicWidth(0.024),
+                        mainAxisSpacing: context.dynamicWidth(0.024),
+                        childAspectRatio: 0.85,
+                      ),
+                      itemCount: allItems.length,
+                      itemBuilder: (context, index) {
+                        final reward = allItems[index];
+                        return StoreCard(
+                          reward: reward,
+                          cardRadius: context.dynamicHeight(0.02),
+                          isBuying: rewardController.purchasingRewardId.value == reward.id,
+                          onBuy: () => _handlePurchase(
+                            rewardId: reward.id,
+                            xpCost: reward.xpCost,
+                            name: reward.name,
+                          ),
+                        );
+                      },
+                    );
+                  }),
+                ),
+              ],
+            ),
           ),
         ),
       ),

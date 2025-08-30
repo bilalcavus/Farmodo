@@ -6,6 +6,7 @@ import 'package:farmodo/feature/auth/login/viewmodel/login_controller.dart';
 import 'package:farmodo/feature/auth/register/viewmodel/register_controller.dart';
 import 'package:farmodo/feature/farm/viewmodel/farm_controller.dart';
 import 'package:farmodo/feature/gamification/viewmodel/gamification_controller.dart';
+import 'package:farmodo/feature/navigation/navigation_controller.dart';
 import 'package:farmodo/feature/store/viewmodel/reward_controller.dart';
 import 'package:farmodo/feature/tasks/viewmodel/tasks_controller.dart';
 import 'package:farmodo/feature/tasks/viewmodel/timer_controller.dart';
@@ -47,5 +48,6 @@ Future<void> setupDependencies() async {
   getIt.registerLazySingleton(() => RewardController(getIt(), getIt(), getIt()));
   getIt.registerLazySingleton(() => GamificationController());
   getIt.registerLazySingleton(() => FarmController());
+  getIt.registerLazySingleton(() => NavigationController());
 
 }

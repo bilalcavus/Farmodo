@@ -67,7 +67,7 @@ class TimeStartButton extends StatelessWidget {
               timerController.isRunning.value
                   ? 'Pause'
                   : tasksController.selctedTaskIndex.value == -1 
-                    ? 'Select a Task'
+                    ? 'Start to Focus'
                     : (timerController.isOnBreak.value ? 'Continue Break' : timerController.secondsRemaining.value == 0 ? 'Start' : 'Continue'),
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                     color: Colors.white,

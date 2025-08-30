@@ -1,3 +1,4 @@
+import 'package:farmodo/core/components/card/show_exit_dialog.dart';
 import 'package:farmodo/core/di/injection.dart';
 import 'package:farmodo/core/theme/app_colors.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
@@ -8,6 +9,7 @@ import 'package:farmodo/feature/auth/login/view/login_view.dart';
 import 'package:farmodo/feature/auth/login/viewmodel/login_controller.dart';
 import 'package:farmodo/feature/gamification/view/debug_gamification_view.dart';
 import 'package:farmodo/feature/home/widgets/home_header.dart';
+import 'package:farmodo/feature/navigation/navigation_controller.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -25,6 +27,7 @@ class _AccountViewState extends State<AccountView> {
   User? user;
   bool isDarkMode = false;
   final loginController = getIt<LoginController>();
+  final navigationController = getIt<NavigationController>();
 
   @override
   void initState() {
@@ -36,31 +39,41 @@ class _AccountViewState extends State<AccountView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        title: Text(
-          'Profile',
-          style: TextStyle(
-            color: AppColors.textPrimary,
-            fontSize: context.dynamicHeight(0.022),
-            fontWeight: FontWeight.w600,
+    return WillPopScope(
+      onWillPop: () async {
+        if (navigationController.currentIndex.value != 0) {
+          navigationController.goBack();
+          return false;
+        }
+        bool? shouldExit = await showExitDialog(context);
+          return shouldExit ?? false;
+      },
+      child: Scaffold(
+        backgroundColor: AppColors.background,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          title: Text(
+            'Profile',
+            style: TextStyle(
+              color: AppColors.textPrimary,
+              fontSize: context.dynamicHeight(0.022),
+              fontWeight: FontWeight.w600,
+            ),
           ),
+          centerTitle: true,
         ),
-        centerTitle: true,
-      ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.all(context.dynamicHeight(0.02)),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildUserProfileCard(),
-            context.dynamicHeight(0.04).height,
-            _buildTermsConditionSection(),
-            context.dynamicHeight(0.03).height,
-            _buildAccountsSubscriptionSection(),
-          ],
+        body: SingleChildScrollView(
+          padding: EdgeInsets.all(context.dynamicHeight(0.02)),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildUserProfileCard(),
+              context.dynamicHeight(0.04).height,
+              _buildTermsConditionSection(),
+              context.dynamicHeight(0.03).height,
+              _buildAccountsSubscriptionSection(),
+            ],
+          ),
         ),
       ),
     );
