@@ -1,7 +1,9 @@
 import 'dart:async';
 
 import 'package:farmodo/core/di/injection.dart';
+import 'package:farmodo/data/services/sample_data_service.dart';
 import 'package:farmodo/firebase_options.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -27,5 +29,10 @@ final class AppInitializer {
   ));
     await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
     await setupDependencies();
+
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      await SampleDataService().checkExistingData(user.uid);
+    }
   }
 }

@@ -1,6 +1,6 @@
-import 'package:farmodo/data/services/gamification_service.dart';
 import 'package:farmodo/data/services/sample_data_service.dart';
 import 'package:farmodo/feature/gamification/viewmodel/gamification_controller.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -146,7 +146,7 @@ class _DebugGamificationViewState extends State<DebugGamificationView> {
     });
 
     try {
-      await _sampleDataService.checkExistingData();
+      await _sampleDataService.checkExistingData(FirebaseAuth.instance.currentUser!.uid);
       setState(() {
         _statusMessage = 'Veriler kontrol edildi - Konsolu kontrol edin';
       });
@@ -259,7 +259,7 @@ class _DebugGamificationViewState extends State<DebugGamificationView> {
     });
 
     try {
-      final gamificationService = GamificationService();
+      // final gamificationService = GamificationService();
       // await gamificationService.printUserStats();
       setState(() {
         _statusMessage = 'İstatistikler konsola yazdırıldı!';

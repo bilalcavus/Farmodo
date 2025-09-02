@@ -11,6 +11,7 @@ import 'package:farmodo/feature/gamification/view/debug_gamification_view.dart';
 import 'package:farmodo/feature/home/widgets/home_header.dart';
 import 'package:farmodo/feature/navigation/navigation_controller.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hugeicons/hugeicons.dart';
@@ -238,11 +239,12 @@ class _AccountViewState extends State<AccountView> {
                   inactiveTrackColor: Colors.grey[300],
                 ),
               ),
+              kDebugMode ? 
               _buildSettingsItem(
                 icon: Icons.bug_report,
                 title: 'Debug Gamification',
                 onTap: () => Get.to(() => const DebugGamificationView()),
-              ),
+              ) : const SizedBox.shrink(),
               _buildSettingsItem(
                 icon: HugeIcons.strokeRoundedLogout04,
                 title: 'Logout',

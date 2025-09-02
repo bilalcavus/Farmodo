@@ -1,4 +1,5 @@
 import 'package:farmodo/data/services/sample_data_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class GamificationTestPage extends StatefulWidget {
@@ -110,7 +111,7 @@ class _GamificationTestPageState extends State<GamificationTestPage> {
     });
 
     try {
-      await _sampleDataService.checkExistingData();
+      await _sampleDataService.checkExistingData(FirebaseAuth.instance.currentUser!.uid);
       setState(() {
         _statusMessage = 'Veriler kontrol edildi - Konsolu kontrol edin';
       });

@@ -35,11 +35,13 @@ class Quest {
   final String iconPath;
   final QuestType type;
   final QuestAction action;
+  final QuestStatus status;
   final int targetValue;
   final int xpReward;
   final int coinReward;
   final DateTime? startDate;
   final DateTime? endDate;
+  final DateTime? lastReset;
   final Map<String, dynamic>? metadata;
 
   Quest({
@@ -49,11 +51,13 @@ class Quest {
     required this.iconPath,
     required this.type,
     required this.action,
+    required this.status,
     required this.targetValue,
     required this.xpReward,
     this.coinReward = 0,
     this.startDate,
     this.endDate,
+    this.lastReset,
     this.metadata,
   });
 
@@ -69,6 +73,9 @@ class Quest {
       action: QuestAction.values.firstWhere(
         (e) => e.toString() == 'QuestAction.${json['action']}',
       ),
+      status: QuestStatus.values.firstWhere(
+        (e) => e.toString() == 'QuestStatus.${json['status']}',
+      ),
       targetValue: json['targetValue'],
       xpReward: json['xpReward'],
       coinReward: json['coinReward'] ?? 0,
@@ -79,6 +86,9 @@ class Quest {
           ? DateTime.parse(json['endDate']) 
           : null,
       metadata: json['metadata'],
+      lastReset: json['lastReset'] != null
+          ? DateTime.parse(json['lastReset'])
+          : null,
     );
   }
 
@@ -95,6 +105,9 @@ class Quest {
       action: QuestAction.values.firstWhere(
         (e) => e.toString() == 'QuestAction.${data['action']}',
       ),
+      status: QuestStatus.values.firstWhere(
+        (e) => e.toString() == 'QuestStatus.${data['status']}',
+      ),
       targetValue: data['targetValue'] ?? 0,
       xpReward: data['xpReward'] ?? 0,
       coinReward: data['coinReward'] ?? 0,
@@ -105,6 +118,9 @@ class Quest {
           ? (data['endDate'] as Timestamp).toDate() 
           : null,
       metadata: data['metadata'],
+      lastReset: data['lastReset'] != null
+          ? (data['lastReset'] as Timestamp).toDate()
+          : null
     );
   }
 
@@ -116,11 +132,13 @@ class Quest {
       'iconPath': iconPath,
       'type': type.toString().split('.').last,
       'action': action.toString().split('.').last,
+      'status': status.toString().split('.').last,
       'targetValue': targetValue,
       'xpReward': xpReward,
       'coinReward': coinReward,
       'startDate': startDate?.toIso8601String(),
       'endDate': endDate?.toIso8601String(),
+      'lastReset': lastReset?.toIso8601String(),
       'metadata': metadata,
     };
   }
@@ -132,11 +150,13 @@ class Quest {
       'iconPath': iconPath,
       'type': type.toString().split('.').last,
       'action': action.toString().split('.').last,
+      'status': status.toString().split('.').last,
       'targetValue': targetValue,
       'xpReward': xpReward,
       'coinReward': coinReward,
       'startDate': startDate != null ? Timestamp.fromDate(startDate!) : null,
       'endDate': endDate != null ? Timestamp.fromDate(endDate!) : null,
+      'lastReset': lastReset != null ? Timestamp.fromDate(lastReset!) : null,
       'metadata': metadata,
     };
   }
@@ -148,12 +168,14 @@ class Quest {
     String? iconPath,
     QuestType? type,
     QuestAction? action,
+    QuestStatus? status,
     int? targetValue,
     int? xpReward,
     int? coinReward,
     DateTime? startDate,
     DateTime? endDate,
     Map<String, dynamic>? metadata,
+    DateTime? lastReset
   }) {
     return Quest(
       id: id ?? this.id,
@@ -162,12 +184,14 @@ class Quest {
       iconPath: iconPath ?? this.iconPath,
       type: type ?? this.type,
       action: action ?? this.action,
+      status: status ?? this.status,
       targetValue: targetValue ?? this.targetValue,
       xpReward: xpReward ?? this.xpReward,
       coinReward: coinReward ?? this.coinReward,
       startDate: startDate ?? this.startDate,
       endDate: endDate ?? this.endDate,
       metadata: metadata ?? this.metadata,
+      lastReset: lastReset ?? this.lastReset
     );
   }
 

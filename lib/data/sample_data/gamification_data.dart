@@ -2,6 +2,25 @@ import 'package:farmodo/data/models/achievement_model.dart';
 import 'package:farmodo/data/models/quest_model.dart';
 
 class GamificationSampleData {
+    static DateTime getTodayStart(){
+      final now = DateTime.now();
+      return DateTime(now.year, now.month, now.day);
+    }
+
+      static DateTime getTomorrowStart(){
+      final todayStart = getTodayStart();
+      return todayStart.add(const Duration(days: 1));
+    }
+
+    static DateTime getWeekStart(){
+      final now = DateTime.now();
+      return DateTime(now.year, now.month, now.day)
+            .subtract(Duration(days: now.weekday - 1));
+    }
+    
+    static DateTime getNextWeekStart() {
+      return getWeekStart().add(const Duration(days: 7));
+    }
   // Örnek başarılar
   static List<Achievement> getSampleAchievements() {
     return [
@@ -156,8 +175,6 @@ class GamificationSampleData {
   // Örnek görevler
   static List<Quest> getSampleQuests() {
     final now = DateTime.now();
-    final tomorrow = now.add(const Duration(days: 1));
-    final nextWeek = now.add(const Duration(days: 7));
     
     return [
       // Günlük görevler
@@ -168,11 +185,13 @@ class GamificationSampleData {
         iconPath: 'assets/icons/quests/daily_feed.png',
         type: QuestType.daily,
         action: QuestAction.feedAnimals,
+        status: QuestStatus.active,
         targetValue: 5,
         xpReward: 50,
         coinReward: 25,
-        startDate: now,
-        endDate: tomorrow,
+        startDate: getTodayStart(),
+        endDate: getTomorrowStart(),
+        lastReset: now,
       ),
       
       Quest(
@@ -182,11 +201,13 @@ class GamificationSampleData {
         iconPath: 'assets/icons/quests/daily_love.png',
         type: QuestType.daily,
         action: QuestAction.loveAnimals,
+        status: QuestStatus.active,
         targetValue: 3,
         xpReward: 40,
         coinReward: 20,
-        startDate: now,
-        endDate: tomorrow,
+        startDate: getTodayStart(),
+        endDate: getTomorrowStart(),
+        lastReset: now,
       ),
       
       Quest(
@@ -196,11 +217,13 @@ class GamificationSampleData {
         iconPath: 'assets/icons/quests/daily_play.png',
         type: QuestType.daily,
         action: QuestAction.playWithAnimals,
+        status: QuestStatus.active,
         targetValue: 2,
         xpReward: 30,
         coinReward: 15,
-        startDate: now,
-        endDate: tomorrow,
+        startDate: getTodayStart(),
+        endDate: getTomorrowStart(),
+        lastReset: now,
       ),
       
       // Haftalık görevler
@@ -211,11 +234,13 @@ class GamificationSampleData {
         iconPath: 'assets/icons/quests/weekly_feed.png',
         type: QuestType.weekly,
         action: QuestAction.feedAnimals,
+        status: QuestStatus.active,
         targetValue: 50,
         xpReward: 200,
         coinReward: 100,
-        startDate: now,
-        endDate: nextWeek,
+        startDate: getWeekStart(),
+        endDate: getNextWeekStart(),
+        lastReset: now,
       ),
       
       Quest(
@@ -225,11 +250,13 @@ class GamificationSampleData {
         iconPath: 'assets/icons/quests/weekly_buy.png',
         type: QuestType.weekly,
         action: QuestAction.buyAnimals,
+        status: QuestStatus.active,
         targetValue: 1,
         xpReward: 150,
         coinReward: 75,
-        startDate: now,
-        endDate: nextWeek,
+        startDate: getWeekStart(),
+        endDate: getNextWeekStart(),
+        lastReset: now,
       ),
       
       Quest(
@@ -239,11 +266,13 @@ class GamificationSampleData {
         iconPath: 'assets/icons/quests/weekly_level.png',
         type: QuestType.weekly,
         action: QuestAction.levelUpAnimals,
+        status: QuestStatus.active,
         targetValue: 3,
         xpReward: 250,
         coinReward: 125,
-        startDate: now,
-        endDate: nextWeek,
+        startDate: getWeekStart(),
+        endDate: getNextWeekStart(),
+        lastReset: now,
       ),
       
       // Özel görevler
@@ -254,11 +283,13 @@ class GamificationSampleData {
         iconPath: 'assets/icons/quests/special_heal.png',
         type: QuestType.special,
         action: QuestAction.healAnimals,
+        status: QuestStatus.active,
         targetValue: 10,
         xpReward: 300,
         coinReward: 150,
         startDate: now,
         endDate: now.add(const Duration(days: 3)),
+        lastReset: now,
       ),
       
       Quest(
@@ -268,11 +299,13 @@ class GamificationSampleData {
         iconPath: 'assets/icons/quests/special_collection.png',
         type: QuestType.special,
         action: QuestAction.collectAnimals,
+        status: QuestStatus.active,
         targetValue: 5,
         xpReward: 400,
         coinReward: 200,
         startDate: now,
         endDate: now.add(const Duration(days: 5)),
+        lastReset: now
       ),
       
       // Etkinlik görevleri
@@ -283,6 +316,7 @@ class GamificationSampleData {
         iconPath: 'assets/icons/quests/event_weekend.png',
         type: QuestType.event,
         action: QuestAction.feedAnimals, // Mixed actions için feedAnimals base
+        status: QuestStatus.active,
         targetValue: 20,
         xpReward: 500,
         coinReward: 250,

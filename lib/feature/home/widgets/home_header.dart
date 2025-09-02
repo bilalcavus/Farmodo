@@ -9,11 +9,16 @@ import 'package:farmodo/feature/tasks/viewmodel/timer_controller.dart';
 import 'package:farmodo/feature/tasks/widget/user_xp.dart';
 import 'package:flutter/material.dart';
 
-class HomeHeader extends StatelessWidget {
+class HomeHeader extends StatefulWidget {
   const HomeHeader({
     super.key,
   });
 
+  @override
+  State<HomeHeader> createState() => _HomeHeaderState();
+}
+
+class _HomeHeaderState extends State<HomeHeader> {
   @override
   Widget build(BuildContext context) {
     final authService = getIt<AuthService>();
@@ -34,7 +39,9 @@ class HomeHeader extends StatelessWidget {
           context.dynamicHeight(0.017).height,
           UserXp(authService: authService),
           // context.dynamicHeight(0.017).height,
-          // LevelBar(authService: authService),
+          // DropMenu(controller: taskController.taskSelectController, label: 'Select Task', hint: 'Select Task', items: [
+          //   ...taskController.activeUserTasks.map((task) => task.title)
+          // ]),
           context.dynamicHeight(0.05).height,
           PomodoroTimer(timerController: timerController),
       ],
@@ -47,7 +54,7 @@ class HomeHeader extends StatelessWidget {
 class _HeaderPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()..color = AppColors.primary;
+    final paint = Paint()..color = const Color.fromARGB(255, 211, 218, 232);
     final path = Path()
       ..lineTo(0, size.height - 40)
       ..quadraticBezierTo(size.width / 2 , size.height, size.width, size.height - 40)
@@ -103,7 +110,7 @@ class LevelBar extends StatelessWidget {
                   ),
             ),
           ),
-          SizedBox(width: context.dynamicWidth(0.015)),
+          context.dynamicWidth(0.015).width,
           SizedBox(
             width: context.dynamicWidth(0.45),
             child: ClipRRect(

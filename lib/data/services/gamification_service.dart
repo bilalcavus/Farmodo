@@ -30,7 +30,6 @@ class GamificationService {
   static const Duration _defaultTtl = Duration(seconds: 60);
   static const Duration _userTtl = Duration(seconds: 20);
 
-  // Notification service
   final GamificationNotifications _notifications = GamificationNotifications();
 
   bool _isFresh(DateTime? fetchedAt, Duration ttl) {
@@ -60,7 +59,6 @@ class GamificationService {
     }
   }
 
-  // Kullanıcının başarılarını getir
   Future<List<UserAchievement>> getUserAchievements({bool forceRefresh = false}) async {
     final uid = _auth.currentUser?.uid;
     if (uid == null) return [];
@@ -91,7 +89,6 @@ class GamificationService {
     }
   }
 
-  // Görevleri getir
   Future<List<Quest>> getQuests({bool forceRefresh = false}) async {
     if (!forceRefresh && _isFresh(_questsFetchedAt, _defaultTtl) && _cachedQuests != null) {
       debugPrint('quests cache get edildi');
@@ -114,7 +111,6 @@ class GamificationService {
     }
   }
 
-  // Kullanıcının görevlerini getir
   Future<List<UserQuest>> getUserQuests({bool forceRefresh = false}) async {
     final uid = _auth.currentUser?.uid;
     if (uid == null) return [];
@@ -145,7 +141,6 @@ class GamificationService {
     }
   }
 
-  // Başarı ilerlemesini güncelle
   Future<void> updateAchievementProgress(
     String achievementId,
     int progress, {
@@ -202,7 +197,6 @@ class GamificationService {
     }
   }
 
-  // Görev ilerlemesini güncelle
   Future<void> updateQuestProgress(
     String questId,
     int progress, {
@@ -261,7 +255,6 @@ class GamificationService {
     }
   }
 
-  // Başarıyı aç
   Future<void> _unlockAchievement(String achievementId, Achievement achievement) async {
     final uid = _auth.currentUser?.uid;
     if (uid == null) return;
@@ -279,13 +272,8 @@ class GamificationService {
             'lastUpdated': Timestamp.fromDate(DateTime.now()),
           });
 
-      // XP ödülü ver
       await _giveXpReward(achievement.xpReward);
-      
-      // Başarı açılma animasyonu göster
       _showAchievementUnlockAnimation(achievement);
-      
-      // UI'ya bildir
       _notifications.showAchievementUnlocked(achievement);
     } catch (e) {
       // Error unlocking achievement
@@ -310,15 +298,12 @@ class GamificationService {
             'lastUpdated': Timestamp.fromDate(DateTime.now()),
           });
 
-      // XP ödülü ver
       await _giveXpReward(quest.xpReward);
       
-      // Coin ödülü ver
       if (quest.coinReward > 0) {
         await _giveCoinReward(quest.coinReward);
       }
       
-      // UI'ya bildir
       _notifications.showQuestCompleted(quest);
     } catch (e) {
       // Error completing quest
@@ -407,6 +392,9 @@ class GamificationService {
             (ua) => ua.achievementId == achievement.id,
           );
           final currentProgress = userAchievement?.progress ?? 0;
+          if (currentProgress >= achievement.targetValue) {
+            continue; // Zaten tamamlanmış
+          }
           await updateAchievementProgress(
             achievement.id,
             currentProgress + 1,
@@ -425,6 +413,9 @@ class GamificationService {
             (uq) => uq.questId == quest.id,
           );
           final currentProgress = userQuest?.progress ?? 0;
+          if (currentProgress >= quest.targetValue) {
+            continue; // Zaten tamamlanmış
+          }
           await updateQuestProgress(
             quest.id,
             currentProgress + 1,
@@ -573,4 +564,7 @@ class GamificationService {
   Future<void> printUserStats() async {
     final stats = await getUserStats();
   }
+
+  
+
 }

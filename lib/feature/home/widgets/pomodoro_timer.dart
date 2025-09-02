@@ -27,7 +27,7 @@ class PomodoroTimer extends StatelessWidget {
                 strokeWidth: 12,
                 backgroundColor: AppColors.border,
                 valueColor: AlwaysStoppedAnimation(
-                  timerController.isOnBreak.value ? AppColors.secondary : AppColors.timerProgress
+                  timerController.isOnBreak.value ? AppColors.secondary : AppColors.primary
                 ),
               ),
             ),

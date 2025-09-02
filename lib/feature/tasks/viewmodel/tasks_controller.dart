@@ -15,7 +15,7 @@ enum LoadingType { general, active, completed}
 class TasksController extends GetxController {
   final titleController = TextEditingController();
   final focusTypeController = TextEditingController();
-  final durationController = TextEditingController();
+  final taskSelectController = TextEditingController();
   List<int> pomodoroTimes = List.generate(20, (index) => (index + 1) * 5);
   List<int> totalSessions = [1,2,3,4,5];
   RxnInt selectedTotalSession = RxnInt();
@@ -245,6 +245,6 @@ class TasksController extends GetxController {
     super.onClose();
     titleController.dispose();
     focusTypeController.dispose();
-    durationController.dispose();
+    taskSelectController.dispose();
   }
 }
