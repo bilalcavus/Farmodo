@@ -84,7 +84,7 @@ class SheetAnimalStatus extends StatelessWidget {
       decoration: BoxDecoration(
         color: color.withAlpha(25),
         borderRadius: BorderRadius.circular(15),
-        border: Border.all(color: color.withAlpha(75)),
+        // border: Border.all(color: color.withAlpha(75)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

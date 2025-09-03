@@ -85,16 +85,23 @@ class _AnimalDetailSheetState extends State<AnimalDetailSheet> {
         Row(
           children: [
             Expanded(
-              child: TextField(
-                controller: _nicknameController,
-                decoration: InputDecoration(
-                  hintText: 'Enter nickname...',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 12,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade100,
+                  borderRadius: BorderRadius.circular(10)
+                ),
+                child: TextField(
+                  controller: _nicknameController,
+                  decoration: InputDecoration(
+                    hintText: 'Enter nickname...',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide.none
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 12,
+                    ),
                   ),
                 ),
               ),
@@ -150,44 +157,56 @@ class _AnimalDetailSheetState extends State<AnimalDetailSheet> {
           crossAxisCount: 2,
           crossAxisSpacing: context.dynamicWidth(0.03),
           mainAxisSpacing: context.dynamicHeight(0.015),
-          childAspectRatio: 3,
+          childAspectRatio: 1.9,
           children: [
             _buildActionButton(
-              'Feed',
-              Icons.restaurant,
-              Colors.orange,
-              _farmController.feedingAnimalId.value == widget.animal.id,
-              () {
+              title: 'Feed',
+              userXpCost: '-20',
+              gainAnimalXp: '+4',
+              color: Colors.orange,
+              imagePath: 'assets/images/actions/feed.png',
+              imageHeight: 50,
+              isLoading:  _farmController.feedingAnimalId.value == widget.animal.id,
+              onTap: () {
                 _farmController.feedAnimal(widget.animal.id);
                 SnackMessages().showAnimalAction('Hayvan beslediniz!', Colors.green);
-              } 
+              }
             ),
             _buildActionButton(
-              'Love',
-              Icons.favorite,
-              Colors.pink,
-              _farmController.lovingAnimalId.value == widget.animal.id,
-              ()  {
+              title: 'Love',
+              userXpCost: '-10',
+              gainAnimalXp: '+4',
+              imagePath: 'assets/images/actions/love.png',
+              imageHeight: 50,
+              color: Colors.pink,
+              isLoading: _farmController.lovingAnimalId.value == widget.animal.id,
+              onTap: ()  {
                 _farmController.loveAnimal(widget.animal.id);
                 SnackMessages().showAnimalAction('Hayvana sevgi gösterdiniz!', Colors.pink);
               }
             ),
             _buildActionButton(
-              'Play',
-              Icons.sports_esports,
-              Colors.blue,
-              _farmController.playingAnimalId.value == widget.animal.id,
-              () {
+              title: 'Play',
+              userXpCost: '-30',
+              gainAnimalXp: '+4',
+              imagePath: 'assets/images/actions/gaming2.png',
+              imageHeight: 50,
+              color: Colors.blue,
+              isLoading: _farmController.playingAnimalId.value == widget.animal.id,
+              onTap: () {
                 _farmController.playWithAnimal(widget.animal.id);
                 SnackMessages().showAnimalAction('Hayvanla oynadınız!', Colors.blue);
               } 
             ),
             _buildActionButton(
-              'Heal',
-              Icons.healing,
-              Colors.green,
-              _farmController.healingAnimalId.value == widget.animal.id,
-              () {
+              title: 'Heal',
+              userXpCost: '-50',
+              gainAnimalXp: '+4',
+              imagePath: 'assets/images/actions/heal.png',
+              imageHeight: 50,
+              color: Colors.green,
+              isLoading: _farmController.healingAnimalId.value == widget.animal.id,
+              onTap: () {
                 _farmController.healAnimal(widget.animal.id);
                 SnackMessages().showAnimalAction('Hayvanı iyileştirdiniz!', Colors.green);
               } 
@@ -199,46 +218,77 @@ class _AnimalDetailSheetState extends State<AnimalDetailSheet> {
   }
 
   Widget _buildActionButton(
-    String title,
-    IconData icon,
-    Color color,
-    bool isLoading,
-    VoidCallback onTap,
+    {
+      required String title,
+      required String userXpCost,
+      required String gainAnimalXp,
+      required String imagePath,
+      required double imageHeight,
+    // IconData icon,
+      required Color color,
+      required bool isLoading,
+      required VoidCallback onTap,
+    }
+    
   ) {
     return GestureDetector(
       onTap: isLoading ? null : onTap,
       child: Container(
-        padding: EdgeInsets.all(context.dynamicWidth(0.04)),
+        padding: EdgeInsets.all(context.dynamicWidth(0.02)),
         decoration: BoxDecoration(
-          color: isLoading ? Colors.grey.shade300 : color.withAlpha(25),
+          color: isLoading ? Colors.grey.shade300 : color.withAlpha(15),
           borderRadius: BorderRadius.circular(15),
-          border: Border.all(
-            color: isLoading ? Colors.grey.shade400 : color.withAlpha(75),
-          ),
+          
         ),
         child: Row(
-          children: [
-            isLoading
-                ? SizedBox(
-                    width: context.dynamicWidth(0.05),
-                    height: context.dynamicHeight(0.025),
-                    child: CircularProgressIndicator(
-                      strokeWidth: context.dynamicWidth(0.005),
-                      valueColor: AlwaysStoppedAnimation<Color>(color),
-                    ),
-                  )
-                : Icon(icon, color: color, size: context.dynamicHeight(0.025)),
-            
-            SizedBox(width: context.dynamicWidth(0.03)),
-            
-            Expanded(
-              child: Text(
-                title,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: isLoading ? Colors.grey.shade600 : color,
-                ),
+          children: [isLoading
+              ? ActionLoadingIcon(context: context, color: color)
+              : Image.asset(imagePath, height: imageHeight),
+
+            context.dynamicWidth(0.03).width,
+
+            Text(
+              title,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: isLoading ? Colors.grey.shade600 : color,
               ),
+            ),
+            const Spacer(),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Row(
+                  children: [
+                    Text(
+                      gainAnimalXp,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: isLoading ? Colors.grey.shade600 : color,
+                      ),
+                    ),
+                    Icon(Icons.pets, color: color, size: context.dynamicHeight(0.02))
+
+                  ],
+                ),
+                Row(
+                  children: [
+                    Text(
+                      userXpCost,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: isLoading ? Colors.grey.shade600 : color,
+                      ),
+                    ),
+                    Image.asset(
+                      'assets/images/xp_star.png',
+                      width: context.dynamicWidth(0.055),
+                      height: context.dynamicHeight(0.04),
+                      color: color,
+                    ),
+                  ],
+                ),
+              ],
             ),
           ],
         ),
@@ -324,6 +374,29 @@ class _AnimalDetailSheetState extends State<AnimalDetailSheet> {
         ],
       ),
     );
+  }
+}
+
+class ActionLoadingIcon extends StatelessWidget {
+  const ActionLoadingIcon({
+    super.key,
+    required this.context,
+    required this.color,
+  });
+
+  final BuildContext context;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+        width: context.dynamicWidth(0.05),
+        height: context.dynamicHeight(0.025),
+        child: CircularProgressIndicator(
+          strokeWidth: context.dynamicWidth(0.005),
+          valueColor: AlwaysStoppedAnimation<Color>(color),
+        ),
+      );
   }
 }
 

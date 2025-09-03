@@ -1,11 +1,15 @@
 import 'package:farmodo/data/models/animal_model.dart';
 import 'package:farmodo/data/services/animal_service.dart';
+import 'package:farmodo/data/services/auth_service.dart';
 import 'package:farmodo/data/services/gamification_service.dart';
+import 'package:farmodo/feature/auth/login/viewmodel/login_controller.dart';
 import 'package:get/get.dart';
 
 class FarmController extends GetxController {
   final AnimalService _animalService = AnimalService();
   final GamificationService _gamificationService = GamificationService();
+  final LoginController loginController;
+  final AuthService authService;
   
   final RxList<FarmAnimal> animals = <FarmAnimal>[].obs;
   final RxBool isLoading = false.obs;
@@ -18,7 +22,7 @@ class FarmController extends GetxController {
   final RxString healingAnimalId = ''.obs;
   final Rx<DateTime> lastStatusUpdate = DateTime.now().obs;
 
-
+  FarmController(this.loginController, this.authService);
   @override
   void onInit() {
     super.onInit();
@@ -56,6 +60,8 @@ class FarmController extends GetxController {
       await _animalService.feedAnimal(animalId);
       await loadAnimals();
       await _gamificationService.triggerCareAction('feedAnimals', animalId: animalId);
+      await authService.fetchAndSetCurrentUser();
+      loginController.refreshUserXp();
     } catch (e) {
       errorMessage.value = e.toString();
     } finally {

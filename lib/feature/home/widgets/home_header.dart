@@ -4,10 +4,12 @@ import 'package:farmodo/core/theme/app_colors.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
 import 'package:farmodo/data/services/auth_service.dart';
+import 'package:farmodo/feature/auth/login/viewmodel/login_controller.dart';
 import 'package:farmodo/feature/home/widgets/pomodoro_timer.dart';
 import 'package:farmodo/feature/tasks/viewmodel/timer_controller.dart';
 import 'package:farmodo/feature/tasks/widget/user_xp.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class HomeHeader extends StatefulWidget {
   const HomeHeader({
@@ -21,7 +23,7 @@ class HomeHeader extends StatefulWidget {
 class _HomeHeaderState extends State<HomeHeader> {
   @override
   Widget build(BuildContext context) {
-    final authService = getIt<AuthService>();
+    final loginController = Get.put<LoginController>(getIt<LoginController>());
     final timerController = getIt<TimerController>();
     return Stack(
       children: [
@@ -37,11 +39,7 @@ class _HomeHeaderState extends State<HomeHeader> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           context.dynamicHeight(0.017).height,
-          UserXp(authService: authService),
-          // context.dynamicHeight(0.017).height,
-          // DropMenu(controller: taskController.taskSelectController, label: 'Select Task', hint: 'Select Task', items: [
-          //   ...taskController.activeUserTasks.map((task) => task.title)
-          // ]),
+          UserXp(userXp: loginController.userXp.value),
           context.dynamicHeight(0.05).height,
           PomodoroTimer(timerController: timerController),
       ],
@@ -54,7 +52,7 @@ class _HomeHeaderState extends State<HomeHeader> {
 class _HeaderPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()..color = const Color.fromARGB(255, 211, 218, 232);
+    final paint = Paint()..color = const Color.fromARGB(255, 90, 71, 197);
     final path = Path()
       ..lineTo(0, size.height - 40)
       ..quadraticBezierTo(size.width / 2 , size.height, size.width, size.height - 40)

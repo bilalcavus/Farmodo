@@ -143,6 +143,11 @@ class AnimalService {
               'experience': updatedAnimal.experience,
               'level': updatedAnimal.level,
             });
+        await _firestore.runTransaction((transaction) async {
+          transaction.update(_firestore.collection('users').doc(uid), {
+            'xp': FieldValue.increment(-20),
+          });
+        });
         if (levelGained > 0) {
           await _triggerLevelUpGamification(updatedAnimal.level);
         }
@@ -186,7 +191,13 @@ class AnimalService {
               'experience': updatedAnimal.experience,
               'level': updatedAnimal.level,
             });
-            
+
+            await _firestore.runTransaction((transaction) async {
+          transaction.update(_firestore.collection('users').doc(uid), {
+            'xp': FieldValue.increment(-10),
+          });
+
+        });
         if (levelGained > 0) {
           await _gamificationService.triggerAnimalLevelUp(updatedAnimal.level);
         }
@@ -229,7 +240,12 @@ class AnimalService {
               'experience': updatedAnimal.experience,
               'level': updatedAnimal.level,
             });
-        
+        await _firestore.runTransaction((transaction) async {
+          transaction.update(_firestore.collection('users').doc(uid), {
+            'xp': FieldValue.increment(-30),
+          });
+        });
+
         if (levelGained > 0) {
           await _triggerLevelUpGamification(updatedAnimal.level);
         }
@@ -273,10 +289,13 @@ class AnimalService {
               'level': updatedAnimal.level,
             });
             
-        
-        if (levelGained > 0) {
-          await _triggerLevelUpGamification(updatedAnimal.level);
-        }
+        await _firestore.runTransaction((transaction) async {
+          transaction.update(_firestore.collection('users').doc(uid), {
+            'xp': FieldValue.increment(-50),
+          });
+        });
+
+        if (levelGained > 0) await _triggerLevelUpGamification(updatedAnimal.level);
       }
     } catch (e) {
       rethrow;

@@ -90,7 +90,7 @@ class _FarmViewState extends State<FarmView> with TickerProviderStateMixin, Farm
       body: SafeArea(
         child: Column(
           children: [
-            _buildModernHeader(),
+            _farmHeader(),
             Expanded(
               child: _UserAnimalList(farmController: farmController, context: context),
             ),
@@ -100,7 +100,7 @@ class _FarmViewState extends State<FarmView> with TickerProviderStateMixin, Farm
     );
   }
 
-  Widget _buildModernHeader() {
+  Widget _farmHeader() {
     return Container(
       padding: EdgeInsets.symmetric(
         horizontal: context.dynamicWidth(0.06),

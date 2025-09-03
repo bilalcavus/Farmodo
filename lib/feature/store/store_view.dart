@@ -3,6 +3,7 @@ import 'package:farmodo/core/di/injection.dart';
 import 'package:farmodo/core/theme/app_colors.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/data/services/auth_service.dart';
+import 'package:farmodo/feature/auth/login/viewmodel/login_controller.dart';
 import 'package:farmodo/feature/navigation/navigation_controller.dart';
 import 'package:farmodo/feature/store/viewmodel/reward_controller.dart';
 import 'package:farmodo/feature/store/widget/store_card.dart';
@@ -24,15 +25,15 @@ class _StoreViewState extends State<StoreView> {
   final rewardController = getIt<RewardController>();
   final authService = getIt<AuthService>();
   final navigationController = getIt<NavigationController>();
+  final loginController = getIt<LoginController>();
 
   Future<void> _handlePurchase({
     required String rewardId,
-    required int xpCost,
     required String name,
   }) async {
     rewardController.resetPurchaseState();
     try {
-      await rewardController.buyStoreRewards(rewardId, xpCost);
+      await rewardController.buyStoreRewards(rewardId);
       if (rewardController.purchaseSucceeded.value) {
         SnackMessages().showSuccessSnack('Hayvan satın alındı ve çiftliğinize eklendi: $name',);
         setState(() {});
@@ -51,7 +52,6 @@ class _StoreViewState extends State<StoreView> {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await rewardController.getStoreItems();
       await rewardController.loadOwnedRewards();
-      // await rewardController.getUserPurchasedRewards();
     });
   }
 
@@ -78,8 +78,10 @@ class _StoreViewState extends State<StoreView> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    
-                    UserXp(authService: authService)
+                    Obx((){
+                        return UserXp(userXp: loginController.userXp.value);
+                      }
+                    )
                   ],
                 ),
               ),
@@ -110,7 +112,6 @@ class _StoreViewState extends State<StoreView> {
                         isBuying: rewardController.purchasingRewardId.value == reward.id,
                         onBuy: () => _handlePurchase(
                           rewardId: reward.id,
-                          xpCost: reward.xpCost,
                           name: reward.name,
                         ),
                       );

@@ -124,7 +124,7 @@ class RewardController extends GetxController {
   }
 
 
-  Future<void> buyStoreRewards(String rewardId, int xpCost) async {
+  Future<void> buyStoreRewards(String rewardId) async {
     setLoading(true);
     resetPurchaseState();
     purchasingRewardId.value = rewardId;

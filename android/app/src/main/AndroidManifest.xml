@@ -7,7 +7,7 @@
     <application
         android:label="Farmodo"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/launcher_icon"
         android:usesCleartextTraffic="false"
         android:allowBackup="false">
         <activity

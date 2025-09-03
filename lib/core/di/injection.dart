@@ -47,7 +47,7 @@ Future<void> setupDependencies() async {
   getIt.registerLazySingleton(() => TasksController(getIt(), getIt(), getIt(), getIt()));
   getIt.registerLazySingleton(() => RewardController(getIt(), getIt(), getIt()));
   getIt.registerLazySingleton(() => GamificationController());
-  getIt.registerLazySingleton(() => FarmController());
+  getIt.registerLazySingleton(() => FarmController(getIt(), getIt()));
   getIt.registerLazySingleton(() => NavigationController());
 
 }
