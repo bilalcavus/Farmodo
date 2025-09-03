@@ -58,7 +58,7 @@ class CustomTaskList extends StatelessWidget {
           Icon(
             Icons.task_alt_outlined,
             size: 64,
-            color: AppColors.textSecondary.withOpacity(0.5),
+            color: AppColors.textSecondary.withAlpha(125),
           ),
           const SizedBox(height: 16),
           Text(
@@ -72,7 +72,7 @@ class CustomTaskList extends StatelessWidget {
           Text(
             'Create your first task to get started',
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: AppColors.textSecondary.withOpacity(0.7),
+              color: AppColors.textSecondary.withAlpha(180),
             ),
           ),
         ],
@@ -108,7 +108,7 @@ class CustomTaskList extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: AppColors.border.withOpacity(0.1),
+            color: AppColors.border.withAlpha(25),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -254,7 +254,7 @@ class CustomTaskList extends StatelessWidget {
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
-              color: AppColors.border.withOpacity(0.1),
+              color: AppColors.border.withAlpha(25),
               blurRadius: 8,
               offset: const Offset(0, 2),
             ),

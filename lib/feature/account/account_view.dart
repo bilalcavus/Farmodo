@@ -1,4 +1,3 @@
-import 'package:farmodo/core/components/card/show_exit_dialog.dart';
 import 'package:farmodo/core/di/injection.dart';
 import 'package:farmodo/core/theme/app_colors.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
@@ -40,41 +39,31 @@ class _AccountViewState extends State<AccountView> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        if (navigationController.currentIndex.value != 0) {
-          navigationController.goBack();
-          return false;
-        }
-        bool? shouldExit = await showExitDialog(context);
-          return shouldExit ?? false;
-      },
-      child: Scaffold(
-        backgroundColor: AppColors.background,
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          title: Text(
-            'Profile',
-            style: TextStyle(
-              color: AppColors.textPrimary,
-              fontSize: context.dynamicHeight(0.022),
-              fontWeight: FontWeight.w600,
-            ),
+    return Scaffold(
+      backgroundColor: AppColors.background,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        title: Text(
+          'Profile',
+          style: TextStyle(
+            color: AppColors.textPrimary,
+            fontSize: context.dynamicHeight(0.022),
+            fontWeight: FontWeight.w600,
           ),
-          centerTitle: true,
         ),
-        body: SingleChildScrollView(
-          padding: EdgeInsets.all(context.dynamicHeight(0.02)),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildUserProfileCard(),
-              context.dynamicHeight(0.04).height,
-              _buildTermsConditionSection(),
-              context.dynamicHeight(0.03).height,
-              _buildAccountsSubscriptionSection(),
-            ],
-          ),
+        centerTitle: true,
+      ),
+      body: SingleChildScrollView(
+        padding: EdgeInsets.all(context.dynamicHeight(0.02)),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildUserProfileCard(),
+            context.dynamicHeight(0.04).height,
+            _buildTermsConditionSection(),
+            context.dynamicHeight(0.03).height,
+            _buildAccountsSubscriptionSection(),
+          ],
         ),
       ),
     );
@@ -220,7 +209,7 @@ class _AccountViewState extends State<AccountView> {
                   onChanged: (value) {
                     
                   },
-                  activeColor: AppColors.textPrimary,
+                  activeThumbColor: AppColors.textPrimary,
                   inactiveThumbColor: Colors.grey[400],
                   inactiveTrackColor: Colors.grey[300],
                 ),
@@ -234,7 +223,7 @@ class _AccountViewState extends State<AccountView> {
                   onChanged: (value) {
                     
                   },
-                  activeColor: AppColors.textPrimary,
+                  activeThumbColor: AppColors.textPrimary,
                   inactiveThumbColor: Colors.grey[400],
                   inactiveTrackColor: Colors.grey[300],
                 ),

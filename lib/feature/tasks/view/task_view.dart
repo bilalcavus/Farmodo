@@ -1,4 +1,3 @@
-import 'package:farmodo/core/components/card/show_exit_dialog.dart';
 import 'package:farmodo/core/di/injection.dart';
 import 'package:farmodo/core/theme/app_colors.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
@@ -22,24 +21,14 @@ class _TaskViewState extends State<TaskView> with TaskViewMixin {
   final navigationController = getIt<NavigationController>();
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        if (navigationController.currentIndex.value != 0) {
-          navigationController.goBack();
-          return false;
-        }
-        bool? shouldExit = await showExitDialog(context);
-          return shouldExit ?? false;
-      },
-      child: DefaultTabController(
-        initialIndex: 0,
-        length: 2,
-        child: Scaffold(
-          backgroundColor: AppColors.background,
-          appBar: _buildAppBar(),
-          body: _buildTabBarView(),
-          floatingActionButton: const TaskFloatingButton(),
-        ),
+    return DefaultTabController(
+      initialIndex: 0,
+      length: 2,
+      child: Scaffold(
+        backgroundColor: AppColors.background,
+        appBar: _buildAppBar(),
+        body: _buildTabBarView(),
+        floatingActionButton: const TaskFloatingButton(),
       ),
     );
   }
@@ -78,7 +67,7 @@ class _TaskViewState extends State<TaskView> with TaskViewMixin {
           borderRadius: BorderRadius.circular(10),
           boxShadow: [
             BoxShadow(
-              color: AppColors.border.withOpacity(0.1),
+              color: AppColors.border.withAlpha(25),
               blurRadius: 10,
               offset: const Offset(0, 2),
             ),

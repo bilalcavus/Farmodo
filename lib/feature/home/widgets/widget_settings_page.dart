@@ -165,7 +165,7 @@ class WidgetSettingsPage extends StatelessWidget {
             ),
             const SizedBox(height: 24),
             Card(
-              color: AppColors.primary.withOpacity(0.1),
+              color: AppColors.primary.withAlpha(25),
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Row(

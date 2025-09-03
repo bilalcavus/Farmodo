@@ -90,15 +90,15 @@ class GamificationController extends GetxController {
     }
   }
 
-  // Görev ilerlemesini güncelle
-  Future<void> updateQuestProgress(String questId, int progress) async {
-    try {
-      await _gamificationService.updateQuestProgress(questId, progress);
-      await loadUserData(); // Kullanıcı verilerini yenile
-    } catch (e) {
-      // Error updating quest progress
-    }
-  }
+  // // Görev ilerlemesini güncelle
+  // Future<void> updateQuestProgress(String questId, int progress) async {
+  //   try {
+  //     await _gamificationService.updateQuestProgress(questId, progress);
+  //     await loadUserData(); // Kullanıcı verilerini yenile
+  //   } catch (e) {
+  //     // Error updating quest progress
+  //   }
+  // }
 
   // Kullanıcının belirli bir başarısını getir
   UserAchievement? getUserAchievement(String achievementId) {

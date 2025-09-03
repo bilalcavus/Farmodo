@@ -3,15 +3,11 @@ import 'package:home_widget/home_widget.dart';
 
 class WidgetInteractionService {
   static const String _widgetActionKey = 'widget_action';
-  static const String _actionStartTimer = 'start_timer';
-  static const String _actionPauseTimer = 'pause_timer';
-  static const String _actionOpenApp = 'open_app';
-
   // Widget'tan gelen aksiyonları dinle
   static void listenToWidgetActions(Function(String action) onAction) {
     HomeWidget.setAppGroupId('your_app_group_id'); // iOS için gerekli
     
-    HomeWidget.registerBackgroundCallback(backgroundCallback);
+    HomeWidget.registerInteractivityCallback(backgroundCallback);
     
     // Widget aksiyonlarını dinle
     HomeWidget.widgetClicked.listen((uri) {

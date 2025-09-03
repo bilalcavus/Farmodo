@@ -1,4 +1,3 @@
-import 'package:farmodo/core/components/card/show_exit_dialog.dart';
 import 'package:farmodo/core/components/message/snack_messages.dart';
 import 'package:farmodo/core/di/injection.dart';
 import 'package:farmodo/core/theme/app_colors.dart';
@@ -47,7 +46,7 @@ class _FarmViewState extends State<FarmView> with TickerProviderStateMixin, Farm
               borderRadius: BorderRadius.circular(24),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
+                  color: Colors.black.withAlpha(25),
                   blurRadius: 20,
                   offset: const Offset(0, 10),
                 ),
@@ -86,26 +85,16 @@ class _FarmViewState extends State<FarmView> with TickerProviderStateMixin, Farm
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        if (navigationController.currentIndex.value != 0) {
-          navigationController.goBack();
-          return false;
-        }
-        bool? shouldExit = await showExitDialog(context);
-          return shouldExit ?? false;
-      },
-      child: Scaffold(
-        backgroundColor: AppColors.background,
-        body: SafeArea(
-          child: Column(
-            children: [
-              _buildModernHeader(),
-              Expanded(
-                child: _UserAnimalList(farmController: farmController, context: context),
-              ),
-            ],
-          ),
+    return Scaffold(
+      backgroundColor: AppColors.background,
+      body: SafeArea(
+        child: Column(
+          children: [
+            _buildModernHeader(),
+            Expanded(
+              child: _UserAnimalList(farmController: farmController, context: context),
+            ),
+          ],
         ),
       ),
     );
@@ -121,7 +110,7 @@ class _FarmViewState extends State<FarmView> with TickerProviderStateMixin, Farm
         color: AppColors.surface,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withAlpha(15),
             blurRadius: 10,
             offset: const Offset(0, 2),
           ),
@@ -135,14 +124,14 @@ class _FarmViewState extends State<FarmView> with TickerProviderStateMixin, Farm
                 padding: EdgeInsets.all(context.dynamicWidth(0.025)),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [AppColors.primary, AppColors.primary.withOpacity(0.8)],
+                    colors: [AppColors.primary, AppColors.primary.withAlpha(200)],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
-                      color: AppColors.primary.withOpacity(0.3),
+                      color: AppColors.primary.withAlpha(25),
                       blurRadius: 8,
                       offset: const Offset(0, 4),
                     ),
@@ -249,15 +238,15 @@ class _FarmViewState extends State<FarmView> with TickerProviderStateMixin, Farm
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            AppColors.primary.withOpacity(0.1),
-            AppColors.primary.withOpacity(0.05),
+            AppColors.primary.withAlpha(25),
+            AppColors.primary.withAlpha(15),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: AppColors.primary.withOpacity(0.2),
+          color: AppColors.primary.withAlpha(25),
           width: 1,
         ),
       ),

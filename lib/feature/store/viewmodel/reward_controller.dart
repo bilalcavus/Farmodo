@@ -123,18 +123,6 @@ class RewardController extends GetxController {
     }
   }
 
-  // Future<void> getUserPurchasedRewards() async {
-  //   try {
-  //     final items = await firestoreService.getUserPurchasedRewards();
-  //     if(items.isNotEmpty){
-  //       userPurchasedRewards.assignAll(items);
-  //     } else {
-  //       userPurchasedRewards.clear();
-  //     }
-  //   } catch (e) {
-  //     errorMessage.value = e.toString();
-  //   }
-  // }
 
   Future<void> buyStoreRewards(String rewardId, int xpCost) async {
     setLoading(true);

@@ -19,7 +19,7 @@ class _UserAnimalList extends StatelessWidget {
               Container(
                 padding: EdgeInsets.all(context.dynamicWidth(0.04)),
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withOpacity(0.1),
+                  color: AppColors.primary.withAlpha(25),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: CircularProgressIndicator(
@@ -67,7 +67,7 @@ class _UserAnimalList extends StatelessWidget {
                 borderRadius: BorderRadius.circular(20),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.08),
+                    color: Colors.black.withAlpha(20),
                     blurRadius: 15,
                     offset: const Offset(0, 5),
                   ),

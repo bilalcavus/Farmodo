@@ -62,4 +62,14 @@ class SnackMessages {
       duration: const Duration(seconds: 2),
     );
   }
+
+  void showAnimalAction(String message, Color color){
+    Get.snackbar(
+        'Başarılı!',
+        message,
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: color,
+        colorText: Colors.white
+    );
+  }
 }

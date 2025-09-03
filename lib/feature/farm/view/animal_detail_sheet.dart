@@ -109,6 +109,7 @@ class _AnimalDetailSheetState extends State<AnimalDetailSheet> {
                     widget.animal.id,
                     _nicknameController.text.trim(),
                   );
+                  SnackMessages().showAnimalAction('Nickname updated!', Colors.green);
                 }
               },
               style: ElevatedButton.styleFrom(
@@ -156,28 +157,40 @@ class _AnimalDetailSheetState extends State<AnimalDetailSheet> {
               Icons.restaurant,
               Colors.orange,
               _farmController.feedingAnimalId.value == widget.animal.id,
-              () => _farmController.feedAnimal(widget.animal.id),
+              () {
+                _farmController.feedAnimal(widget.animal.id);
+                SnackMessages().showAnimalAction('Hayvan beslediniz!', Colors.green);
+              } 
             ),
             _buildActionButton(
               'Love',
               Icons.favorite,
               Colors.pink,
               _farmController.lovingAnimalId.value == widget.animal.id,
-              () => _farmController.loveAnimal(widget.animal.id),
+              ()  {
+                _farmController.loveAnimal(widget.animal.id);
+                SnackMessages().showAnimalAction('Hayvana sevgi gösterdiniz!', Colors.pink);
+              }
             ),
             _buildActionButton(
               'Play',
               Icons.sports_esports,
               Colors.blue,
               _farmController.playingAnimalId.value == widget.animal.id,
-              () => _farmController.playWithAnimal(widget.animal.id),
+              () {
+                _farmController.playWithAnimal(widget.animal.id);
+                SnackMessages().showAnimalAction('Hayvanla oynadınız!', Colors.blue);
+              } 
             ),
             _buildActionButton(
               'Heal',
               Icons.healing,
               Colors.green,
               _farmController.healingAnimalId.value == widget.animal.id,
-              () => _farmController.healAnimal(widget.animal.id),
+              () {
+                _farmController.healAnimal(widget.animal.id);
+                SnackMessages().showAnimalAction('Hayvanı iyileştirdiniz!', Colors.green);
+              } 
             ),
           ],
         )),

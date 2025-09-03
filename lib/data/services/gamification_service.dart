@@ -245,6 +245,10 @@ class GamificationService {
               'progress': progress,
               'status': 'active',
               'lastUpdated': Timestamp.fromDate(DateTime.now()),
+              'questRef': _firestore.collection('quests').doc(questId),
+              'type': resolvedQuest?.type.name,
+              'startDate': resolvedQuest?.startDate,
+              'endDate': resolvedQuest?.endDate
             });
       }
 

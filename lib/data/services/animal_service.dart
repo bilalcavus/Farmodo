@@ -401,14 +401,14 @@ class AnimalService {
         final hoursSinceLastPlayed = now.difference(animal.status.lastPlayed).inHours;
         final hoursSinceLastLoving = now.difference(animal.status.lastLoved).inHours;
 
-        // Her saat başı açlık %10 azalır
-        final newHunger = (animal.status.hunger - (hoursSinceLastFed * 0.1)).clamp(0.0, 1.0);
+        // Her saat başı açlık %4 azalır
+        final newHunger = (animal.status.hunger - (hoursSinceLastFed * 0.04)).clamp(0.0, 1.0);
         
-        // Her 2 saat başı enerji %15 azalır
-        final newEnergy = (animal.status.energy - (hoursSinceLastPlayed * 0.075)).clamp(0.0, 1.0);
+        // Her 2 saat başı enerji %5 azalır
+        final newEnergy = (animal.status.energy - (hoursSinceLastPlayed * 0.025)).clamp(0.0, 1.0);
 
-        ///her saat başı %20 azalır
-        final newLove = (animal.status.love - (hoursSinceLastLoving * 0.2)).clamp(0.0, 1.0);
+        ///her saat başı %2 azalır
+        final newLove = (animal.status.love - (hoursSinceLastLoving * 0.02)).clamp(0.0, 1.0);
 
         final newHealth = (animal.status.health - ((1 - newHunger) * 0.05)).clamp(0.0, 1.0);
 

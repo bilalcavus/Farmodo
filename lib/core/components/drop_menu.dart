@@ -37,7 +37,7 @@ class DropMenu extends StatelessWidget {
           ),
           child: DropdownButtonHideUnderline(
             child: DropdownButtonFormField<String>(
-              value: controller.text.isEmpty ? null : controller.text,
+              initialValue: controller.text.isEmpty ? null : controller.text,
               hint: Text(
                 hint,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(

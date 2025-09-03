@@ -25,7 +25,7 @@ class AnimalCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.08),
+              color: Colors.black.withAlpha(20),
               blurRadius: 15,
               offset: const Offset(0, 5),
             ),
@@ -66,7 +66,7 @@ class AnimalCard extends StatelessWidget {
                           borderRadius: BorderRadius.circular(10),
                           boxShadow: [
                             BoxShadow(
-                              color: const Color(0xFFE11D48).withOpacity(0.3),
+                              color: const Color(0xFFE11D48).withAlpha(75),
                               blurRadius: 6,
                               offset: const Offset(0, 2),
                             ),
@@ -94,7 +94,7 @@ class AnimalCard extends StatelessWidget {
                         borderRadius: BorderRadius.circular(10),
                         boxShadow: [
                           BoxShadow(
-                            color: AppColors.secondary.withOpacity(0.3),
+                            color: AppColors.secondary.withAlpha(75),
                             blurRadius: 6,
                             offset: const Offset(0, 2),
                           ),
@@ -144,7 +144,7 @@ class AnimalCard extends StatelessWidget {
                         Container(
                           padding: EdgeInsets.all(context.dynamicWidth(0.008)),
                           decoration: BoxDecoration(
-                            color: AppColors.secondary.withOpacity(0.1),
+                            color: AppColors.secondary.withAlpha(25),
                             borderRadius: BorderRadius.circular(6),
                           ),
                           child: Icon(
@@ -178,7 +178,7 @@ class AnimalCard extends StatelessWidget {
                         child: Container(
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
-                              colors: [AppColors.primary, AppColors.primary.withOpacity(0.8)],
+                              colors: [AppColors.primary, AppColors.primary.withAlpha(200)],
                             ),
                             borderRadius: BorderRadius.circular(3),
                           ),
@@ -204,11 +204,11 @@ class AnimalCard extends StatelessWidget {
                   child: Container(
                     padding: EdgeInsets.all(context.dynamicWidth(0.015)),
                     decoration: BoxDecoration(
-                      color: AppColors.surface.withOpacity(0.95),
+                      color: AppColors.surface.withAlpha(240),
                       borderRadius: BorderRadius.circular(12),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.1),
+                          color: Colors.black.withAlpha(25),
                           blurRadius: 8,
                           offset: const Offset(0, 2),
                         ),

@@ -1,8 +1,6 @@
 import 'package:farmodo/data/models/animal_model.dart';
-import 'package:farmodo/data/models/reward_model.dart';
 import 'package:farmodo/data/services/animal_service.dart';
 import 'package:farmodo/data/services/gamification_service.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class FarmController extends GetxController {
@@ -49,57 +47,17 @@ class FarmController extends GetxController {
     }
   }
 
-  Future<void> addAnimalFromReward(Reward reward) async {
-    try {
-      await _animalService.addAnimalFromReward(reward);
-      await loadAnimals();
-      
-      await _gamificationService.triggerAnimalCountChange(animals.length);
-      
-      Get.snackbar(
-        'Başarılı!',
-        '${reward.name} çiftliğinize eklendi!',
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.green,
-        colorText: Colors.white,
-      );
-    } catch (e) {
-      Get.snackbar(
-        'Hata!',
-        'Hayvan eklenirken hata oluştu: $e',
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
-    }
-  }
 
   // Hayvanı besle
   Future<void> feedAnimal(String animalId) async {
     feedingAnimalId.value = animalId;
-    
+    errorMessage.value = '';
     try {
       await _animalService.feedAnimal(animalId);
-      await loadAnimals(); // Hayvanları yeniden yükle
-      
-      // Gamification tetikle
+      await loadAnimals();
       await _gamificationService.triggerCareAction('feedAnimals', animalId: animalId);
-      
-      Get.snackbar(
-        'Başarılı!',
-        'Hayvan beslediniz!',
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.green,
-        colorText: Colors.white,
-      );
     } catch (e) {
-      Get.snackbar(
-        'Hata!',
-        'Hayvan beslenirken hata oluştu: $e',
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+      errorMessage.value = e.toString();
     } finally {
       feedingAnimalId.value = '';
     }
@@ -107,30 +65,15 @@ class FarmController extends GetxController {
 
   // Hayvana sevgi göster
   Future<void> loveAnimal(String animalId) async {
+    errorMessage.value = '';
     lovingAnimalId.value = animalId;
     
     try {
       await _animalService.loveAnimal(animalId);
-      await loadAnimals(); // Hayvanları yeniden yükle
-      
-      // Gamification tetikle
+      await loadAnimals();
       await _gamificationService.triggerCareAction('loveAnimals', animalId: animalId);
-      
-      Get.snackbar(
-        'Başarılı!',
-        'Hayvana sevgi gösterdiniz!',
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.pink,
-        colorText: Colors.white,
-      );
     } catch (e) {
-      Get.snackbar(
-        'Hata!',
-        'Sevgi gösterirken hata oluştu: $e',
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+      errorMessage.value = e.toString();
     } finally {
       lovingAnimalId.value = '';
     }
@@ -138,30 +81,16 @@ class FarmController extends GetxController {
 
   // Hayvanla oyna
   Future<void> playWithAnimal(String animalId) async {
+    errorMessage.value = '';
     playingAnimalId.value = animalId;
     
     try {
       await _animalService.playWithAnimal(animalId);
-      await loadAnimals(); // Hayvanları yeniden yükle
-      
-      // Gamification tetikle
+      await loadAnimals();
       await _gamificationService.triggerCareAction('playWithAnimals', animalId: animalId);
-      
-      Get.snackbar(
-        'Başarılı!',
-        'Hayvanla oynadınız!',
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.blue,
-        colorText: Colors.white,
-      );
+
     } catch (e) {
-      Get.snackbar(
-        'Hata!',
-        'Oynarken hata oluştu: $e',
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+      errorMessage.value = e.toString();
     } finally {
       playingAnimalId.value = '';
     }
@@ -169,112 +98,66 @@ class FarmController extends GetxController {
 
   // Hayvanı iyileştir
   Future<void> healAnimal(String animalId) async {
+    errorMessage.value = '';
     healingAnimalId.value = animalId;
     
     try {
       await _animalService.healAnimal(animalId);
       await loadAnimals(); // Hayvanları yeniden yükle
-      
-      // Gamification tetikle
       await _gamificationService.triggerCareAction('healAnimals', animalId: animalId);
-      
-      Get.snackbar(
-        'Başarılı!',
-        'Hayvan iyileştirildi!',
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.green,
-        colorText: Colors.white,
-      );
     } catch (e) {
-      Get.snackbar(
-        'Hata!',
-        'İyileştirme sırasında hata oluştu: $e',
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+      errorMessage.value = e.toString();
     } finally {
       healingAnimalId.value = '';
     }
   }
 
-  // Hayvan takma adını güncelle
   Future<void> updateAnimalNickname(String animalId, String nickname) async {
     try {
       await _animalService.updateAnimalNickname(animalId, nickname);
-      await loadAnimals(); // Hayvanları yeniden yükle
-      
-      Get.snackbar(
-        'Başarılı!',
-        'Takma ad güncellendi!',
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.green,
-        colorText: Colors.white,
-      );
+      await loadAnimals();
     } catch (e) {
-      Get.snackbar(
-        'Hata!',
-        'Takma ad güncellenirken hata oluştu: $e',
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+      errorMessage.value = e.toString();
     }
   }
 
-  // Hayvanı favori olarak işaretle/çıkar
+
   Future<void> toggleAnimalFavorite(String animalId) async {
+    errorMessage.value = '';
     try {
       await _animalService.toggleAnimalFavorite(animalId);
-      await loadAnimals(); // Hayvanları yeniden yükle
+      await loadAnimals();
     } catch (e) {
-      Get.snackbar(
-        'Hata!',
-        'Favori işlemi sırasında hata oluştu: $e',
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+      errorMessage.value = e.toString();
     }
   }
 
-  // Hayvana deneyim puanı ekle
   Future<void> addAnimalExperience(String animalId, int experience) async {
+    errorMessage.value = '';
     try {
       await _animalService.addAnimalExperience(animalId, experience);
-      await loadAnimals(); // Hayvanları yeniden yükle
+      await loadAnimals();
     } catch (e) {
-      Get.snackbar(
-        'Hata!',
-        'Deneyim puanı eklenirken hata oluştu: $e',
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+      errorMessage.value = e.toString();
     }
   }
 
   // Hayvanı sil
   Future<void> deleteAnimal(String animalId) async {
+    errorMessage.value = '';
     try {
       await _animalService.deleteAnimal(animalId);
       await loadAnimals(); // Hayvanları yeniden yükle
       
-      Get.snackbar(
-        'Başarılı!',
-        'Hayvan silindi!',
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.green,
-        colorText: Colors.white,
-      );
+      // Get.snackbar(
+      //   'Başarılı!',
+      //   'Hayvan silindi!',
+      //   snackPosition: SnackPosition.TOP,
+      //   backgroundColor: Colors.green,
+      //   colorText: Colors.white,
+      // );
     } catch (e) {
-      Get.snackbar(
-        'Hata!',
-        'Hayvan silinirken hata oluştu: $e',
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+      errorMessage.value = e.toString();
     }
   }
 

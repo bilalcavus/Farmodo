@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:home_widget/home_widget.dart';
 
 class HomeWidgetService {
-  static const String _appWidgetId = 'pomodoro_timer_widget';
   static const String _timerRunningKey = 'timer_running';
   static const String _secondsRemainingKey = 'seconds_remaining';
   static const String _isOnBreakKey = 'is_on_break';
