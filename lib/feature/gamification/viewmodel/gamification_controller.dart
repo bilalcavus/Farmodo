@@ -1,6 +1,6 @@
 import 'package:farmodo/data/models/achievement_model.dart';
 import 'package:farmodo/data/models/quest_model.dart';
-import 'package:farmodo/data/services/gamification_service.dart';
+import 'package:farmodo/data/services/gamification/gamification_service.dart';
 import 'package:get/get.dart';
 
 class GamificationController extends GetxController {
@@ -38,11 +38,19 @@ class GamificationController extends GetxController {
     ]);
   }
 
+  Future<void> refreshData() async {
+    await Future.wait([
+      loadAchievements(forceRefresh: true),
+      loadQuests(forceRefresh: true),
+      loadUserData(forceRefresh: true),
+    ]);
+  }
+
   // Başarıları yükle
-  Future<void> loadAchievements() async {
+  Future<void> loadAchievements({bool forceRefresh = false}) async {
     isLoadingAchievements.value = true;
     try {
-      final achievementsList = await _gamificationService.getAchievements();
+      final achievementsList = await _gamificationService.fetchAchievements(forceRefresh: forceRefresh);
       achievements.assignAll(achievementsList);
     } catch (e) {
       // Error loading achievements
@@ -52,10 +60,10 @@ class GamificationController extends GetxController {
   }
 
   // Görevleri yükle
-  Future<void> loadQuests() async {
+  Future<void> loadQuests({bool forceRefresh = false}) async {
     isLoadingQuests.value = true;
     try {
-      final questsList = await _gamificationService.getQuests();
+      final questsList = await _gamificationService.fetchQuests(forceRefresh: forceRefresh);
       quests.assignAll(questsList);
     } catch (e) {
       // Error loading quests
@@ -65,11 +73,11 @@ class GamificationController extends GetxController {
   }
 
   // Kullanıcı verilerini yükle
-  Future<void> loadUserData() async {
+  Future<void> loadUserData({bool forceRefresh = false}) async {
     isLoadingUserData.value = true;
     try {
-      final userAchievementsList = await _gamificationService.getUserAchievements();
-      final userQuestsList = await _gamificationService.getUserQuests();
+      final userAchievementsList = await _gamificationService.fetchUserAchievements(forceRefresh: forceRefresh);
+      final userQuestsList = await _gamificationService.fetchUserQuests(forceRefresh: forceRefresh);
       
       userAchievements.assignAll(userAchievementsList);
       userQuests.assignAll(userQuestsList);
@@ -89,16 +97,6 @@ class GamificationController extends GetxController {
       // Error updating achievement progress
     }
   }
-
-  // // Görev ilerlemesini güncelle
-  // Future<void> updateQuestProgress(String questId, int progress) async {
-  //   try {
-  //     await _gamificationService.updateQuestProgress(questId, progress);
-  //     await loadUserData(); // Kullanıcı verilerini yenile
-  //   } catch (e) {
-  //     // Error updating quest progress
-  //   }
-  // }
 
   // Kullanıcının belirli bir başarısını getir
   UserAchievement? getUserAchievement(String achievementId) {
@@ -327,8 +325,7 @@ class GamificationController extends GetxController {
     questFilter.value = filter;
   }
 
-  // Yenile
   Future<void> refreshGamification() async {
-    await loadAllData();
+    await refreshData();
   }
 }

@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:farmodo/data/models/animal_model.dart';
 import 'package:farmodo/data/models/reward_model.dart';
-import 'package:farmodo/data/services/gamification_service.dart';
+import 'package:farmodo/data/services/gamification/gamification_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class AnimalService {

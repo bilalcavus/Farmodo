@@ -19,7 +19,7 @@ if (keystorePropertiesFile.exists()) {
 
 android {
     namespace = "com.bilalcavus.farmodo"
-    compileSdk = flutter.compileSdkVersion
+    compileSdk = 36
     ndkVersion = "27.0.12077973"
 
     compileOptions {
@@ -39,13 +39,13 @@ android {
             storePassword = keystoreProperties["storePassword"] as String?
         }
     }
-
+    
     defaultConfig {
         applicationId = "com.bilalcavus.farmodo"
         minSdk = flutter.minSdkVersion
-        targetSdk = flutter.targetSdkVersion
-        versionCode = flutter.versionCode
-        versionName = flutter.versionName
+        targetSdk = 35
+        versionCode = 3
+        versionName = "1.1.1"
     }
 
     buildTypes {

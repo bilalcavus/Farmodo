@@ -10,7 +10,6 @@ class GamificationNotifications {
 
   // Başarı açılma snackbar'ını göster
   void showAchievementUnlocked(Achievement achievement) {
-    // Animasyon sonrası snackbar göster
     Future.delayed(const Duration(seconds: 4), () {
       Get.snackbar(
         '🎉 Başarı Açıldı!',

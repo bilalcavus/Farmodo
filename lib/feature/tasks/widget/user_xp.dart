@@ -1,16 +1,17 @@
 import 'package:farmodo/core/theme/app_colors.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
-import 'package:farmodo/data/services/gamification_service.dart';
+import 'package:farmodo/data/services/auth_service.dart';
+import 'package:farmodo/data/services/gamification/gamification_service.dart';
 import 'package:flutter/material.dart';
 
 class UserXp extends StatelessWidget {
   const UserXp({
     super.key,
-    required this.userXp,
+    required this.authService,
   });
 
-  final int userXp;
+  final AuthService authService;
 
   @override
   Widget build(BuildContext context) {
@@ -34,11 +35,11 @@ class UserXp extends StatelessWidget {
               children: [
                 Image.asset('assets/images/xp_star.png', height: context.dynamicHeight(0.03)),
                 Text(
-                  '$userXp XP',
+                  '${authService.currentUser?.xp ?? 0} XP',
                   style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                    color: AppColors.surface,
-                    fontWeight: FontWeight.w700,
-                  ),
+                        color: AppColors.surface,
+                        fontWeight: FontWeight.w700,
+                      ),
                 ),
               ],
             ),
@@ -46,6 +47,7 @@ class UserXp extends StatelessWidget {
           
           context.dynamicWidth(0.02).width,
           
+          // Coin Container
           Container(
             height: context.dynamicHeight(0.04),
             padding: EdgeInsets.symmetric(horizontal: 12),

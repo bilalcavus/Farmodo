@@ -4,12 +4,10 @@ import 'package:farmodo/core/theme/app_colors.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
 import 'package:farmodo/data/services/auth_service.dart';
-import 'package:farmodo/feature/auth/login/viewmodel/login_controller.dart';
 import 'package:farmodo/feature/home/widgets/pomodoro_timer.dart';
 import 'package:farmodo/feature/tasks/viewmodel/timer_controller.dart';
 import 'package:farmodo/feature/tasks/widget/user_xp.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class HomeHeader extends StatefulWidget {
   const HomeHeader({
@@ -23,7 +21,7 @@ class HomeHeader extends StatefulWidget {
 class _HomeHeaderState extends State<HomeHeader> {
   @override
   Widget build(BuildContext context) {
-    final loginController = Get.put<LoginController>(getIt<LoginController>());
+    final authService = getIt<AuthService>();
     final timerController = getIt<TimerController>();
     return Stack(
       children: [
@@ -39,7 +37,7 @@ class _HomeHeaderState extends State<HomeHeader> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           context.dynamicHeight(0.017).height,
-          UserXp(userXp: loginController.userXp.value),
+          UserXp(authService: authService),
           context.dynamicHeight(0.05).height,
           PomodoroTimer(timerController: timerController),
       ],

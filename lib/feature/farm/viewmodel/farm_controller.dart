@@ -1,7 +1,7 @@
 import 'package:farmodo/data/models/animal_model.dart';
 import 'package:farmodo/data/services/animal_service.dart';
 import 'package:farmodo/data/services/auth_service.dart';
-import 'package:farmodo/data/services/gamification_service.dart';
+import 'package:farmodo/data/services/gamification/gamification_service.dart';
 import 'package:farmodo/feature/auth/login/viewmodel/login_controller.dart';
 import 'package:get/get.dart';
 
@@ -78,6 +78,8 @@ class FarmController extends GetxController {
       await _animalService.loveAnimal(animalId);
       await loadAnimals();
       await _gamificationService.triggerCareAction('loveAnimals', animalId: animalId);
+      await authService.fetchAndSetCurrentUser();
+      loginController.refreshUserXp();
     } catch (e) {
       errorMessage.value = e.toString();
     } finally {
@@ -94,7 +96,8 @@ class FarmController extends GetxController {
       await _animalService.playWithAnimal(animalId);
       await loadAnimals();
       await _gamificationService.triggerCareAction('playWithAnimals', animalId: animalId);
-
+      await authService.fetchAndSetCurrentUser();
+      loginController.refreshUserXp();
     } catch (e) {
       errorMessage.value = e.toString();
     } finally {
@@ -111,6 +114,8 @@ class FarmController extends GetxController {
       await _animalService.healAnimal(animalId);
       await loadAnimals(); // Hayvanları yeniden yükle
       await _gamificationService.triggerCareAction('healAnimals', animalId: animalId);
+      await authService.fetchAndSetCurrentUser();
+      loginController.refreshUserXp();
     } catch (e) {
       errorMessage.value = e.toString();
     } finally {

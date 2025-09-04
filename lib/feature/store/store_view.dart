@@ -78,10 +78,7 @@ class _StoreViewState extends State<StoreView> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Obx((){
-                        return UserXp(userXp: loginController.userXp.value);
-                      }
-                    )
+                    UserXp(authService: authService),
                   ],
                 ),
               ),
