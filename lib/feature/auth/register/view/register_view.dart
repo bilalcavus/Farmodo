@@ -2,6 +2,7 @@ import 'package:farmodo/core/components/text_field/custom_text_field.dart';
 import 'package:farmodo/core/utility/constants/text_strings.dart';
 import 'package:farmodo/core/di/injection.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
+import 'package:farmodo/core/utility/extension/ontap_extension.dart';
 import 'package:farmodo/core/utility/extension/route_helper.dart';
 import 'package:farmodo/core/theme/app_colors.dart';
 import 'package:farmodo/feature/auth/login/viewmodel/login_controller.dart';
@@ -108,11 +109,11 @@ class _RegisterViewState extends State<RegisterView> {
 
   Widget togglePasswordView(VoidCallback onTap, RxBool value) {
     return Obx((){
-      return GestureDetector(
-        onTap: onTap,
-        child: value.value ? Icon(HugeIcons.strokeRoundedViewOffSlash) : Icon(HugeIcons.strokeRoundedView));
+      return value.value 
+      ? Icon(HugeIcons.strokeRoundedViewOffSlash) 
+      : Icon(HugeIcons.strokeRoundedView);
       }
-    );
+    ).onTap(onTap);
   }
 
   Padding horizontalLineText(BuildContext context) {
@@ -151,37 +152,27 @@ class _RegisterViewState extends State<RegisterView> {
           children: [
             TextSpan(text: 'Giriş yaparak veya kayıt olarak '),
             WidgetSpan(
-              child: GestureDetector(
-                onTap: () {
-                  _showPrivacyPolicy(context);
-                },
-                child: Text(
-                  'gizlilik sözleşmesi',
-                  style: TextStyle(
-                    fontSize: context.dynamicWidth(0.032),
-                    color: Colors.pink,
-                    decoration: TextDecoration.underline,
-                    decorationColor: Colors.pink,
-                  ),
+              child: Text(
+                'gizlilik sözleşmesi',
+                style: TextStyle(
+                  fontSize: context.dynamicWidth(0.032),
+                  color: Colors.pink,
+                  decoration: TextDecoration.underline,
+                  decorationColor: Colors.pink,
                 ),
-              ),
+              ).onTap(() => _showPrivacyPolicy(context)),
             ),
             TextSpan(text: ' ve '),
             WidgetSpan(
-              child: GestureDetector(
-                onTap: () {
-                  _showTermsOfService(context);
-                },
-                child: Text(
-                  'kullanım şartlarını',
-                  style: TextStyle(
-                    fontSize: context.dynamicWidth(0.032),
-                    color: Colors.pink,
-                    decoration: TextDecoration.underline,
-                    decorationColor: Colors.pink,
-                  ),
+              child: Text(
+                'kullanım şartlarını',
+                style: TextStyle(
+                  fontSize: context.dynamicWidth(0.032),
+                  color: Colors.pink,
+                  decoration: TextDecoration.underline,
+                  decorationColor: Colors.pink,
                 ),
-              ),
+              ).onTap(() => _showTermsOfService(context)),
             ),
             TextSpan(text: ' kabul etmiş olursunuz.'),
           ],

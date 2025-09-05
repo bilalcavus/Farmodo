@@ -2,6 +2,7 @@ import 'package:farmodo/core/components/message/snack_messages.dart';
 import 'package:farmodo/core/di/injection.dart';
 import 'package:farmodo/core/theme/app_colors.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
+import 'package:farmodo/core/utility/extension/ontap_extension.dart';
 import 'package:farmodo/core/utility/extension/route_helper.dart';
 import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
 import 'package:farmodo/data/models/animal_model.dart';
@@ -215,18 +216,14 @@ class _FarmViewState extends State<FarmView> with TickerProviderStateMixin, Farm
       ),
       child: Material(
         color: Colors.transparent,
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(12),
-          child: Padding(
-            padding: EdgeInsets.all(context.dynamicWidth(0.025)),
-            child: Icon(
-              icon,
-              color: AppColors.textSecondary,
-              size: context.dynamicHeight(0.022),
-            ),
+        child: Padding(
+          padding: EdgeInsets.all(context.dynamicWidth(0.025)),
+          child: Icon(
+            icon,
+            color: AppColors.textSecondary,
+            size: context.dynamicHeight(0.022),
           ),
-        ),
+        ).onTap(onTap),
       ),
     );
   }
@@ -252,52 +249,48 @@ class _FarmViewState extends State<FarmView> with TickerProviderStateMixin, Farm
       ),
       child: Material(
         color: Colors.transparent,
-        child: InkWell(
-          onTap: () => RouteHelper.push(context, const GamificationView()),
-          borderRadius: BorderRadius.circular(20),
-          child: Row(
-            children: [
-              Container(
-                padding: EdgeInsets.all(context.dynamicWidth(0.025)),
-                decoration: BoxDecoration(
-                  color: AppColors.primary,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Icon(
-                  HugeIcons.strokeRoundedChampion,
-                  color: AppColors.onPrimary,
-                  size: context.dynamicHeight(0.022),
-                ),
-              ),
-              SizedBox(width: context.dynamicWidth(0.035)),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Achievements & Quests',
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.textPrimary,
-                      ),
-                    ),
-                    Text(
-                      'Complete tasks and earn rewards',
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: AppColors.textSecondary,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Icon(
-                HugeIcons.strokeRoundedArrowRight01,
+        child: Row(
+          children: [
+            Container(
+              padding: EdgeInsets.all(context.dynamicWidth(0.025)),
+              decoration: BoxDecoration(
                 color: AppColors.primary,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(
+                HugeIcons.strokeRoundedChampion,
+                color: AppColors.onPrimary,
                 size: context.dynamicHeight(0.022),
               ),
-            ],
-          ),
-        ),
+            ),
+            SizedBox(width: context.dynamicWidth(0.035)),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Achievements & Quests',
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
+                  Text(
+                    'Complete tasks and earn rewards',
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Icon(
+              HugeIcons.strokeRoundedArrowRight01,
+              color: AppColors.primary,
+              size: context.dynamicHeight(0.022),
+            ),
+          ],
+        ).onTap(() => RouteHelper.push(context, const GamificationView())),
       ),
     );
   }

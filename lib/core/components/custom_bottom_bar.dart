@@ -1,4 +1,5 @@
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
+import 'package:farmodo/core/utility/extension/ontap_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:iconsax/iconsax.dart';
@@ -83,36 +84,33 @@ class CustomBottomNavigation extends StatelessWidget {
     VoidCallback? onTapOverride,
   }) {
     final isSelected = currentIndex == index;
-    return GestureDetector(
-      onTap: onTapOverride ?? () => onTap(index),
-      child: Container(
-        padding: EdgeInsets.symmetric(
-          horizontal: context.dynamicWidth(0.04),
-          // vertical: context.dynamicHeight(0.008),
-        ),
-        decoration: BoxDecoration(
-          color: Colors.transparent,
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              icon,
-              color: isSelected ? const Color(0xff1A5CFF) : null,
-              size: context.dynamicWidth(0.055),
-            ),
-            Text(
-              label,
-              style: TextStyle(
-                color:  isSelected ? const Color(0xff1A5CFF) : null,
-                fontSize: context.dynamicHeight(0.012),
-                fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-              ),
-            ),
-          ],
-        ),
+    return Container(
+      padding: EdgeInsets.symmetric(
+        horizontal: context.dynamicWidth(0.04),
+        // vertical: context.dynamicHeight(0.008),
       ),
-    );
+      decoration: BoxDecoration(
+        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            icon,
+            color: isSelected ? const Color(0xff1A5CFF) : null,
+            size: context.dynamicWidth(0.055),
+          ),
+          Text(
+            label,
+            style: TextStyle(
+              color:  isSelected ? const Color(0xff1A5CFF) : null,
+              fontSize: context.dynamicHeight(0.012),
+              fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+            ),
+          ),
+        ],
+      ),
+    ).onTap(onTapOverride ?? () => onTap(index));
   }
 }

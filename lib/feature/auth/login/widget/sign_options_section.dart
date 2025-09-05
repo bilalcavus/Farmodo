@@ -1,4 +1,5 @@
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
+import 'package:farmodo/core/utility/extension/ontap_extension.dart';
 import 'package:flutter/material.dart';
 
 class SignOptionsSection extends StatelessWidget {
@@ -19,12 +20,9 @@ class SignOptionsSection extends StatelessWidget {
       children: [
         Text(leftText, style: Theme.of(context).textTheme.bodyMedium,),
         SizedBox(width: context.dynamicWidth(0.015)),
-        GestureDetector(
-          onTap: onTap,
-          child: Text(rightText, style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            color: Colors.pink
-          )),
-        )
+        Text(rightText, style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+          color: Colors.pink
+        )).onTap(onTap)
       ],
     );
   }

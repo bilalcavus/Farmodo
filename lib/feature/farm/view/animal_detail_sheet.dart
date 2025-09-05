@@ -231,69 +231,66 @@ class _AnimalDetailSheetState extends State<AnimalDetailSheet> {
     }
     
   ) {
-    return GestureDetector(
-      onTap: isLoading ? null : onTap,
-      child: Container(
-        padding: EdgeInsets.all(context.dynamicWidth(0.02)),
-        decoration: BoxDecoration(
-          color: isLoading ? Colors.grey.shade300 : color.withAlpha(15),
-          borderRadius: BorderRadius.circular(15),
-          
-        ),
-        child: Row(
-          children: [isLoading
-              ? ActionLoadingIcon(context: context, color: color)
-              : Image.asset(imagePath, height: imageHeight),
-
-            context.dynamicWidth(0.03).width,
-
-            Text(
-              title,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: isLoading ? Colors.grey.shade600 : color,
-              ),
-            ),
-            const Spacer(),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Row(
-                  children: [
-                    Text(
-                      gainAnimalXp,
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: isLoading ? Colors.grey.shade600 : color,
-                      ),
-                    ),
-                    Icon(Icons.pets, color: color, size: context.dynamicHeight(0.02))
-
-                  ],
-                ),
-                Row(
-                  children: [
-                    Text(
-                      userXpCost,
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: isLoading ? Colors.grey.shade600 : color,
-                      ),
-                    ),
-                    Image.asset(
-                      'assets/images/xp_star.png',
-                      width: context.dynamicWidth(0.055),
-                      height: context.dynamicHeight(0.04),
-                      color: color,
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ],
-        ),
+    return Container(
+      padding: EdgeInsets.all(context.dynamicWidth(0.02)),
+      decoration: BoxDecoration(
+        color: isLoading ? Colors.grey.shade300 : color.withAlpha(15),
+        borderRadius: BorderRadius.circular(15),
+        
       ),
-    );
+      child: Row(
+        children: [isLoading
+            ? ActionLoadingIcon(context: context, color: color)
+            : Image.asset(imagePath, height: imageHeight),
+    
+          context.dynamicWidth(0.03).width,
+    
+          Text(
+            title,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: isLoading ? Colors.grey.shade600 : color,
+            ),
+          ),
+          const Spacer(),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Row(
+                children: [
+                  Text(
+                    gainAnimalXp,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: isLoading ? Colors.grey.shade600 : color,
+                    ),
+                  ),
+                  Icon(Icons.pets, color: color, size: context.dynamicHeight(0.02))
+    
+                ],
+              ),
+              Row(
+                children: [
+                  Text(
+                    userXpCost,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: isLoading ? Colors.grey.shade600 : color,
+                    ),
+                  ),
+                  Image.asset(
+                    'assets/images/xp_star.png',
+                    width: context.dynamicWidth(0.055),
+                    height: context.dynamicHeight(0.04),
+                    color: color,
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
+    ).onTap(isLoading ? null : onTap);
   }
 
   Widget _buildDetailInfo() {

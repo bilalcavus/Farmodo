@@ -1,6 +1,7 @@
 
 import 'package:farmodo/core/theme/app_colors.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
+import 'package:farmodo/core/utility/extension/ontap_extension.dart';
 import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
 import 'package:farmodo/data/models/user_task_model.dart';
 import 'package:farmodo/feature/tasks/viewmodel/tasks_controller.dart';
@@ -211,22 +212,19 @@ class CustomTaskList extends StatelessWidget {
       final bool isSelected = taskController.selctedTaskIndex.value == index;
       final bool isRunning = timerController.isRunning.value;
 
-      return InkWell(
-        onTap: () => _handleTaskAction(task, index, isSelected, isRunning),
-        child: CircleAvatar(
-          radius: context.dynamicHeight(0.02),
-          backgroundColor: (isRunning && isSelected) 
-              ? AppColors.danger
-              : AppColors.primary,
-          child: Icon(
-             (isRunning && isSelected) 
-                ? HugeIcons.strokeRoundedPause
-                : HugeIcons.strokeRoundedPlay,
-            color: Colors.white,
-            size: context.dynamicHeight(0.025),
-          ),
+      return CircleAvatar(
+        radius: context.dynamicHeight(0.02),
+        backgroundColor: (isRunning && isSelected) 
+            ? AppColors.danger
+            : AppColors.primary,
+        child: Icon(
+           (isRunning && isSelected) 
+              ? HugeIcons.strokeRoundedPause
+              : HugeIcons.strokeRoundedPlay,
+          color: Colors.white,
+          size: context.dynamicHeight(0.025),
         ),
-      );
+      ).onTap(() => _handleTaskAction(task, index, isSelected, isRunning));
     });
   }
 

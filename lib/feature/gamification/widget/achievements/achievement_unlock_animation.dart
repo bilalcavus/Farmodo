@@ -1,4 +1,5 @@
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
+import 'package:farmodo/core/utility/extension/ontap_extension.dart';
 import 'package:farmodo/data/models/achievement_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -261,18 +262,15 @@ class _AchievementUnlockAnimationState extends State<AchievementUnlockAnimation>
                           SizedBox(height: context.dynamicHeight(0.02)),
                           
                           // Tap to dismiss
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.of(context).pop();
-                              widget.onComplete?.call();
-                            },
-                            child: Text(
-                              'Devam etmek için dokunun',
-                              style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                                color: Colors.grey.shade500,
-                              ),
+                          Text(
+                            'Devam etmek için dokunun',
+                            style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                              color: Colors.grey.shade500,
                             ),
-                          ),
+                          ).onTap((){
+                            Navigator.of(context).pop();
+                              widget.onComplete?.call();
+                          }),
                         ],
                       ),
                     ),

@@ -1,4 +1,5 @@
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
+import 'package:farmodo/core/utility/extension/ontap_extension.dart';
 import 'package:farmodo/feature/auth/login/viewmodel/login_controller.dart';
 import 'package:flutter/material.dart';
 
@@ -15,11 +16,10 @@ class SocialNetworkLogin extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        InkWell(
-          onTap: () async  {
-            await loginController.handleGoogleSignIn(context);
-          },
-          child: Image.asset('assets/logo/google-icon.png', height: context.dynamicHeight(0.04),)),
+        Image.asset(
+          'assets/logo/google-icon.png',
+          height: context.dynamicHeight(0.04))
+            .onTap(() async => await loginController.handleGoogleSignIn(context)),
         Image.asset('assets/logo/facebook-icon.png', height: context.dynamicHeight(0.04)),
         Image.asset('assets/logo/x-icon.png', height: context.dynamicHeight(0.04)),
       ],

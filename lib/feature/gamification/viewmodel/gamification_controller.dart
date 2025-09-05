@@ -1,3 +1,4 @@
+import 'package:farmodo/core/utility/extension/future_extension.dart';
 import 'package:farmodo/data/models/achievement_model.dart';
 import 'package:farmodo/data/models/quest_model.dart';
 import 'package:farmodo/data/services/gamification/gamification_service.dart';
@@ -6,22 +7,20 @@ import 'package:get/get.dart';
 class GamificationController extends GetxController {
   final GamificationService _gamificationService = GamificationService();
 
-  // Başarılar
   final RxList<Achievement> achievements = <Achievement>[].obs;
   final RxList<UserAchievement> userAchievements = <UserAchievement>[].obs;
   
-  // Görevler
   final RxList<Quest> quests = <Quest>[].obs;
   final RxList<UserQuest> userQuests = <UserQuest>[].obs;
   
-  // Loading states
   final RxBool isLoadingAchievements = false.obs;
   final RxBool isLoadingQuests = false.obs;
   final RxBool isLoadingUserData = false.obs;
   
-  // Filtreleme state'leri
   final RxString achievementFilter = 'Tümü'.obs;
   final RxString questFilter = 'Aktif'.obs;
+
+  var errorMessage = ''.obs;
 
   @override
   void onInit() {
@@ -29,12 +28,11 @@ class GamificationController extends GetxController {
     loadAllData();
   }
 
-  // Tüm verileri yükle
   Future<void> loadAllData() async {
     await Future.wait([
-      loadAchievements(),
-      loadQuests(),
-      loadUserData(),
+      loadAchievements().trackTime('fetching achievements'),
+      loadQuests().trackTime('fetching quests'),
+      loadUserData().trackTime('fetching user data'),
     ]);
   }
 
@@ -46,14 +44,13 @@ class GamificationController extends GetxController {
     ]);
   }
 
-  // Başarıları yükle
   Future<void> loadAchievements({bool forceRefresh = false}) async {
     isLoadingAchievements.value = true;
     try {
       final achievementsList = await _gamificationService.fetchAchievements(forceRefresh: forceRefresh);
       achievements.assignAll(achievementsList);
     } catch (e) {
-      // Error loading achievements
+      errorMessage.value = e.toString();
     } finally {
       isLoadingAchievements.value = false;
     }
@@ -66,7 +63,7 @@ class GamificationController extends GetxController {
       final questsList = await _gamificationService.fetchQuests(forceRefresh: forceRefresh);
       quests.assignAll(questsList);
     } catch (e) {
-      // Error loading quests
+      errorMessage.value = e.toString();
     } finally {
       isLoadingQuests.value = false;
     }
@@ -82,7 +79,7 @@ class GamificationController extends GetxController {
       userAchievements.assignAll(userAchievementsList);
       userQuests.assignAll(userQuestsList);
     } catch (e) {
-      // Error loading user data
+      errorMessage.value = e.toString();
     } finally {
       isLoadingUserData.value = false;
     }
@@ -94,7 +91,7 @@ class GamificationController extends GetxController {
       await _gamificationService.updateAchievementProgress(achievementId, progress);
       await loadUserData(); // Kullanıcı verilerini yenile
     } catch (e) {
-      // Error updating achievement progress
+      errorMessage.value = e.toString();
     }
   }
 
@@ -103,6 +100,7 @@ class GamificationController extends GetxController {
     try {
       return userAchievements.firstWhere((ua) => ua.achievementId == achievementId);
     } catch (e) {
+      errorMessage.value = e.toString();
       return null;
     }
   }
@@ -112,6 +110,7 @@ class GamificationController extends GetxController {
     try {
       return userQuests.firstWhere((uq) => uq.questId == questId);
     } catch (e) {
+      errorMessage.value = e.toString();
       return null;
     }
   }

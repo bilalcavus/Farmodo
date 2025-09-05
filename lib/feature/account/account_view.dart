@@ -1,6 +1,7 @@
 import 'package:farmodo/core/di/injection.dart';
 import 'package:farmodo/core/theme/app_colors.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
+import 'package:farmodo/core/utility/extension/ontap_extension.dart';
 import 'package:farmodo/core/utility/extension/route_helper.dart';
 import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
 import 'package:farmodo/data/services/auth_service.dart';
@@ -271,47 +272,44 @@ class _AccountViewState extends State<AccountView> {
   }) {
     return Material(
       color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        child: Container(
-          padding: EdgeInsets.symmetric(
-            horizontal: context.dynamicWidth(0.05),
-            vertical: context.dynamicHeight(0.02)
-          ),
-          child: Row(
-            children: [
-              Container(
-                padding: EdgeInsets.all(context.dynamicHeight(0.01)),
-                decoration: BoxDecoration(
-                  color: title == 'Logout' ? AppColors.danger.withAlpha(25) : AppColors.primary.withAlpha(25),
-                  borderRadius: BorderRadius.circular(context.dynamicHeight(0.01)),
-                ),
-                child: Icon(
-                  icon,
-                  color: title == 'Logout' ? AppColors.danger : AppColors.textPrimary,
-                  size: context.dynamicHeight(0.025),
-                ),
+      child: Container(
+        padding: EdgeInsets.symmetric(
+          horizontal: context.dynamicWidth(0.05),
+          vertical: context.dynamicHeight(0.02)
+        ),
+        child: Row(
+          children: [
+            Container(
+              padding: EdgeInsets.all(context.dynamicHeight(0.01)),
+              decoration: BoxDecoration(
+                color: title == 'Logout' ? AppColors.danger.withAlpha(25) : AppColors.primary.withAlpha(25),
+                borderRadius: BorderRadius.circular(context.dynamicHeight(0.01)),
               ),
-              context.dynamicWidth(0.04).width,
-              Expanded(
-                child: Text(
-                  title,
-                  style: TextStyle(
-                    color: AppColors.textPrimary,
-                    fontSize: context.dynamicHeight(0.018),
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-              ),
-              trailing ?? Icon(
-                Icons.chevron_right,
-                color: AppColors.textSecondary,
+              child: Icon(
+                icon,
+                color: title == 'Logout' ? AppColors.danger : AppColors.textPrimary,
                 size: context.dynamicHeight(0.025),
               ),
-            ],
-          ),
+            ),
+            context.dynamicWidth(0.04).width,
+            Expanded(
+              child: Text(
+                title,
+                style: TextStyle(
+                  color: AppColors.textPrimary,
+                  fontSize: context.dynamicHeight(0.018),
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+            ),
+            trailing ?? Icon(
+              Icons.chevron_right,
+              color: AppColors.textSecondary,
+              size: context.dynamicHeight(0.025),
+            ),
+          ],
         ),
-      ),
+      ).onTap(onTap),
     );
   }
 

@@ -2,6 +2,7 @@ import 'package:farmodo/core/components/drop_menu.dart';
 import 'package:farmodo/core/di/injection.dart';
 import 'package:farmodo/core/theme/app_colors.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
+import 'package:farmodo/core/utility/extension/ontap_extension.dart';
 import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
 import 'package:farmodo/feature/tasks/viewmodel/tasks_controller.dart';
 import 'package:farmodo/feature/tasks/widget/pomodoro_time_selection.dart';
@@ -109,25 +110,22 @@ class SessionSelection extends StatelessWidget {
         itemCount: taskController.totalSessions.length,
         itemBuilder: (context, index){
           final session = taskController.totalSessions[index];
-          return InkWell(
-            onTap: () => taskController.setSelectedTotalSession(session),
-            child: Obx((){
-              return Container(
-                decoration: BoxDecoration(
-                  color: taskController.selectedTotalSession.value == session ? AppColors.primary : Colors.grey.shade200,
-                  borderRadius: BorderRadius.circular(16)
+          return Obx((){
+            return Container(
+              decoration: BoxDecoration(
+                color: taskController.selectedTotalSession.value == session ? AppColors.primary : Colors.grey.shade200,
+                borderRadius: BorderRadius.circular(16)
+              ),
+              child: Center(child: Text(
+                '$session session',
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                  color: taskController.selectedTotalSession.value == session ? Colors.white : Colors.black
                 ),
-                child: Center(child: Text(
-                  '$session session',
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                    color: taskController.selectedTotalSession.value == session ? Colors.white : Colors.black
-                  ),
-                )),
-              );
-            }
-            ),
-          );
+              )),
+            );
+          }
+          ).onTap(() => taskController.setSelectedTotalSession(session));
         });
   }
 }

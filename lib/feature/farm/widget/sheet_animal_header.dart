@@ -1,4 +1,5 @@
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
+import 'package:farmodo/core/utility/extension/ontap_extension.dart';
 import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
 import 'package:farmodo/data/models/animal_model.dart';
 import 'package:farmodo/feature/farm/view/farm_view.dart';
@@ -41,16 +42,13 @@ class SheetHeader extends StatelessWidget {
                             ),
                           ),
                         ),
-                        GestureDetector(
-                          onTap: () => _farmController.toggleAnimalFavorite(updatedAnimal.id),
-                          child: Icon(
-                            updatedAnimal.isFavorite 
-                                ? Icons.favorite 
-                                : Icons.favorite_border,
-                            color: Colors.red,
-                            size: context.dynamicHeight(0.035),
-                          ),
-                        ),
+                        Icon(
+                          updatedAnimal.isFavorite 
+                              ? Icons.favorite 
+                              : Icons.favorite_border,
+                          color: Colors.red,
+                          size: context.dynamicHeight(0.035),
+                        ).onTap(() => _farmController.toggleAnimalFavorite(updatedAnimal.id)),
                       ],
                     ),
                     if (updatedAnimal.nickname.isNotEmpty)

@@ -1,5 +1,6 @@
 import 'package:farmodo/core/di/injection.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
+import 'package:farmodo/core/utility/extension/ontap_extension.dart';
 import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
 import 'package:farmodo/feature/home/widgets/current_task_progress.dart';
 import 'package:farmodo/feature/home/widgets/home_header.dart';
@@ -67,28 +68,24 @@ class _HomeViewState extends State<HomeView> {
   }
 
   Widget _timerOptionChip(IconData icon, String title) {
-    return InkWell(
-      onTap: () {
-        if (title == 'Widget') {
+    return Row(
+      children: [
+        Icon(icon, size: 18, color: Colors.black87),
+        context.dynamicWidth(0.03).width,
+        Text(
+          title,
+          style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                color: Colors.grey.shade700,
+                fontWeight: FontWeight.w500,
+              ),
+        ),
+      ],
+    ).onTap((){
+      if (title == 'Widget') {
           Get.to(() => const WidgetSettingsPage());
         } else if (title == 'Fullscreen') {
           timerController.toggleFullScreen(context);
         }
-      },
-      borderRadius: BorderRadius.circular(24),
-      child: Row(
-        children: [
-          Icon(icon, size: 18, color: Colors.black87),
-          context.dynamicWidth(0.03).width,
-          Text(
-            title,
-            style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                  color: Colors.grey.shade700,
-                  fontWeight: FontWeight.w500,
-                ),
-          ),
-        ],
-      ),
-    );
+    });
   }
 }
