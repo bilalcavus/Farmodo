@@ -23,15 +23,7 @@ class _HomeHeaderState extends State<HomeHeader> {
   Widget build(BuildContext context) {
     final authService = getIt<AuthService>();
     final timerController = getIt<TimerController>();
-    return Stack(
-      children: [
-        CustomPaint(
-        painter: _HeaderPainter(),
-        child: SizedBox(
-          height: 250,
-          width: double.infinity,
-        ),
-      ),
+    return 
       Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
@@ -41,16 +33,14 @@ class _HomeHeaderState extends State<HomeHeader> {
           context.dynamicHeight(0.05).height,
           PomodoroTimer(timerController: timerController),
       ],
-      )
-      ]
-    );
+      );
   }
 }
 
 class _HeaderPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()..color = const Color.fromARGB(255, 90, 71, 197);
+    final paint = Paint()..color = const Color.fromARGB(255, 231, 104, 31);
     final path = Path()
       ..lineTo(0, size.height - 40)
       ..quadraticBezierTo(size.width / 2 , size.height, size.width, size.height - 40)

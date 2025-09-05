@@ -7,6 +7,7 @@ import 'package:farmodo/core/utility/extension/route_helper.dart';
 import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
 import 'package:farmodo/data/models/animal_model.dart';
 import 'package:farmodo/feature/farm/mixin/farm_view_mixin.dart';
+import 'package:farmodo/feature/farm/view/animal_status_bar.dart';
 import 'package:farmodo/feature/farm/viewmodel/farm_controller.dart';
 import 'package:farmodo/feature/farm/widget/animal_card.dart';
 import 'package:farmodo/feature/farm/widget/farm_empty_state.dart';

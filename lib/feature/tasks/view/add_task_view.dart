@@ -10,7 +10,6 @@ import 'package:farmodo/feature/tasks/widget/task_add_button.dart';
 import 'package:farmodo/feature/tasks/widget/task_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
-import 'package:hugeicons/hugeicons.dart';
 
 class AddTaskView extends StatefulWidget {
   const AddTaskView({super.key});
@@ -37,12 +36,6 @@ class _AddTaskViewState extends State<AddTaskView> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Center(
-                child: CircleAvatar(
-                  radius: context.dynamicHeight(0.05),
-                  backgroundColor: Colors.black,
-                  child: Icon(HugeIcons.strokeRoundedTask02, size: context.dynamicHeight(0.04)))),
-              SizedBox(height: context.dynamicHeight(0.05)),
               Text('Enter the task name', style: Theme.of(context).textTheme.labelLarge?.copyWith(color: AppColors.textSecondary)),
               TaskTextField(controller: taskController.titleController, hintText: 'Task name'),
               SizedBox(height: context.dynamicHeight(0.02)),

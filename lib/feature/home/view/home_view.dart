@@ -53,7 +53,7 @@ class _HomeViewState extends State<HomeView> {
                   _timerOptionChip(HugeIcons.strokeRoundedAlertDiamond, 'Strict'),
                   _timerOptionChip(Iconsax.timer, 'Timer'),
                   _timerOptionChip(HugeIcons.strokeRoundedFullScreen, 'Fullscreen'),
-                  _timerOptionChip(Icons.widgets, 'Widget'),
+                  // _timerOptionChip(Icons.widgets, 'Widget'),
                 ],
               ),
               context.dynamicHeight(0.03).height,

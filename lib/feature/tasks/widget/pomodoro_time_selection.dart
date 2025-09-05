@@ -17,11 +17,10 @@ class PomodoroTimeSelection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(context.dynamicHeight(0.01)),
-      height: context.dynamicHeight(0.08),
+      height: context.dynamicHeight(0.1),
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.border),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -29,7 +28,7 @@ class PomodoroTimeSelection extends StatelessWidget {
           Text('Select farmodo minutes', style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.textPrimary, fontWeight: FontWeight.w600)),
           Obx(() {
             return SizedBox(
-              height: context.dynamicHeight(0.08),
+              height: context.dynamicHeight(0.2),
               width: context.dynamicWidth(0.35),
               child: CupertinoPicker(
                 itemExtent: 28,

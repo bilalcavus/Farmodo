@@ -53,8 +53,8 @@ class _AnimalDetailSheetState extends State<AnimalDetailSheet> {
                 children: [
                   SheetHeader(farmController: _farmController, widget: widget),
                   context.dynamicHeight(0.024).height,
-                  SheetAnimalStatus(farmController: _farmController, widget: widget),
-                  context.dynamicHeight(0.01).height,
+                  AnimalStatusBar(farmController: _farmController, widget: widget,),
+                  context.dynamicHeight(0.02).height,
                   _buildNicknameSection(),
                   context.dynamicHeight(0.024).height,
                   _buildActionButtons(),

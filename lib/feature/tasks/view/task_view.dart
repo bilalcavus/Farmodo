@@ -63,7 +63,7 @@ class _TaskViewState extends State<TaskView> with TaskViewMixin {
           vertical: context.dynamicHeight(0.02),
         ),
         decoration: BoxDecoration(
-          color: AppColors.surface,
+          color: AppColors.border,
           borderRadius: BorderRadius.circular(10),
           boxShadow: [
             BoxShadow(
@@ -75,12 +75,12 @@ class _TaskViewState extends State<TaskView> with TaskViewMixin {
         ),
         child: TabBar(
           indicator: BoxDecoration(
-            color: AppColors.primary,
-            borderRadius: BorderRadius.circular(16),
+            color: AppColors.background,
+            borderRadius: BorderRadius.circular(12),
           ),
           indicatorSize: TabBarIndicatorSize.tab,
           dividerHeight: 0,
-          labelColor: AppColors.onPrimary,
+          labelColor: AppColors.textPrimary,
           unselectedLabelColor: AppColors.textSecondary,
           labelStyle: Theme.of(context).textTheme.labelLarge?.copyWith(
             fontWeight: FontWeight.w600,
