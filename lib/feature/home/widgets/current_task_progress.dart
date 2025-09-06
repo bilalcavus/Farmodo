@@ -71,15 +71,15 @@ class CurrentTaskProgress extends StatelessWidget {
                     vertical: context.dynamicHeight(0.005),
                   ),
                   decoration: BoxDecoration(
-                    color:  AppColors.danger.withAlpha(25),
+                    color:  focusTypeColor(task.focusType).withAlpha(25),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(
                     task.focusType,
                     style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                          color: AppColors.danger,
-                          fontWeight: FontWeight.w600,
-                        ),
+                      color: focusTypeColor(task.focusType),
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
               ],
@@ -164,4 +164,21 @@ class CurrentTaskProgress extends StatelessWidget {
       return AppColors.secondary;
     }
   }
+
+  Color focusTypeColor(String focus) {
+  switch(focus) {
+    case 'General':
+      return Colors.green;
+    case 'Work':
+      return Colors.red;
+    case 'Study':
+      return Colors.amber;
+    case 'Play': 
+      return Colors.indigo;
+    case 'Sport':
+      return Colors.pink;
+    default:
+      return Colors.green;
+  }
+}
 }

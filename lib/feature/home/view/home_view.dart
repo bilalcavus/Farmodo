@@ -1,19 +1,15 @@
 import 'package:farmodo/core/di/injection.dart';
+import 'package:farmodo/core/theme/app_colors.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
-import 'package:farmodo/core/utility/extension/ontap_extension.dart';
 import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
 import 'package:farmodo/feature/home/widgets/current_task_progress.dart';
 import 'package:farmodo/feature/home/widgets/home_header.dart';
 import 'package:farmodo/feature/home/widgets/recent_tasks.dart';
 import 'package:farmodo/feature/home/widgets/time_start_button.dart';
-import 'package:farmodo/feature/home/widgets/widget_settings_page.dart';
 import 'package:farmodo/feature/navigation/navigation_controller.dart';
 import 'package:farmodo/feature/tasks/viewmodel/tasks_controller.dart';
 import 'package:farmodo/feature/tasks/viewmodel/timer_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:hugeicons/hugeicons.dart';
-import 'package:iconsax/iconsax.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -23,6 +19,7 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
+  
   @override
   void initState() {
     super.initState();
@@ -36,26 +33,17 @@ class _HomeViewState extends State<HomeView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: AppColors.background,
       body: SingleChildScrollView(
         child: SafeArea(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const HomeHeader(),
               context.dynamicHeight(0.04).height,
               // PomodoroTimer(timerController: timerController),
               TimeStartButton(timerController: timerController, tasksController: tasksController),
               context.dynamicHeight(0.03).height,
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  _timerOptionChip(HugeIcons.strokeRoundedAlertDiamond, 'Strict'),
-                  _timerOptionChip(Iconsax.timer, 'Timer'),
-                  _timerOptionChip(HugeIcons.strokeRoundedFullScreen, 'Fullscreen'),
-                  // _timerOptionChip(Icons.widgets, 'Widget'),
-                ],
-              ),
               context.dynamicHeight(0.03).height,
               CurrentTaskProgress(tasksController: tasksController),
               context.dynamicHeight(0.03).height,
@@ -65,27 +53,5 @@ class _HomeViewState extends State<HomeView> {
       ),
       
     );
-  }
-
-  Widget _timerOptionChip(IconData icon, String title) {
-    return Row(
-      children: [
-        Icon(icon, size: 18, color: Colors.black87),
-        context.dynamicWidth(0.03).width,
-        Text(
-          title,
-          style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                color: Colors.grey.shade700,
-                fontWeight: FontWeight.w500,
-              ),
-        ),
-      ],
-    ).onTap((){
-      if (title == 'Widget') {
-          Get.to(() => const WidgetSettingsPage());
-        } else if (title == 'Fullscreen') {
-          timerController.toggleFullScreen(context);
-        }
-    });
   }
 }

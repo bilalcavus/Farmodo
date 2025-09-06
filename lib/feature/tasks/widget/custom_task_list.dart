@@ -125,12 +125,12 @@ class CustomTaskList extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      !task.isCompleted ?Padding(
+                      !task.isCompleted ? Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: const Icon(Icons.circle_outlined, color: AppColors.danger,),
                       ) :  Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: const Icon(Icons.check_circle, color: AppColors.danger,),
+                        child: const Icon(Icons.check_circle, color: Colors.green,),
                       ),
                       Text(
                         task.title,
@@ -141,12 +141,25 @@ class CustomTaskList extends StatelessWidget {
                       ),
                     ],
                   ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: context.dynamicWidth(0.04)),
-                    child: Text('#${task.focusType}'),
-                  ),
-                  context.dynamicHeight(0.01).height,
+                  Row(
+                    children: [
+                      Container(
+                        // width: context.dynamicWidth(0.15),
+                        // height: context.dynamicHeight(0.02),
+                        padding: EdgeInsets.symmetric(horizontal: context.dynamicWidth(0.015)),
+                        decoration: BoxDecoration(
+                          color: focusTypeColor(task.focusType).withAlpha(140),
+                          borderRadius: BorderRadius.circular(context.dynamicHeight(0.008))
+                        ),
+                        child: Text('#${task.focusType}',
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            color: AppColors.surface
+                        ))),
+                      context.dynamicHeight(0.01).height,
                   _buildTaskMetaInfo(context, task),
+                    ],
+                  ),
+                  
                 ],
               ),
             ),
@@ -161,9 +174,9 @@ class CustomTaskList extends StatelessWidget {
   Widget _buildTaskMetaInfo(BuildContext context, UserTaskModel task) {
     return Row(
       children: [
-        _buildMetaItem(context, Iconsax.timer, '${task.duration} min'),
+        _buildMetaItem(context, Iconsax.timer_1, '${task.duration} min'),
         context.dynamicWidth(0.01).width, 
-        _buildMetaItem(context, Iconsax.star, '${task.xpReward} XP'),
+        _buildMetaItem(context, Icons.star_rounded, '${task.xpReward} XP'),
       ],
     );
   }
@@ -171,21 +184,17 @@ class CustomTaskList extends StatelessWidget {
   Widget _buildMetaItem(BuildContext context, IconData icon, String text) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: Column(
+      child: Row(
         children: [
-          CircleAvatar(
-            backgroundColor: Colors.deepPurpleAccent,
-            radius: 12,
-            child: Icon(
-              icon,
-              size: 16,
-              color: AppColors.surface,
-            ),
+          Icon(
+            icon,
+            size: context.dynamicHeight(0.015),
+            color: AppColors.textPrimary,
           ),
           Text(
             text,
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: AppColors.textSecondary,
+              color: AppColors.textPrimary,
               fontWeight: FontWeight.w500,
             ),
           ),
@@ -212,18 +221,14 @@ class CustomTaskList extends StatelessWidget {
       final bool isSelected = taskController.selctedTaskIndex.value == index;
       final bool isRunning = timerController.isRunning.value;
 
-      return CircleAvatar(
-        radius: context.dynamicHeight(0.02),
-        backgroundColor: (isRunning && isSelected) 
+      return Icon(
+         (isRunning && isSelected) 
+            ? HugeIcons.strokeRoundedPause
+            : HugeIcons.strokeRoundedPlay,
+        color: (isRunning && isSelected) 
             ? AppColors.danger
             : AppColors.primary,
-        child: Icon(
-           (isRunning && isSelected) 
-              ? HugeIcons.strokeRoundedPause
-              : HugeIcons.strokeRoundedPlay,
-          color: Colors.white,
-          size: context.dynamicHeight(0.025),
-        ),
+        size: context.dynamicHeight(0.025),
       ).onTap(() => _handleTaskAction(task, index, isSelected, isRunning));
     });
   }
@@ -268,5 +273,22 @@ class CustomTaskList extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+Color focusTypeColor(String focus) {
+  switch(focus) {
+    case 'General':
+      return Colors.green;
+    case 'Work':
+      return Colors.red;
+    case 'Study':
+      return Colors.amber;
+    case 'Play': 
+      return Colors.indigo;
+    case 'Sport':
+      return Colors.pink;
+    default:
+      return Colors.green;
   }
 }

@@ -12,7 +12,6 @@ import 'package:farmodo/feature/farm/viewmodel/farm_controller.dart';
 import 'package:farmodo/feature/farm/widget/animal_card.dart';
 import 'package:farmodo/feature/farm/widget/farm_empty_state.dart';
 import 'package:farmodo/feature/farm/widget/sheet_animal_header.dart';
-import 'package:farmodo/feature/farm/widget/sheet_animal_status_card.dart';
 import 'package:farmodo/feature/gamification/view/gamification_view.dart';
 import 'package:farmodo/feature/gamification/widget/main/sheet_divider.dart';
 import 'package:farmodo/feature/navigation/navigation_controller.dart';

@@ -6,7 +6,7 @@ import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
 import 'package:farmodo/data/services/auth_service.dart';
 import 'package:farmodo/feature/home/widgets/pomodoro_timer.dart';
 import 'package:farmodo/feature/tasks/viewmodel/timer_controller.dart';
-import 'package:farmodo/feature/tasks/widget/user_xp.dart';
+import 'package:farmodo/feature/home/widgets/user_xp.dart';
 import 'package:flutter/material.dart';
 
 class HomeHeader extends StatefulWidget {

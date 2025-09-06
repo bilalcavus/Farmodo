@@ -50,7 +50,7 @@ class PomodoroTimer extends StatelessWidget {
                     style: const TextStyle(
                       fontSize: 40,
                       color: AppColors.textPrimary,
-                      fontWeight: FontWeight.w700,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                   timerController.isOnBreak.value == true ?
@@ -67,4 +67,5 @@ class PomodoroTimer extends StatelessWidget {
       }),
     );
   }
+  
 }

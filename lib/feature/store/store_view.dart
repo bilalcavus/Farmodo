@@ -8,7 +8,7 @@ import 'package:farmodo/feature/navigation/navigation_controller.dart';
 import 'package:farmodo/feature/store/viewmodel/reward_controller.dart';
 import 'package:farmodo/feature/store/widget/store_card.dart';
 import 'package:farmodo/feature/store/widget/store_empty_state.dart';
-import 'package:farmodo/feature/tasks/widget/user_xp.dart';
+import 'package:farmodo/feature/home/widgets/user_xp.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

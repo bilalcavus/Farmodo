@@ -25,10 +25,8 @@ class UserXp extends StatelessWidget {
             height: context.dynamicHeight(0.04),
             padding: EdgeInsets.symmetric(horizontal: 12),
             decoration: BoxDecoration(
-              gradient: LinearGradient(colors: [
-                Color.fromARGB(255, 117, 84, 207),
-                Color.fromARGB(255, 144, 93, 211),]),
-              borderRadius: BorderRadius.circular(24),
+              color: Colors.grey.shade200,
+              borderRadius: BorderRadius.circular(12),
               border: Border.all(color: AppColors.border),
             ),
             child: Row(
@@ -37,9 +35,9 @@ class UserXp extends StatelessWidget {
                 Text(
                   '${authService.currentUser?.xp ?? 0} XP',
                   style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                        color: AppColors.surface,
-                        fontWeight: FontWeight.w700,
-                      ),
+                    color: AppColors.textPrimary,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
               ],
             ),
@@ -52,18 +50,15 @@ class UserXp extends StatelessWidget {
             height: context.dynamicHeight(0.04),
             padding: EdgeInsets.symmetric(horizontal: 12),
             decoration: BoxDecoration(
-              gradient: LinearGradient(colors: [
-                Color(0xFFFFD700),
-                Color(0xFFFFA500)
-              ]),
-              borderRadius: BorderRadius.circular(24),
+              color: Colors.grey.shade200,
+              borderRadius: BorderRadius.circular(12),
               border: Border.all(color: AppColors.border),
             ),
             child: Row(
               children: [
                 Icon(
                   Icons.monetization_on,
-                  color: AppColors.surface,
+                  color: Colors.amber,
                   size: context.dynamicHeight(0.025),
                 ),
                 SizedBox(width: 8),
@@ -74,17 +69,20 @@ class UserXp extends StatelessWidget {
                     return Text(
                       '$coins Coin',
                       style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                            color: AppColors.surface,
-                            fontWeight: FontWeight.w700,
-                          ),
+                        color: AppColors.textPrimary,
+                        fontWeight: FontWeight.w700,
+                      ),
                     );
                   },
                 ),
               ],
             ),
           ),
+          
         ],
       ),
     );
   }
+
+  
 }

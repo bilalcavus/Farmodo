@@ -55,11 +55,11 @@ class _AnimalDetailSheetState extends State<AnimalDetailSheet> {
                   context.dynamicHeight(0.024).height,
                   AnimalStatusBar(farmController: _farmController, widget: widget,),
                   context.dynamicHeight(0.02).height,
-                  _buildNicknameSection(),
+                  NicknameSection(context: context, nicknameController: _nicknameController, farmController: _farmController, widget: widget),
                   context.dynamicHeight(0.024).height,
                   _buildActionButtons(),
                   context.dynamicHeight(0.007).height,
-                  _buildDetailInfo(),
+                  AnimalDetail(farmController: _farmController, widget: widget, context: context),
                 ],
               ),
             ),
@@ -69,74 +69,6 @@ class _AnimalDetailSheetState extends State<AnimalDetailSheet> {
     );
   }
 
-  Widget _buildNicknameSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Nickname',
-          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        
-        SizedBox(height: context.dynamicHeight(0.015)),
-        
-        Row(
-          children: [
-            Expanded(
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade100,
-                  borderRadius: BorderRadius.circular(10)
-                ),
-                child: TextField(
-                  controller: _nicknameController,
-                  decoration: InputDecoration(
-                    hintText: 'Enter nickname...',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide.none
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 12,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            
-            SizedBox(width: context.dynamicWidth(0.03)),
-            
-            ElevatedButton(
-              onPressed: () {
-                if (_nicknameController.text.trim().isNotEmpty) {
-                  _farmController.updateAnimalNickname(
-                    widget.animal.id,
-                    _nicknameController.text.trim(),
-                  );
-                  SnackMessages().showAnimalAction('Nickname updated!', Colors.green);
-                }
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue,
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 12,
-                ),
-              ),
-              child: const Text('Save'),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
 
   Widget _buildActionButtons() {
     return Column(
@@ -292,8 +224,108 @@ class _AnimalDetailSheetState extends State<AnimalDetailSheet> {
       ),
     ).onTap(isLoading ? null : onTap);
   }
+}
 
-  Widget _buildDetailInfo() {
+class NicknameSection extends StatelessWidget {
+  const NicknameSection({
+    super.key,
+    required this.context,
+    required TextEditingController nicknameController,
+    required FarmController farmController,
+    required this.widget,
+  }) : _nicknameController = nicknameController, _farmController = farmController;
+
+  final BuildContext context;
+  final TextEditingController _nicknameController;
+  final FarmController _farmController;
+  final AnimalDetailSheet widget;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Nickname',
+          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        
+        SizedBox(height: context.dynamicHeight(0.015)),
+        
+        Row(
+          children: [
+            Expanded(
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade100,
+                  borderRadius: BorderRadius.circular(10)
+                ),
+                child: TextField(
+                  controller: _nicknameController,
+                  decoration: InputDecoration(
+                    hintText: 'Enter nickname...',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide.none
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 12,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            
+            SizedBox(width: context.dynamicWidth(0.03)),
+            
+            ElevatedButton(
+              onPressed: () {
+                if (_nicknameController.text.trim().isNotEmpty) {
+                  _farmController.updateAnimalNickname(
+                    widget.animal.id,
+                    _nicknameController.text.trim(),
+                  );
+                  SnackMessages().showAnimalAction('Nickname updated!', Colors.green);
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue,
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 12,
+                ),
+              ),
+              child: const Text('Save'),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+
+class AnimalDetail extends StatelessWidget {
+  const AnimalDetail({
+    super.key,
+    required FarmController farmController,
+    required this.widget,
+    required this.context,
+  }) : _farmController = farmController;
+
+  final FarmController _farmController;
+  final AnimalDetailSheet widget;
+  final BuildContext context;
+
+  @override
+  Widget build(BuildContext context) {
     return Obx(() {
       // Get the updated animal from the controller
       final updatedAnimal = _farmController.animals.firstWhere(
@@ -322,18 +354,18 @@ class _AnimalDetailSheetState extends State<AnimalDetailSheet> {
             ),
             child: Column(
               children: [
-                _buildDetailRow('Name', updatedAnimal.name),
-                _buildDetailRow('Descriptipn', updatedAnimal.description),
-                _buildDetailRow('Level', '${updatedAnimal.level}'),
-                _buildDetailRow('Experience Point ', '${updatedAnimal.experience} XP'),
-                _buildDetailRow('Acquire At', 
-                  '${updatedAnimal.acquiredAt.day}/${updatedAnimal.acquiredAt.month}/${updatedAnimal.acquiredAt.year}'),
-                _buildDetailRow('Last Feeding', 
-                  '${updatedAnimal.status.lastFed.hour}:${updatedAnimal.status.lastFed.minute.toString().padLeft(2, '0')}'),
-                _buildDetailRow('Last Loving', 
-                  '${updatedAnimal.status.lastLoved.hour}:${updatedAnimal.status.lastLoved.minute.toString().padLeft(2, '0')}'),
-                _buildDetailRow('Last Gaming', 
-                  '${updatedAnimal.status.lastPlayed.hour}:${updatedAnimal.status.lastPlayed.minute.toString().padLeft(2, '0')}'),
+                AnimalDetailInfo(label: 'Name', value: updatedAnimal.name, context: context),
+                AnimalDetailInfo(label: 'Descriptipn', value: updatedAnimal.description, context: context),
+                AnimalDetailInfo(label: 'Level', value: '${updatedAnimal.level}', context: context),
+                AnimalDetailInfo(label: 'Experience Point ',value: '${updatedAnimal.experience} XP', context: context),
+                AnimalDetailInfo(label: 'Acquire At', value:
+                  '${updatedAnimal.acquiredAt.day}/${updatedAnimal.acquiredAt.month}/${updatedAnimal.acquiredAt.year}', context: context),
+                AnimalDetailInfo(label: 'Last Feeding', value:
+                  '${updatedAnimal.status.lastFed.hour}:${updatedAnimal.status.lastFed.minute.toString().padLeft(2, '0')}', context: context),
+                AnimalDetailInfo(label: 'Last Loving', value:
+                  '${updatedAnimal.status.lastLoved.hour}:${updatedAnimal.status.lastLoved.minute.toString().padLeft(2, '0')}', context: context),
+                AnimalDetailInfo(label: 'Last Gaming', value:
+                  '${updatedAnimal.status.lastPlayed.hour}:${updatedAnimal.status.lastPlayed.minute.toString().padLeft(2, '0')}', context: context),
               ],
             ),
           ),
@@ -341,8 +373,46 @@ class _AnimalDetailSheetState extends State<AnimalDetailSheet> {
       );
     });
   }
+}
 
-  Widget _buildDetailRow(String label, String value) {
+class ActionLoadingIcon extends StatelessWidget {
+  const ActionLoadingIcon({
+    super.key,
+    required this.context,
+    required this.color,
+  });
+
+  final BuildContext context;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+        width: context.dynamicWidth(0.05),
+        height: context.dynamicHeight(0.025),
+        child: CircularProgressIndicator(
+          strokeWidth: context.dynamicWidth(0.005),
+          valueColor: AlwaysStoppedAnimation<Color>(color),
+        ),
+      );
+  }
+}
+
+
+class AnimalDetailInfo extends StatelessWidget {
+  const AnimalDetailInfo({
+    super.key,
+    required this.context,
+    required this.label,
+    required this.value,
+  });
+
+  final BuildContext context;
+  final String label;
+  final String value;
+
+  @override
+  Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: context.dynamicHeight(0.005)),
       child: Row(
@@ -373,29 +443,3 @@ class _AnimalDetailSheetState extends State<AnimalDetailSheet> {
     );
   }
 }
-
-class ActionLoadingIcon extends StatelessWidget {
-  const ActionLoadingIcon({
-    super.key,
-    required this.context,
-    required this.color,
-  });
-
-  final BuildContext context;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-        width: context.dynamicWidth(0.05),
-        height: context.dynamicHeight(0.025),
-        child: CircularProgressIndicator(
-          strokeWidth: context.dynamicWidth(0.005),
-          valueColor: AlwaysStoppedAnimation<Color>(color),
-        ),
-      );
-  }
-}
-
-
-

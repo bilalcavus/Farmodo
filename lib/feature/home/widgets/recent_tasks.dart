@@ -1,5 +1,5 @@
-import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/core/theme/app_colors.dart';
+import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/core/utility/extension/ontap_extension.dart';
 import 'package:farmodo/data/models/user_task_model.dart';
 import 'package:farmodo/feature/tasks/viewmodel/tasks_controller.dart';
@@ -165,20 +165,16 @@ class TimeEventButton extends StatelessWidget {
       child: Obx((){
         final isSelected = tasksController.selctedTaskIndex.value == index;
         final isRunning = timerController.isRunning.value;
-        return CircleAvatar(
-          radius: context.dynamicHeight(0.02),
-          backgroundColor: isResetButton.value ? Colors.grey.shade800: 
-          (isRunning && isSelected)
-              ? AppColors.danger
-              : AppColors.primary,
-          child: Icon(
-            !isResetButton.value ?
-              isRunning && isSelected ?
-            HugeIcons.strokeRoundedPause : HugeIcons.strokeRoundedPlay 
-            : HugeIcons.strokeRoundedRefresh ,
-            color: Colors.white,
-            size: context.dynamicHeight(0.025),
-          ),
+        return Icon(
+          !isResetButton.value ?
+            isRunning && isSelected ?
+          HugeIcons.strokeRoundedPause : HugeIcons.strokeRoundedPlay 
+          : HugeIcons.strokeRoundedRefresh ,
+          color: isResetButton.value ? Colors.grey.shade800: 
+        (isRunning && isSelected)
+            ? AppColors.danger
+            : AppColors.primary,
+          size: context.dynamicHeight(0.02),
         ).onTap((){
           if(!isResetButton.value){
               if (isSelected && isRunning) {
