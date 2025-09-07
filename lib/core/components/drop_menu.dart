@@ -2,13 +2,14 @@ import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:flutter/material.dart';
 
 class DropMenu extends StatelessWidget {
-  const DropMenu({super.key, required this.controller, required this.label, required this.hint, required this.items, this.itemLabels});
+  const DropMenu({super.key, required this.controller, this.label, required this.hint, required this.items, this.itemLabels, this.onChanged});
 
   final TextEditingController controller;
-  final String label;
+  final String? label;
   final String hint;
   final List items;
   final List<String>? itemLabels;
+    final void Function(String)? onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +19,7 @@ class DropMenu extends StatelessWidget {
         Padding(
           padding: EdgeInsets.symmetric(horizontal: context.dynamicWidth(0.01)),
           child: Text(
-            label,
+            label ?? '',
             // style: TextStyle(
             //   fontSize: context.dynamicHeight(0.015),
             //   fontWeight: FontWeight.w500,
@@ -70,6 +71,9 @@ class DropMenu extends StatelessWidget {
               onChanged: (value) {
                 if (value != null) {
                   controller.text = value;
+                  if (onChanged != null) {
+                    onChanged!(value);
+                  }
                 }
               },
               validator: (value) {

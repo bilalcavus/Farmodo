@@ -4,7 +4,6 @@ import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
 import 'package:farmodo/feature/home/widgets/current_task_progress.dart';
 import 'package:farmodo/feature/home/widgets/home_header.dart';
-import 'package:farmodo/feature/home/widgets/recent_tasks.dart';
 import 'package:farmodo/feature/home/widgets/time_start_button.dart';
 import 'package:farmodo/feature/navigation/navigation_controller.dart';
 import 'package:farmodo/feature/tasks/viewmodel/tasks_controller.dart';
@@ -47,7 +46,6 @@ class _HomeViewState extends State<HomeView> {
               context.dynamicHeight(0.03).height,
               CurrentTaskProgress(tasksController: tasksController),
               context.dynamicHeight(0.03).height,
-              RecentTasks(tasksController: tasksController, timerController: timerController)
             ],
         )),
       ),

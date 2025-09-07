@@ -1,12 +1,13 @@
 import 'package:farmodo/core/theme/app_colors.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
+import 'package:farmodo/feature/home/widgets/task_selector_box.dart';
 import 'package:farmodo/feature/tasks/viewmodel/tasks_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 
-class CurrentTaskProgress extends StatelessWidget {
+class CurrentTaskProgress extends StatefulWidget {
   final TasksController tasksController;
 
   const CurrentTaskProgress({
@@ -15,16 +16,35 @@ class CurrentTaskProgress extends StatelessWidget {
   });
 
   @override
+  State<CurrentTaskProgress> createState() => _CurrentTaskProgressState();
+}
+
+class _CurrentTaskProgressState extends State<CurrentTaskProgress> {
+  late final TextEditingController _controller;
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+  @override
   Widget build(BuildContext context) {
     return Obx(() {
-      final selectedIndex = tasksController.selctedTaskIndex.value;
+      final selectedIndex = widget.tasksController.selctedTaskIndex.value;
+      
       if (selectedIndex == -1 || 
-          tasksController.activeUserTasks.isEmpty ||
-          selectedIndex >= tasksController.activeUserTasks.length) {
-        return SizedBox.shrink();
+          widget.tasksController.activeUserTasks.isEmpty ||
+          selectedIndex >= widget.tasksController.activeUserTasks.length) {
+        return CurrentTaskBox(
+          tasksController: widget.tasksController, controller: _controller);
       }
 
-      final task = tasksController.activeUserTasks[selectedIndex];
+      final task = widget.tasksController.activeUserTasks[selectedIndex];
       final progress = task.completedSessions / task.totalSessions;
       
       return Container(

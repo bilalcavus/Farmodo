@@ -48,7 +48,7 @@ class RecentTasks extends StatelessWidget {
                   mainAxisSpacing: context.dynamicWidth(0.03),
                   childAspectRatio: 0.8,
                 ),
-                itemCount: tasksController.activeUserTasks.length,
+                itemCount: tasksController.activeUserTasks.length > 6 ? 6 : tasksController.activeUserTasks.length,
                 itemBuilder: (context, index) {
                   final task = tasksController.activeUserTasks[index];
                   return Container(

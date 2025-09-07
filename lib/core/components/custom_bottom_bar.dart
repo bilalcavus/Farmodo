@@ -35,8 +35,8 @@ class CustomBottomNavigation extends StatelessWidget {
             child: _buildNavItem(
               context,
               index: 0,
-              icon: HugeIcons.strokeRoundedHome01,
-              label: 'Home'
+              icon: Iconsax.timer_1,
+              label: 'Timer'
             ),
           ),
           Expanded(

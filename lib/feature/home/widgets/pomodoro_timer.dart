@@ -1,5 +1,6 @@
 
 import 'package:farmodo/core/theme/app_colors.dart';
+import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/feature/tasks/viewmodel/timer_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
@@ -20,20 +21,20 @@ class PomodoroTimer extends StatelessWidget {
           alignment: Alignment.center,
           children: [
             SizedBox(
-              width: 220,
-              height: 220,
+              width: 250,
+              height: 250,
               child: CircularProgressIndicator(
                 value: timerController.displayProgress,
                 strokeWidth: 12,
-                backgroundColor: AppColors.border,
+                backgroundColor: Colors.grey.shade300,
                 valueColor: AlwaysStoppedAnimation(
-                  timerController.isOnBreak.value ? AppColors.secondary : AppColors.primary
+                  timerController.isOnBreak.value ? AppColors.secondary : AppColors.danger
                 ),
               ),
             ),
             Container(
-              width: 190,
-              height: 190,
+              width: 220,
+              height: 220,
               decoration: BoxDecoration(
                 color: AppColors.surface,
                 shape: BoxShape.circle,
@@ -47,8 +48,8 @@ class PomodoroTimer extends StatelessWidget {
                     timerController.isOnBreak.value
                         ? timerController.formatTime(timerController.breakSecondsRemaining.value)
                         : timerController.formatTime(timerController.secondsRemaining.value),
-                    style: const TextStyle(
-                      fontSize: 40,
+                    style:  TextStyle(
+                      fontSize: context.dynamicHeight(0.06),
                       color: AppColors.textPrimary,
                       fontWeight: FontWeight.w600,
                     ),

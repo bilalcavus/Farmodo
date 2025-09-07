@@ -4,7 +4,6 @@ import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/core/utility/extension/ontap_extension.dart';
 import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
 import 'package:farmodo/feature/home/widgets/full_screen_timer.dart';
-import 'package:farmodo/feature/tasks/view/add_task_view.dart';
 import 'package:farmodo/feature/tasks/viewmodel/tasks_controller.dart';
 import 'package:farmodo/feature/tasks/viewmodel/timer_controller.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +11,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:hugeicons/hugeicons.dart';
 
-class TimeStartButton extends StatelessWidget {
+class TimeStartButton extends StatefulWidget {
   const TimeStartButton({
     super.key,
     required this.timerController,
@@ -23,65 +22,73 @@ class TimeStartButton extends StatelessWidget {
   final TasksController tasksController;
 
   @override
+  State<TimeStartButton> createState() => _TimeStartButtonState();
+}
+
+class _TimeStartButtonState extends State<TimeStartButton> {
+  
+  @override
   Widget build(BuildContext context) {
+    
     return Center(
-      child: Obx(() => Row(
+      child: Obx(() {
+        final selectedIndex = widget.tasksController.selctedTaskIndex.value;
+        return Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           // Start/Pause Button
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: timerController.isRunning.value
-                  ? AppColors.danger
-                  : tasksController.selctedTaskIndex.value == -1
-                    ? AppColors.textPrimary
-                    : AppColors.primary,
-              foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(6),
-              ),
-              padding: const EdgeInsets.symmetric(horizontal: 44, vertical: 10),
-              elevation: 0,
-            ),
-            onPressed: timerController.isRunning.value
-                ? () {
-                    timerController.pauseTimer();
-                    debugPrint('Pause button pressed');
-                  }
-                : () {
-                    final selectedIndex = tasksController.selctedTaskIndex.value;
-                    if (selectedIndex == -1 || 
-                        tasksController.activeUserTasks.isEmpty ||
-                        selectedIndex >= tasksController.activeUserTasks.length) {
-                      Get.to(AddTaskView());
-                      return;
-                    }
-                    
-                    if (timerController.isOnBreak.value) {
-                      timerController.startBreakTimer();
-                    } else {
-                      if (timerController.totalSeconds.value == 0 ||
-                          timerController.secondsRemaining.value == timerController.totalSeconds.value) {
-                        tasksController.selectTask(selectedIndex, tasksController.activeUserTasks[selectedIndex]);
-                      }
-                      timerController.startTimer();
-                    }
-                  },
-            child: Text(
-              timerController.isRunning.value
-                  ? 'Pause'
-                  : tasksController.selctedTaskIndex.value == -1 
-                    ? 'Start to Focus'
-                    : (timerController.isOnBreak.value ? 'Continue Break' : timerController.secondsRemaining.value == 0 ? 'Start' : 'Continue'),
-              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w700,
-                  ),
-            ),
+          RedPlayButton(
+            selectedIndex: selectedIndex,
+            tasksController: widget.tasksController,
+            timerController: widget.timerController,
+            shake: () => widget.tasksController.triggerShake(),
           ),
+          // ElevatedButton(
+          //   style: ElevatedButton.styleFrom(
+          //     backgroundColor: timerController.isRunning.value
+          //         ? AppColors.danger
+          //         : tasksController.selctedTaskIndex.value == -1
+          //           ? AppColors.textPrimary
+          //           : AppColors.primary,
+          //     foregroundColor: Colors.white,
+          //     shape: RoundedRectangleBorder(
+          //       borderRadius: BorderRadius.circular(12),
+          //     ),
+          //     padding: const EdgeInsets.symmetric(horizontal: 44, vertical: 10),
+          //     elevation: 0,
+          //   ),
+          //   onPressed: timerController.isRunning.value
+          //       ? () => timerController.pauseTimer()
+          //       : () {
+          //           if (selectedIndex == -1 || 
+          //               tasksController.activeUserTasks.isEmpty ||
+          //               selectedIndex >= tasksController.activeUserTasks.length) {
+          //             Get.to(AddTaskView());
+          //             return;
+          //           }
+                    
+          //           if (timerController.isOnBreak.value) {
+          //             timerController.startBreakTimer();
+          //           } else {
+          //             if (timerController.totalSeconds.value == 0 ||
+          //                 timerController.secondsRemaining.value == timerController.totalSeconds.value) {
+          //               tasksController.selectTask(selectedIndex, tasksController.activeUserTasks[selectedIndex]);
+          //             }
+          //             timerController.startTimer();
+          //           }
+          //         },
+          //   child: Text(
+          //     timerController.isRunning.value
+          //         ? 'Pause'
+          //         : (timerController.isOnBreak.value ? 'Continue Break' : 'Start' ),
+          //     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+          //           color: Colors.white,
+          //           fontWeight: FontWeight.w700,
+          //         ),
+          //   ),
+          // ),
           
-          // Reset Button
-          if (tasksController.selctedTaskIndex.value != -1) ...[
+          if (widget.tasksController.selctedTaskIndex.value != -1) ...[
             SizedBox(width: context.dynamicWidth(0.03)),
             CircleAvatar(
               backgroundColor: Colors.grey.shade900,
@@ -90,14 +97,15 @@ class TimeStartButton extends StatelessWidget {
                 color: Colors.white,
                 size: context.dynamicHeight(0.025),
               ),
-            ).onTap(() => timerController.resetTimer()),
+            ).onTap(() => widget.timerController.resetTimer()),
           ],
           context.dynamicWidth(0.03).width,
           CircleAvatar(
             child: IconButton(onPressed: () => toggleFullScreen(context), icon: Icon(HugeIcons.strokeRoundedFullScreen)),
           )
         ],
-      )),
+      );
+      }),
     );
   }
 
@@ -117,3 +125,48 @@ class TimeStartButton extends StatelessWidget {
     });
   }
 }
+
+class RedPlayButton extends StatelessWidget {
+  const RedPlayButton({
+    super.key, required this.timerController, required this.tasksController, required this.selectedIndex,
+    this.shake
+  });
+
+  final TimerController timerController;
+  final TasksController tasksController;
+  final int selectedIndex;
+  final VoidCallback? shake;
+
+  @override
+  Widget build(BuildContext context) {
+    return Obx(() {
+      return CircleAvatar(
+        radius: 32,
+        backgroundColor: timerController.isRunning.value
+                    ? AppColors.danger
+                    : AppColors.primary,
+        child: IconButton(onPressed: timerController.isRunning.value
+          ? () => timerController.pauseTimer()
+          : () {
+                if (selectedIndex == -1 || 
+                  tasksController.activeUserTasks.isEmpty ||
+                  selectedIndex >= tasksController.activeUserTasks.length) {
+                shake?.call();
+                return;
+              }
+              
+              if (timerController.isOnBreak.value) {
+                timerController.startBreakTimer();
+              } else {
+                if (timerController.totalSeconds.value == 0 ||
+                    timerController.secondsRemaining.value == timerController.totalSeconds.value) {
+                  tasksController.selectTask(selectedIndex, tasksController.activeUserTasks[selectedIndex]);
+                }
+                timerController.startTimer();
+              }
+            }, icon: Icon(timerController.isRunning.value ? Icons.pause : Icons.play_arrow, size: context.dynamicHeight(0.04)))
+          );
+        }
+      );
+    }
+  }

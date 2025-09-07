@@ -37,23 +37,6 @@ class _HomeHeaderState extends State<HomeHeader> {
   }
 }
 
-class _HeaderPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()..color = const Color.fromARGB(255, 231, 104, 31);
-    final path = Path()
-      ..lineTo(0, size.height - 40)
-      ..quadraticBezierTo(size.width / 2 , size.height, size.width, size.height - 40)
-      ..lineTo(size.width, 0)
-      ..close();
-    canvas.drawPath(path, paint);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return false;
-  }
-}
 
 
 class LevelBar extends StatelessWidget {

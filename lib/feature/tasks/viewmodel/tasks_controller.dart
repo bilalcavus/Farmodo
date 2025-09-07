@@ -8,7 +8,7 @@ import 'package:farmodo/feature/tasks/viewmodel/timer_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../home/view/succeed_task_page.dart';
+import '../../home/widgets/succeed_task_page.dart';
 
 enum LoadingType { general, active, completed}
 
@@ -25,6 +25,7 @@ class TasksController extends GetxController {
   var activeUserTasks = <UserTaskModel>[].obs;
   var selctedTaskIndex = (-1).obs;
   var errorMessage = ''.obs;
+  var shakeTaskBox = false.obs;
   RxDouble xp = 0.0.obs;
   final FirestoreService firestoreService;
   final AuthService authService;
@@ -52,6 +53,14 @@ class TasksController extends GetxController {
     loadingStates[type] = value;
   }
 
+  void triggerShake() {
+    shakeTaskBox.value = true;
+  }
+
+  void resetShake() {
+    shakeTaskBox.value = false;
+  }
+
   void _updateXp() {
     xp.value = XpCalculator.calculate(
       duration: selectedPomodoroTime.value,
@@ -71,9 +80,10 @@ class TasksController extends GetxController {
 
   void selectTask(int index, UserTaskModel task){
     selctedTaskIndex.value = index;
-    timerController.setTaskTitle(task.title); // Görev başlığını ayarla
+    timerController.setTaskTitle(task.title);
     TimerHelper.setupTaskTimer(
       timerController, task, () async => await completeTaskById(task.id));
+    resetShake();
   }
 
   Future<void> completeTaskById(String taskId) async {

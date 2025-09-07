@@ -8,7 +8,9 @@ import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
 import 'package:farmodo/data/models/animal_model.dart';
 import 'package:farmodo/feature/farm/mixin/farm_view_mixin.dart';
 import 'package:farmodo/feature/farm/view/animal_status_bar.dart';
+import 'package:farmodo/feature/farm/view/farm_game_view.dart';
 import 'package:farmodo/feature/farm/viewmodel/farm_controller.dart';
+import 'package:farmodo/feature/farm/viewmodel/farm_game.dart';
 import 'package:farmodo/feature/farm/widget/animal_card.dart';
 import 'package:farmodo/feature/farm/widget/farm_empty_state.dart';
 import 'package:farmodo/feature/farm/widget/sheet_animal_header.dart';
@@ -33,7 +35,17 @@ class FarmView extends StatefulWidget {
 
 class _FarmViewState extends State<FarmView> with TickerProviderStateMixin, FarmViewMixin {
   final navigationController = getIt<NavigationController>();
+  late FarmGame farmGame;
   
+  @override
+  void initState() {
+    super.initState();
+    farmGame = FarmGame();
+    farmGame.onAnimalTap = (animal) {
+      _showAnimalDetailSheet(context, animal);
+    };
+  }
+
   void _showStatsDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -83,6 +95,15 @@ class _FarmViewState extends State<FarmView> with TickerProviderStateMixin, Farm
     );
   }
 
+  void _showAnimalDetailSheet(BuildContext context, FarmAnimal animal) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => AnimalDetailSheet(animal: animal),
+    );
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -92,8 +113,10 @@ class _FarmViewState extends State<FarmView> with TickerProviderStateMixin, Farm
         child: Column(
           children: [
             _farmHeader(),
-            Expanded(
-              child: _UserAnimalList(farmController: farmController, context: context),
+           
+                    Expanded(
+                      child: _UserAnimalList(farmController: farmController, context: context),
+                  
             ),
           ],
         ),
@@ -199,6 +222,12 @@ class _FarmViewState extends State<FarmView> with TickerProviderStateMixin, Farm
           icon: HugeIcons.strokeRoundedDiscoverCircle,
           tooltip: 'Statistics',
           onTap: () => _showStatsDialog(context),
+        ),
+        SizedBox(width: context.dynamicWidth(0.02)),
+        _buildModernActionButton(
+          icon: Icons.games_rounded,
+          tooltip: 'Full Screen Farm',
+          onTap: () => RouteHelper.push(context, const FarmGameView()),
         ),
       ],
     );
