@@ -28,11 +28,12 @@ class SucceedTaskPage extends StatelessWidget {
                 width: context.dynamicWidth(0.7),
                 height: context.dynamicHeight(0.07),
                 decoration: BoxDecoration(
-                  color: Colors.black,
+                  color: Colors.grey.shade200,
                   borderRadius: BorderRadius.circular(context.dynamicHeight(.02))
                 ),
-                child: Text('Back to Home', style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Colors.white
+                child: Text('Back to Home', style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  color: Colors.black87,
+                  fontWeight: FontWeight.w600
                 ),),
               ).onTap(() => RouteHelper.pushAndCloseOther(context, AppNavigation()))
             ],

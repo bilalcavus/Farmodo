@@ -9,7 +9,6 @@ import 'package:farmodo/feature/tasks/viewmodel/timer_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:hugeicons/hugeicons.dart';
 
 class TimeStartButton extends StatefulWidget {
   const TimeStartButton({
@@ -36,13 +35,7 @@ class _TimeStartButtonState extends State<TimeStartButton> {
         return Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // Start/Pause Button
-          RedPlayButton(
-            selectedIndex: selectedIndex,
-            tasksController: widget.tasksController,
-            timerController: widget.timerController,
-            shake: () => widget.tasksController.triggerShake(),
-          ),
+          
           // ElevatedButton(
           //   style: ElevatedButton.styleFrom(
           //     backgroundColor: timerController.isRunning.value
@@ -91,17 +84,29 @@ class _TimeStartButtonState extends State<TimeStartButton> {
           if (widget.tasksController.selctedTaskIndex.value != -1) ...[
             SizedBox(width: context.dynamicWidth(0.03)),
             CircleAvatar(
-              backgroundColor: Colors.grey.shade900,
+              radius: context.dynamicHeight(0.026),
+              backgroundColor: Colors.grey.shade200,
               child: Icon(
-                HugeIcons.strokeRoundedRefresh,
-                color: Colors.white,
-                size: context.dynamicHeight(0.025),
+                Icons.refresh_rounded,
+                color: Colors.black87,
+                size: context.dynamicHeight(0.03),
               ),
             ).onTap(() => widget.timerController.resetTimer()),
           ],
           context.dynamicWidth(0.03).width,
+          PlayButton(
+            selectedIndex: selectedIndex,
+            tasksController: widget.tasksController,
+            timerController: widget.timerController,
+            shake: () => widget.tasksController.triggerShake(),
+          ),
+          context.dynamicWidth(0.03).width,
           CircleAvatar(
-            child: IconButton(onPressed: () => toggleFullScreen(context), icon: Icon(HugeIcons.strokeRoundedFullScreen)),
+            backgroundColor: Colors.grey.shade200,
+            radius: context.dynamicHeight(0.026),
+            child: IconButton(
+              onPressed: () => toggleFullScreen(context),
+              icon: Icon(Icons.fullscreen_rounded, color: Colors.black87, size: context.dynamicHeight(0.03),)),
           )
         ],
       );
@@ -126,8 +131,8 @@ class _TimeStartButtonState extends State<TimeStartButton> {
   }
 }
 
-class RedPlayButton extends StatelessWidget {
-  const RedPlayButton({
+class PlayButton extends StatelessWidget {
+  const PlayButton({
     super.key, required this.timerController, required this.tasksController, required this.selectedIndex,
     this.shake
   });
