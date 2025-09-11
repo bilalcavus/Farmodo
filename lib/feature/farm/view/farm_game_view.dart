@@ -4,7 +4,7 @@ import 'package:farmodo/core/utility/extension/ontap_extension.dart';
 import 'package:farmodo/data/models/animal_model.dart';
 import 'package:farmodo/feature/farm/viewmodel/farm_controller.dart';
 import 'package:farmodo/feature/farm/viewmodel/farm_game.dart';
-import 'package:flame/game.dart';
+import 'package:flame/game.dart' hide Matrix4;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -18,7 +18,8 @@ class FarmGameView extends StatefulWidget {
 class _FarmGameViewState extends State<FarmGameView> {
   late FarmGame farmGame;
   late FarmController farmController;
-  final ScrollController _scrollController = ScrollController();
+  final TransformationController _transformationController = TransformationController();
+  double _currentScale = 1.0;
 
   @override
   void initState() {
@@ -29,7 +30,25 @@ class _FarmGameViewState extends State<FarmGameView> {
       _showAnimalDetailSheet(context, animal);
     };
     
-    // FarmGame yüklendikten sonra hayvanları güncelle
+    // Zoom değişikliklerini dinle
+    _transformationController.addListener(() {
+      final Matrix4 matrix = _transformationController.value;
+      final double scale = matrix.getMaxScaleOnAxis();
+      if (mounted && scale != _currentScale) {
+        setState(() {
+          _currentScale = scale;
+        });
+      }
+    });
+    
+    // FarmController'ı dinleyerek hayvanları otomatik güncelle
+    ever(farmController.animals, (List<FarmAnimal> animals) {
+      if (mounted) {
+        farmGame.updateFarmAnimals(animals);
+      }
+    });
+    
+    // İlk yükleme için gecikmeli güncelleme
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Future.delayed(const Duration(milliseconds: 500), () {
         if (mounted) {
@@ -41,7 +60,7 @@ class _FarmGameViewState extends State<FarmGameView> {
 
   @override
   void dispose() {
-    _scrollController.dispose();
+    _transformationController.dispose();
     super.dispose();
   }
 
@@ -57,13 +76,18 @@ class _FarmGameViewState extends State<FarmGameView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: Color(0xFF8BC34A),
       body: SafeArea(
         child: Column(
           children: [
-            _buildHeader(),
+            // _buildHeader(),
             Expanded(
-              child: _buildScrollableGame(),
+              child: Stack(
+                children: [
+                  _buildScrollableGame(),
+                  _buildZoomIndicator(),
+                ],
+              ),
             ),
           ],
         ),
@@ -149,7 +173,7 @@ class _FarmGameViewState extends State<FarmGameView> {
           tooltip: 'Refresh',
           onTap: () async {
             await farmController.syncPurchasedAnimalsToFarm();
-            farmGame.updateFarmAnimals(farmController.animals);
+            // Hayvanlar otomatik olarak güncellenecek (ever listener sayesinde)
           },
         ),
         SizedBox(width: context.dynamicWidth(0.02)),
@@ -158,7 +182,27 @@ class _FarmGameViewState extends State<FarmGameView> {
           tooltip: 'Update Status',
           onTap: () async {
             await farmController.updateAnimalStatusesOverTime();
-            farmGame.updateFarmAnimals(farmController.animals);
+            // Hayvanlar otomatik olarak güncellenecek (ever listener sayesinde)
+          },
+        ),
+        SizedBox(width: context.dynamicWidth(0.02)),
+        _buildModernActionButton(
+          icon: Icons.zoom_in_rounded,
+          tooltip: 'Zoom In',
+          onTap: () {
+            final Matrix4 matrix = _transformationController.value.clone();
+            matrix.scale(1.2);
+            _transformationController.value = matrix;
+          },
+        ),
+        SizedBox(width: context.dynamicWidth(0.02)),
+        _buildModernActionButton(
+          icon: Icons.zoom_out_rounded,
+          tooltip: 'Zoom Out',
+          onTap: () {
+            final Matrix4 matrix = _transformationController.value.clone();
+            matrix.scale(0.8);
+            _transformationController.value = matrix;
           },
         ),
         SizedBox(width: context.dynamicWidth(0.02)),
@@ -166,11 +210,7 @@ class _FarmGameViewState extends State<FarmGameView> {
           icon: Icons.zoom_out_map_rounded,
           tooltip: 'Reset Zoom',
           onTap: () {
-            _scrollController.animateTo(
-              0,
-              duration: const Duration(milliseconds: 500),
-              curve: Curves.easeInOut,
-            );
+            _transformationController.value = Matrix4.identity();
           },
         ),
       ],
@@ -202,23 +242,83 @@ class _FarmGameViewState extends State<FarmGameView> {
   }
 
   Widget _buildScrollableGame() {
-    return SingleChildScrollView(
-      controller: _scrollController,
-      physics: const BouncingScrollPhysics(),
+    return InteractiveViewer(
+      transformationController: _transformationController,
+      boundaryMargin: const EdgeInsets.all(100),
+      minScale: 0.5,
+      maxScale: 3.0,
+      constrained: false,
+      scaleEnabled: true,
+      panEnabled: true,
       child: Container(
-        width: double.infinity,
-        height: context.dynamicHeight(1.2), // Daha yüksek container
+        width: context.dynamicWidth(1.5), // Genişliği artır
+        height: context.dynamicHeight(1.5), // Yüksekliği artır
         child: GameWidget(game: farmGame),
+      ),
+    );
+  }
+
+  Widget _buildZoomIndicator() {
+    return Positioned(
+      bottom: context.dynamicHeight(0.03),
+      right: context.dynamicWidth(0.05),
+      child: Container(
+        padding: EdgeInsets.symmetric(
+          horizontal: context.dynamicWidth(0.03),
+          vertical: context.dynamicHeight(0.01),
+        ),
+        decoration: BoxDecoration(
+          color: AppColors.surface.withOpacity(0.9),
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withAlpha(15),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.zoom_in_rounded,
+              size: 16,
+              color: AppColors.textSecondary,
+            ),
+            SizedBox(width: context.dynamicWidth(0.02)),
+            Text(
+              '${(_currentScale * 100).toInt()}%',
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: AppColors.textSecondary,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 }
 
-// Basit Animal Detail Sheet
-class _AnimalDetailSheet extends StatelessWidget {
+// Animal Detail Sheet with FarmController integration
+class _AnimalDetailSheet extends StatefulWidget {
   final FarmAnimal animal;
 
   const _AnimalDetailSheet({required this.animal});
+
+  @override
+  State<_AnimalDetailSheet> createState() => _AnimalDetailSheetState();
+}
+
+class _AnimalDetailSheetState extends State<_AnimalDetailSheet> {
+  late FarmController farmController;
+
+  @override
+  void initState() {
+    super.initState();
+    farmController = Get.find<FarmController>();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -261,13 +361,13 @@ class _AnimalDetailSheet extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            animal.name,
+                            widget.animal.name,
                             style: Theme.of(context).textTheme.titleLarge?.copyWith(
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                           Text(
-                            'Level ${animal.level}',
+                            'Level ${widget.animal.level}',
                             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                               color: Colors.grey[600],
                             ),
@@ -275,7 +375,7 @@ class _AnimalDetailSheet extends StatelessWidget {
                         ],
                       ),
                     ),
-                    if (animal.isFavorite)
+                    if (widget.animal.isFavorite)
                       Icon(
                         Icons.star,
                         color: Colors.amber,
@@ -300,10 +400,10 @@ class _AnimalDetailSheet extends StatelessWidget {
   Widget _buildStatusBars() {
     return Column(
       children: [
-        _buildStatusBar('Hunger', animal.status.hunger, Colors.orange),
-        _buildStatusBar('Love', animal.status.love, Colors.pink),
-        _buildStatusBar('Energy', animal.status.energy, Colors.blue),
-        _buildStatusBar('Health', animal.status.health, Colors.green),
+        _buildStatusBar('Hunger', widget.animal.status.hunger, Colors.orange),
+        _buildStatusBar('Love', widget.animal.status.love, Colors.pink),
+        _buildStatusBar('Energy', widget.animal.status.energy, Colors.blue),
+        _buildStatusBar('Health', widget.animal.status.health, Colors.green),
       ],
     );
   }
@@ -358,8 +458,8 @@ class _AnimalDetailSheet extends StatelessWidget {
             'Feed',
             Icons.restaurant,
             Colors.orange,
-            () {
-              // Feed action
+            () async {
+              await farmController.feedAnimal(widget.animal.id);
               Navigator.pop(context);
             },
           ),
@@ -371,8 +471,8 @@ class _AnimalDetailSheet extends StatelessWidget {
             'Love',
             Icons.favorite,
             Colors.pink,
-            () {
-              // Love action
+            () async {
+              await farmController.loveAnimal(widget.animal.id);
               Navigator.pop(context);
             },
           ),
@@ -384,8 +484,8 @@ class _AnimalDetailSheet extends StatelessWidget {
             'Play',
             Icons.sports_esports,
             Colors.blue,
-            () {
-              // Play action
+            () async {
+              await farmController.playWithAnimal(widget.animal.id);
               Navigator.pop(context);
             },
           ),
@@ -397,8 +497,8 @@ class _AnimalDetailSheet extends StatelessWidget {
             'Heal',
             Icons.medical_services,
             Colors.green,
-            () {
-              // Heal action
+            () async {
+              await farmController.healAnimal(widget.animal.id);
               Navigator.pop(context);
             },
           ),
@@ -412,7 +512,7 @@ class _AnimalDetailSheet extends StatelessWidget {
     String label,
     IconData icon,
     Color color,
-    VoidCallback onTap,
+    Future<void> Function() onTap,
   ) {
     return Container(
       height: 50,
@@ -424,7 +524,7 @@ class _AnimalDetailSheet extends StatelessWidget {
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          onTap: onTap,
+          onTap: () async => await onTap(),
           borderRadius: BorderRadius.circular(12),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,

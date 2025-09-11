@@ -7,13 +7,13 @@ import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 
 class FarmGame extends FlameGame {
-  static const int gridCols = 12;
-  static const int gridRows = 10;
-  static const double tileSize = 100; // base square size before isometric transform
-  static const double worldScale = 1.5; // overall world scale
+  static const int gridCols = 8;
+  static const int gridRows = 6;
+  static const double tileSize = 80; // base square size before isometric transform
+  static const double worldScale = 1.2; // overall world scale
 
   Vector2? gridOrigin; // top center of the diamond
-  late final List<List<TileComponent>> tiles;
+  List<List<TileComponent>> tiles = [];
   final Map<String, Sprite> animalSprites = {};
   final List<DecorationComponent> decorations = [];
   
@@ -26,25 +26,35 @@ class FarmGame extends FlameGame {
   int? hoverCol;
 
   @override
-  Color backgroundColor() => const Color(0xFF8BC34A); // Light green background covering entire page
+  Color backgroundColor() => const Color(0x00000000); // Transparent - scaffold rengini kullan
 
   @override
   Future<void> onLoad() async {
     await super.onLoad();
 
-    // Add background grass that covers the entire screen
-    add(BackgroundGrassComponent(size: size));
+    // Arkaplan kaldırıldı - scaffold rengi kullanılacak
 
-    gridOrigin = Vector2(size.x * 0.5, 200);
+    gridOrigin = Vector2(size.x * 0.5, 150); // Biraz daha yukarı
 
     tiles = List.generate(gridRows, (r) {
       return List.generate(gridCols, (c) {
         final pos = isoPositionOf(r, c);
+        
+        // Önce 3D grass block'ını ekle (altında)
+        final grassBlock = GrassBlockComponent(
+          row: r,
+          col: c,
+          position: pos,
+          size: Vector2(tileSize * worldScale * 1.2, tileSize * 0.5 * worldScale * 1.2),
+        );
+        add(grassBlock);
+        
+        // Sonra tile'ı ekle (üstünde)
         final tile = TileComponent(
           row: r,
           col: c,
           position: pos,
-          size: Vector2(tileSize * worldScale, tileSize * 0.5 * worldScale),
+          size: Vector2(tileSize * worldScale * 1.2, tileSize * 0.5 * worldScale * 1.2), // Biraz daha büyük
         );
         add(tile);
         return tile;
@@ -54,26 +64,7 @@ class FarmGame extends FlameGame {
     // Configure asset prefix so we can load with 'animals/foo.png'
     images.prefix = '';
 
-    // Load animal sprites from assets
-    final animalNames = [
-      'chicken',
-      'cow', 
-      'goat',
-      'dog',
-      'tiger',
-      'squirrel',
-    
-    ];
-    
-    for (final name in animalNames) {
-      try {
-        final img = await images.load('assets/images/animals/$name.png');
-        animalSprites[name] = Sprite(img);
-      } catch (e) {
-        // Asset bulunamazsa varsayılan sprite kullan
-        print('Animal asset not found: $name');
-      }
-    }
+    // Hayvan sprite'ları dinamik olarak yüklenecek - hardcode liste kaldırıldı
 
     // Add decorative elements
     _addDecorations();
@@ -84,8 +75,39 @@ class FarmGame extends FlameGame {
   @override
   void onGameResize(Vector2 size) {
     super.onGameResize(size);
-    // Game resize olduğunda hayvanları güncelle
-    if (gridOrigin != null && farmAnimals.isNotEmpty) {
+    
+    // Arkaplan kaldırıldı - scaffold rengi kullanılıyor
+    
+    // Grid origin'i yeniden hesapla
+    gridOrigin = Vector2(size.x * 0.5, 150); // Biraz daha yukarı
+    
+    // Grass block'ları yeniden konumlandır
+    final grassBlocks = children.whereType<GrassBlockComponent>().toList();
+    
+    for (final grassBlock in grassBlocks) {
+      grassBlock.position = isoPositionOf(grassBlock.row, grassBlock.col);
+    }
+    
+    if (tiles.isNotEmpty && tiles.length == gridRows) {
+      for (int r = 0; r < gridRows; r++) {
+        if (tiles[r].length == gridCols) {
+          for (int c = 0; c < gridCols; c++) {
+            tiles[r][c].position = isoPositionOf(r, c);
+          }
+        }
+      }
+    }
+    
+    // Dekorasyonları yeniden konumlandır
+    final existingDecorations = children.whereType<DecorationComponent>().toList();
+    for (final decoration in existingDecorations) {
+      decoration.removeFromParent();
+    }
+    decorations.clear();
+    _addDecorations();
+    
+    // Hayvanları güncelle
+    if (farmAnimals.isNotEmpty) {
       updateFarmAnimals(farmAnimals);
     }
   }
@@ -101,7 +123,13 @@ class FarmGame extends FlameGame {
       sprite.removeFromParent();
     }
     
+    // Kullanılmayan sprite'ları temizle
+    _cleanupUnusedSprites(animals);
+    
     farmAnimals = animals;
+    
+    // Gerekli sprite'ları dinamik olarak yükle
+    _loadRequiredSprites(animals);
     
     // Add new farm animal sprites
     for (int i = 0; i < animals.length && i < gridRows * gridCols; i++) {
@@ -110,18 +138,19 @@ class FarmGame extends FlameGame {
       final col = i % gridCols;
       
       if (row < gridRows && col < gridCols) {
-        final position = isoPositionOf(row, col);
+        final tilePosition = isoPositionOf(row, col);
+        // Hayvanı tile'ın tam üstüne yerleştir (biraz yukarı)
+        final animalPosition = Vector2(tilePosition.x, tilePosition.y - 15);
         
-        // Hayvan adına göre sprite bul
+        // Hayvan ID'sine göre sprite bul (önce imageUrl'den, sonra asset'ten)
         Sprite? animalSprite;
-        final animalName = _getAnimalSpriteName(animal.name);
-        if (animalSprites.containsKey(animalName)) {
-          animalSprite = animalSprites[animalName];
+        if (animalSprites.containsKey(animal.id)) {
+          animalSprite = animalSprites[animal.id];
         }
         
         final sprite = FarmAnimalSprite(
           animal: animal,
-          position: position,
+          position: animalPosition,
           onTap: onAnimalTap,
           animalSprite: animalSprite,
         );
@@ -130,24 +159,113 @@ class FarmGame extends FlameGame {
     }
   }
   
-  // Hayvan adından sprite adını belirle
+  // Hayvan görsellerini assets'ten dinamik olarak yükle
+  Future<void> _loadRequiredSprites(List<FarmAnimal> animals) async {
+    for (final animal in animals) {
+      final animalId = animal.id;
+      
+      // Bu hayvanın sprite'ı zaten yüklü mü?
+      if (animalSprites.containsKey(animalId)) {
+        continue;
+      }
+      
+      try {
+        // Önce hayvanın kendi imageUrl'ini kullan (AnimalCard gibi)
+        if (animal.imageUrl.isNotEmpty) {
+          final img = await images.load(animal.imageUrl);
+          animalSprites[animalId] = Sprite(img);
+          print('Loaded animal sprite from imageUrl: ${animal.imageUrl} for ${animal.name}');
+          continue;
+        }
+      } catch (e) {
+        print('Failed to load animal sprite from imageUrl: ${animal.imageUrl} for ${animal.name}, error: $e');
+      }
+      
+      try {
+        // imageUrl yoksa veya başarısızsa, hayvan adından sprite adını belirle
+        final spriteName = _getAnimalSpriteName(animal.name);
+        if (spriteName.isNotEmpty) {
+          final img = await images.load('assets/images/animals/$spriteName.png');
+          animalSprites[animalId] = Sprite(img);
+          print('Loaded animal sprite from asset: $spriteName for ${animal.name}');
+          continue;
+        }
+      } catch (e) {
+        print('Failed to load animal sprite from asset: ${_getAnimalSpriteName(animal.name)} for ${animal.name}, error: $e');
+      }
+      
+      // Sprite bulunamazsa, default circle kullanılacak
+      print('No sprite found for animal: ${animal.name}, will use default circle');
+    }
+  }
+  
+  // Kullanılmayan sprite'ları temizle
+  void _cleanupUnusedSprites(List<FarmAnimal> animals) {
+    final activeAnimalIds = animals.map((a) => a.id).toSet();
+    final spritesToRemove = <String>[];
+    
+    for (final spriteKey in animalSprites.keys) {
+      // Eğer bu sprite aktif hayvanlardan birine ait değilse, temizle
+      if (!activeAnimalIds.contains(spriteKey)) {
+        spritesToRemove.add(spriteKey);
+      }
+    }
+    
+    for (final key in spritesToRemove) {
+      animalSprites.remove(key);
+      print('Cleaned up unused sprite: $key');
+    }
+  }
+
+  // Network image yükleme kaldırıldı - sadece assets kullanılıyor
+
+  // Hayvan adından sprite adını dinamik olarak belirle
   String _getAnimalSpriteName(String animalName) {
-    final name = animalName.toLowerCase();
+    // Hayvan adını temizle ve küçük harfe çevir
+    final cleanName = animalName.toLowerCase()
+        .replaceAll(' ', '_')
+        .replaceAll(RegExp(r'[^a-z0-9_]'), '');
     
-    // Hayvan adlarını sprite adlarıyla eşleştir
-    if (name.contains('chicken') || name.contains('tavuk')) return 'chicken';
-    if (name.contains('cow') || name.contains('inek')) return 'cow';
-    if (name.contains('goat') || name.contains('keçi')) return 'goat';
-    if (name.contains('dog') || name.contains('köpek')) return 'dog';
-    if (name.contains('tiger') || name.contains('kaplan')) return 'tiger';
-    if (name.contains('squirrel') || name.contains('sincap')) return 'squirrel';
-    if (name.contains('pig') || name.contains('domuz')) return 'pig';
-    if (name.contains('sheep') || name.contains('koyun')) return 'sheep';
-    if (name.contains('horse') || name.contains('at')) return 'horse';
-    if (name.contains('duck') || name.contains('ördek')) return 'duck';
+    // Mevcut asset'lerdeki hayvan isimleri
+    final availableSprites = [
+      'chicken', 'cow', 'dog', 'fox', 'goat', 
+      'monkey', 'rooster', 'squirrel', 'thorny_dragon', 'tiger'
+    ];
     
-    // Varsayılan olarak ilk mevcut sprite'ı kullan
-    return animalSprites.keys.isNotEmpty ? animalSprites.keys.first : 'chicken';
+    // Önce tam eşleşme ara
+    if (availableSprites.contains(cleanName)) {
+      return cleanName;
+    }
+    
+    // Kısmi eşleşme ara
+    for (final spriteName in availableSprites) {
+      if (cleanName.contains(spriteName) || spriteName.contains(cleanName)) {
+        return spriteName;
+      }
+    }
+    
+    // Türkçe isimler için özel eşleştirmeler
+    final turkishMappings = {
+      'tavuk': 'chicken',
+      'horoz': 'rooster', 
+      'inek': 'cow',
+      'köpek': 'dog',
+      'tilki': 'fox',
+      'keçi': 'goat',
+      'maymun': 'monkey',
+      'sincap': 'squirrel',
+      'kaplan': 'tiger',
+      'ejder': 'thorny_dragon',
+    };
+    
+    for (final entry in turkishMappings.entries) {
+      if (cleanName.contains(entry.key)) {
+        return entry.value;
+      }
+    }
+    
+    // Hiçbir eşleşme bulunamazsa default chicken kullan
+    return 'chicken';
   }
 
   void _addDecorations() {
@@ -155,16 +273,14 @@ class FarmGame extends FlameGame {
     
     // Add trees around the farm - outside the farm area
     final treePositions = [
-      Vector2(gridOrigin!.x - 400, gridOrigin!.y - 250), // Top left, further out
-      Vector2(gridOrigin!.x + 400, gridOrigin!.y - 230), // Top right, further out
-      Vector2(gridOrigin!.x - 380, gridOrigin!.y + 300), // Bottom left, further out
-      Vector2(gridOrigin!.x + 420, gridOrigin!.y + 320), // Bottom right, further out
-      Vector2(gridOrigin!.x - 500, gridOrigin!.y + 100),  // Far left
-      Vector2(gridOrigin!.x + 500, gridOrigin!.y + 80),  // Far right
-      Vector2(gridOrigin!.x - 350, gridOrigin!.y - 100), // Additional trees
-      Vector2(gridOrigin!.x + 350, gridOrigin!.y - 80),
-      Vector2(gridOrigin!.x - 300, gridOrigin!.y + 400),
-      Vector2(gridOrigin!.x + 300, gridOrigin!.y + 420),
+      Vector2(gridOrigin!.x - 280, gridOrigin!.y - 180), // Top left
+      Vector2(gridOrigin!.x + 280, gridOrigin!.y - 160), // Top right
+      Vector2(gridOrigin!.x - 260, gridOrigin!.y + 220), // Bottom left
+      Vector2(gridOrigin!.x + 300, gridOrigin!.y + 240), // Bottom right
+      Vector2(gridOrigin!.x - 350, gridOrigin!.y + 60),  // Far left
+      Vector2(gridOrigin!.x + 350, gridOrigin!.y + 40),  // Far right
+      Vector2(gridOrigin!.x - 200, gridOrigin!.y - 80),  // Additional trees
+      Vector2(gridOrigin!.x + 200, gridOrigin!.y - 60),
     ];
     for (final pos in treePositions) {
       final tree = TreeComponent(position: pos);
@@ -173,18 +289,18 @@ class FarmGame extends FlameGame {
     }
 
     // Add a small pond - outside the farm area
-    final pond = PondComponent(position: Vector2(gridOrigin!.x - 300, gridOrigin!.y + 200));
+    final pond = PondComponent(position: Vector2(gridOrigin!.x - 220, gridOrigin!.y + 150));
     add(pond);
     decorations.add(pond);
 
     // Add some rocks - outside the farm area
     final rockPositions = [
-      Vector2(gridOrigin!.x - 350, gridOrigin!.y - 120),  // Top left area
-      Vector2(gridOrigin!.x + 370, gridOrigin!.y - 100),  // Top right area
-      Vector2(gridOrigin!.x - 280, gridOrigin!.y + 280), // Bottom left area
-      Vector2(gridOrigin!.x + 300, gridOrigin!.y + 300), // Bottom right area
-      Vector2(gridOrigin!.x - 450, gridOrigin!.y + 50),  // Far left area
-      Vector2(gridOrigin!.x + 450, gridOrigin!.y + 30),  // Far right area
+      Vector2(gridOrigin!.x - 250, gridOrigin!.y - 90),   // Top left area
+      Vector2(gridOrigin!.x + 270, gridOrigin!.y - 70),   // Top right area
+      Vector2(gridOrigin!.x - 200, gridOrigin!.y + 200),  // Bottom left area
+      Vector2(gridOrigin!.x + 220, gridOrigin!.y + 220),  // Bottom right area
+      Vector2(gridOrigin!.x - 320, gridOrigin!.y + 30),   // Far left area
+      Vector2(gridOrigin!.x + 320, gridOrigin!.y + 10),   // Far right area
     ];
     for (final pos in rockPositions) {
       final rock = RockComponent(position: pos);
@@ -304,7 +420,11 @@ class FarmGame extends FlameGame {
         ..gridRow = tile.row
         ..gridCol = tile.col
         ..position = snapped;
-      tiles[tile.row][tile.col].triggerPulse();
+      
+      // Güvenli tile pulse
+      if (tiles.isNotEmpty && tiles.length > tile.row && tiles[tile.row].length > tile.col) {
+        tiles[tile.row][tile.col].triggerPulse();
+      }
     }
     draggingAnimal = null;
     _setTileHighlighted(hoverRow, hoverCol, false);
@@ -315,6 +435,7 @@ class FarmGame extends FlameGame {
   void _setTileHighlighted(int? row, int? col, bool value) {
     if (row == null || col == null) return;
     if (row < 0 || col < 0 || row >= gridRows || col >= gridCols) return;
+    if (tiles.isEmpty || tiles.length <= row || tiles[row].length <= col) return;
     tiles[row][col].isHighlighted = value;
   }
 
@@ -349,7 +470,10 @@ class FarmGame extends FlameGame {
     // occupancy check
     for (final a in children.whereType<AnimalSprite>()) {
       if (!a.asPalette && a.gridRow == t.row && a.gridCol == t.col) {
-        tiles[t.row][t.col].triggerPulse();
+        // Güvenli tile pulse
+        if (tiles.isNotEmpty && tiles.length > t.row && tiles[t.row].length > t.col) {
+          tiles[t.row][t.col].triggerPulse();
+        }
         return;
       }
     }
@@ -362,7 +486,12 @@ class FarmGame extends FlameGame {
       ..gridRow = t.row
       ..gridCol = t.col;
     add(placed);
-    tiles[t.row][t.col].triggerPulse();
+    
+    // Güvenli tile pulse
+    if (tiles.isNotEmpty && tiles.length > t.row && tiles[t.row].length > t.col) {
+      tiles[t.row][t.col].triggerPulse();
+    }
+    
     clearHover();
     draggingAnimal = null;
   }
@@ -392,7 +521,10 @@ class TileComponent extends PositionComponent {
     required this.col,
     required super.position,
     required super.size,
-  }) : super(anchor: Anchor.center);
+  }) : super(anchor: Anchor.center) {
+    // Tile'ların grass block'ların üstünde kalması için priority
+    priority = 2;
+  }
 
   void triggerPulse() {
     _pulseTime = 0.35; // quick flash after drop
@@ -424,20 +556,20 @@ class TileComponent extends PositionComponent {
     path.lineTo(-w / 2, 0);
     path.close();
 
-    // Create farm area grass - darker and more vibrant than background
-    Color base = const Color(0xFF66BB6A); // Farm area green - more vibrant
+    // Tile'lar transparan - grass block'lar alttan görünsün
+    Color base = const Color(0xFF4CAF50).withOpacity(0.3); // Transparan yeşil
     if (isHighlighted) {
       final t = (math.sin(_blinkTime * 8) + 1) / 2; // 0..1
-      base = Color.lerp(base, const Color(0xFF81C784), t * 0.7)!;
+      base = Color.lerp(base, const Color(0xFF66BB6A).withOpacity(0.6), t * 0.7)!;
     }
     if (_pulseTime > 0) {
       final p = _pulseTime / 0.35; // 1..0
-      base = Color.lerp(base, const Color(0xFFFFFFFF), p * 0.8)!;
+      base = Color.lerp(base, const Color(0xFFFFFFFF).withOpacity(0.8), p * 0.8)!;
     }
 
     final Paint fill = Paint()..color = base;
     final Paint border = Paint()
-      ..color = const Color(0xFF4CAF50) // Darker border for farm area
+      ..color = const Color(0xFF2E7D32).withOpacity(0.8) // Transparan border
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2.0;
 
@@ -451,14 +583,14 @@ class TileComponent extends PositionComponent {
   void _drawGrassTexture(Canvas canvas, Path tilePath) {
     final random = math.Random(row * 1000 + col);
     final Paint grassPaint = Paint()
-      ..color = const Color(0xFF4CAF50) // Darker grass details for farm area
+      ..color = const Color(0xFF2E7D32) // Çok daha koyu çim detayları
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.5; // Thicker lines for farm area
+      ..strokeWidth = 2.0; // Daha kalın çizgiler
 
-    for (int i = 0; i < 10; i++) { // More grass details in farm area
-      final x = (random.nextDouble() - 0.5) * size.x * 0.8;
-      final y = (random.nextDouble() - 0.5) * size.y * 0.8;
-      final length = 4 + random.nextDouble() * 5; // Longer grass in farm area
+    for (int i = 0; i < 12; i++) { // Daha fazla çim detayı
+      final x = (random.nextDouble() - 0.5) * size.x * 0.9;
+      final y = (random.nextDouble() - 0.5) * size.y * 0.9;
+      final length = 5 + random.nextDouble() * 6; // Daha uzun çim
       final angle = random.nextDouble() * math.pi;
 
       canvas.save();
@@ -471,6 +603,171 @@ class TileComponent extends PositionComponent {
       );
       canvas.restore();
     }
+  }
+}
+
+class GrassBlockComponent extends PositionComponent {
+  final int row;
+  final int col;
+
+  GrassBlockComponent({
+    required this.row,
+    required this.col,
+    required Vector2 position,
+    required Vector2 size,
+  }) : super(position: position, size: size, anchor: Anchor.center) {
+    // Grass block'lar en arkada olmalı
+    priority = 0;
+  }
+
+  @override
+  void render(Canvas canvas) {
+    final double w = size.x;
+    final double h = size.y;
+    final double blockHeight = 35.0; // 3D blok yüksekliği - daha yüksek
+    
+    // 3D grass block çiz - görseldeki gibi
+    _drawGrassBlock(canvas, w, h, blockHeight);
+  }
+
+  void _drawGrassBlock(Canvas canvas, double w, double h, double blockHeight) {
+    final double grassHeight = blockHeight * 0.4; // Yeşil grass kısmı
+    
+    // Ana yeşil yüzey (üst)
+    final Path topPath = Path();
+    topPath.moveTo(0, -h / 2);
+    topPath.lineTo(w / 2, 0);
+    topPath.lineTo(0, h / 2);
+    topPath.lineTo(-w / 2, 0);
+    topPath.close();
+
+    final Paint topPaint = Paint()..color = const Color(0xFF7CB342); // Parlak yeşil
+    canvas.drawPath(topPath, topPaint);
+
+    // Sol yan yüzey - yeşil kısım (üst)
+    final Path leftGrassPath = Path();
+    leftGrassPath.moveTo(-w / 2, 0);
+    leftGrassPath.lineTo(0, h / 2);
+    leftGrassPath.lineTo(0, h / 2 + grassHeight);
+    leftGrassPath.lineTo(-w / 2, grassHeight);
+    leftGrassPath.close();
+
+    final Paint leftGrassPaint = Paint()..color = const Color(0xFF689F38); // Koyu yeşil
+    canvas.drawPath(leftGrassPath, leftGrassPaint);
+
+    // Sol yan yüzey - kahverengi kısım (alt)
+    final Path leftDirtPath = Path();
+    leftDirtPath.moveTo(-w / 2, grassHeight);
+    leftDirtPath.lineTo(0, h / 2 + grassHeight);
+    leftDirtPath.lineTo(0, h / 2 + blockHeight);
+    leftDirtPath.lineTo(-w / 2, blockHeight);
+    leftDirtPath.close();
+
+    final Paint leftDirtPaint = Paint()..color = const Color(0xFF8D6E63); // Kahverengi
+    canvas.drawPath(leftDirtPath, leftDirtPaint);
+
+    // Sağ yan yüzey - yeşil kısım (üst)
+    final Path rightGrassPath = Path();
+    rightGrassPath.moveTo(w / 2, 0);
+    rightGrassPath.lineTo(0, h / 2);
+    rightGrassPath.lineTo(0, h / 2 + grassHeight);
+    rightGrassPath.lineTo(w / 2, grassHeight);
+    rightGrassPath.close();
+
+    final Paint rightGrassPaint = Paint()..color = const Color(0xFF558B2F); // Daha koyu yeşil
+    canvas.drawPath(rightGrassPath, rightGrassPaint);
+
+    // Sağ yan yüzey - kahverengi kısım (alt)
+    final Path rightDirtPath = Path();
+    rightDirtPath.moveTo(w / 2, grassHeight);
+    rightDirtPath.lineTo(0, h / 2 + grassHeight);
+    rightDirtPath.lineTo(0, h / 2 + blockHeight);
+    rightDirtPath.lineTo(w / 2, blockHeight);
+    rightDirtPath.close();
+
+    final Paint rightDirtPaint = Paint()..color = const Color(0xFF6D4C41); // Daha koyu kahverengi
+    canvas.drawPath(rightDirtPath, rightDirtPaint);
+
+    // Çim tekstürü detayları üst yüzeyde
+    _drawGrassTexture(canvas, topPath, w, h);
+    
+    // Dirt tekstürü detayları yan yüzeylerde
+    _drawDirtTexture(canvas, leftDirtPath, rightDirtPath);
+    
+    // Kenar çizgileri
+    final Paint borderPaint = Paint()
+      ..color = const Color(0xFF4CAF50)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.0;
+    
+    canvas.drawPath(topPath, borderPaint);
+    canvas.drawPath(leftGrassPath, borderPaint);
+    canvas.drawPath(leftDirtPath, borderPaint);
+    canvas.drawPath(rightGrassPath, borderPaint);
+    canvas.drawPath(rightDirtPath, borderPaint);
+  }
+
+  void _drawGrassTexture(Canvas canvas, Path clipPath, double w, double h) {
+    canvas.save();
+    canvas.clipPath(clipPath);
+    
+    final random = math.Random(row * 1000 + col);
+    final Paint grassPaint = Paint()
+      ..color = const Color(0xFF4CAF50)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.0;
+
+    // Çim detayları
+    for (int i = 0; i < 8; i++) {
+      final x = (random.nextDouble() - 0.5) * w * 0.7;
+      final y = (random.nextDouble() - 0.5) * h * 0.7;
+      final length = 3 + random.nextDouble() * 4;
+      final angle = random.nextDouble() * math.pi;
+
+      canvas.save();
+      canvas.translate(x, y);
+      canvas.rotate(angle);
+      canvas.drawLine(
+        Offset(-length / 2, 0),
+        Offset(length / 2, 0),
+        grassPaint,
+      );
+      canvas.restore();
+    }
+    
+    canvas.restore();
+  }
+
+  void _drawDirtTexture(Canvas canvas, Path leftDirtPath, Path rightDirtPath) {
+    final random = math.Random(row * 1000 + col + 999);
+    
+    // Sol dirt yüzeyine tekstür
+    canvas.save();
+    canvas.clipPath(leftDirtPath);
+
+    for (int i = 0; i < 6; i++) {
+      final x = (random.nextDouble() - 0.5) * size.x * 0.4 - size.x * 0.25;
+      final y = (random.nextDouble() * size.y * 0.4) + size.y * 0.3;
+      final radius = 1 + random.nextDouble() * 2;
+      
+      canvas.drawCircle(Offset(x, y), radius, Paint()..color = const Color(0xFF5D4037));
+    }
+    
+    canvas.restore();
+    
+    // Sağ dirt yüzeyine tekstür
+    canvas.save();
+    canvas.clipPath(rightDirtPath);
+    
+    for (int i = 0; i < 6; i++) {
+      final x = (random.nextDouble() - 0.5) * size.x * 0.4 + size.x * 0.25;
+      final y = (random.nextDouble() * size.y * 0.4) + size.y * 0.3;
+      final radius = 1 + random.nextDouble() * 2;
+      
+      canvas.drawCircle(Offset(x, y), radius, Paint()..color = const Color(0xFF4E342E));
+    }
+    
+    canvas.restore();
   }
 }
 
@@ -526,9 +823,12 @@ class FarmAnimalSprite extends PositionComponent {
     this.animalSprite,
   }) : super(
           position: position,
-          size: Vector2.all(80),
+          size: Vector2.all(60), // Küçük grid için boyutu azalt
           anchor: Anchor.center,
-        );
+        ) {
+    // Hayvanların tile'ların üstünde render edilmesi için yüksek priority
+    priority = 10;
+  }
 
   @override
   bool containsPoint(Vector2 point) {
@@ -585,8 +885,8 @@ class FarmAnimalSprite extends PositionComponent {
       borderColor = const Color(0xFF654321);
     }
     
-    // Hayvan gövdesi (gradient efektli daire)
-    final animalSize = 25.0 + (animal.level * 2.5);
+    // Hayvan gövdesi (gradient efektli daire) - küçük grid için boyutu azalt
+    final animalSize = 18.0 + (animal.level * 1.5);
     
     // Ana gövde
     paint.color = animalColor;
@@ -622,7 +922,7 @@ class FarmAnimalSprite extends PositionComponent {
   }
   
   void _drawStatusIndicators(Canvas canvas, Paint paint) {
-    final animalSize = 25.0 + (animal.level * 2.5);
+    final animalSize = 18.0 + (animal.level * 1.5);
     
     // Durum göstergesi (küçük nokta)
     if (animal.status.isHungry || animal.status.isSick || animal.status.needsLove) {
@@ -640,15 +940,15 @@ class FarmAnimalSprite extends PositionComponent {
       // Seviye arka planı
       paint.color = const Color(0xFF4CAF50);
       paint.style = PaintingStyle.fill;
-      final levelBgSize = 20.0;
+      final levelBgSize = 16.0; // Küçük grid için boyutu azalt
       canvas.drawRRect(
         RRect.fromRectAndRadius(
           Rect.fromCenter(
-            center: Offset(0, -animalSize - 15),
+            center: Offset(0, -animalSize - 12), // Pozisyonu da ayarla
             width: levelBgSize,
-            height: 12,
+            height: 10, // Yüksekliği de azalt
           ),
-          const Radius.circular(6),
+          const Radius.circular(5),
         ),
         paint,
       );
@@ -659,7 +959,7 @@ class FarmAnimalSprite extends PositionComponent {
           text: 'L${animal.level}',
           style: const TextStyle(
             color: Colors.white,
-            fontSize: 10,
+            fontSize: 8, // Küçük grid için font boyutu azalt
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -670,7 +970,7 @@ class FarmAnimalSprite extends PositionComponent {
         canvas,
         Offset(
           -textPainter.width / 2, 
-          -animalSize - 21
+          -animalSize - 17 // Pozisyonu ayarla
         ),
       );
     }
@@ -679,7 +979,7 @@ class FarmAnimalSprite extends PositionComponent {
     if (animal.isFavorite) {
       paint.color = const Color(0xFFFFD700);
       paint.style = PaintingStyle.fill;
-      _drawStar(canvas, paint, Offset(-animalSize - 10, -animalSize - 10), 8.0);
+      _drawStar(canvas, paint, Offset(-animalSize - 8, -animalSize - 8), 6.0); // Küçük grid için boyutu azalt
     }
   }
   
@@ -714,43 +1014,13 @@ class FarmAnimalSprite extends PositionComponent {
 
 // Decorative components
 abstract class DecorationComponent extends PositionComponent {
-  DecorationComponent({required Vector2 position}) : super(position: position, anchor: Anchor.center);
-}
-
-class BackgroundGrassComponent extends PositionComponent {
-  BackgroundGrassComponent({required Vector2 size}) : super(size: size, anchor: Anchor.topLeft);
-
-  @override
-  void render(Canvas canvas) {
-    // Draw the entire background with light green grass
-    final Paint backgroundPaint = Paint()..color = const Color(0xFF8BC34A);
-    canvas.drawRect(Rect.fromLTWH(0, 0, size.x, size.y), backgroundPaint);
-
-    // Add some grass texture to the background
-    final Paint grassPaint = Paint()
-      ..color = const Color(0xFF689F38)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.0;
-
-    final random = math.Random(42); // Fixed seed for consistent pattern
-    for (int i = 0; i < 200; i++) {
-      final x = random.nextDouble() * size.x;
-      final y = random.nextDouble() * size.y;
-      final length = 2 + random.nextDouble() * 3;
-      final angle = random.nextDouble() * math.pi;
-
-      canvas.save();
-      canvas.translate(x, y);
-      canvas.rotate(angle);
-      canvas.drawLine(
-        Offset(-length / 2, 0),
-        Offset(length / 2, 0),
-        grassPaint,
-      );
-      canvas.restore();
-    }
+  DecorationComponent({required Vector2 position}) : super(position: position, anchor: Anchor.center) {
+    // Dekorasyonlar orta seviyede priority
+    priority = 5;
   }
 }
+
+// BackgroundGrassComponent kaldırıldı - scaffold arkaplan rengi kullanılıyor
 
 class TreeComponent extends DecorationComponent {
   TreeComponent({required super.position});
