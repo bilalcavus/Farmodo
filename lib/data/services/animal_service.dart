@@ -71,6 +71,7 @@ class AnimalService {
           name: reward.name,
           imageUrl: reward.imageUrl,
           description: reward.description,
+          coverUrl: reward.coverUrl,
         );
 
         transaction.set(
@@ -84,6 +85,7 @@ class AnimalService {
             'rewardId': animal.rewardId,
             'name': animal.name,
             'imageUrl': animal.imageUrl,
+            'coverUrl': 'assets/images/cover/${animal.rewardId}.png',
             'description': animal.description,
             'hunger': animal.status.hunger,
             'love': animal.status.love,

@@ -1,8 +1,8 @@
 import 'dart:math' as math;
+import 'dart:developer' as developer;
 
 import 'package:farmodo/data/models/animal_model.dart';
 import 'package:flame/components.dart';
-import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 
@@ -20,8 +20,10 @@ class FarmGame extends FlameGame {
   // Farm animals from the app
   List<FarmAnimal> farmAnimals = [];
   Function(FarmAnimal)? onAnimalTap;
+  Function(List<FarmAnimal>)? onAnimalsReordered;
 
   AnimalSprite? draggingAnimal;
+  FarmAnimalSprite? draggingFarmAnimal;
   int? hoverRow;
   int? hoverCol;
 
@@ -117,6 +119,8 @@ class FarmGame extends FlameGame {
     // Check if game is loaded
     if (gridOrigin == null) return;
     
+    developer.log('Updating farm animals: ${animals.length} animals', name: 'FarmGame');
+    
     // Remove existing farm animal sprites safely
     final existingSprites = children.whereType<FarmAnimalSprite>().toList();
     for (final sprite in existingSprites) {
@@ -129,8 +133,14 @@ class FarmGame extends FlameGame {
     farmAnimals = animals;
     
     // Gerekli sprite'ları dinamik olarak yükle
-    _loadRequiredSprites(animals);
-    
+    _loadRequiredSprites(animals).then((_) {
+      // Sprite yüklendikten sonra hayvanları yeniden render et
+      _renderFarmAnimals(animals);
+    });
+  }
+  
+  // Hayvanları render etme işlemini ayrı metoda çıkar
+  void _renderFarmAnimals(List<FarmAnimal> animals) {
     // Add new farm animal sprites
     for (int i = 0; i < animals.length && i < gridRows * gridCols; i++) {
       final animal = animals[i];
@@ -146,57 +156,90 @@ class FarmGame extends FlameGame {
         Sprite? animalSprite;
         if (animalSprites.containsKey(animal.id)) {
           animalSprite = animalSprites[animal.id];
+          developer.log('Found sprite for ${animal.name}: ${animalSprite != null}', name: 'FarmGame');
+        } else {
+          developer.log('No sprite found for ${animal.name} (ID: ${animal.id})', name: 'FarmGame');
         }
         
         final sprite = FarmAnimalSprite(
           animal: animal,
           position: animalPosition,
-          onTap: onAnimalTap,
           animalSprite: animalSprite,
+          gridRow: row,
+          gridCol: col,
         );
         add(sprite);
       }
     }
   }
   
-  // Hayvan görsellerini assets'ten dinamik olarak yükle
+  // Hayvan görsellerini asset'lerden yükle
   Future<void> _loadRequiredSprites(List<FarmAnimal> animals) async {
+    developer.log('Loading sprites for ${animals.length} animals from assets...', name: 'FarmGame');
+    
     for (final animal in animals) {
       final animalId = animal.id;
       
+      developer.log('Processing animal: ${animal.name} (ID: $animalId)', name: 'FarmGame');
+      developer.log('  - coverUrl: ${animal.coverUrl}', name: 'FarmGame');
+      
       // Bu hayvanın sprite'ı zaten yüklü mü?
       if (animalSprites.containsKey(animalId)) {
+        developer.log('✓ Sprite already loaded for ${animal.name}', name: 'FarmGame');
         continue;
       }
       
-      try {
-        // Önce hayvanın kendi imageUrl'ini kullan (AnimalCard gibi)
-        if (animal.imageUrl.isNotEmpty) {
-          final img = await images.load(animal.imageUrl);
+      bool spriteLoaded = false;
+      
+      // Asset path'den yükle
+      if (animal.coverUrl.isNotEmpty && animal.coverUrl.startsWith('assets/')) {
+        try {
+          // Asset path'i düzenle - images.load() için 'assets/' prefix'ini kaldır
+          final assetPath = animal.coverUrl.replaceFirst('assets/', '');
+          developer.log('Trying to load from asset: $assetPath', name: 'FarmGame');
+          final img = await images.load(assetPath);
           animalSprites[animalId] = Sprite(img);
-          print('Loaded animal sprite from imageUrl: ${animal.imageUrl} for ${animal.name}');
-          continue;
+          developer.log('✓ Successfully loaded sprite from asset for ${animal.name}', name: 'FarmGame');
+          spriteLoaded = true;
+        } catch (e) {
+          developer.log('✗ Failed to load from asset: $e', name: 'FarmGame');
         }
-      } catch (e) {
-        print('Failed to load animal sprite from imageUrl: ${animal.imageUrl} for ${animal.name}, error: $e');
       }
       
-      try {
-        // imageUrl yoksa veya başarısızsa, hayvan adından sprite adını belirle
-        final spriteName = _getAnimalSpriteName(animal.name);
-        if (spriteName.isNotEmpty) {
-          final img = await images.load('assets/images/animals/$spriteName.png');
+      // Eğer coverUrl asset path değilse, reward ID'sinden asset path'i oluştur
+      if (!spriteLoaded && animal.rewardId.isNotEmpty) {
+        try {
+          final assetPath = 'images/cover/${animal.rewardId}.png';
+          developer.log('Trying to load from generated asset path: $assetPath', name: 'FarmGame');
+          final img = await images.load(assetPath);
           animalSprites[animalId] = Sprite(img);
-          print('Loaded animal sprite from asset: $spriteName for ${animal.name}');
-          continue;
+          developer.log('✓ Successfully loaded sprite from generated path for ${animal.name}', name: 'FarmGame');
+          spriteLoaded = true;
+        } catch (e) {
+          developer.log('✗ Failed to load from generated path: $e', name: 'FarmGame');
         }
-      } catch (e) {
-        print('Failed to load animal sprite from asset: ${_getAnimalSpriteName(animal.name)} for ${animal.name}, error: $e');
       }
       
-      // Sprite bulunamazsa, default circle kullanılacak
-      print('No sprite found for animal: ${animal.name}, will use default circle');
+      // Son çare: hayvan adından asset path'i oluştur
+      if (!spriteLoaded) {
+        try {
+          final assetPath = 'assets/images/cover/${animal.name.toLowerCase()}.png';
+          developer.log('Trying to load from animal name: $assetPath', name: 'FarmGame');
+          final img = await images.load(assetPath);
+          animalSprites[animalId] = Sprite(img);
+          developer.log('✓ Successfully loaded sprite from animal name for ${animal.name}', name: 'FarmGame');
+          spriteLoaded = true;
+        } catch (e) {
+          developer.log('✗ Failed to load from animal name: $e', name: 'FarmGame');
+        }
+      }
+      
+      if (!spriteLoaded) {
+        developer.log('⚠ No valid sprite found for ${animal.name}, will use default circle', name: 'FarmGame');
+      }
     }
+    
+    developer.log('Sprite loading completed. Total loaded sprites: ${animalSprites.length}', name: 'FarmGame');
   }
   
   // Kullanılmayan sprite'ları temizle
@@ -213,60 +256,12 @@ class FarmGame extends FlameGame {
     
     for (final key in spritesToRemove) {
       animalSprites.remove(key);
-      print('Cleaned up unused sprite: $key');
+      developer.log('Cleaned up unused sprite: $key', name: 'FarmGame');
     }
   }
 
   // Network image yükleme kaldırıldı - sadece assets kullanılıyor
 
-  // Hayvan adından sprite adını dinamik olarak belirle
-  String _getAnimalSpriteName(String animalName) {
-    // Hayvan adını temizle ve küçük harfe çevir
-    final cleanName = animalName.toLowerCase()
-        .replaceAll(' ', '_')
-        .replaceAll(RegExp(r'[^a-z0-9_]'), '');
-    
-    // Mevcut asset'lerdeki hayvan isimleri
-    final availableSprites = [
-      'chicken', 'cow', 'dog', 'fox', 'goat', 
-      'monkey', 'rooster', 'squirrel', 'thorny_dragon', 'tiger'
-    ];
-    
-    // Önce tam eşleşme ara
-    if (availableSprites.contains(cleanName)) {
-      return cleanName;
-    }
-    
-    // Kısmi eşleşme ara
-    for (final spriteName in availableSprites) {
-      if (cleanName.contains(spriteName) || spriteName.contains(cleanName)) {
-        return spriteName;
-      }
-    }
-    
-    // Türkçe isimler için özel eşleştirmeler
-    final turkishMappings = {
-      'tavuk': 'chicken',
-      'horoz': 'rooster', 
-      'inek': 'cow',
-      'köpek': 'dog',
-      'tilki': 'fox',
-      'keçi': 'goat',
-      'maymun': 'monkey',
-      'sincap': 'squirrel',
-      'kaplan': 'tiger',
-      'ejder': 'thorny_dragon',
-    };
-    
-    for (final entry in turkishMappings.entries) {
-      if (cleanName.contains(entry.key)) {
-        return entry.value;
-      }
-    }
-    
-    // Hiçbir eşleşme bulunamazsa default chicken kullan
-    return 'chicken';
-  }
 
   void _addDecorations() {
     if (gridOrigin == null) return;
@@ -507,6 +502,194 @@ class FarmGame extends FlameGame {
     add(draggingAnimal!);
     updateHoverFromLocal(localPos);
   }
+
+  // Farm animal drag methods
+  void startDragAnimal(FarmAnimalSprite animalSprite) {
+    developer.log('Starting drag for animal: ${animalSprite.animal.name}', name: 'FarmGame');
+    draggingFarmAnimal = animalSprite;
+    animalSprite.isDragging = true;
+    animalSprite.priority = 20; // Bring to front during drag
+  }
+
+  void updateDragAnimal(Vector2 position) {
+    if (draggingFarmAnimal != null) {
+      draggingFarmAnimal!.position = position;
+      
+      if (isInsideGrid(position)) {
+        final t = nearestTile(position);
+        if (hoverRow != t.row || hoverCol != t.col) {
+          _setTileHighlighted(hoverRow, hoverCol, false);
+          hoverRow = t.row;
+          hoverCol = t.col;
+          _setTileHighlighted(hoverRow, hoverCol, true);
+        }
+      } else {
+        _setTileHighlighted(hoverRow, hoverCol, false);
+        hoverRow = null;
+        hoverCol = null;
+      }
+    }
+  }
+
+  void endDragAnimal() {
+    if (draggingFarmAnimal == null) return;
+    
+    final pos = draggingFarmAnimal!.position;
+    
+    if (!isInsideGrid(pos)) {
+      // Return to original position if dropped outside grid
+      _returnAnimalToOriginalPosition();
+      return;
+    }
+    
+    final targetTile = nearestTile(pos);
+    
+    // Check if target position is occupied by another animal
+    final occupiedByAnimal = _getAnimalAtPosition(targetTile.row, targetTile.col);
+    if (occupiedByAnimal != null && occupiedByAnimal != draggingFarmAnimal) {
+      // Swap positions
+      _swapAnimalPositions(draggingFarmAnimal!, occupiedByAnimal);
+    } else {
+      // Move to new position
+      _moveAnimalToPosition(draggingFarmAnimal!, targetTile.row, targetTile.col);
+    }
+    
+    // Reset drag state
+    draggingFarmAnimal!.isDragging = false;
+    draggingFarmAnimal!.priority = 10; // Return to normal priority
+    draggingFarmAnimal = null;
+    
+    _setTileHighlighted(hoverRow, hoverCol, false);
+    hoverRow = null;
+    hoverCol = null;
+  }
+
+  FarmAnimalSprite? _getAnimalAtPosition(int row, int col) {
+    for (final sprite in children.whereType<FarmAnimalSprite>()) {
+      if (sprite.gridRow == row && sprite.gridCol == col && sprite != draggingFarmAnimal) {
+        return sprite;
+      }
+    }
+    return null;
+  }
+
+  void _swapAnimalPositions(FarmAnimalSprite animal1, FarmAnimalSprite animal2) {
+    developer.log('Swapping positions: ${animal1.animal.name} <-> ${animal2.animal.name}', name: 'FarmGame');
+    
+    // Store original positions
+    final temp1Row = animal1.gridRow!;
+    final temp1Col = animal1.gridCol!;
+    final temp2Row = animal2.gridRow!;
+    final temp2Col = animal2.gridCol!;
+    
+    // Update grid positions
+    animal1.gridRow = temp2Row;
+    animal1.gridCol = temp2Col;
+    animal2.gridRow = temp1Row;
+    animal2.gridCol = temp1Col;
+    
+    // Update visual positions
+    animal1.position = isoPositionOf(temp2Row, temp2Col) + Vector2(0, -15);
+    animal2.position = isoPositionOf(temp1Row, temp1Col) + Vector2(0, -15);
+    
+    // Trigger tile pulse effects
+    if (tiles.isNotEmpty && tiles.length > temp2Row && tiles[temp2Row].length > temp2Col) {
+      tiles[temp2Row][temp2Col].triggerPulse();
+    }
+    if (tiles.isNotEmpty && tiles.length > temp1Row && tiles[temp1Row].length > temp1Col) {
+      tiles[temp1Row][temp1Col].triggerPulse();
+    }
+    
+    // Update farm animals list positions
+    _updateFarmAnimalsOrder();
+  }
+
+  void _moveAnimalToPosition(FarmAnimalSprite animal, int row, int col) {
+    developer.log('Moving animal ${animal.animal.name} to position ($row, $col)', name: 'FarmGame');
+    
+    // Update grid position
+    animal.gridRow = row;
+    animal.gridCol = col;
+    
+    // Update visual position
+    animal.position = isoPositionOf(row, col) + Vector2(0, -15);
+    
+    // Trigger tile pulse effect
+    if (tiles.isNotEmpty && tiles.length > row && tiles[row].length > col) {
+      tiles[row][col].triggerPulse();
+    }
+    
+    // Update farm animals list positions
+    _updateFarmAnimalsOrder();
+  }
+
+  void _returnAnimalToOriginalPosition() {
+    if (draggingFarmAnimal != null) {
+      developer.log('Returning animal ${draggingFarmAnimal!.animal.name} to original position', name: 'FarmGame');
+      final originalRow = draggingFarmAnimal!.gridRow!;
+      final originalCol = draggingFarmAnimal!.gridCol!;
+      draggingFarmAnimal!.position = isoPositionOf(originalRow, originalCol) + Vector2(0, -15);
+    }
+  }
+
+  void _updateFarmAnimalsOrder() {
+    // Sort farm animals by their grid positions for consistent ordering
+    final animalSprites = children.whereType<FarmAnimalSprite>().toList();
+    animalSprites.sort((a, b) {
+      final aIndex = (a.gridRow ?? 0) * gridCols + (a.gridCol ?? 0);
+      final bIndex = (b.gridRow ?? 0) * gridCols + (b.gridCol ?? 0);
+      return aIndex.compareTo(bIndex);
+    });
+    
+    // Update the farmAnimals list to match the new positions
+    farmAnimals.clear();
+    for (final sprite in animalSprites) {
+      farmAnimals.add(sprite.animal);
+    }
+    
+    // Notify controller about the reordering
+    if (onAnimalsReordered != null) {
+      onAnimalsReordered!(farmAnimals);
+    }
+  }
+
+  // Manual event handling methods
+  void handleTapDown(Vector2 position) {
+    final hitSprite = _hitFarmAnimal(position);
+    if (hitSprite != null && draggingFarmAnimal == null) {
+      if (onAnimalTap != null) {
+        onAnimalTap!(hitSprite.animal);
+      }
+    }
+  }
+
+  void handleDragStart(Vector2 position) {
+    final hitSprite = _hitFarmAnimal(position);
+    if (hitSprite != null) {
+      startDragAnimal(hitSprite);
+    }
+  }
+
+  void handleDragUpdate(Vector2 position) {
+    if (draggingFarmAnimal != null) {
+      updateDragAnimal(position);
+    }
+  }
+
+  void handleDragEnd(Vector2 position) {
+    if (draggingFarmAnimal != null) {
+      endDragAnimal();
+    }
+  }
+
+  FarmAnimalSprite? _hitFarmAnimal(Vector2 point) {
+    for (final sprite in children.whereType<FarmAnimalSprite>()) {
+      if (sprite.containsPoint(point)) {
+        return sprite;
+      }
+    }
+    return null;
+  }
 }
 
 class TileComponent extends PositionComponent {
@@ -557,21 +740,21 @@ class TileComponent extends PositionComponent {
     path.close();
 
     // Tile'lar transparan - grass block'lar alttan görünsün
-    Color base = const Color(0xFF4CAF50).withOpacity(0.3); // Transparan yeşil
+    Color base = const Color(0xFF4CAF50).withValues(alpha: 0.3); // Transparan yeşil
     if (isHighlighted) {
       final t = (math.sin(_blinkTime * 8) + 1) / 2; // 0..1
-      base = Color.lerp(base, const Color(0xFF66BB6A).withOpacity(0.6), t * 0.7)!;
+      base = Color.lerp(base, const Color(0xFF66BB6A).withValues(alpha: 0.6), t * 0.7)!;
     }
     if (_pulseTime > 0) {
       final p = _pulseTime / 0.35; // 1..0
-      base = Color.lerp(base, const Color(0xFFFFFFFF).withOpacity(0.8), p * 0.8)!;
+      base = Color.lerp(base, const Color(0xFFFFFFFF).withValues(alpha: 0.8), p * 0.8)!;
     }
 
     final Paint fill = Paint()..color = base;
     final Paint border = Paint()
-      ..color = const Color(0xFF2E7D32).withOpacity(0.8) // Transparan border
+      ..color = Colors.transparent // Transparan border
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 2.0;
+      ..strokeWidth = 1.0;
 
     canvas.drawPath(path, fill);
     canvas.drawPath(path, border);
@@ -585,9 +768,9 @@ class TileComponent extends PositionComponent {
     final Paint grassPaint = Paint()
       ..color = const Color(0xFF2E7D32) // Çok daha koyu çim detayları
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 2.0; // Daha kalın çizgiler
+      ..strokeWidth = 1.0; // Daha kalın çizgiler
 
-    for (int i = 0; i < 12; i++) { // Daha fazla çim detayı
+    for (int i = 0; i < 6; i++) { // Daha fazla çim detayı
       final x = (random.nextDouble() - 0.5) * size.x * 0.9;
       final y = (random.nextDouble() - 0.5) * size.y * 0.9;
       final length = 5 + random.nextDouble() * 6; // Daha uzun çim
@@ -813,17 +996,20 @@ class AnimalSprite extends PositionComponent {
 
 class FarmAnimalSprite extends PositionComponent {
   final FarmAnimal animal;
-  final Function(FarmAnimal)? onTap;
   final Sprite? animalSprite;
+  int? gridRow;
+  int? gridCol;
+  bool isDragging = false;
 
   FarmAnimalSprite({
     required this.animal,
     required Vector2 position,
-    this.onTap,
     this.animalSprite,
+    this.gridRow,
+    this.gridCol,
   }) : super(
           position: position,
-          size: Vector2.all(60), // Küçük grid için boyutu azalt
+          size: Vector2.all(50), // Cover görsellerini küçült
           anchor: Anchor.center,
         ) {
     // Hayvanların tile'ların üstünde render edilmesi için yüksek priority
@@ -844,16 +1030,31 @@ class FarmAnimalSprite extends PositionComponent {
   void render(Canvas canvas) {
     final paint = Paint();
     
+    // Sürükleme sırasında şeffaflık uygula
+    if (isDragging) {
+      paint.color = Colors.white.withValues(alpha: 0.7);
+      canvas.drawRect(
+        Rect.fromCenter(center: Offset.zero, width: size.x, height: size.y),
+        paint,
+      );
+    }
+    
     // Gerçek sprite varsa onu kullan, yoksa renkli daire çiz
     if (animalSprite != null) {
       // Sprite'ı çiz
       canvas.save();
+      if (isDragging) {
+        canvas.saveLayer(null, Paint()..color = Colors.white.withValues(alpha: 0.8));
+      }
       animalSprite!.render(
         canvas,
         anchor: Anchor.center,
         position: Vector2.zero(),
         size: size,
       );
+      if (isDragging) {
+        canvas.restore();
+      }
       canvas.restore();
     } else {
       // Varsayılan renkli daire çiz
@@ -886,7 +1087,7 @@ class FarmAnimalSprite extends PositionComponent {
     }
     
     // Hayvan gövdesi (gradient efektli daire) - küçük grid için boyutu azalt
-    final animalSize = 18.0 + (animal.level * 1.5);
+    final animalSize = 15.0 + (animal.level * 1.0);
     
     // Ana gövde
     paint.color = animalColor;
@@ -900,7 +1101,7 @@ class FarmAnimalSprite extends PositionComponent {
     canvas.drawCircle(Offset.zero, animalSize, paint);
     
     // İç gölge efekti
-    paint.color = Colors.white.withOpacity(0.3);
+    paint.color = Colors.white.withValues(alpha: 0.3);
     paint.style = PaintingStyle.fill;
     canvas.drawCircle(
       const Offset(-2, -2), 
@@ -909,7 +1110,7 @@ class FarmAnimalSprite extends PositionComponent {
     );
     
     // Hayvan gölgesi (daha gerçekçi)
-    paint.color = Colors.black.withOpacity(0.4);
+    paint.color = Colors.black.withValues(alpha: 0.4);
     paint.style = PaintingStyle.fill;
     canvas.drawOval(
       Rect.fromCenter(
@@ -922,7 +1123,7 @@ class FarmAnimalSprite extends PositionComponent {
   }
   
   void _drawStatusIndicators(Canvas canvas, Paint paint) {
-    final animalSize = 18.0 + (animal.level * 1.5);
+    final animalSize = 15.0 + (animal.level * 1.0);
     
     // Durum göstergesi (küçük nokta)
     if (animal.status.isHungry || animal.status.isSick || animal.status.needsLove) {
@@ -940,15 +1141,15 @@ class FarmAnimalSprite extends PositionComponent {
       // Seviye arka planı
       paint.color = const Color(0xFF4CAF50);
       paint.style = PaintingStyle.fill;
-      final levelBgSize = 16.0; // Küçük grid için boyutu azalt
+      final levelBgSize = 14.0; // Daha küçük boyut
       canvas.drawRRect(
         RRect.fromRectAndRadius(
           Rect.fromCenter(
-            center: Offset(0, -animalSize - 12), // Pozisyonu da ayarla
+            center: Offset(0, -animalSize - 10), // Pozisyonu da ayarla
             width: levelBgSize,
-            height: 10, // Yüksekliği de azalt
+            height: 8, // Yüksekliği de azalt
           ),
-          const Radius.circular(5),
+          const Radius.circular(4),
         ),
         paint,
       );
@@ -959,7 +1160,7 @@ class FarmAnimalSprite extends PositionComponent {
           text: 'L${animal.level}',
           style: const TextStyle(
             color: Colors.white,
-            fontSize: 8, // Küçük grid için font boyutu azalt
+            fontSize: 7, // Daha küçük font
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -970,7 +1171,7 @@ class FarmAnimalSprite extends PositionComponent {
         canvas,
         Offset(
           -textPainter.width / 2, 
-          -animalSize - 17 // Pozisyonu ayarla
+          -animalSize - 14 // Pozisyonu ayarla
         ),
       );
     }
@@ -979,7 +1180,7 @@ class FarmAnimalSprite extends PositionComponent {
     if (animal.isFavorite) {
       paint.color = const Color(0xFFFFD700);
       paint.style = PaintingStyle.fill;
-      _drawStar(canvas, paint, Offset(-animalSize - 8, -animalSize - 8), 6.0); // Küçük grid için boyutu azalt
+      _drawStar(canvas, paint, Offset(-animalSize - 6, -animalSize - 6), 4.0); // Daha küçük yıldız
     }
   }
   
@@ -1003,13 +1204,6 @@ class FarmAnimalSprite extends PositionComponent {
     canvas.drawPath(path, paint);
   }
 
-  bool onTapDown(TapDownEvent event) {
-    if (onTap != null) {
-      onTap!(animal);
-      return true;
-    }
-    return false;
-  }
 }
 
 // Decorative components

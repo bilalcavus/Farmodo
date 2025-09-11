@@ -14,6 +14,7 @@ class Reward {
   final String id;
   final String name;
   final String imageUrl;
+  final String coverUrl;
   final int xpCost;
   final String description;
   // final RewardType type;
@@ -27,6 +28,7 @@ class Reward {
     required this.id,
     required this.name,
     required this.imageUrl,
+    required this.coverUrl,
     required this.xpCost,
     required this.description,
     // required this.type,
@@ -42,6 +44,7 @@ class Reward {
       id: json['id'],
       name: json['name'],
       imageUrl: json['imageUrl'],
+      coverUrl: json['coverUrl'],
       xpCost: json['xpCost'],
       description: json['description'],
       // type: RewardType.values.firstWhere(
@@ -64,6 +67,7 @@ class Reward {
       id: doc.id,
       name: data['name'] ?? '',
       imageUrl: data['imageUrl'] ?? '',
+      coverUrl: data['coverUrl'] ?? '',
       xpCost: data['xpCost'] ?? 0,
       description: data['description'] ?? '',
       // type: RewardType.values.firstWhere(
@@ -85,6 +89,7 @@ class Reward {
       'id': id,
       'name': name,
       'imageUrl': imageUrl,
+      'coverUrl': coverUrl,
       'xpCost': xpCost,
       'description': description,
       // 'type': type.toString().split('.').last,
@@ -102,6 +107,7 @@ class Reward {
       'imageUrl': imageUrl,
       'xpCost': xpCost,
       'description': description,
+      'coverUrl': coverUrl,
       // 'type': type.toString().split('.').last,
       'isAvailable': isAvailable,
       'isPremium': isPremium,
@@ -115,6 +121,7 @@ class Reward {
     String? id,
     String? name,
     String? imageUrl,
+    String? coverUrl,
     int? xpCost,
     String? description,
     // RewardType? type,
@@ -128,6 +135,7 @@ class Reward {
       id: id ?? this.id,
       name: name ?? this.name,
       imageUrl: imageUrl ?? this.imageUrl,
+      coverUrl: coverUrl ?? this.coverUrl,
       xpCost: xpCost ?? this.xpCost,
       description: description ?? this.description,
       // type: type ?? this.type,

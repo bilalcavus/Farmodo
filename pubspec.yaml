@@ -50,6 +50,7 @@ flutter:
     - assets/images/
     - assets/images/animals/
     - assets/images/actions/
+    - assets/images/cover/
     - assets/logo/
     - assets/lottie/
     - assets/icons/

@@ -133,6 +133,7 @@ class FarmAnimal {
   final String rewardId;
   final String name;
   final String imageUrl;
+  final String coverUrl;
   final String description;
   final AnimalStatus status;
   final DateTime acquiredAt;
@@ -147,6 +148,7 @@ class FarmAnimal {
     required this.rewardId,
     required this.name,
     required this.imageUrl,
+    required this.coverUrl,
     required this.description,
     required this.status,
     required this.acquiredAt,
@@ -161,6 +163,7 @@ class FarmAnimal {
     required String rewardId,
     required String name,
     required String imageUrl,
+    required String coverUrl,
     required String description,
   }) {
     return FarmAnimal(
@@ -169,6 +172,7 @@ class FarmAnimal {
       rewardId: rewardId,
       name: name,
       imageUrl: imageUrl,
+      coverUrl: coverUrl,
       description: description,
       status: AnimalStatus.defaultStatus(),
       acquiredAt: DateTime.now(),
@@ -182,6 +186,7 @@ class FarmAnimal {
       rewardId: json['rewardId'],
       name: json['name'],
       imageUrl: json['imageUrl'],
+      coverUrl: json['coverUrl'],
       description: json['description'],
       status: AnimalStatus.fromJson(json['status']),
       acquiredAt: DateTime.parse(json['acquiredAt']),
@@ -200,6 +205,7 @@ class FarmAnimal {
       rewardId: data['rewardId'] ?? '',
       name: data['name'] ?? '',
       imageUrl: data['imageUrl'] ?? '',
+      coverUrl: data['coverUrl'] ?? '',
       description: data['description'] ?? '',
       status: AnimalStatus.fromFirestore(doc),
       acquiredAt: (data['acquiredAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
@@ -217,6 +223,7 @@ class FarmAnimal {
       'rewardId': rewardId,
       'name': name,
       'imageUrl': imageUrl,
+      'coverUrl': coverUrl,
       'description': description,
       'status': status.toJson(),
       'acquiredAt': acquiredAt.toIso8601String(),
@@ -233,6 +240,7 @@ class FarmAnimal {
       'rewardId': rewardId,
       'name': name,
       'imageUrl': imageUrl,
+      'coverUrl': coverUrl,
       'description': description,
       ...status.toFirestore(),
       'acquiredAt': Timestamp.fromDate(acquiredAt),
@@ -249,6 +257,7 @@ class FarmAnimal {
     String? rewardId,
     String? name,
     String? imageUrl,
+    String? coverUrl,
     String? description,
     AnimalStatus? status,
     DateTime? acquiredAt,
@@ -263,6 +272,7 @@ class FarmAnimal {
       rewardId: rewardId ?? this.rewardId,
       name: name ?? this.name,
       imageUrl: imageUrl ?? this.imageUrl,
+      coverUrl: coverUrl ?? this.coverUrl,
       description: description ?? this.description,
       status: status ?? this.status,
       acquiredAt: acquiredAt ?? this.acquiredAt,

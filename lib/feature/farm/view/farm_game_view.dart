@@ -30,6 +30,11 @@ class _FarmGameViewState extends State<FarmGameView> {
       _showAnimalDetailSheet(context, animal);
     };
     
+    farmGame.onAnimalsReordered = (reorderedAnimals) {
+      // Update the controller's animals list to match the new order
+      farmController.animals.assignAll(reorderedAnimals);
+    };
+    
     // Zoom değişikliklerini dinle
     _transformationController.addListener(() {
       final Matrix4 matrix = _transformationController.value;
@@ -76,7 +81,7 @@ class _FarmGameViewState extends State<FarmGameView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF8BC34A),
+      backgroundColor: Color(0xFF8BC34A), 
       body: SafeArea(
         child: Column(
           children: [
@@ -95,152 +100,8 @@ class _FarmGameViewState extends State<FarmGameView> {
     );
   }
 
-  Widget _buildHeader() {
-    return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: context.dynamicWidth(0.06),
-        vertical: context.dynamicHeight(0.02),
-      ),
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withAlpha(15),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Container(
-            padding: EdgeInsets.all(context.dynamicWidth(0.025)),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [AppColors.primary, AppColors.primary.withAlpha(200)],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              borderRadius: BorderRadius.circular(16),
-              boxShadow: [
-                BoxShadow(
-                  color: AppColors.primary.withAlpha(25),
-                  blurRadius: 8,
-                  offset: const Offset(0, 4),
-                ),
-              ],
-            ),
-            child: Icon(
-              Icons.pets_rounded,
-              color: AppColors.onPrimary,
-              size: context.dynamicHeight(0.028),
-            ),
-          ),
-          SizedBox(width: context.dynamicWidth(0.04)),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Farm View',
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.w500,
-                    color: AppColors.textPrimary,
-                  ),
-                ),
-                Obx(() => Text(
-                  '${farmController.totalAnimals} animals',
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: AppColors.textSecondary,
-                    fontWeight: FontWeight.w500,
-                  ),
-                )),
-              ],
-            ),
-          ),
-          _buildActionButtons(),
-        ],
-      ),
-    );
-  }
 
-  Widget _buildActionButtons() {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        _buildModernActionButton(
-          icon: Icons.refresh_rounded,
-          tooltip: 'Refresh',
-          onTap: () async {
-            await farmController.syncPurchasedAnimalsToFarm();
-            // Hayvanlar otomatik olarak güncellenecek (ever listener sayesinde)
-          },
-        ),
-        SizedBox(width: context.dynamicWidth(0.02)),
-        _buildModernActionButton(
-          icon: Icons.update_rounded,
-          tooltip: 'Update Status',
-          onTap: () async {
-            await farmController.updateAnimalStatusesOverTime();
-            // Hayvanlar otomatik olarak güncellenecek (ever listener sayesinde)
-          },
-        ),
-        SizedBox(width: context.dynamicWidth(0.02)),
-        _buildModernActionButton(
-          icon: Icons.zoom_in_rounded,
-          tooltip: 'Zoom In',
-          onTap: () {
-            final Matrix4 matrix = _transformationController.value.clone();
-            matrix.scale(1.2);
-            _transformationController.value = matrix;
-          },
-        ),
-        SizedBox(width: context.dynamicWidth(0.02)),
-        _buildModernActionButton(
-          icon: Icons.zoom_out_rounded,
-          tooltip: 'Zoom Out',
-          onTap: () {
-            final Matrix4 matrix = _transformationController.value.clone();
-            matrix.scale(0.8);
-            _transformationController.value = matrix;
-          },
-        ),
-        SizedBox(width: context.dynamicWidth(0.02)),
-        _buildModernActionButton(
-          icon: Icons.zoom_out_map_rounded,
-          tooltip: 'Reset Zoom',
-          onTap: () {
-            _transformationController.value = Matrix4.identity();
-          },
-        ),
-      ],
-    );
-  }
-
-  Widget _buildModernActionButton({
-    required IconData icon,
-    required String tooltip,
-    required VoidCallback onTap,
-  }) {
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.border,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: Padding(
-          padding: EdgeInsets.all(context.dynamicWidth(0.025)),
-          child: Icon(
-            icon,
-            color: AppColors.textSecondary,
-            size: context.dynamicHeight(0.022),
-          ),
-        ).onTap(onTap),
-      ),
-    );
-  }
-
+ 
   Widget _buildScrollableGame() {
     return InteractiveViewer(
       transformationController: _transformationController,
@@ -250,7 +111,7 @@ class _FarmGameViewState extends State<FarmGameView> {
       constrained: false,
       scaleEnabled: true,
       panEnabled: true,
-      child: Container(
+      child: SizedBox(
         width: context.dynamicWidth(1.5), // Genişliği artır
         height: context.dynamicHeight(1.5), // Yüksekliği artır
         child: GameWidget(game: farmGame),
