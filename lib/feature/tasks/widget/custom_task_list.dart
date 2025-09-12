@@ -147,6 +147,7 @@ class CustomTaskList extends StatelessWidget {
                         // width: context.dynamicWidth(0.15),
                         // height: context.dynamicHeight(0.02),
                         padding: EdgeInsets.symmetric(horizontal: context.dynamicWidth(0.015)),
+                        margin: EdgeInsets.symmetric(horizontal: context.dynamicHeight(0.01)),
                         decoration: BoxDecoration(
                           color: focusTypeColor(task.focusType).withAlpha(140),
                           borderRadius: BorderRadius.circular(context.dynamicHeight(0.008))

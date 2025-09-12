@@ -43,7 +43,6 @@ class _HomeViewState extends State<HomeView> {
               // PomodoroTimer(timerController: timerController),
               TimeStartButton(timerController: timerController, tasksController: tasksController),
               context.dynamicHeight(0.03).height,
-              context.dynamicHeight(0.03).height,
               CurrentTaskProgress(tasksController: tasksController),
               context.dynamicHeight(0.03).height,
             ],

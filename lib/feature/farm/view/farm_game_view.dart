@@ -1,12 +1,20 @@
-import 'package:farmodo/core/theme/app_colors.dart';
+import 'package:farmodo/core/di/injection.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/core/utility/extension/ontap_extension.dart';
+import 'package:farmodo/core/utility/extension/route_helper.dart';
+import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
 import 'package:farmodo/data/models/animal_model.dart';
+import 'package:farmodo/feature/farm/view/farm_view.dart';
+import 'package:farmodo/feature/farm/view/farm_game_fullscreen_view.dart';
 import 'package:farmodo/feature/farm/viewmodel/farm_controller.dart';
 import 'package:farmodo/feature/farm/viewmodel/farm_game.dart';
+import 'package:farmodo/feature/farm/widget/animal_card.dart';
+import 'package:farmodo/feature/gamification/view/gamification_view.dart';
+import 'package:farmodo/feature/store/store_view.dart';
 import 'package:flame/game.dart' hide Matrix4;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 class FarmGameView extends StatefulWidget {
   const FarmGameView({super.key});
@@ -16,18 +24,24 @@ class FarmGameView extends StatefulWidget {
 }
 
 class _FarmGameViewState extends State<FarmGameView> {
-  late FarmGame farmGame;
   late FarmController farmController;
+  late FarmGame farmGame;
   final TransformationController _transformationController = TransformationController();
   double _currentScale = 1.0;
 
   @override
   void initState() {
     super.initState();
-    farmController = Get.find<FarmController>();
+    farmController = Get.put<FarmController>(getIt<FarmController>());
     farmGame = FarmGame();
+    
     farmGame.onAnimalTap = (animal) {
-      _showAnimalDetailSheet(context, animal);
+      showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        backgroundColor: Colors.transparent,
+        builder: (context) => AnimalDetailSheet(animal: animal),
+      );
     };
     
     farmGame.onAnimalsReordered = (reorderedAnimals) {
@@ -69,30 +83,58 @@ class _FarmGameViewState extends State<FarmGameView> {
     super.dispose();
   }
 
-  void _showAnimalDetailSheet(BuildContext context, FarmAnimal animal) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) => _AnimalDetailSheet(animal: animal),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF8BC34A), 
+      backgroundColor: const Color(0xFFF8FAFC),
       body: SafeArea(
         child: Column(
           children: [
-            // _buildHeader(),
-            Expanded(
-              child: Stack(
-                children: [
-                  _buildScrollableGame(),
-                  _buildZoomIndicator(),
+            // Modern Farm Game Area
+            Container(
+              height: context.dynamicHeight(0.45),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.04),
+                    blurRadius: 20,
+                    offset: const Offset(0, 8),
+                  ),
                 ],
               ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(24),
+                child: Stack(
+                  children: [
+                    _buildScrollableGame(),
+                    _buildModernZoomIndicator(),
+                    Positioned(
+                      right: 16,
+                      top: 16,
+                      child: Container(
+                        height: context.dynamicHeight(0.045),
+                        width: context.dynamicWidth(0.1),
+                        decoration: BoxDecoration(
+                          color: Colors.black.withOpacity(0.7),
+                          borderRadius: BorderRadius.circular(16)
+                        ),
+                        child: Icon(
+                          Icons.fullscreen,
+                          color: Colors.white,
+                          size: context.dynamicHeight(0.03),
+                        ),
+                      ).onTap(() {
+                        RouteHelper.push(context, const FarmGameFullscreenView());
+                      }),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            // Modern Content Sections
+            Expanded(
+              child: _ContentSections(farmController: farmController),
             ),
           ],
         ),
@@ -100,44 +142,32 @@ class _FarmGameViewState extends State<FarmGameView> {
     );
   }
 
-
- 
   Widget _buildScrollableGame() {
     return InteractiveViewer(
       transformationController: _transformationController,
-      boundaryMargin: const EdgeInsets.all(100),
-      minScale: 0.5,
-      maxScale: 3.0,
+      boundaryMargin: const EdgeInsets.all(20),
+      minScale: 0.7,
+      maxScale: 2.0,
       constrained: false,
       scaleEnabled: true,
       panEnabled: true,
       child: SizedBox(
-        width: context.dynamicWidth(1.5), // Genişliği artır
-        height: context.dynamicHeight(1.5), // Yüksekliği artır
+        width: context.dynamicWidth(1.2),
+        height: context.dynamicHeight(0.45),
         child: GameWidget(game: farmGame),
       ),
     );
   }
 
-  Widget _buildZoomIndicator() {
+  Widget _buildModernZoomIndicator() {
     return Positioned(
-      bottom: context.dynamicHeight(0.03),
-      right: context.dynamicWidth(0.05),
+      bottom: 16,
+      right: 16,
       child: Container(
-        padding: EdgeInsets.symmetric(
-          horizontal: context.dynamicWidth(0.03),
-          vertical: context.dynamicHeight(0.01),
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
         decoration: BoxDecoration(
-          color: AppColors.surface.withOpacity(0.9),
+          color: Colors.black.withOpacity(0.7),
           borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withAlpha(15),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-            ),
-          ],
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -145,14 +175,15 @@ class _FarmGameViewState extends State<FarmGameView> {
             Icon(
               Icons.zoom_in_rounded,
               size: 16,
-              color: AppColors.textSecondary,
+              color: Colors.white,
             ),
-            SizedBox(width: context.dynamicWidth(0.02)),
+            const SizedBox(width: 6),
             Text(
               '${(_currentScale * 100).toInt()}%',
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: AppColors.textSecondary,
-                fontWeight: FontWeight.w500,
+              style: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
+                fontSize: 12,
               ),
             ),
           ],
@@ -162,247 +193,404 @@ class _FarmGameViewState extends State<FarmGameView> {
   }
 }
 
-// Animal Detail Sheet with FarmController integration
-class _AnimalDetailSheet extends StatefulWidget {
-  final FarmAnimal animal;
+class _ContentSections extends StatelessWidget {
+  const _ContentSections({
+    required this.farmController,
+  });
 
-  const _AnimalDetailSheet({required this.animal});
-
-  @override
-  State<_AnimalDetailSheet> createState() => _AnimalDetailSheetState();
-}
-
-class _AnimalDetailSheetState extends State<_AnimalDetailSheet> {
-  late FarmController farmController;
-
-  @override
-  void initState() {
-    super.initState();
-    farmController = Get.find<FarmController>();
-  }
+  final FarmController farmController;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: context.dynamicHeight(0.6),
       decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(25),
-          topRight: Radius.circular(25),
+        color: Color(0xFFF8FAFC),
+      ),
+      child: SingleChildScrollView(
+        padding: EdgeInsets.symmetric(
+          horizontal: context.dynamicWidth(0.04),
+          vertical: context.dynamicHeight(0.02),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+             // Modern My Animals Section
+            _buildModernMyAnimalsSection(context),
+            context.dynamicHeight(0.015).height,
+
+            // Modern Store Section
+            _buildModernStoreSection(context),
+            context.dynamicHeight(0.015).height,
+            
+           
+            // Modern Achievements Section
+            _buildModernAchievementsSection(context),
+            SizedBox(height: context.dynamicHeight(0.015)),
+            
+            
+          ],
         ),
       ),
-      child: Column(
-        children: [
-          SizedBox(height: context.dynamicHeight(0.015)),
-          Container(
-            width: 40,
-            height: 4,
-            decoration: BoxDecoration(
-              color: Colors.grey[300],
-              borderRadius: BorderRadius.circular(2),
-            ),
-          ),
-          SizedBox(height: context.dynamicHeight(0.02)),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: context.dynamicWidth(0.05)),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Icon(
-                      Icons.pets,
-                      color: Colors.white,
-                      size: 30,
-                    ),
-                    SizedBox(width: context.dynamicWidth(0.04)),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            widget.animal.name,
-                            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Text(
-                            'Level ${widget.animal.level}',
-                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: Colors.grey[600],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    if (widget.animal.isFavorite)
-                      Icon(
-                        Icons.star,
-                        color: Colors.amber,
-                        size: 24,
-                      ),
-                  ],
-                ),
-                SizedBox(height: context.dynamicHeight(0.03)),
-                _buildStatusBars(),
-                SizedBox(height: context.dynamicHeight(0.02)),
-                _buildActionButtons(context),
-              ],
-            ),
+    );
+  }
+
+  Widget _buildModernAchievementsSection(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(context.dynamicWidth(0.05)),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 16,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
+      child: Material(
+        color: Colors.transparent,
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: const Color(0xFF6366F1).withOpacity(0.1),
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Icon(
+                HugeIcons.strokeRoundedChampion,
+                size: 24,
+                color: const Color(0xFF6366F1),
+              ),
+            ),
+            SizedBox(width: context.dynamicWidth(0.04)),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Achievements & Quests',
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w700,
+                      color: const Color(0xFF1E293B),
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    'Complete tasks and earn rewards',
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: const Color(0xFF64748B),
+                      fontSize: 13,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: const Color(0xFFF1F5F9),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: const Icon(
+                Icons.arrow_forward_ios_rounded,
+                color: Color(0xFF64748B),
+                size: 14,
+              ),
+            ),
+          ],
+        ).onTap(() => RouteHelper.push(context, const GamificationView())),
+      ),
     );
   }
 
- 
-
-  Widget _buildStatusBars() {
-    return Column(
-      children: [
-        _buildStatusBar('Hunger', widget.animal.status.hunger, Colors.orange),
-        _buildStatusBar('Love', widget.animal.status.love, Colors.pink),
-        _buildStatusBar('Energy', widget.animal.status.energy, Colors.blue),
-        _buildStatusBar('Health', widget.animal.status.health, Colors.green),
-      ],
+  Widget _buildModernStoreSection(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(context.dynamicWidth(0.05)),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 16,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: const Color(0xFFEF4444).withOpacity(0.1),
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Icon(
+                HugeIcons.strokeRoundedShoppingCart01,
+                size: 24,
+                color: const Color(0xFFEF4444),
+              ),
+            ),
+            SizedBox(width: context.dynamicWidth(0.04)),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Farm Store',
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w700,
+                      color: const Color(0xFF1E293B),
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    'Buy animals',
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: const Color(0xFF64748B),
+                      fontSize: 13,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: const Color(0xFFF1F5F9),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: const Icon(
+                Icons.arrow_forward_ios_rounded,
+                color: Color(0xFF64748B),
+                size: 14,
+              ),
+            ),
+          ],
+        ).onTap(() {
+          RouteHelper.push(context, const StoreView());
+        }),
+      ),
     );
   }
 
-  Widget _buildStatusBar(String label, double value, Color color) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
+  Widget _buildModernMyAnimalsSection(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(context.dynamicWidth(0.05)),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 16,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF10B981).withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: const Icon(
+                        Icons.pets_rounded,
+                        size: 24,
+                        color: Color(0xFF10B981),
+                      ),
+                    ),
+                    SizedBox(width: context.dynamicWidth(0.04)),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'My Animals',
+                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w700,
+                            color: const Color(0xFF1E293B),
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Obx(() => Text(
+                          '${farmController.totalAnimals} animals in your farm',
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            color: const Color(0xFF64748B),
+                            fontSize: 13,
+                          ),
+                        )),
+                      ],
+                    ),
+                  ],
+                ),
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF1F5F9),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: const Icon(
+                    Icons.arrow_forward_ios_rounded,
+                    color: Color(0xFF64748B),
+                    size: 14,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ).onTap(() {
+          RouteHelper.push(context, const FarmView());
+        }),
+      ),
+    );
+  }
+
+  Widget _buildModernLoadingState(BuildContext context) {
+    return Container(
+      height: context.dynamicHeight(0.12),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF8FAFC),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: const Center(
+        child: CircularProgressIndicator(
+          color: Color(0xFF6366F1),
+          strokeWidth: 2,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildModernEmptyState(BuildContext context) {
+    return Container(
+      height: context.dynamicHeight(0.15),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF8FAFC),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: const Color(0xFF64748B).withOpacity(0.1),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: const Icon(
+                Icons.pets_outlined,
+                color: Color(0xFF64748B),
+                size: 32,
+              ),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              'No animals yet',
+              style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                color: const Color(0xFF64748B),
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildModernAnimalPreview(BuildContext context) {
+    final previewAnimals = farmController.animals.take(3).toList();
+    
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF8FAFC),
+        borderRadius: BorderRadius.circular(16),
+      ),
       child: Row(
         children: [
-          SizedBox(
-            width: 60,
-            child: Text(
-              label,
-              style: const TextStyle(fontWeight: FontWeight.w500),
-            ),
-          ),
-          Expanded(
-            child: Container(
-              height: 8,
-              decoration: BoxDecoration(
-                color: Colors.grey[200],
-                borderRadius: BorderRadius.circular(4),
+          ...previewAnimals.asMap().entries.map((entry) {
+            final index = entry.key;
+            final animal = entry.value;
+            return Expanded(
+              child: Container(
+                margin: EdgeInsets.only(
+                  right: index < previewAnimals.length - 1 ? 12 : 0,
+                ),
+                child: AspectRatio(
+                  aspectRatio: 1,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.04),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(16),
+                      child: AnimalCard(
+                        animal: animal,
+                        onTap: () => showModalBottomSheet(
+                          context: context,
+                          isScrollControlled: true,
+                          backgroundColor: Colors.transparent,
+                          builder: (context) => AnimalDetailSheet(animal: animal),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
               ),
-              child: FractionallySizedBox(
-                alignment: Alignment.centerLeft,
-                widthFactor: value,
+            );
+          }).toList(),
+          
+          if (farmController.animals.length > 3) ...[
+            const SizedBox(width: 12),
+            Expanded(
+              child: AspectRatio(
+                aspectRatio: 1,
                 child: Container(
                   decoration: BoxDecoration(
-                    color: color,
-                    borderRadius: BorderRadius.circular(4),
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: const Color(0xFFE2E8F0),
+                      width: 2,
+                    ),
+                  ),
+                  child: Center(
+                    child: Text(
+                      '+${farmController.animals.length - 3}',
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        color: const Color(0xFF64748B),
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-          SizedBox(width: 8),
-          Text(
-            '${(value * 100).toInt()}%',
-            style: const TextStyle(fontSize: 12),
-          ),
+          ],
         ],
-      ),
-    );
-  }
-
-  Widget _buildActionButtons(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: _buildActionButton(
-            context,
-            'Feed',
-            Icons.restaurant,
-            Colors.orange,
-            () async {
-              await farmController.feedAnimal(widget.animal.id);
-              Navigator.pop(context);
-            },
-          ),
-        ),
-        SizedBox(width: 8),
-        Expanded(
-          child: _buildActionButton(
-            context,
-            'Love',
-            Icons.favorite,
-            Colors.pink,
-            () async {
-              await farmController.loveAnimal(widget.animal.id);
-              Navigator.pop(context);
-            },
-          ),
-        ),
-        SizedBox(width: 8),
-        Expanded(
-          child: _buildActionButton(
-            context,
-            'Play',
-            Icons.sports_esports,
-            Colors.blue,
-            () async {
-              await farmController.playWithAnimal(widget.animal.id);
-              Navigator.pop(context);
-            },
-          ),
-        ),
-        SizedBox(width: 8),
-        Expanded(
-          child: _buildActionButton(
-            context,
-            'Heal',
-            Icons.medical_services,
-            Colors.green,
-            () async {
-              await farmController.healAnimal(widget.animal.id);
-              Navigator.pop(context);
-            },
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildActionButton(
-    BuildContext context,
-    String label,
-    IconData icon,
-    Color color,
-    Future<void> Function() onTap,
-  ) {
-    return Container(
-      height: 50,
-      decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withOpacity(0.3)),
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: () async => await onTap(),
-          borderRadius: BorderRadius.circular(12),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(icon, color: color, size: 20),
-              SizedBox(height: 2),
-              Text(
-                label,
-                style: TextStyle(
-                  color: color,
-                  fontSize: 10,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }

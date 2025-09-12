@@ -64,7 +64,7 @@ class _TaskViewState extends State<TaskView> with TaskViewMixin {
         ),
         decoration: BoxDecoration(
           color: AppColors.border,
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(6),
           boxShadow: [
             BoxShadow(
               color: AppColors.border.withAlpha(25),
@@ -76,7 +76,7 @@ class _TaskViewState extends State<TaskView> with TaskViewMixin {
         child: TabBar(
           indicator: BoxDecoration(
             color: AppColors.background,
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(9),
           ),
           indicatorSize: TabBarIndicatorSize.tab,
           dividerHeight: 0,

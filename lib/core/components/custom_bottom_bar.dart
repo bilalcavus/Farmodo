@@ -59,14 +59,6 @@ class CustomBottomNavigation extends StatelessWidget {
             child: _buildNavItem(
               context,
               index: 3,
-              icon: Iconsax.shop,
-              label: 'Store'
-            ),
-          ),
-          Expanded(
-            child: _buildNavItem(
-              context,
-              index: 4,
               icon: HugeIcons.strokeRoundedUser,
               label: 'Profile'
             ),

@@ -125,77 +125,11 @@ class _FarmViewState extends State<FarmView> with TickerProviderStateMixin, Farm
   }
 
   Widget _farmHeader() {
-    return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: context.dynamicWidth(0.06),
-        vertical: context.dynamicHeight(0.02),
-      ),
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withAlpha(15),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              Container(
-                padding: EdgeInsets.all(context.dynamicWidth(0.025)),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [AppColors.primary, AppColors.primary.withAlpha(200)],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                  borderRadius: BorderRadius.circular(16),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.primary.withAlpha(25),
-                      blurRadius: 8,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
-                ),
-                child: Icon(
-                  Icons.pets_rounded,
-                  color: AppColors.onPrimary,
-                  size: context.dynamicHeight(0.028),
-                ),
-              ),
-              SizedBox(width: context.dynamicWidth(0.04)),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'My Farm',
-                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.w500,
-                        color: AppColors.textPrimary,
-                      ),
-                    ),
-                    Obx(() => Text(
-                      '${farmController.totalAnimals} animals',
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: AppColors.textSecondary,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    )),
-                  ],
-                ),
-              ),
-              _buildActionButtons(),
-            ],
-          ),
-          SizedBox(height: context.dynamicHeight(0.025)),
-          _buildAchievementsCard(),
-        ],
-      ),
+    return Column(
+      children: [
+        _buildActionButtons(),
+        SizedBox(height: context.dynamicHeight(0.02)),
+      ],
     );
   }
 
@@ -219,16 +153,16 @@ class _FarmViewState extends State<FarmView> with TickerProviderStateMixin, Farm
         ),
         SizedBox(width: context.dynamicWidth(0.02)),
         _buildModernActionButton(
-          icon: HugeIcons.strokeRoundedDiscoverCircle,
+          icon: Icons.info_outline,
           tooltip: 'Statistics',
           onTap: () => _showStatsDialog(context),
         ),
-        SizedBox(width: context.dynamicWidth(0.02)),
-        _buildModernActionButton(
-          icon: Icons.games_rounded,
-          tooltip: 'Full Screen Farm',
-          onTap: () => RouteHelper.push(context, const FarmGameView()),
-        ),
+        // SizedBox(width: context.dynamicWidth(0.02)),
+        // _buildModernActionButton(
+        //   icon: Icons.games_rounded,
+        //   tooltip: 'Full Screen Farm',
+        //   onTap: () => RouteHelper.push(context, const FarmGameView()),
+        // ),
       ],
     );
   }
