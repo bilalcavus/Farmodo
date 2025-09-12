@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 
 class GamificationRepository {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -61,7 +62,6 @@ Future<bool> documentExists({
     try {
       return await _firestore.doc(path).get();
     } catch (e) {
-      print("Firestore getDocument error ($path): $e");
       return null;
     }
   }
@@ -78,7 +78,7 @@ Future<bool> documentExists({
         await action(snapshot, transaction);
       });
     } catch (e) {
-      print("Firestore runTransaction error ($path): $e");
+      debugPrint("Firestore runTransaction error ($path): $e");
     }
   }
 }

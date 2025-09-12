@@ -3,23 +3,19 @@ import 'package:farmodo/core/di/injection.dart';
 import 'package:farmodo/core/theme/app_colors.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/core/utility/extension/ontap_extension.dart';
-import 'package:farmodo/core/utility/extension/route_helper.dart';
 import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
 import 'package:farmodo/data/models/animal_model.dart';
 import 'package:farmodo/feature/farm/mixin/farm_view_mixin.dart';
 import 'package:farmodo/feature/farm/view/animal_status_bar.dart';
-import 'package:farmodo/feature/farm/view/farm_game_view.dart';
 import 'package:farmodo/feature/farm/viewmodel/farm_controller.dart';
 import 'package:farmodo/feature/farm/viewmodel/farm_game.dart';
 import 'package:farmodo/feature/farm/widget/animal_card.dart';
 import 'package:farmodo/feature/farm/widget/farm_empty_state.dart';
 import 'package:farmodo/feature/farm/widget/sheet_animal_header.dart';
-import 'package:farmodo/feature/gamification/view/gamification_view.dart';
 import 'package:farmodo/feature/gamification/widget/main/sheet_divider.dart';
 import 'package:farmodo/feature/navigation/navigation_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:hugeicons/hugeicons.dart';
 
 part 'animal_detail_sheet.dart';
 // part 'farm_header.dart';
@@ -187,73 +183,6 @@ class _FarmViewState extends State<FarmView> with TickerProviderStateMixin, Farm
             size: context.dynamicHeight(0.022),
           ),
         ).onTap(onTap),
-      ),
-    );
-  }
-
-  Widget _buildAchievementsCard() {
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.all(context.dynamicWidth(0.04)),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            AppColors.primary.withAlpha(25),
-            AppColors.primary.withAlpha(15),
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: AppColors.primary.withAlpha(25),
-          width: 1,
-        ),
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: Row(
-          children: [
-            Container(
-              padding: EdgeInsets.all(context.dynamicWidth(0.025)),
-              decoration: BoxDecoration(
-                color: AppColors.primary,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Icon(
-                HugeIcons.strokeRoundedChampion,
-                color: AppColors.onPrimary,
-                size: context.dynamicHeight(0.022),
-              ),
-            ),
-            SizedBox(width: context.dynamicWidth(0.035)),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Achievements & Quests',
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.textPrimary,
-                    ),
-                  ),
-                  Text(
-                    'Complete tasks and earn rewards',
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: AppColors.textSecondary,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Icon(
-              HugeIcons.strokeRoundedArrowRight01,
-              color: AppColors.primary,
-              size: context.dynamicHeight(0.022),
-            ),
-          ],
-        ).onTap(() => RouteHelper.push(context, const GamificationView())),
       ),
     );
   }

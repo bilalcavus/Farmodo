@@ -121,7 +121,7 @@ class _FarmGameFullscreenViewState extends State<FarmGameFullscreenView> {
                   height: 48,
                   width: 48,
                   decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.7),
+                    color: Colors.black.withAlpha(175),
                     borderRadius: BorderRadius.circular(24),
                   ),
                   child: const Icon(
@@ -137,7 +137,7 @@ class _FarmGameFullscreenViewState extends State<FarmGameFullscreenView> {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                   decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.7),
+                    color: Colors.black.withAlpha(175),
                     borderRadius: BorderRadius.circular(24),
                   ),
                   child: Row(
@@ -176,7 +176,7 @@ class _FarmGameFullscreenViewState extends State<FarmGameFullscreenView> {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                   decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.7),
+                    color: Colors.black.withAlpha(175),
                     borderRadius: BorderRadius.circular(24),
                   ),
                   child: Obx(() => Row(
@@ -203,7 +203,7 @@ class _FarmGameFullscreenViewState extends State<FarmGameFullscreenView> {
                 // Zoom Controls
                 Container(
                   decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.7),
+                    color: Colors.black.withAlpha(175),
                     borderRadius: BorderRadius.circular(24),
                   ),
                   child: Row(
@@ -232,7 +232,7 @@ class _FarmGameFullscreenViewState extends State<FarmGameFullscreenView> {
                       Container(
                         width: 1,
                         height: 24,
-                        color: Colors.white.withOpacity(0.3),
+                        color: Colors.white.withAlpha(75),
                       ),
                       
                       Container(

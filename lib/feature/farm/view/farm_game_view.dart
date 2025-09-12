@@ -97,7 +97,7 @@ class _FarmGameViewState extends State<FarmGameView> {
                 color: Colors.white,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.04),
+                    color: Colors.black.withAlpha(10),
                     blurRadius: 20,
                     offset: const Offset(0, 8),
                   ),
@@ -116,7 +116,7 @@ class _FarmGameViewState extends State<FarmGameView> {
                         height: context.dynamicHeight(0.045),
                         width: context.dynamicWidth(0.1),
                         decoration: BoxDecoration(
-                          color: Colors.black.withOpacity(0.7),
+                          color: Colors.black.withAlpha(175),
                           borderRadius: BorderRadius.circular(16)
                         ),
                         child: Icon(
@@ -166,7 +166,7 @@ class _FarmGameViewState extends State<FarmGameView> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
         decoration: BoxDecoration(
-          color: Colors.black.withOpacity(0.7),
+          color: Colors.black.withAlpha(175),
           borderRadius: BorderRadius.circular(20),
         ),
         child: Row(
@@ -242,7 +242,7 @@ class _ContentSections extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
+            color: Colors.black.withAlpha(10),
             blurRadius: 16,
             offset: const Offset(0, 4),
           ),
@@ -255,7 +255,7 @@ class _ContentSections extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: const Color(0xFF6366F1).withOpacity(0.1),
+                color: const Color(0xFF6366F1).withAlpha(25),
                 borderRadius: BorderRadius.circular(16),
               ),
               child: Icon(
@@ -313,7 +313,7 @@ class _ContentSections extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
+            color: Colors.black.withAlpha(10),
             blurRadius: 16,
             offset: const Offset(0, 4),
           ),
@@ -326,7 +326,7 @@ class _ContentSections extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: const Color(0xFFEF4444).withOpacity(0.1),
+                color: const Color(0xFFEF4444).withAlpha(25),
                 borderRadius: BorderRadius.circular(16),
               ),
               child: Icon(
@@ -386,7 +386,7 @@ class _ContentSections extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
+            color: Colors.black.withAlpha(10),
             blurRadius: 16,
             offset: const Offset(0, 4),
           ),
@@ -405,7 +405,7 @@ class _ContentSections extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                        color: const Color(0xFF10B981).withOpacity(0.1),
+                        color: const Color(0xFF10B981).withAlpha(25),
                         borderRadius: BorderRadius.circular(16),
                       ),
                       child: const Icon(
@@ -489,7 +489,7 @@ class _ContentSections extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: const Color(0xFF64748B).withOpacity(0.1),
+                color: const Color(0xFF64748B).withAlpha(25),
                 borderRadius: BorderRadius.circular(20),
               ),
               child: const Icon(
@@ -539,7 +539,7 @@ class _ContentSections extends StatelessWidget {
                       borderRadius: BorderRadius.circular(16),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.04),
+                          color: Colors.black.withAlpha(10),
                           blurRadius: 8,
                           offset: const Offset(0, 2),
                         ),
@@ -561,7 +561,7 @@ class _ContentSections extends StatelessWidget {
                 ),
               ),
             );
-          }).toList(),
+          }),
           
           if (farmController.animals.length > 3) ...[
             const SizedBox(width: 12),
