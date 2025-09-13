@@ -191,39 +191,9 @@ class FarmGame extends FlameGame {
       
       bool spriteLoaded = false;
       
-      // Asset path'den yükle
-      if (animal.coverUrl.isNotEmpty && animal.coverUrl.startsWith('assets/')) {
-        try {
-          // Asset path'i düzenle - images.load() için 'assets/' prefix'ini kaldır
-          final assetPath = animal.coverUrl.replaceFirst('assets/', '');
-          developer.log('Trying to load from asset: $assetPath', name: 'FarmGame');
-          final img = await images.load(assetPath);
-          animalSprites[animalId] = Sprite(img);
-          developer.log('✓ Successfully loaded sprite from asset for ${animal.name}', name: 'FarmGame');
-          spriteLoaded = true;
-        } catch (e) {
-          developer.log('✗ Failed to load from asset: $e', name: 'FarmGame');
-        }
-      }
-      
-      // Eğer coverUrl asset path değilse, reward ID'sinden asset path'i oluştur
-      if (!spriteLoaded && animal.rewardId.isNotEmpty) {
-        try {
-          final assetPath = 'images/cover/${animal.rewardId}.png';
-          developer.log('Trying to load from generated asset path: $assetPath', name: 'FarmGame');
-          final img = await images.load(assetPath);
-          animalSprites[animalId] = Sprite(img);
-          developer.log('✓ Successfully loaded sprite from generated path for ${animal.name}', name: 'FarmGame');
-          spriteLoaded = true;
-        } catch (e) {
-          developer.log('✗ Failed to load from generated path: $e', name: 'FarmGame');
-        }
-      }
-      
-      // Son çare: hayvan adından asset path'i oluştur
       if (!spriteLoaded) {
         try {
-          final assetPath = 'assets/images/cover/${animal.name.toLowerCase()}.png';
+          final assetPath = 'assets/images/cover/${animal.rewardId.toLowerCase()}.png';
           developer.log('Trying to load from animal name: $assetPath', name: 'FarmGame');
           final img = await images.load(assetPath);
           animalSprites[animalId] = Sprite(img);
