@@ -2,7 +2,9 @@ import 'package:farmodo/core/components/message/snack_messages.dart';
 import 'package:farmodo/core/di/injection.dart';
 import 'package:farmodo/core/theme/app_colors.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
+import 'package:farmodo/core/utility/extension/route_helper.dart';
 import 'package:farmodo/data/services/auth_service.dart';
+import 'package:farmodo/feature/auth/login/view/login_view.dart';
 import 'package:farmodo/feature/auth/login/viewmodel/login_controller.dart';
 import 'package:farmodo/feature/navigation/navigation_controller.dart';
 import 'package:farmodo/feature/store/viewmodel/reward_controller.dart';
@@ -31,6 +33,12 @@ class _StoreViewState extends State<StoreView> {
     required String rewardId,
     required String name,
   }) async {
+    // Check if user is logged in before attempting purchase
+    if (!authService.isLoggedIn) {
+      _showLoginDialog();
+      return;
+    }
+
     rewardController.resetPurchaseState();
     try {
       await rewardController.buyStoreRewards(rewardId);
@@ -44,6 +52,29 @@ class _StoreViewState extends State<StoreView> {
       Get.closeAllSnackbars();
       SnackMessages().showErrorSnack(e.toString());
     }
+  }
+
+  void _showLoginDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Giriş Gerekli'),
+        content: const Text('Hayvan satın almak için giriş yapmanız gerekiyor. Giriş yapmak ister misiniz?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('İptal'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              RouteHelper.pushAndCloseOther(context, const LoginView());
+            },
+            child: const Text('Giriş Yap'),
+          ),
+        ],
+      ),
+    );
   }
 
   @override

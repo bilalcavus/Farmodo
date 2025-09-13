@@ -39,19 +39,18 @@ class _SplashViewState extends State<SplashView> {
       await _authService.initializeAuthState();
       await Future.delayed(const Duration(seconds: 2));
       
+      // Always navigate to main app, regardless of login status
       if (_authService.isLoggedIn) {
         await _initializeUser();
-        if (mounted) {
-          RouteHelper.pushAndCloseOther(context, AppNavigation());
-        }
-      } else {
-        if (mounted) {
-          RouteHelper.pushAndCloseOther(context, const LoginView());
-        }
+      }
+      
+      if (mounted) {
+        RouteHelper.pushAndCloseOther(context, AppNavigation());
       }
     } catch (e) {
+      // Even on error, navigate to main app
       if (mounted) {
-        RouteHelper.pushAndCloseOther(context, const LoginView());
+        RouteHelper.pushAndCloseOther(context, AppNavigation());
       }
     }
   }

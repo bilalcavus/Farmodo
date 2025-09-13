@@ -1,5 +1,8 @@
+import 'package:farmodo/core/di/injection.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
+import 'package:farmodo/data/services/auth_service.dart';
 import 'package:farmodo/feature/store/store_view.dart';
+import 'package:farmodo/feature/tasks/view/add_task_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -8,6 +11,18 @@ class FarmEmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    void showLoginBottomSheet() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => LoginBottomSheet(
+        title: 'Log in to buy animals and earn achievements',
+        subTitle: 'You need to log in to purchase animals, complete quests, and earn achievements.',
+      ),
+    );
+  }
+    final authService = getIt<AuthService>();
     return SingleChildScrollView(
       padding: EdgeInsets.symmetric(vertical: context.dynamicHeight(0.02)),
       child: Column(
@@ -102,8 +117,11 @@ class FarmEmptyState extends StatelessWidget {
                   offset: Offset(0, 20 * (1 - value)),
                   child: ElevatedButton.icon(
                     onPressed: () {
-                      // Mağaza sayfasına yönlendir
-                      Get.to(StoreView());
+                      if (!authService.isLoggedIn) {
+                        showLoginBottomSheet();
+                      } else {
+                        Get.to(StoreView());
+                      }
                     },
                     icon: const Icon(Icons.store),
                     label: const Text('Mağazaya Git'),

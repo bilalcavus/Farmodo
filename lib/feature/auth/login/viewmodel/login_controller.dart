@@ -1,6 +1,8 @@
 import 'package:farmodo/core/utility/extension/route_helper.dart';
 import 'package:farmodo/data/services/auth_service.dart';
+import 'package:farmodo/data/services/sample_data_service.dart';
 import 'package:farmodo/feature/navigation/app_navigation.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -8,6 +10,7 @@ class LoginController extends GetxController {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final AuthService authService;
+
 
   LoginController(this.authService);
   
@@ -75,7 +78,11 @@ class LoginController extends GetxController {
       await authService.loginUser(email: emailController.text.trim(), password: passwordController.text);
       _userXp.value = authService.currentUser?.xp ?? 0;
       errorMessage.value = '';
-        
+      final user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        await SampleDataService().checkExistingData(user.uid);
+      }
+
       if (context.mounted) {
         RouteHelper.pushAndCloseOther(context, AppNavigation());
       }

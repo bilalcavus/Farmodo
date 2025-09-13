@@ -1,7 +1,9 @@
 import 'package:farmodo/core/components/drop_menu.dart';
+import 'package:farmodo/core/di/injection.dart';
 import 'package:farmodo/core/theme/app_colors.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/core/utility/extension/route_helper.dart';
+import 'package:farmodo/data/services/auth_service.dart';
 import 'package:farmodo/feature/tasks/view/add_task_view.dart';
 import 'package:farmodo/feature/tasks/viewmodel/tasks_controller.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +24,7 @@ class CurrentTaskBox extends StatefulWidget {
 }
 
 class _CurrentTaskBoxState extends State<CurrentTaskBox> with SingleTickerProviderStateMixin {
+  final authService = getIt<AuthService>();
   late AnimationController _shakeController;
   late Animation<double> _shakeAnimation;
   Color _borderColor = AppColors.border;
@@ -51,6 +54,18 @@ class _CurrentTaskBoxState extends State<CurrentTaskBox> with SingleTickerProvid
     });
   }
 
+
+void _showLoginBottomSheet() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => LoginBottomSheet(
+        title: 'Login to create a task',
+        subTitle: 'You need to log in to save your tasks and track your progress.',
+      ),
+    );
+  }
   
 
   void shake() {
@@ -97,7 +112,13 @@ class _CurrentTaskBoxState extends State<CurrentTaskBox> with SingleTickerProvid
                   SizedBox(height: context.dynamicHeight(0.01)),
                   Text('Please create a task first.', style: Theme.of(context).textTheme.bodyMedium),
                   TextButton(
-                    onPressed: () => RouteHelper.push(context, const AddTaskView()), 
+                    onPressed: () {
+                      if (!authService.isLoggedIn) {
+                        _showLoginBottomSheet();
+                      } else {
+                        RouteHelper.push(context, const AddTaskView());
+                      }
+                    },
                     child: Text('Create Task')
                   ),
                 ] else ...[

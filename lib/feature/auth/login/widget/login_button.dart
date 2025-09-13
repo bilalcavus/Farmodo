@@ -1,6 +1,7 @@
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/core/utility/extension/ontap_extension.dart';
 import 'package:farmodo/core/utility/extension/route_helper.dart';
+import 'package:farmodo/feature/farm/viewmodel/farm_controller.dart';
 import 'package:farmodo/feature/navigation/app_navigation.dart';
 import 'package:farmodo/core/components/button/button_text.dart';
 import 'package:farmodo/core/components/loading_icon.dart';
@@ -11,10 +12,11 @@ import 'package:get/get.dart';
 class LoginButton extends StatelessWidget {
   const LoginButton({
     super.key,
-    required this.loginController,
+    required this.loginController, required this.farmController,
   });
 
   final LoginController loginController;
+  final FarmController farmController;
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +40,7 @@ class LoginButton extends StatelessWidget {
           }
           if(context.mounted && loginController.errorMessage.value.isEmpty){
             RouteHelper.pushAndCloseOther(context, AppNavigation());
+            farmController.loadAnimals();
           }
         }
       ),

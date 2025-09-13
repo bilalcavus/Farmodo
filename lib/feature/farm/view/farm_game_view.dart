@@ -4,6 +4,7 @@ import 'package:farmodo/core/utility/extension/ontap_extension.dart';
 import 'package:farmodo/core/utility/extension/route_helper.dart';
 import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
 import 'package:farmodo/data/models/animal_model.dart';
+import 'package:farmodo/data/services/auth_service.dart';
 import 'package:farmodo/feature/farm/view/farm_view.dart';
 import 'package:farmodo/feature/farm/view/farm_game_fullscreen_view.dart';
 import 'package:farmodo/feature/farm/viewmodel/farm_controller.dart';
@@ -11,6 +12,7 @@ import 'package:farmodo/feature/farm/viewmodel/farm_game.dart';
 import 'package:farmodo/feature/farm/widget/animal_card.dart';
 import 'package:farmodo/feature/gamification/view/gamification_view.dart';
 import 'package:farmodo/feature/store/store_view.dart';
+import 'package:farmodo/feature/tasks/view/add_task_view.dart';
 import 'package:flame/game.dart' hide Matrix4;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -28,6 +30,7 @@ class _FarmGameViewState extends State<FarmGameView> {
   late FarmGame farmGame;
   final TransformationController _transformationController = TransformationController();
   double _currentScale = 1.0;
+  final authService = getIt<AuthService>();
 
   @override
   void initState() {
@@ -134,7 +137,7 @@ class _FarmGameViewState extends State<FarmGameView> {
             ),
             // Modern Content Sections
             Expanded(
-              child: _ContentSections(farmController: farmController),
+              child: _ContentSections(farmController: farmController, authService: authService),
             ),
           ],
         ),
@@ -196,9 +199,11 @@ class _FarmGameViewState extends State<FarmGameView> {
 class _ContentSections extends StatelessWidget {
   const _ContentSections({
     required this.farmController,
+    required this.authService,
   });
 
   final FarmController farmController;
+  final AuthService authService;
 
   @override
   Widget build(BuildContext context) {
@@ -219,12 +224,12 @@ class _ContentSections extends StatelessWidget {
             context.dynamicHeight(0.015).height,
 
             // Modern Store Section
-            _buildModernStoreSection(context),
+            _buildModernStoreSection(context, authService),
             context.dynamicHeight(0.015).height,
             
            
             // Modern Achievements Section
-            _buildModernAchievementsSection(context),
+            _buildModernAchievementsSection(context, authService),
             SizedBox(height: context.dynamicHeight(0.015)),
             
             
@@ -234,7 +239,7 @@ class _ContentSections extends StatelessWidget {
     );
   }
 
-  Widget _buildModernAchievementsSection(BuildContext context) {
+  Widget _buildModernAchievementsSection(BuildContext context, AuthService authService) {
     return Container(
       padding: EdgeInsets.all(context.dynamicWidth(0.05)),
       decoration: BoxDecoration(
@@ -300,12 +305,18 @@ class _ContentSections extends StatelessWidget {
               ),
             ),
           ],
-        ).onTap(() => RouteHelper.push(context, const GamificationView())),
+        ).onTap(() {
+          if (!authService.isLoggedIn) {
+            _showLoginBottomSheet(context);
+          } else {
+            RouteHelper.push(context, const GamificationView());
+          }
+        }),
       ),
     );
   }
 
-  Widget _buildModernStoreSection(BuildContext context) {
+  Widget _buildModernStoreSection(BuildContext context, AuthService authService) {
     return Container(
       padding: EdgeInsets.all(context.dynamicWidth(0.05)),
       decoration: BoxDecoration(
@@ -372,7 +383,11 @@ class _ContentSections extends StatelessWidget {
             ),
           ],
         ).onTap(() {
-          RouteHelper.push(context, const StoreView());
+          if (!authService.isLoggedIn) {
+            _showLoginBottomSheet(context);
+          } else {
+            RouteHelper.push(context, const StoreView());
+          }
         }),
       ),
     );
@@ -591,6 +606,18 @@ class _ContentSections extends StatelessWidget {
             ),
           ],
         ],
+      ),
+    );
+  }
+
+  void _showLoginBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => LoginBottomSheet(
+        title: 'Log in to buy animals and earn achievements',
+        subTitle: 'You need to log in to purchase animals, complete quests, and earn achievements.',
       ),
     );
   }
