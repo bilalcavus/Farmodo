@@ -8,6 +8,7 @@ import 'package:farmodo/feature/tasks/view/add_task_view.dart';
 import 'package:farmodo/feature/tasks/viewmodel/tasks_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_rx/src/rx_workers/rx_workers.dart';
+import 'package:get/get.dart';
 
 class CurrentTaskBox extends StatefulWidget {
   final TasksController tasksController;
@@ -88,7 +89,6 @@ void _showLoginBottomSheet() {
 
   @override
   Widget build(BuildContext context) {
-    final tasks = widget.tasksController.activeUserTasks;
     return AnimatedBuilder(
       animation: _shakeAnimation,
       builder: (context, child) {
@@ -105,34 +105,45 @@ void _showLoginBottomSheet() {
             child: Column(
               children: [
                 Center(child: Text('CURRENT TASK')),
-                if (tasks.isEmpty) ...[
-                  Text('NO TASKS YET', style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    fontWeight: FontWeight.bold
-                  )),
-                  SizedBox(height: context.dynamicHeight(0.01)),
-                  Text('Please create a task first.', style: Theme.of(context).textTheme.bodyMedium),
-                  TextButton(
-                    onPressed: () {
-                      if (!authService.isLoggedIn) {
-                        _showLoginBottomSheet();
-                      } else {
-                        RouteHelper.push(context, const AddTaskView());
-                      }
-                    },
-                    child: Text('Create Task')
-                  ),
-                ] else ...[
-                  Text('Select or create a task', style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600)),
-                  DropMenu(
-                    controller: widget.controller,
-                    hint: 'Select Task',
-                    items: tasks.map((task) => task.title).toList(),
-                    onChanged: (value) {
-                      final index = tasks.indexWhere((task) => task.title == value);
-                      if (index != -1) widget.tasksController.selectTask(index, tasks[index]);
-                    },
-                  ),
-                ],
+                Obx(() {
+                  final tasks = widget.tasksController.activeUserTasks;
+                  if (tasks.isEmpty) {
+                    return Column(
+                      children: [
+                        Text('NO TASKS YET', style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                          fontWeight: FontWeight.bold
+                        )),
+                        SizedBox(height: context.dynamicHeight(0.01)),
+                        Text('Please create a task first.', style: Theme.of(context).textTheme.bodyMedium),
+                        TextButton(
+                          onPressed: () {
+                            if (!authService.isLoggedIn) {
+                              _showLoginBottomSheet();
+                            } else {
+                              RouteHelper.push(context, const AddTaskView());
+                            }
+                          },
+                          child: Text('Create Task')
+                        ),
+                      ],
+                    );
+                  } else {
+                    return Column(
+                      children: [
+                        Text('Select or create a task', style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600)),
+                        DropMenu(
+                          controller: widget.controller,
+                          hint: 'Select Task',
+                          items: tasks.map((task) => task.title).toList(),
+                          onChanged: (value) {
+                            final index = tasks.indexWhere((task) => task.title == value);
+                            if (index != -1) widget.tasksController.selectTask(index, tasks[index]);
+                          },
+                        ),
+                      ],
+                    );
+                  }
+                }),
               ],
             ),
           ),

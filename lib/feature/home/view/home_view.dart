@@ -9,6 +9,8 @@ import 'package:farmodo/feature/navigation/navigation_controller.dart';
 import 'package:farmodo/feature/tasks/viewmodel/tasks_controller.dart';
 import 'package:farmodo/feature/tasks/viewmodel/timer_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -27,7 +29,7 @@ class _HomeViewState extends State<HomeView> {
     });
   }
   final timerController = getIt<TimerController>();
-  final tasksController = getIt<TasksController>();
+  final tasksController = Get.put(getIt<TasksController>());
   final navigationController = getIt<NavigationController>();
   @override
   Widget build(BuildContext context) {

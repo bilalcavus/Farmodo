@@ -129,52 +129,36 @@ class _AccountViewState extends State<AccountView> {
         Text(
           'Account',
           style: TextStyle(
-            color: AppColors.textPrimary,
-            fontSize: context.dynamicHeight(0.02),
-            fontWeight: FontWeight.w600,
+           color: AppColors.textPrimary,
+            fontSize: context.dynamicHeight(0.015),
+            fontWeight: FontWeight.w300,
           ),
         ),
         context.dynamicHeight(0.02).height,
-        Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(context.dynamicHeight(0.02)),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withAlpha(13),
-                blurRadius: context.dynamicHeight(0.012),
-                offset: Offset(0, context.dynamicHeight(0.002)),
-              ),
-            ],
-          ),
-          child: Column(
-            children: [
-              _buildSettingsItem(
-                icon: HugeIcons.strokeRoundedMoneyReceive01,
-                title: 'Profile Details',
-                onTap: () {},
-              ),
-              _buildDivider(),
-              _buildSettingsItem(
-                icon: HugeIcons.strokeRoundedZoomInArea,
-                title: 'Farmodo Area',
-                onTap: () {},
-              ),
-              _buildDivider(),
-              _buildSettingsItem(
-                icon: HugeIcons.strokeRoundedLanguageSkill,
-                title: 'Language',
-                onTap: () {},
-              ),
-              _buildDivider(),
-              _buildSettingsItem(
-                icon: HugeIcons.strokeRoundedCustomerSupport,
-                title: 'Support',
-                onTap: () {},
-                isLast: true,
-              ),
-            ],
-          ),
+        Column(
+          children: [
+            _buildSettingsItem(
+              icon: HugeIcons.strokeRoundedMoneyReceive01,
+              title: 'Profile Details',
+              onTap: () {},
+            ),
+            _buildSettingsItem(
+              icon: HugeIcons.strokeRoundedZoomInArea,
+              title: 'Farmodo Area',
+              onTap: () {},
+            ),
+            _buildSettingsItem(
+              icon: HugeIcons.strokeRoundedLanguageSkill,
+              title: 'Language',
+              onTap: () {},
+            ),
+            _buildSettingsItem(
+              icon: HugeIcons.strokeRoundedCustomerSupport,
+              title: 'Support',
+              onTap: () {},
+              isLast: true,
+            ),
+          ],
         ),
       ],
     );
@@ -188,71 +172,58 @@ class _AccountViewState extends State<AccountView> {
           'Preferences & Logout',
           style: TextStyle(
             color: AppColors.textPrimary,
-            fontSize: context.dynamicHeight(0.02),
-            fontWeight: FontWeight.w600,
+            fontSize: context.dynamicHeight(0.015),
+            fontWeight: FontWeight.w300,
           ),
         ),
         context.dynamicHeight(0.02).height,
-        Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(context.dynamicHeight(0.02)),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withAlpha(13),
-                blurRadius: context.dynamicHeight(0.012),
-                offset: Offset(0, context.dynamicHeight(0.002)),
-              ),
-            ],
-          ),
-          child: Column(
-            children: [
-              _buildSettingsItem(
-                icon: HugeIcons.strokeRoundedNotification02,
-                title: 'Notification',
-                trailing: Switch(
-                  value: isDarkMode,
-                  onChanged: (value) {
-                    
-                  },
-                  activeThumbColor: AppColors.textPrimary,
-                  inactiveThumbColor: Colors.grey[400],
-                  inactiveTrackColor: Colors.grey[300],
-                ),
-              ),
-              _buildDivider(),
-              _buildSettingsItem(
-                icon: HugeIcons.strokeRoundedDarkMode,
-                title: 'Dark Mode',
-                trailing: Switch(
-                  value: isDarkMode,
-                  onChanged: (value) {
-                    
-                  },
-                  activeThumbColor: AppColors.textPrimary,
-                  inactiveThumbColor: Colors.grey[400],
-                  inactiveTrackColor: Colors.grey[300],
-                ),
-              ),
-              kDebugMode ? 
-              _buildSettingsItem(
-                icon: Icons.bug_report,
-                title: 'Debug Gamification',
-                onTap: () => Get.to(() => const DebugGamificationView()),
-              ) : const SizedBox.shrink(),
-              _buildSettingsItem(
-                icon: HugeIcons.strokeRoundedLogout04,
-                title: 'Logout',
-                onTap: () async {
-                  await loginController.handleLogout();
-                  if (context.mounted && !_authService.isLoggedIn) {
-                    RouteHelper.pushAndCloseOther(context, const LoginView());
-                  }
+        Column(
+          children: [
+            _buildSettingsItem(
+              icon: HugeIcons.strokeRoundedNotification02,
+              title: 'Notification',
+              trailing: Switch(
+                value: isDarkMode,
+                onChanged: (value) {
+                  
                 },
-                isLast: true,
+                activeThumbColor: AppColors.textPrimary,
+                inactiveThumbColor: Colors.grey[400],
+                inactiveTrackColor: Colors.grey[300],
               ),
-            ],
-          ),
+            ),
+            _buildDivider(),
+            _buildSettingsItem(
+              icon: HugeIcons.strokeRoundedDarkMode,
+              title: 'Dark Mode',
+              trailing: Switch(
+                value: isDarkMode,
+                onChanged: (value) {
+                  
+                },
+                activeThumbColor: AppColors.textPrimary,
+                inactiveThumbColor: Colors.grey[400],
+                inactiveTrackColor: Colors.grey[300],
+              ),
+            ),
+            kDebugMode ? 
+            _buildSettingsItem(
+              icon: Icons.bug_report,
+              title: 'Debug Gamification',
+              onTap: () => Get.to(() => const DebugGamificationView()),
+            ) : const SizedBox.shrink(),
+            _buildSettingsItem(
+              icon: HugeIcons.strokeRoundedLogout04,
+              title: 'Logout',
+              onTap: () async {
+                await loginController.handleLogout();
+                if (context.mounted && !_authService.isLoggedIn) {
+                  RouteHelper.pushAndCloseOther(context, const LoginView());
+                }
+              },
+              isLast: true,
+            ),
+          ],
         ),
       ],
     );
@@ -284,17 +255,10 @@ class _AccountViewState extends State<AccountView> {
         ),
         child: Row(
           children: [
-            Container(
-              padding: EdgeInsets.all(context.dynamicHeight(0.01)),
-              decoration: BoxDecoration(
-                color: title == 'Logout' ? AppColors.danger.withAlpha(25) : AppColors.primary.withAlpha(25),
-                borderRadius: BorderRadius.circular(context.dynamicHeight(0.01)),
-              ),
-              child: Icon(
-                icon,
-                color: title == 'Logout' ? AppColors.danger : AppColors.textPrimary,
-                size: context.dynamicHeight(0.025),
-              ),
+            Icon(
+              icon,
+              color: title == 'Logout' ? AppColors.danger : AppColors.textPrimary,
+              size: context.dynamicHeight(0.028 ),
             ),
             context.dynamicWidth(0.04).width,
             Expanded(
@@ -302,15 +266,15 @@ class _AccountViewState extends State<AccountView> {
                 title,
                 style: TextStyle(
                   color: AppColors.textPrimary,
-                  fontSize: context.dynamicHeight(0.018),
+                  fontSize: context.dynamicHeight(0.016),
                   fontWeight: FontWeight.w400,
                 ),
               ),
             ),
             trailing ?? Icon(
               Icons.chevron_right,
-              color: AppColors.textSecondary,
-              size: context.dynamicHeight(0.025),
+              color: AppColors.textPrimary,
+              size: context.dynamicHeight(0.02),
             ),
           ],
         ),
