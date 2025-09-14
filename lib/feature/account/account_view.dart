@@ -61,14 +61,13 @@ class _AccountViewState extends State<AccountView> {
           children: [
             _buildUserProfileCard(),
             context.dynamicHeight(0.04).height,
-            // Show login button if not logged in
             if (!_authService.isLoggedIn) ...[
               _buildLoginPrompt(),
               context.dynamicHeight(0.04).height,
             ],
-            _buildTermsConditionSection(),
+            _authService.isLoggedIn ? _buildTermsConditionSection() : SizedBox.shrink(),
             context.dynamicHeight(0.03).height,
-            _buildAccountsSubscriptionSection(),
+            _buildAccountsSubscriptionSection(_authService),
           ],
         ),
       ),
@@ -147,11 +146,7 @@ class _AccountViewState extends State<AccountView> {
               title: 'Farmodo Area',
               onTap: () {},
             ),
-            _buildSettingsItem(
-              icon: HugeIcons.strokeRoundedLanguageSkill,
-              title: 'Language',
-              onTap: () {},
-            ),
+            
             _buildSettingsItem(
               icon: HugeIcons.strokeRoundedCustomerSupport,
               title: 'Support',
@@ -164,7 +159,7 @@ class _AccountViewState extends State<AccountView> {
     );
   }
 
-  Widget _buildAccountsSubscriptionSection() {
+  Widget _buildAccountsSubscriptionSection(AuthService authService) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -179,7 +174,13 @@ class _AccountViewState extends State<AccountView> {
         context.dynamicHeight(0.02).height,
         Column(
           children: [
+           
             _buildSettingsItem(
+              icon: HugeIcons.strokeRoundedLanguageSkill,
+              title: 'Language',
+              onTap: () {},
+            ),
+             _buildSettingsItem(
               icon: HugeIcons.strokeRoundedNotification02,
               title: 'Notification',
               trailing: Switch(
@@ -192,7 +193,6 @@ class _AccountViewState extends State<AccountView> {
                 inactiveTrackColor: Colors.grey[300],
               ),
             ),
-            _buildDivider(),
             _buildSettingsItem(
               icon: HugeIcons.strokeRoundedDarkMode,
               title: 'Dark Mode',
@@ -212,7 +212,7 @@ class _AccountViewState extends State<AccountView> {
               title: 'Debug Gamification',
               onTap: () => Get.to(() => const DebugGamificationView()),
             ) : const SizedBox.shrink(),
-            _buildSettingsItem(
+            authService.isLoggedIn ? _buildSettingsItem(
               icon: HugeIcons.strokeRoundedLogout04,
               title: 'Logout',
               onTap: () async {
@@ -222,7 +222,7 @@ class _AccountViewState extends State<AccountView> {
                 }
               },
               isLast: true,
-            ),
+            ) : SizedBox.shrink(),
           ],
         ),
       ],

@@ -3,6 +3,7 @@ import 'dart:developer' as developer;
 
 import 'package:farmodo/data/models/animal_model.dart';
 import 'package:flame/components.dart';
+import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 
@@ -21,11 +22,26 @@ class FarmGame extends FlameGame {
   List<FarmAnimal> farmAnimals = [];
   Function(FarmAnimal)? onAnimalTap;
   Function(List<FarmAnimal>)? onAnimalsReordered;
+  
+  // Test method for placement mode
+  void testPlacementMode() {
+    if (farmAnimals.isNotEmpty) {
+      developer.log('Testing placement mode with first animal', name: 'FarmGame');
+      enterPlacementMode(farmAnimals.first);
+    } else {
+      developer.log('No animals available for placement mode test', name: 'FarmGame');
+    }
+  }
 
   AnimalSprite? draggingAnimal;
   FarmAnimalSprite? draggingFarmAnimal;
   int? hoverRow;
   int? hoverCol;
+  
+  // Placement mode for repositioning animals
+  bool isInPlacementMode = false;
+  FarmAnimal? animalToPlace;
+  Function(FarmAnimal, int, int)? onAnimalPlaced;
 
   @override
   Color backgroundColor() => const Color(0x00000000); // Transparent - scaffold rengini kullan
@@ -623,17 +639,106 @@ class FarmGame extends FlameGame {
     }
   }
 
-  // Manual event handling methods
+  // Placement mode methods
+  void enterPlacementMode(FarmAnimal animal) {
+    developer.log('Entering placement mode for animal: ${animal.name}', name: 'FarmGame');
+    isInPlacementMode = true;
+    animalToPlace = animal;
+    
+    // Start blinking all tiles
+    int blinkingTiles = 0;
+    for (int r = 0; r < gridRows; r++) {
+      for (int c = 0; c < gridCols; c++) {
+        if (tiles.isNotEmpty && tiles.length > r && tiles[r].length > c) {
+          tiles[r][c].startBlinking();
+          blinkingTiles++;
+        }
+      }
+    }
+    developer.log('Started blinking $blinkingTiles tiles', name: 'FarmGame');
+  }
+  
+  void exitPlacementMode() {
+    developer.log('Exiting placement mode', name: 'FarmGame');
+    isInPlacementMode = false;
+    animalToPlace = null;
+    
+    // Stop blinking all tiles
+    for (int r = 0; r < gridRows; r++) {
+      for (int c = 0; c < gridCols; c++) {
+        if (tiles.isNotEmpty && tiles.length > r && tiles[r].length > c) {
+          tiles[r][c].stopBlinking();
+        }
+      }
+    }
+  }
+  
+  void placeAnimalAtGrid(int row, int col) {
+    if (!isInPlacementMode || animalToPlace == null) return;
+    
+    // Find the animal sprite to move
+    final animalSprite = children.whereType<FarmAnimalSprite>()
+        .where((sprite) => sprite.animal.id == animalToPlace!.id)
+        .firstOrNull;
+    
+    if (animalSprite != null) {
+      // Check if target position is occupied
+      final occupiedSprite = _getAnimalAtPosition(row, col);
+      if (occupiedSprite != null && occupiedSprite != animalSprite) {
+        // Swap positions
+        _swapAnimalPositions(animalSprite, occupiedSprite);
+      } else {
+        // Move to new position
+        _moveAnimalToPosition(animalSprite, row, col);
+      }
+      
+      // Notify callback
+      if (onAnimalPlaced != null) {
+        onAnimalPlaced!(animalToPlace!, row, col);
+      }
+    }
+    
+    // Exit placement mode
+    exitPlacementMode();
+  }
+
+  // FlameGame built-in event handlers - removed to use manual handling
+
+  // Manual event handling methods (kept for compatibility)
   void handleTapDown(Vector2 position) {
+    developer.log('Tap detected at position: $position, placement mode: $isInPlacementMode', name: 'FarmGame');
+    
+    if (isInPlacementMode) {
+      developer.log('In placement mode, checking grid tap', name: 'FarmGame');
+      // In placement mode, check if user tapped on a grid
+      if (isInsideGrid(position)) {
+        final tile = nearestTile(position);
+        developer.log('Grid tap detected at (${tile.row}, ${tile.col})', name: 'FarmGame');
+        placeAnimalAtGrid(tile.row, tile.col);
+      } else {
+        // Tapped outside grid, exit placement mode
+        developer.log('Tapped outside grid, exiting placement mode', name: 'FarmGame');
+        exitPlacementMode();
+      }
+      return;
+    }
+    
     final hitSprite = _hitFarmAnimal(position);
     if (hitSprite != null && draggingFarmAnimal == null) {
+      developer.log('Animal tap detected: ${hitSprite.animal.name}', name: 'FarmGame');
       if (onAnimalTap != null) {
         onAnimalTap!(hitSprite.animal);
       }
     }
   }
 
+  // Drag event handlers - removed to use manual handling
+
+  // Manual event handling methods (kept for compatibility)
   void handleDragStart(Vector2 position) {
+    // Disable dragging when in placement mode
+    if (isInPlacementMode) return;
+    
     final hitSprite = _hitFarmAnimal(position);
     if (hitSprite != null) {
       startDragAnimal(hitSprite);
@@ -641,12 +746,18 @@ class FarmGame extends FlameGame {
   }
 
   void handleDragUpdate(Vector2 position) {
+    // Disable dragging when in placement mode
+    if (isInPlacementMode) return;
+    
     if (draggingFarmAnimal != null) {
       updateDragAnimal(position);
     }
   }
 
   void handleDragEnd(Vector2 position) {
+    // Disable dragging when in placement mode
+    if (isInPlacementMode) return;
+    
     if (draggingFarmAnimal != null) {
       endDragAnimal();
     }
@@ -682,6 +793,15 @@ class TileComponent extends PositionComponent {
   void triggerPulse() {
     _pulseTime = 0.35; // quick flash after drop
   }
+  
+  void startBlinking() {
+    isHighlighted = true;
+  }
+  
+  void stopBlinking() {
+    isHighlighted = false;
+    _blinkTime = 0;
+  }
 
   @override
   void update(double dt) {
@@ -712,8 +832,9 @@ class TileComponent extends PositionComponent {
     // Tile'lar transparan - grass block'lar alttan görünsün
     Color base = const Color(0xFF4CAF50).withValues(alpha: 0.3); // Transparan yeşil
     if (isHighlighted) {
-      final t = (math.sin(_blinkTime * 8) + 1) / 2; // 0..1
-      base = Color.lerp(base, const Color(0xFF66BB6A).withValues(alpha: 0.6), t * 0.7)!;
+      final t = (math.sin(_blinkTime * 6) + 1) / 2; // 0..1, daha yavaş yanıp sönme
+      // Placement mode'da daha belirgin yanıp sönme
+      base = Color.lerp(base, const Color(0xFFFFEB3B).withValues(alpha: 0.8), t * 0.9)!; // Sarı yanıp sönme
     }
     if (_pulseTime > 0) {
       final p = _pulseTime / 0.35; // 1..0

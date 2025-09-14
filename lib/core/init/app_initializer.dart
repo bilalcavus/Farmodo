@@ -23,9 +23,9 @@ final class AppInitializer {
     };
     
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-    statusBarColor: Colors.transparent,
-    statusBarIconBrightness: Brightness.dark,
-    systemNavigationBarColor: Colors.transparent,
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.dark,
+      systemNavigationBarColor: Colors.transparent,
   ));
     await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
     await setupDependencies();
