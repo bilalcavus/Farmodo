@@ -9,6 +9,8 @@ import 'package:farmodo/feature/tasks/viewmodel/timer_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:hugeicons/hugeicons.dart';
+import 'package:iconsax/iconsax.dart';
 
 class TimeStartButton extends StatefulWidget {
   const TimeStartButton({
@@ -35,63 +37,11 @@ class _TimeStartButtonState extends State<TimeStartButton> {
         return Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          
-          // ElevatedButton(
-          //   style: ElevatedButton.styleFrom(
-          //     backgroundColor: timerController.isRunning.value
-          //         ? AppColors.danger
-          //         : tasksController.selctedTaskIndex.value == -1
-          //           ? AppColors.textPrimary
-          //           : AppColors.primary,
-          //     foregroundColor: Colors.white,
-          //     shape: RoundedRectangleBorder(
-          //       borderRadius: BorderRadius.circular(12),
-          //     ),
-          //     padding: const EdgeInsets.symmetric(horizontal: 44, vertical: 10),
-          //     elevation: 0,
-          //   ),
-          //   onPressed: timerController.isRunning.value
-          //       ? () => timerController.pauseTimer()
-          //       : () {
-          //           if (selectedIndex == -1 || 
-          //               tasksController.activeUserTasks.isEmpty ||
-          //               selectedIndex >= tasksController.activeUserTasks.length) {
-          //             Get.to(AddTaskView());
-          //             return;
-          //           }
-                    
-          //           if (timerController.isOnBreak.value) {
-          //             timerController.startBreakTimer();
-          //           } else {
-          //             if (timerController.totalSeconds.value == 0 ||
-          //                 timerController.secondsRemaining.value == timerController.totalSeconds.value) {
-          //               tasksController.selectTask(selectedIndex, tasksController.activeUserTasks[selectedIndex]);
-          //             }
-          //             timerController.startTimer();
-          //           }
-          //         },
-          //   child: Text(
-          //     timerController.isRunning.value
-          //         ? 'Pause'
-          //         : (timerController.isOnBreak.value ? 'Continue Break' : 'Start' ),
-          //     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-          //           color: Colors.white,
-          //           fontWeight: FontWeight.w700,
-          //         ),
-          //   ),
-          // ),
-          
           if (widget.tasksController.selctedTaskIndex.value != -1) ...[
             SizedBox(width: context.dynamicWidth(0.03)),
-            CircleAvatar(
-              radius: context.dynamicHeight(0.026),
-              backgroundColor: Colors.grey.shade200,
-              child: Icon(
-                Icons.refresh_rounded,
-                color: Colors.black87,
-                size: context.dynamicHeight(0.03),
-              ),
-            ).onTap(() => widget.timerController.resetTimer()),
+            ActionButton(
+              onPressed: widget.timerController.resetTimer,
+              icon: Icon(HugeIcons.strokeRoundedRefresh, color: Colors.black, size: context.dynamicHeight(0.02)))
           ],
           context.dynamicWidth(0.03).width,
           PlayButton(
@@ -101,13 +51,9 @@ class _TimeStartButtonState extends State<TimeStartButton> {
             shake: () => widget.tasksController.triggerShake(),
           ),
           context.dynamicWidth(0.03).width,
-          CircleAvatar(
-            backgroundColor: Colors.grey.shade200,
-            radius: context.dynamicHeight(0.026),
-            child: IconButton(
-              onPressed: () => toggleFullScreen(context),
-              icon: Icon(Icons.fullscreen_rounded, color: Colors.black87, size: context.dynamicHeight(0.03),)),
-          )
+          ActionButton(
+            onPressed: () => toggleFullScreen(context),
+            icon:  Icon(HugeIcons.strokeRoundedFullScreen, color: Colors.black87, size: context.dynamicHeight(0.025),))
         ],
       );
       }),
@@ -128,6 +74,32 @@ class _TimeStartButtonState extends State<TimeStartButton> {
       ]);
       await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
     });
+  }
+}
+
+class ActionButton extends StatelessWidget {
+  const ActionButton({
+    super.key, required this.onPressed, required this.icon,
+  });
+
+  final VoidCallback onPressed;
+  final Icon icon;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(context.dynamicHeight(0.05)),
+        color: Colors.transparent,
+        border: Border.all(
+          color: Colors.grey.shade300,
+          width: 2
+        )
+      ),
+      child: IconButton(
+        onPressed: () => onPressed(),
+        icon: icon,
+    ));
   }
 }
 

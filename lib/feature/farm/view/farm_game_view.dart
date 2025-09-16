@@ -37,6 +37,10 @@ class _FarmGameViewState extends State<FarmGameView> {
     super.initState();
     farmController = Get.put<FarmController>(getIt<FarmController>());
     farmGame = FarmGame();
+
+    if (authService.isLoggedIn) {
+      farmController.loadAnimals();
+    }
     
     farmGame.onAnimalTap = (animal) {
       showModalBottomSheet(
@@ -48,7 +52,6 @@ class _FarmGameViewState extends State<FarmGameView> {
     };
     
     farmGame.onAnimalsReordered = (reorderedAnimals) {
-      // Update the controller's animals list to match the new order
       farmController.animals.assignAll(reorderedAnimals);
     };
     

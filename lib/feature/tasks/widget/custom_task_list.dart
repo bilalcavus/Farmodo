@@ -240,10 +240,11 @@ class CustomTaskList extends StatelessWidget {
       return;
     }
     
-    if (timerController.totalSeconds.value == 0 ||
-        timerController.secondsRemaining.value == timerController.totalSeconds.value) {
-      taskController.selectTask(index, task);
-    }
+    // if (timerController.totalSeconds.value == 0 ||
+    //     timerController.secondsRemaining.value == timerController.totalSeconds.value) {
+    //   taskController.selectTask(index, task);
+    // }
+    taskController.selectTask(index, task);
     timerController.startTimer();
   }
 

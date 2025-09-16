@@ -75,49 +75,34 @@ class _AccountViewState extends State<AccountView> {
   }
 
   Widget _buildUserProfileCard() {
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.all(context.dynamicHeight(0.02)),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(context.dynamicHeight(0.03)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withAlpha(13),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: context.dynamicWidth(0.015)),
-            child: Text(
-              _authService.firebaseUser?.displayName ?? 'Guest User',
-              style: TextStyle(
-                color: AppColors.textPrimary,
-                fontSize: context.dynamicHeight(0.022),
-                fontWeight: FontWeight.w600,
-              ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: context.dynamicWidth(0.015)),
+          child: Text(
+            _authService.firebaseUser?.displayName ?? 'Guest User',
+            style: TextStyle(
+              color: AppColors.textPrimary,
+              fontSize: context.dynamicHeight(0.022),
+              fontWeight: FontWeight.w600,
             ),
           ),
-          context.dynamicHeight(0.005).height,
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: context.dynamicWidth(0.015)),
-            child: Text(
-              '@${_authService.currentUser?.email != null ? _authService.currentUser!.email.split('@')[0] : 'guest'}',
-              style: TextStyle(
-                color: AppColors.textSecondary,
-                fontSize: context.dynamicHeight(0.017),
-              ),
+        ),
+        context.dynamicHeight(0.005).height,
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: context.dynamicWidth(0.015)),
+          child: Text(
+            '@${_authService.currentUser?.email != null ? _authService.currentUser!.email.split('@')[0] : 'guest'}',
+            style: TextStyle(
+              color: AppColors.textSecondary,
+              fontSize: context.dynamicHeight(0.017),
             ),
           ),
-          context.dynamicHeight(0.005).height,
-          LevelBar(authService: _authService)
-        ],
-      ),
+        ),
+        context.dynamicHeight(0.015).height,
+        LevelBar(authService: _authService)
+      ],
     );
   }
 
@@ -194,7 +179,7 @@ class _AccountViewState extends State<AccountView> {
               ),
             ),
             _buildSettingsItem(
-              icon: HugeIcons.strokeRoundedDarkMode,
+              icon: Icons.sunny ,
               title: 'Dark Mode',
               trailing: Switch(
                 value: isDarkMode,

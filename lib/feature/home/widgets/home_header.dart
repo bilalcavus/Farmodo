@@ -54,63 +54,53 @@ class LevelBar extends StatelessWidget {
     final int xpIntoLevel = xp % 100;
     final double progress = (xpIntoLevel.clamp(0, 100)) / 100.0;
 
-    return Container(
-      height: context.dynamicHeight(0.05),
-      width: context.dynamicWidth(0.85),
-      padding: EdgeInsets.symmetric(horizontal: context.dynamicHeight(0.012)),
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(context.dynamicHeight(0.024)),
-        border: Border.all(color: AppColors.border),
-      ),
-      child: Row(
-        children: [
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: context.dynamicWidth(0.02), vertical: context.dynamicHeight(0.005)),
-            decoration: BoxDecoration(
-              color: AppColors.danger.withAlpha(25),
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: Text(
-              'Lv $level',
-              style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                    color: AppColors.danger,
-                    fontWeight: FontWeight.w700,
-                  ),
-            ),
+    return Row(
+      children: [
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: context.dynamicWidth(0.02), vertical: context.dynamicHeight(0.005)),
+          decoration: BoxDecoration(
+            color: AppColors.danger.withAlpha(25),
+            borderRadius: BorderRadius.circular(16),
           ),
-          context.dynamicWidth(0.015).width,
-          SizedBox(
-            width: context.dynamicWidth(0.45),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: Stack(
-                children: [
-                  Container(
-                    height: 10,
-                    color: AppColors.border,
-                  ),
-                  FractionallySizedBox(
-                    widthFactor: progress,
-                    child: Container(
-                      height: 10,
-                      color: AppColors.secondary,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          SizedBox(width: 12),
-          Text(
-            '$xpIntoLevel/100',
-            style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                  color: AppColors.textSecondary,
-                  fontWeight: FontWeight.w600,
+          child: Text(
+            'Lv $level',
+            style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                  color: AppColors.danger,
+                  fontWeight: FontWeight.w700,
                 ),
           ),
-        ],
-      ),
+        ),
+        context.dynamicWidth(0.015).width,
+        SizedBox(
+          width: context.dynamicWidth(0.45),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: Stack(
+              children: [
+                Container(
+                  height: 10,
+                  color: AppColors.border,
+                ),
+                FractionallySizedBox(
+                  widthFactor: progress,
+                  child: Container(
+                    height: 10,
+                    color: AppColors.secondary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        SizedBox(width: 12),
+        Text(
+          '$xpIntoLevel/100',
+          style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                color: AppColors.textSecondary,
+                fontWeight: FontWeight.w600,
+              ),
+        ),
+      ],
     );
   }
 }

@@ -33,7 +33,6 @@ class _StoreViewState extends State<StoreView> {
     required String rewardId,
     required String name,
   }) async {
-    // Check if user is logged in before attempting purchase
     if (!authService.isLoggedIn) {
       _showLoginDialog();
       return;

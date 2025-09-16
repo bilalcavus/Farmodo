@@ -11,7 +11,6 @@ import 'package:farmodo/feature/auth/login/widget/login_button.dart';
 import 'package:farmodo/feature/auth/login/widget/sign_options_section.dart';
 import 'package:farmodo/feature/auth/login/widget/social_network_login.dart';
 import 'package:farmodo/feature/auth/register/view/register_view.dart';
-import 'package:farmodo/feature/farm/viewmodel/farm_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hugeicons/hugeicons.dart';
@@ -25,7 +24,6 @@ class LoginView extends StatefulWidget {
 
 class _LoginViewState extends State<LoginView> {
   LoginController loginController = getIt<LoginController>();
-  final farmController = Get.put(getIt<FarmController>());
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -75,7 +73,7 @@ class _LoginViewState extends State<LoginView> {
                 ),
                 
                 SizedBox(height: context.dynamicHeight(.02)),
-                LoginButton(loginController: loginController, farmController: farmController),
+                LoginButton(loginController: loginController,),
                 SizedBox(height: context.dynamicHeight(.04)),
                 SignOptionsSection(
                   leftText: "Don't have an account?",

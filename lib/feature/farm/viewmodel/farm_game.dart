@@ -7,7 +7,8 @@ import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 
-class FarmGame extends FlameGame {
+
+class FarmGame extends FlameGame with TapCallbacks, DragCallbacks {
   static const int gridCols = 8;
   static const int gridRows = 6;
   static const double tileSize = 80; // base square size before isometric transform
@@ -704,6 +705,32 @@ class FarmGame extends FlameGame {
 
   // FlameGame built-in event handlers - removed to use manual handling
 
+  // Override Flame's onTapDown method
+  @override
+  void onTapDown(TapDownEvent event) {
+    handleTapDown(event.localPosition);
+  }
+
+  // Override Flame's drag methods
+  @override
+  void onDragStart(DragStartEvent event) {
+    super.onDragStart(event);
+    handleDragStart(event.localPosition);
+  }
+
+  @override
+  void onDragUpdate(DragUpdateEvent event) {
+    handleDragUpdate(event.localDelta + event.localStartPosition);
+  }
+
+  @override
+  void onDragEnd(DragEndEvent event) {
+    // Use the last known dragging position or set a default (e.g., Vector2.zero())
+    // You may want to store the last drag position in a variable during onDragUpdate
+    // For now, we'll call handleDragEnd with Vector2.zero()
+    handleDragEnd(Vector2.zero());
+  }
+
   // Manual event handling methods (kept for compatibility)
   void handleTapDown(Vector2 position) {
     developer.log('Tap detected at position: $position, placement mode: $isInPlacementMode', name: 'FarmGame');
@@ -736,12 +763,16 @@ class FarmGame extends FlameGame {
 
   // Manual event handling methods (kept for compatibility)
   void handleDragStart(Vector2 position) {
+    developer.log('Drag start at position: $position, placement mode: $isInPlacementMode', name: 'FarmGame');
     // Disable dragging when in placement mode
     if (isInPlacementMode) return;
     
     final hitSprite = _hitFarmAnimal(position);
     if (hitSprite != null) {
+      developer.log('Starting drag for animal: ${hitSprite.animal.name}', name: 'FarmGame');
       startDragAnimal(hitSprite);
+    } else {
+      developer.log('No animal found at drag start position', name: 'FarmGame');
     }
   }
 
@@ -750,15 +781,18 @@ class FarmGame extends FlameGame {
     if (isInPlacementMode) return;
     
     if (draggingFarmAnimal != null) {
+      developer.log('Drag update: moving animal to $position', name: 'FarmGame');
       updateDragAnimal(position);
     }
   }
 
   void handleDragEnd(Vector2 position) {
+    developer.log('Drag end at position: $position', name: 'FarmGame');
     // Disable dragging when in placement mode
     if (isInPlacementMode) return;
     
     if (draggingFarmAnimal != null) {
+      developer.log('Ending drag for animal: ${draggingFarmAnimal!.animal.name}', name: 'FarmGame');
       endDragAnimal();
     }
   }
@@ -1293,6 +1327,16 @@ class FarmAnimalSprite extends PositionComponent {
     }
     path.close();
     canvas.drawPath(path, paint);
+  }
+
+  @override
+  void onTapDown(TapDownEvent event) {
+    // Get the parent game and trigger the animal tap callback
+    final game = findGame();
+    if (game is FarmGame && game.onAnimalTap != null) {
+      developer.log('FarmAnimalSprite tapped: ${animal.name}', name: 'FarmGame');
+      game.onAnimalTap!(animal);
+    }
   }
 
 }
