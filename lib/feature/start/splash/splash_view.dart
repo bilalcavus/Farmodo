@@ -1,7 +1,6 @@
 import 'package:farmodo/core/di/injection.dart';
 import 'package:farmodo/core/utility/extension/route_helper.dart';
 import 'package:farmodo/data/services/auth_service.dart';
-import 'package:farmodo/feature/auth/login/view/login_view.dart';
 import 'package:farmodo/feature/navigation/app_navigation.dart';
 import 'package:farmodo/feature/tasks/viewmodel/tasks_controller.dart';
 import 'package:flutter/material.dart';
@@ -39,7 +38,6 @@ class _SplashViewState extends State<SplashView> {
       await _authService.initializeAuthState();
       await Future.delayed(const Duration(seconds: 2));
       
-      // Always navigate to main app, regardless of login status
       if (_authService.isLoggedIn) {
         await _initializeUser();
       }
@@ -48,7 +46,6 @@ class _SplashViewState extends State<SplashView> {
         RouteHelper.pushAndCloseOther(context, AppNavigation());
       }
     } catch (e) {
-      // Even on error, navigate to main app
       if (mounted) {
         RouteHelper.pushAndCloseOther(context, AppNavigation());
       }

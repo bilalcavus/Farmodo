@@ -5,6 +5,7 @@ import 'package:farmodo/feature/home/widgets/task_selector_box.dart';
 import 'package:farmodo/feature/tasks/viewmodel/tasks_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:kartal/kartal.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 
 class CurrentTaskProgress extends StatefulWidget {
@@ -49,11 +50,12 @@ class _CurrentTaskProgressState extends State<CurrentTaskProgress> {
       
       return Container(
         margin: EdgeInsets.symmetric(horizontal: context.dynamicWidth(0.04)),
-        padding: EdgeInsets.all(context.dynamicHeight(0.02)),
+        padding: context.padding.normal,
         decoration: BoxDecoration(
           color: AppColors.surface,
-          borderRadius: BorderRadius.circular(context.dynamicHeight(0.03)),
+          borderRadius: context.border.normalBorderRadius,
           border: Border.all(color: AppColors.border),
+          
           boxShadow: [
             BoxShadow(
               color: Colors.black.withAlpha(15),

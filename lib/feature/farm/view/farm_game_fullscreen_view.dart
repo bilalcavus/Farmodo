@@ -1,7 +1,7 @@
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/core/utility/extension/ontap_extension.dart';
 import 'package:farmodo/data/models/animal_model.dart';
-import 'package:farmodo/feature/farm/view/farm_view.dart';
+import 'package:farmodo/feature/farm/view/animal_status_popup.dart';
 import 'package:farmodo/feature/farm/viewmodel/farm_controller.dart';
 import 'package:farmodo/feature/farm/viewmodel/farm_game.dart';
 import 'package:flame/game.dart' hide Matrix4;
@@ -33,11 +33,13 @@ class _FarmGameFullscreenViewState extends State<FarmGameFullscreenView> {
     farmGame = FarmGame();
     
     farmGame.onAnimalTap = (animal) {
-      showModalBottomSheet(
+      showDialog(
         context: context,
-        isScrollControlled: true,
-        backgroundColor: Colors.transparent,
-        builder: (context) => AnimalDetailSheet(animal: animal),
+        barrierDismissible: true,
+        builder: (context) => AnimalStatusPopup(
+          animal: animal,
+          farmController: farmController,
+        ),
       );
     };
     

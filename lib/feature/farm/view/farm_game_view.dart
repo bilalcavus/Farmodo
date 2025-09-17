@@ -10,6 +10,7 @@ import 'package:farmodo/feature/farm/view/farm_game_fullscreen_view.dart';
 import 'package:farmodo/feature/farm/viewmodel/farm_controller.dart';
 import 'package:farmodo/feature/farm/viewmodel/farm_game.dart';
 import 'package:farmodo/feature/farm/widget/animal_card.dart';
+import 'package:farmodo/feature/farm/view/animal_status_popup.dart';
 import 'package:farmodo/feature/gamification/view/gamification_view.dart';
 import 'package:farmodo/feature/store/store_view.dart';
 import 'package:farmodo/feature/tasks/view/add_task_view.dart';
@@ -43,11 +44,13 @@ class _FarmGameViewState extends State<FarmGameView> {
     }
     
     farmGame.onAnimalTap = (animal) {
-      showModalBottomSheet(
+      showDialog(
         context: context,
-        isScrollControlled: true,
-        backgroundColor: Colors.transparent,
-        builder: (context) => AnimalDetailSheet(animal: animal),
+        barrierDismissible: true,
+        builder: (context) => AnimalStatusPopup(
+          animal: animal,
+          farmController: farmController,
+        ),
       );
     };
     
@@ -92,7 +95,7 @@ class _FarmGameViewState extends State<FarmGameView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: const Color.fromARGB(255, 44, 82, 44),
       body: SafeArea(
         child: Column(
           children: [

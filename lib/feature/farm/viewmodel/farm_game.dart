@@ -8,11 +8,12 @@ import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 
 
-class FarmGame extends FlameGame with TapCallbacks, DragCallbacks {
+class FarmGame extends FlameGame {
   static const int gridCols = 8;
   static const int gridRows = 6;
   static const double tileSize = 80; // base square size before isometric transform
   static const double worldScale = 1.2; // overall world scale
+  static final Vector2 animalOffset = Vector2(-30, -15); // Animal positioning offset
 
   Vector2? gridOrigin; // top center of the diamond
   List<List<TileComponent>> tiles = [];
@@ -166,8 +167,8 @@ class FarmGame extends FlameGame with TapCallbacks, DragCallbacks {
       
       if (row < gridRows && col < gridCols) {
         final tilePosition = isoPositionOf(row, col);
-        // Hayvanı tile'ın tam üstüne yerleştir (biraz yukarı)
-        final animalPosition = Vector2(tilePosition.x, tilePosition.y - 15);
+        // Hayvanı tile'ın tam üstüne yerleştir
+        final animalPosition = tilePosition + animalOffset;
         
         // Hayvan ID'sine göre sprite bul (önce imageUrl'den, sonra asset'ten)
         Sprite? animalSprite;
@@ -576,8 +577,8 @@ class FarmGame extends FlameGame with TapCallbacks, DragCallbacks {
     animal2.gridCol = temp1Col;
     
     // Update visual positions
-    animal1.position = isoPositionOf(temp2Row, temp2Col) + Vector2(0, -15);
-    animal2.position = isoPositionOf(temp1Row, temp1Col) + Vector2(0, -15);
+    animal1.position = isoPositionOf(temp2Row, temp2Col) + animalOffset;
+    animal2.position = isoPositionOf(temp1Row, temp1Col) + animalOffset;
     
     // Trigger tile pulse effects
     if (tiles.isNotEmpty && tiles.length > temp2Row && tiles[temp2Row].length > temp2Col) {
@@ -599,7 +600,7 @@ class FarmGame extends FlameGame with TapCallbacks, DragCallbacks {
     animal.gridCol = col;
     
     // Update visual position
-    animal.position = isoPositionOf(row, col) + Vector2(0, -15);
+    animal.position = isoPositionOf(row, col) + animalOffset;
     
     // Trigger tile pulse effect
     if (tiles.isNotEmpty && tiles.length > row && tiles[row].length > col) {
@@ -615,7 +616,7 @@ class FarmGame extends FlameGame with TapCallbacks, DragCallbacks {
       developer.log('Returning animal ${draggingFarmAnimal!.animal.name} to original position', name: 'FarmGame');
       final originalRow = draggingFarmAnimal!.gridRow!;
       final originalCol = draggingFarmAnimal!.gridCol!;
-      draggingFarmAnimal!.position = isoPositionOf(originalRow, originalCol) + Vector2(0, -15);
+      draggingFarmAnimal!.position = isoPositionOf(originalRow, originalCol) + animalOffset;
     }
   }
 
@@ -703,33 +704,8 @@ class FarmGame extends FlameGame with TapCallbacks, DragCallbacks {
     exitPlacementMode();
   }
 
-  // FlameGame built-in event handlers - removed to use manual handling
+  
 
-  // Override Flame's onTapDown method
-  @override
-  void onTapDown(TapDownEvent event) {
-    handleTapDown(event.localPosition);
-  }
-
-  // Override Flame's drag methods
-  @override
-  void onDragStart(DragStartEvent event) {
-    super.onDragStart(event);
-    handleDragStart(event.localPosition);
-  }
-
-  @override
-  void onDragUpdate(DragUpdateEvent event) {
-    handleDragUpdate(event.localDelta + event.localStartPosition);
-  }
-
-  @override
-  void onDragEnd(DragEndEvent event) {
-    // Use the last known dragging position or set a default (e.g., Vector2.zero())
-    // You may want to store the last drag position in a variable during onDragUpdate
-    // For now, we'll call handleDragEnd with Vector2.zero()
-    handleDragEnd(Vector2.zero());
-  }
 
   // Manual event handling methods (kept for compatibility)
   void handleTapDown(Vector2 position) {
@@ -760,6 +736,7 @@ class FarmGame extends FlameGame with TapCallbacks, DragCallbacks {
   }
 
   // Drag event handlers - removed to use manual handling
+
 
   // Manual event handling methods (kept for compatibility)
   void handleDragStart(Vector2 position) {
@@ -1119,7 +1096,7 @@ class AnimalSprite extends PositionComponent {
   }
 }
 
-class FarmAnimalSprite extends PositionComponent {
+class FarmAnimalSprite extends PositionComponent with TapCallbacks {
   final FarmAnimal animal;
   final Sprite? animalSprite;
   int? gridRow;
@@ -1149,6 +1126,18 @@ class FarmAnimalSprite extends PositionComponent {
       height: size.y,
     );
     return rect.contains(Offset(point.x, point.y));
+  }
+
+  @override
+  bool onTapDown(TapDownEvent event) {
+    final farmGame = parent as FarmGame?;
+    if (farmGame != null) {
+      developer.log('FarmAnimalSprite tap detected: ${animal.name}', name: 'FarmGame');
+      if (farmGame.onAnimalTap != null) {
+        farmGame.onAnimalTap!(animal);
+      }
+    }
+    return true;
   }
 
   @override
@@ -1329,15 +1318,7 @@ class FarmAnimalSprite extends PositionComponent {
     canvas.drawPath(path, paint);
   }
 
-  @override
-  void onTapDown(TapDownEvent event) {
-    // Get the parent game and trigger the animal tap callback
-    final game = findGame();
-    if (game is FarmGame && game.onAnimalTap != null) {
-      developer.log('FarmAnimalSprite tapped: ${animal.name}', name: 'FarmGame');
-      game.onAnimalTap!(animal);
-    }
-  }
+
 
 }
 
