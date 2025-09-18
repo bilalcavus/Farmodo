@@ -1,7 +1,9 @@
 import 'package:farmodo/core/di/injection.dart';
+import 'package:farmodo/core/services/preferences_service.dart';
 import 'package:farmodo/core/utility/extension/route_helper.dart';
 import 'package:farmodo/data/services/auth_service.dart';
 import 'package:farmodo/feature/navigation/app_navigation.dart';
+import 'package:farmodo/feature/start/onboard/onboard_screen.dart';
 import 'package:farmodo/feature/tasks/viewmodel/tasks_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
@@ -16,6 +18,7 @@ class SplashView extends StatefulWidget {
 class _SplashViewState extends State<SplashView> {
    final AuthService _authService = getIt<AuthService>();
    final TasksController taskController = getIt<TasksController>();
+   final PreferencesService _prefsService = getIt<PreferencesService>();
   @override
   void initState() {
     super.initState();
@@ -43,11 +46,19 @@ class _SplashViewState extends State<SplashView> {
       }
       
       if (mounted) {
-        RouteHelper.pushAndCloseOther(context, AppNavigation());
+        if (_prefsService.isOnboardingCompleted) {
+          RouteHelper.pushAndCloseOther(context, AppNavigation());
+        } else {
+          RouteHelper.pushAndCloseOther(context, OnboardScreen());
+        }
       }
     } catch (e) {
       if (mounted) {
-        RouteHelper.pushAndCloseOther(context, AppNavigation());
+        if (_prefsService.isOnboardingCompleted) {
+          RouteHelper.pushAndCloseOther(context, AppNavigation());
+        } else {
+          RouteHelper.pushAndCloseOther(context, OnboardScreen());
+        }
       }
     }
   }

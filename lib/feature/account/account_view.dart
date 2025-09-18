@@ -5,16 +5,17 @@ import 'package:farmodo/core/utility/extension/ontap_extension.dart';
 import 'package:farmodo/core/utility/extension/route_helper.dart';
 import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
 import 'package:farmodo/data/services/auth_service.dart';
+import 'package:farmodo/data/services/firestore_service.dart';
 import 'package:farmodo/feature/auth/login/view/login_view.dart';
 import 'package:farmodo/feature/auth/login/viewmodel/login_controller.dart';
 import 'package:farmodo/feature/gamification/view/debug_gamification_view.dart';
-import 'package:farmodo/feature/home/widgets/home_header.dart';
 import 'package:farmodo/feature/navigation/navigation_controller.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:kartal/kartal.dart';
 
 class AccountView extends StatefulWidget {
   const AccountView({super.key});
@@ -25,18 +26,64 @@ class AccountView extends StatefulWidget {
 
 class _AccountViewState extends State<AccountView> {
   final AuthService _authService = AuthService();
-  User? user;
+  final FirestoreService _firestoreService = FirestoreService();
   bool isDarkMode = false;
+  bool isLoadingStats = true;
+  int tasksCompleted = 0;
+  int totalXp = 0;
+  int daysActive = 0;
+  String joinedYearText = '';
+  String handleText = '@guest';
+
   final loginController = getIt<LoginController>();
   final navigationController = getIt<NavigationController>();
 
   @override
   void initState() {
     super.initState();
-    _authService.loadCurrentUser();
+    _authService.loadCurrentUser().then((_) => _loadProfileStats());
   }
 
- 
+  Future<void> _loadProfileStats() async {
+    if (!_authService.isLoggedIn) {
+      setState(() {
+        totalXp = 0;
+        tasksCompleted = 0;
+        daysActive = 0;
+        joinedYearText = '';
+        handleText = '@guest';
+        isLoadingStats = false;
+      });
+      return;
+    }
+
+    await _authService.fetchAndSetCurrentUser();
+    final user = _authService.currentUser;
+
+    int computedTasks = 0;
+    bool first = true;
+    while (true) {
+      final items = await _firestoreService.getCompletedTask(loadMore: !first);
+      computedTasks += items.length;
+      first = false;
+      if (items.length < 10) break;
+    }
+
+    final createdAt = user?.createdAt;
+    final joinedYear = createdAt != null ? createdAt.year.toString() : '';
+    final computedDays = createdAt != null
+        ? DateTime.now().difference(createdAt).inDays.clamp(0, 100000)
+        : 0;
+
+    setState(() {
+      totalXp = user?.xp ?? 0;
+      tasksCompleted = computedTasks;
+      daysActive = computedDays;
+      joinedYearText = joinedYear;
+      handleText = '@${_authService.firebaseUser?.email?.split('@').first ?? 'guest'}';
+      isLoadingStats = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,14 +91,7 @@ class _AccountViewState extends State<AccountView> {
       backgroundColor: AppColors.background,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        title: Text(
-          'Profile',
-          style: TextStyle(
-            color: AppColors.textPrimary,
-            fontSize: context.dynamicHeight(0.022),
-            fontWeight: FontWeight.w600,
-          ),
-        ),
+        title: Text('Profile', style: TextStyle(color: AppColors.textPrimary, fontSize: context.dynamicHeight(0.022), fontWeight: FontWeight.w600)),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -59,54 +99,126 @@ class _AccountViewState extends State<AccountView> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildUserProfileCard(),
+            _buildHeaderSection(),
             context.dynamicHeight(0.04).height,
             if (!_authService.isLoggedIn) ...[
               _buildLoginPrompt(),
               context.dynamicHeight(0.04).height,
             ],
-            _authService.isLoggedIn ? _buildTermsConditionSection() : SizedBox.shrink(),
+            if (_authService.isLoggedIn) _buildAccountSection(),
             context.dynamicHeight(0.03).height,
-            _buildAccountsSubscriptionSection(_authService),
+            _buildPreferencesSection(_authService),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildUserProfileCard() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: context.dynamicWidth(0.015)),
-          child: Text(
-            _authService.firebaseUser?.displayName ?? 'Guest User',
+  Widget _buildHeaderSection() {
+    final user = _authService.firebaseUser;
+    final displayName = _authService.currentUser?.displayName.isNotEmpty == true
+        ? _authService.currentUser!.displayName
+        : (_authService.firebaseUser?.displayName ?? 'Guest User');
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.background,
+        borderRadius: context.border.highBorderRadius,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withAlpha(25),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          context.dynamicHeight(0.01).height,
+          Center(
+            child: UserAvatar(user: user, fontSize: 16, radius: context.dynamicHeight(0.05))
+          ),
+          context.dynamicHeight(0.02).height,
+          Text(
+            displayName,
             style: TextStyle(
               color: AppColors.textPrimary,
-              fontSize: context.dynamicHeight(0.022),
-              fontWeight: FontWeight.w600,
+              fontSize: context.dynamicHeight(0.028),
+              fontWeight: FontWeight.w700,
             ),
+            textAlign: TextAlign.center,
+          ),
+          context.dynamicHeight(0.006).height,
+          Text(
+            handleText,
+            style: TextStyle(color: AppColors.textPrimary, fontSize: context.dynamicHeight(0.017), fontWeight: FontWeight.w500),
+          ),
+          context.dynamicHeight(0.006).height,
+          if (joinedYearText.isNotEmpty)
+            Text(
+              'Joined $joinedYearText',
+              style: TextStyle(color: AppColors.textPrimary, fontSize: context.dynamicHeight(0.017)),
+            ),
+          context.dynamicHeight(0.02).height,
+          if (isLoadingStats)
+            Center(child: CircularProgressIndicator(color: AppColors.primary))
+          else ...[
+            _buildStatsRow(),
+            context.dynamicHeight(0.015).height,
+            _buildDaysActiveCard()
+          ],
+          context.dynamicHeight(0.02).height,
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStatsRow() {
+    return Row(
+      children: [
+        Expanded(
+          child: _buildStatCard(
+            title: 'Tasks Completed',
+            value: tasksCompleted.toString(),
           ),
         ),
-        context.dynamicHeight(0.005).height,
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: context.dynamicWidth(0.015)),
-          child: Text(
-            '@${_authService.currentUser?.email != null ? _authService.currentUser!.email.split('@')[0] : 'guest'}',
-            style: TextStyle(
-              color: AppColors.textSecondary,
-              fontSize: context.dynamicHeight(0.017),
-            ),
+        context.dynamicWidth(0.03).width,
+        Expanded(
+          child: _buildStatCard(
+            title: 'Total XP',
+            value: totalXp.toString(),
           ),
         ),
-        context.dynamicHeight(0.015).height,
-        LevelBar(authService: _authService)
       ],
     );
   }
 
-  Widget _buildTermsConditionSection() {
+  Widget _buildDaysActiveCard() {
+    return _buildStatCard(title: 'Days Active', value: daysActive.toString(), isWide: true);
+  }
+
+  Widget _buildStatCard({required String title, required String value, bool isWide = false}) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          value,
+          style: TextStyle(
+            color: AppColors.textPrimary,
+            fontSize: context.dynamicHeight(0.025),
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        context.dynamicHeight(0.006).height,
+        Text(
+          title,
+          style: TextStyle(color: Colors.grey.shade600, fontSize: context.dynamicHeight(0.016)),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildAccountSection() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -122,19 +234,19 @@ class _AccountViewState extends State<AccountView> {
         Column(
           children: [
             _buildSettingsItem(
-              icon: HugeIcons.strokeRoundedMoneyReceive01,
-              title: 'Profile Details',
+              icon: HugeIcons.strokeRoundedUser,
+              title: 'Edit Profile',
               onTap: () {},
             ),
             _buildSettingsItem(
-              icon: HugeIcons.strokeRoundedZoomInArea,
-              title: 'Farmodo Area',
+              icon: HugeIcons.strokeRoundedNotification02,
+              title: 'Notifications',
               onTap: () {},
             ),
             
             _buildSettingsItem(
               icon: HugeIcons.strokeRoundedCustomerSupport,
-              title: 'Support',
+              title: 'Help & Support',
               onTap: () {},
               isLast: true,
             ),
@@ -144,7 +256,7 @@ class _AccountViewState extends State<AccountView> {
     );
   }
 
-  Widget _buildAccountsSubscriptionSection(AuthService authService) {
+  Widget _buildPreferencesSection(AuthService authService) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -179,12 +291,12 @@ class _AccountViewState extends State<AccountView> {
               ),
             ),
             _buildSettingsItem(
-              icon: Icons.sunny ,
+              icon: Icons.dark_mode,
               title: 'Dark Mode',
               trailing: Switch(
                 value: isDarkMode,
                 onChanged: (value) {
-                  
+                  setState(() { isDarkMode = value; });
                 },
                 activeThumbColor: AppColors.textPrimary,
                 inactiveThumbColor: Colors.grey[400],
@@ -214,13 +326,6 @@ class _AccountViewState extends State<AccountView> {
     );
   }
 
-  Widget _buildDivider() {
-    return Container(
-      height: 1,
-      margin: EdgeInsets.symmetric(horizontal: context.dynamicWidth(0.04)),
-      color: Colors.grey.withAlpha(25),
-    );
-  }
 
 
 
@@ -333,3 +438,39 @@ class _AccountViewState extends State<AccountView> {
 
 
 }
+
+class UserAvatar extends StatelessWidget {
+  const UserAvatar({
+    super.key,
+    required this.user,
+    required this.fontSize,
+    required this.radius
+  });
+
+  final User? user;
+  final double fontSize;
+  final double radius;
+
+  @override
+  Widget build(BuildContext context) {
+    return CircleAvatar(
+      radius: radius,
+      backgroundColor: Colors.white,
+      backgroundImage: user?.photoURL != null 
+          ? NetworkImage(user!.photoURL!) 
+          : null,
+      child: user?.photoURL == null 
+          ? Text(
+              user?.displayName?.isNotEmpty == true 
+                  ? user!.displayName![0].toUpperCase()
+                  : '👤',
+              style: TextStyle(
+                fontSize: fontSize,
+                fontWeight: FontWeight.bold,
+                color: const Color(0xFF8B5CF6),
+              ),
+            )
+          : null,
+    );
+  }
+} 

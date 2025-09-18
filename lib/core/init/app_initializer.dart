@@ -26,6 +26,7 @@ final class AppInitializer {
       statusBarColor: Colors.transparent,
       statusBarIconBrightness: Brightness.dark,
       systemNavigationBarColor: Colors.transparent,
+      statusBarBrightness: Brightness.dark,
   ));
     await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
     await setupDependencies();

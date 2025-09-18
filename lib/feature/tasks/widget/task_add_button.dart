@@ -23,7 +23,7 @@ class TaskAddButton extends StatelessWidget {
         height: context.dynamicHeight(0.06),
         width: context.dynamicWidth(0.8),
         decoration: BoxDecoration(
-          color: AppColors.primary,
+          color: AppColors.danger,
           borderRadius: BorderRadius.circular(14),
         ),
         child: Center(child: Obx((){

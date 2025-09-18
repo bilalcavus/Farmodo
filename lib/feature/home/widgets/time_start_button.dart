@@ -1,7 +1,6 @@
 
 import 'package:farmodo/core/theme/app_colors.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
-import 'package:farmodo/core/utility/extension/ontap_extension.dart';
 import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
 import 'package:farmodo/feature/home/widgets/full_screen_timer.dart';
 import 'package:farmodo/feature/tasks/viewmodel/tasks_controller.dart';
@@ -10,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:hugeicons/hugeicons.dart';
-import 'package:iconsax/iconsax.dart';
 
 class TimeStartButton extends StatefulWidget {
   const TimeStartButton({
@@ -119,9 +117,7 @@ class PlayButton extends StatelessWidget {
     return Obx(() {
       return CircleAvatar(
         radius: 32,
-        backgroundColor: timerController.isRunning.value
-                    ? AppColors.danger
-                    : AppColors.primary,
+        backgroundColor:AppColors.danger,
         child: IconButton(onPressed: timerController.isRunning.value
           ? () => timerController.pauseTimer()
           : () {

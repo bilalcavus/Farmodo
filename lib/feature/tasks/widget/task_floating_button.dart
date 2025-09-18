@@ -32,7 +32,7 @@ class _TaskFloatingButtonState extends State<TaskFloatingButton> {
   @override
   Widget build(BuildContext context) {
     return FloatingActionButton(
-    backgroundColor: AppColors.primary,
+    backgroundColor: AppColors.danger,
     child: Icon(Iconsax.add, color: AppColors.onPrimary, size: context.dynamicHeight(0.03),),
     onPressed: () {
       if (!authService.isLoggedIn) {

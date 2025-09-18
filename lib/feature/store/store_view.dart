@@ -12,6 +12,7 @@ import 'package:farmodo/feature/store/widget/store_card.dart';
 import 'package:farmodo/feature/store/widget/store_empty_state.dart';
 import 'package:farmodo/feature/home/widgets/user_xp.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 
@@ -91,6 +92,10 @@ class _StoreViewState extends State<StoreView> {
       backgroundColor: AppColors.background,
       appBar: AppBar(
         centerTitle: true,
+        systemOverlayStyle: const SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+          statusBarIconBrightness: Brightness.dark,
+        ),
         backgroundColor: Colors.transparent,
         title: Text(
           'Store',

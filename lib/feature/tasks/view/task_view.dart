@@ -8,6 +8,7 @@ import 'package:farmodo/feature/tasks/viewmodel/tasks_controller.dart';
 import 'package:farmodo/feature/tasks/widget/custom_task_list.dart';
 import 'package:farmodo/feature/tasks/widget/task_floating_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 
 class TaskView extends StatefulWidget {
@@ -37,6 +38,10 @@ class _TaskViewState extends State<TaskView> with TaskViewMixin {
     return AppBar(
       backgroundColor: Colors.transparent,
       elevation: 0,
+      systemOverlayStyle: const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.dark,
+      ),
       title: _buildTitle(),
       centerTitle: true,
       bottom: _buildTabBar(),
@@ -63,7 +68,7 @@ class _TaskViewState extends State<TaskView> with TaskViewMixin {
           vertical: context.dynamicHeight(0.02),
         ),
         decoration: BoxDecoration(
-          color: AppColors.border,
+          color: Colors.grey.shade100,
           borderRadius: BorderRadius.circular(6),
           boxShadow: [
             BoxShadow(
@@ -75,8 +80,15 @@ class _TaskViewState extends State<TaskView> with TaskViewMixin {
         ),
         child: TabBar(
           indicator: BoxDecoration(
-            color: AppColors.background,
+            color: AppColors.surface,
             borderRadius: BorderRadius.circular(9),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withAlpha(30),
+                blurRadius: 4,
+                offset: const Offset(0, -2),
+              ),
+            ],
           ),
           indicatorSize: TabBarIndicatorSize.tab,
           dividerHeight: 0,

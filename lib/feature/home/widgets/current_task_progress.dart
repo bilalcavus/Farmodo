@@ -49,6 +49,7 @@ class _CurrentTaskProgressState extends State<CurrentTaskProgress> {
       final progress = task.completedSessions / task.totalSessions;
       
       return Container(
+        width: context.dynamicWidth(0.85),
         margin: EdgeInsets.symmetric(horizontal: context.dynamicWidth(0.04)),
         padding: context.padding.normal,
         decoration: BoxDecoration(
@@ -117,57 +118,46 @@ class _CurrentTaskProgressState extends State<CurrentTaskProgress> {
               overflow: TextOverflow.ellipsis,
             ),
             context.dynamicHeight(0.01).height,
-            Row(
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Session Progress',
-                        style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                              color: AppColors.textSecondary,
-                              fontWeight: FontWeight.w500,
-                            ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Session Progress',
+                      style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                            color: AppColors.textSecondary,
+                            fontWeight: FontWeight.w500,
+                          ),
+                    ),
+                    Text('${(progress * 100).round()}%',
+                      style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.textPrimary,
                       ),
-                      SizedBox(height: context.dynamicHeight(0.008)),
-                      LinearPercentIndicator(
-                        padding: EdgeInsets.zero,
-                        lineHeight: 8,
-                        percent: progress.clamp(0.0, 1.0),
-                        backgroundColor: AppColors.border,
-                        progressColor: _getProgressColor(progress),
-                        barRadius: Radius.circular(4),
-                        animation: true,
-                        animationDuration: 500,
-                      ),
-                      SizedBox(height: context.dynamicHeight(0.008)),
-                      Text(
-                        '${task.completedSessions}/${task.totalSessions} sessions completed',
-                        style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                              color: AppColors.textSecondary,
-                              fontWeight: FontWeight.w500,
-                            ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-                SizedBox(width: context.dynamicWidth(0.04)),
-                CircularPercentIndicator(
-                  radius: context.dynamicHeight(0.035),
-                  lineWidth: 6,
+                SizedBox(height: context.dynamicHeight(0.008)),
+                LinearPercentIndicator(
+                  padding: EdgeInsets.zero,
+                  lineHeight: 8,
                   percent: progress.clamp(0.0, 1.0),
-                  center: Text(
-                    '${(progress * 100).round()}%',
-                    style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.textPrimary,
-                        ),
-                  ),
                   backgroundColor: AppColors.border,
                   progressColor: _getProgressColor(progress),
+                  barRadius: Radius.circular(4),
                   animation: true,
                   animationDuration: 500,
+                ),
+                SizedBox(height: context.dynamicHeight(0.008)),
+                Text(
+                  '${task.completedSessions}/${task.totalSessions} sessions completed',
+                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                        color: AppColors.textSecondary,
+                        fontWeight: FontWeight.w500,
+                      ),
                 ),
               ],
             ),
@@ -179,9 +169,9 @@ class _CurrentTaskProgressState extends State<CurrentTaskProgress> {
 
   Color _getProgressColor(double progress) {
     if (progress < 0.33) {
-      return AppColors.danger;
+      return AppColors.secondary;
     } else if (progress < 0.66) {
-      return AppColors.primary;
+      return AppColors.textPrimary;
     } else {
       return AppColors.secondary;
     }

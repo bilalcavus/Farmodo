@@ -21,20 +21,20 @@ class PomodoroTimer extends StatelessWidget {
           alignment: Alignment.center,
           children: [
             SizedBox(
-              width: 250,
-              height: 250,
+              width: 260,
+              height: 260,
               child: CircularProgressIndicator(
                 value: timerController.displayProgress,
-                strokeWidth: 10,
-                backgroundColor: Colors.grey.shade300,
+                strokeWidth: 15,
+                backgroundColor: Colors.grey.shade200,
                 valueColor: AlwaysStoppedAnimation(
                   timerController.isOnBreak.value ? AppColors.secondary : AppColors.danger
                 ),
               ),
             ),
             Container(
-              width: 220,
-              height: 220,
+              width: 240,
+              height: 240,
               decoration: BoxDecoration(
                 color: AppColors.surface,
                 shape: BoxShape.circle,
@@ -51,7 +51,7 @@ class PomodoroTimer extends StatelessWidget {
                     style:  TextStyle(
                       fontSize: context.dynamicHeight(0.05),
                       color: AppColors.textPrimary,
-                      fontWeight: FontWeight.w500,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
                   timerController.isOnBreak.value == true ?

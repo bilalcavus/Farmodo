@@ -1,3 +1,4 @@
+import 'package:farmodo/core/theme/app_colors.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/core/utility/extension/ontap_extension.dart';
 import 'package:flutter/material.dart';
@@ -35,7 +36,7 @@ class CustomBottomNavigation extends StatelessWidget {
             child: _buildNavItem(
               context,
               index: 0,
-              icon: Iconsax.timer_1,
+              icon: Icons.timer,
               label: 'Timer'
             ),
           ),
@@ -43,7 +44,7 @@ class CustomBottomNavigation extends StatelessWidget {
             child: _buildNavItem(
               context,
               index: 1,
-              icon:HugeIcons.strokeRoundedStickyNote02,
+              icon: Icons.list_sharp,
               label: 'Tasks'
             ),
           ),
@@ -51,7 +52,7 @@ class CustomBottomNavigation extends StatelessWidget {
             child: _buildNavItem(
               context,
               index: 2,
-              icon: Iconsax.pet,
+              icon: Icons.pets,
               label: 'Farm'
             ),
           ),
@@ -59,7 +60,7 @@ class CustomBottomNavigation extends StatelessWidget {
             child: _buildNavItem(
               context,
               index: 3,
-              icon: HugeIcons.strokeRoundedUser,
+              icon: Icons.account_circle,
               label: 'Profile'
             ),
           ),
@@ -90,13 +91,13 @@ class CustomBottomNavigation extends StatelessWidget {
         children: [
           Icon(
             icon,
-            color: isSelected ? const Color(0xff1A5CFF) : null,
+            color: isSelected ? const Color.fromARGB(255, 255, 26, 26) : AppColors.textSecondary,
             size: context.dynamicWidth(0.055),
           ),
           Text(
             label,
             style: TextStyle(
-              color:  isSelected ? const Color(0xff1A5CFF) : null,
+              color:  isSelected ? const Color.fromARGB(255, 255, 26, 26) : AppColors.textSecondary,
               fontSize: context.dynamicHeight(0.012),
               fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
             ),

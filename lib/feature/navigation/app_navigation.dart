@@ -17,26 +17,24 @@ class AppNavigation extends StatelessWidget {
   Widget build(BuildContext context) {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle(
-        statusBarColor: Colors.green, // Arka plan rengi
-        statusBarIconBrightness: Brightness.light, // Android ikonları
-        statusBarBrightness: Brightness.dark, // iOS ikonları
+        statusBarColor: Colors.transparent, // Arka plan rengi
+        statusBarIconBrightness: Brightness.dark, // Android ikonları
+        statusBarBrightness: Brightness.light, // iOS ikonları
       ),
       child: Obx(() {
-        return SafeArea(
-          child: Scaffold(
-            body: IndexedStack(
-              index: navController.currentIndex.value,
-              children:  [
-                HomeView(),
-                TaskView(),
-                FarmGameView(),
-                AccountView()
-              ],
-            ),
-            bottomNavigationBar: CustomBottomNavigation(
-              currentIndex: navController.currentIndex.value,
-              onTap: navController.changePage,
-            ),
+        return Scaffold(
+          body: IndexedStack(
+            index: navController.currentIndex.value,
+            children:  [
+              HomeView(),
+              TaskView(),
+              FarmGameView(),
+              AccountView()
+            ],
+          ),
+          bottomNavigationBar: CustomBottomNavigation(
+            currentIndex: navController.currentIndex.value,
+            onTap: navController.changePage,
           ),
         );
       }),

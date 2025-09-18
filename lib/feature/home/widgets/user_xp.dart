@@ -25,7 +25,7 @@ class UserXp extends StatelessWidget {
             height: context.dynamicHeight(0.04),
             padding: EdgeInsets.symmetric(horizontal: 12),
             decoration: BoxDecoration(
-              color: Colors.grey.shade200,
+              color: Colors.grey.shade100,
               borderRadius: BorderRadius.circular(12),
               border: Border.all(color: AppColors.border),
             ),
@@ -36,7 +36,7 @@ class UserXp extends StatelessWidget {
                   '${authService.currentUser?.xp ?? 0} XP',
                   style: Theme.of(context).textTheme.titleSmall?.copyWith(
                     color: AppColors.textPrimary,
-                    fontWeight: FontWeight.w700,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
               ],
@@ -50,7 +50,7 @@ class UserXp extends StatelessWidget {
             height: context.dynamicHeight(0.04),
             padding: EdgeInsets.symmetric(horizontal: 12),
             decoration: BoxDecoration(
-              color: Colors.grey.shade200,
+              color: Colors.grey.shade100,
               borderRadius: BorderRadius.circular(12),
               border: Border.all(color: AppColors.border),
             ),
@@ -70,7 +70,7 @@ class UserXp extends StatelessWidget {
                       '$coins Coin',
                       style: Theme.of(context).textTheme.titleSmall?.copyWith(
                         color: AppColors.textPrimary,
-                        fontWeight: FontWeight.w700,
+                        fontWeight: FontWeight.w500,
                       ),
                     );
                   },

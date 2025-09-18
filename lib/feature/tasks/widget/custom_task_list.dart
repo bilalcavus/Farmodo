@@ -11,6 +11,7 @@ import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:kartal/kartal.dart';
 
 class CustomTaskList extends StatelessWidget {
   const CustomTaskList({
@@ -116,7 +117,7 @@ class CustomTaskList extends StatelessWidget {
         ],
       ),
       child: Padding(
-        padding: EdgeInsets.symmetric(vertical:  context.dynamicHeight(0.01)),
+        padding: context.padding.low,
         child: Row(
           children: [
             Expanded(
@@ -128,10 +129,7 @@ class CustomTaskList extends StatelessWidget {
                       !task.isCompleted ? Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: const Icon(Icons.circle_outlined, color: AppColors.danger,),
-                      ) :  Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: const Icon(Icons.check_circle, color: Colors.green,),
-                      ),
+                      ) : SizedBox.shrink(),
                       Text(
                         task.title,
                         style: Theme.of(context).textTheme.titleMedium?.copyWith(
@@ -164,6 +162,9 @@ class CustomTaskList extends StatelessWidget {
                 ],
               ),
             ),
+            task.isCompleted ? Padding(
+              padding: context.padding.low,
+              child: Icon(Icons.check_circle, color: Colors.green, size: context.dynamicHeight(0.03),)) : SizedBox.shrink(),
             if (!task.isCompleted) _buildActionButtons(context, task, index),
           ],
         ),
@@ -175,7 +176,7 @@ class CustomTaskList extends StatelessWidget {
   Widget _buildTaskMetaInfo(BuildContext context, UserTaskModel task) {
     return Row(
       children: [
-        _buildMetaItem(context, Iconsax.timer_1, '${task.duration} min'),
+        _buildMetaItem(context, Icons.timer, '${task.duration} min'),
         context.dynamicWidth(0.01).width, 
         _buildMetaItem(context, Icons.star_rounded, '${task.xpReward} XP'),
       ],

@@ -1,3 +1,4 @@
+import 'package:farmodo/core/services/preferences_service.dart';
 import 'package:farmodo/data/services/animal_service.dart';
 import 'package:farmodo/data/services/auth_service.dart';
 import 'package:farmodo/data/services/firestore_service.dart';
@@ -16,6 +17,11 @@ import 'package:get_it/get_it.dart';
 final getIt = GetIt.instance;
 
 Future<void> setupDependencies() async {
+  // Initialize SharedPreferences first
+  await PreferencesService.init();
+
+  //Core Services
+  getIt.registerLazySingleton(() => PreferencesService.instance);
 
   //Data Services
   getIt.registerLazySingleton(() => AuthService());
