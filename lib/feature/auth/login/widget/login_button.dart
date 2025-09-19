@@ -1,8 +1,6 @@
-import 'package:farmodo/core/di/injection.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/core/utility/extension/ontap_extension.dart';
 import 'package:farmodo/core/utility/extension/route_helper.dart';
-import 'package:farmodo/feature/farm/viewmodel/farm_controller.dart';
 import 'package:farmodo/feature/navigation/app_navigation.dart';
 import 'package:farmodo/core/components/button/button_text.dart';
 import 'package:farmodo/core/components/loading_icon.dart';
