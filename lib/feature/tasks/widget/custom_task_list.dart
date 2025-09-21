@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:iconsax/iconsax.dart';
 import 'package:kartal/kartal.dart';
 
 class CustomTaskList extends StatelessWidget {
@@ -103,10 +104,11 @@ class CustomTaskList extends StatelessWidget {
 
   Widget _buildTaskCard(BuildContext context, UserTaskModel task, int index) {
     return Container(
-      margin: EdgeInsets.only(bottom: context.dynamicHeight(0.015)),
+      margin: EdgeInsets.symmetric(vertical: context.dynamicHeight(0.008), horizontal: context.dynamicWidth(0.002)),
+      padding: context.padding.normal,
       decoration: BoxDecoration(
         color: AppColors.surface,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(context.dynamicHeight(0.01)),
         boxShadow: [
           BoxShadow(
             color: AppColors.border.withAlpha(25),
@@ -115,58 +117,48 @@ class CustomTaskList extends StatelessWidget {
           ),
         ],
       ),
-      child: Padding(
-        padding: context.padding.low,
-        child: Row(
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      !task.isCompleted ? Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: const Icon(Icons.circle_outlined, color: AppColors.danger,),
-                      ) : SizedBox.shrink(),
-                      Text(
-                        task.title,
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          color: AppColors.textPrimary,
-                          fontWeight: FontWeight.w600,
-                        ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  task.title,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    color: AppColors.textPrimary,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                context.dynamicHeight(0.008).height,
+                Row(
+                  children: [
+                    Container(
+                      padding: context.padding.horizontalLow,
+                      decoration: BoxDecoration(
+                        color: focusTypeColor(task.focusType).withAlpha(75),
+                        borderRadius: BorderRadius.circular(context.dynamicHeight(0.008))
                       ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Container(
-                        // width: context.dynamicWidth(0.15),
-                        // height: context.dynamicHeight(0.02),
-                        padding: EdgeInsets.symmetric(horizontal: context.dynamicWidth(0.015)),
-                        margin: EdgeInsets.symmetric(horizontal: context.dynamicHeight(0.01)),
-                        decoration: BoxDecoration(
-                          color: focusTypeColor(task.focusType).withAlpha(140),
-                          borderRadius: BorderRadius.circular(context.dynamicHeight(0.008))
-                        ),
-                        child: Text('#${task.focusType}',
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: AppColors.surface
-                        ))),
-                      context.dynamicHeight(0.01).height,
-                  _buildTaskMetaInfo(context, task),
-                    ],
-                  ),
-                  
-                ],
-              ),
+                      child: Text('#${task.focusType}',
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: focusTypeColor(task.focusType),
+                          fontWeight: FontWeight.bold
+                      ))),
+                    context.dynamicHeight(0.01).height,
+                _buildTaskMetaInfo(context, task),
+                  ],
+                ),
+                
+              ],
             ),
-            task.isCompleted ? Padding(
-              padding: context.padding.low,
-              child: Icon(Icons.check_circle, color: Colors.green, size: context.dynamicHeight(0.03),)) : SizedBox.shrink(),
-            if (!task.isCompleted) _buildActionButtons(context, task, index),
-          ],
-        ),
+          ),
+          task.isCompleted
+          ? Padding(
+            padding: context.padding.low,
+            child: Icon(HugeIcons.strokeRoundedCheckmarkBadge01, size: context.dynamicHeight(0.03), color: AppColors.textSecondary,)) 
+          : SizedBox.shrink(),
+          if (!task.isCompleted) _buildActionButtons(context, task, index),
+        ],
       ),
     );
   }
@@ -175,27 +167,27 @@ class CustomTaskList extends StatelessWidget {
   Widget _buildTaskMetaInfo(BuildContext context, UserTaskModel task) {
     return Row(
       children: [
-        _buildMetaItem(context, Icons.timer, '${task.duration} min'),
+        _buildMetaItem(context, Icons.timer_sharp, '${task.duration} min', AppColors.textSecondary),
         context.dynamicWidth(0.01).width, 
-        _buildMetaItem(context, Icons.star_rounded, '${task.xpReward} XP'),
+        _buildMetaItem(context, Icons.star_rounded, '${task.xpReward} XP', Colors.amber),
       ],
     );
   }
 
-  Widget _buildMetaItem(BuildContext context, IconData icon, String text) {
+  Widget _buildMetaItem(BuildContext context, IconData icon, String text, Color iconColor) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: context.padding.low,
       child: Row(
         children: [
           Icon(
             icon,
-            size: context.dynamicHeight(0.015),
-            color: AppColors.textPrimary,
+            size: context.dynamicHeight(0.018),
+            color: iconColor
           ),
           Text(
             text,
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: AppColors.textPrimary,
+              color: AppColors.textSecondary,
               fontWeight: FontWeight.w500,
             ),
           ),
