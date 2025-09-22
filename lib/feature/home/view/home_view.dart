@@ -1,4 +1,5 @@
 import 'package:farmodo/core/di/injection.dart';
+import 'package:farmodo/core/services/notification_service.dart';
 import 'package:farmodo/core/theme/app_colors.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
@@ -46,6 +47,19 @@ class _HomeViewState extends State<HomeView> {
               context.dynamicHeight(0.03).height,
               CurrentTaskProgress(tasksController: tasksController),
               context.dynamicHeight(0.03).height,
+              // Test butonu - notification test için
+              ElevatedButton(
+                onPressed: () async {
+                  await NotificationService.showTimerNotification(
+                    timeText: '25:00',
+                    taskTitle: 'Test Task',
+                    status: 'Work',
+                    isRunning: true,
+                    progress: 0.0,
+                  );
+                },
+                child: Text('Test Notification'),
+              ),
             ],
         )),
       ),

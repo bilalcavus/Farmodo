@@ -25,6 +25,7 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
+        isCoreLibraryDesugaringEnabled = true
     }
 
     kotlinOptions {
@@ -44,7 +45,7 @@ android {
         applicationId = "com.bilalcavus.farmodo"
         minSdk = flutter.minSdkVersion
         targetSdk = 35
-        versionCode = 5
+        versionCode = 9
         versionName = "1.2.0"
     }
 
@@ -62,4 +63,8 @@ android {
 
 flutter {
     source = "../.."
+}
+
+dependencies {
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
 }

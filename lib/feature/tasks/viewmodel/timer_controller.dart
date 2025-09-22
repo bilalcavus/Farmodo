@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:farmodo/core/services/home_widget_service.dart';
+import 'package:farmodo/core/services/notification_service.dart';
 import 'package:farmodo/core/services/widget_interaction_service.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 class TimerController extends GetxController {
@@ -76,6 +76,40 @@ class TimerController extends GetxController {
     );
   }
 
+  void _updateNotification() {
+    final timeText = formatTime(isOnBreak.value ? breakSecondsRemaining.value : secondsRemaining.value);
+    final status = isOnBreak.value ? 'Break' : 'Work';
+    final progressValue = isOnBreak.value ? breakProgress : progress;
+
+    NotificationService.updateTimerNotification(
+      timeText: timeText,
+      taskTitle: currentTaskTitle.value.isEmpty ? 'No active task' : currentTaskTitle.value,
+      status: status,
+      isRunning: isRunning.value,
+      progress: progressValue,
+    );
+  }
+
+  void _showNotification() {
+    final timeText = formatTime(isOnBreak.value ? breakSecondsRemaining.value : secondsRemaining.value);
+    final status = isOnBreak.value ? 'Break' : 'Work';
+    final progressValue = isOnBreak.value ? breakProgress : progress;
+
+    debugPrint('🕐 Timer notification gösteriliyor: $timeText - $status');
+    
+    NotificationService.showTimerNotification(
+      timeText: timeText,
+      taskTitle: currentTaskTitle.value.isEmpty ? 'No active task' : currentTaskTitle.value,
+      status: status,
+      isRunning: isRunning.value,
+      progress: progressValue,
+    );
+  }
+
+  void _hideNotification() {
+    NotificationService.hideTimerNotification();
+  }
+
   void _clearHomeWidget() {
     HomeWidgetService.clearWidget();
   }
@@ -87,12 +121,14 @@ class TimerController extends GetxController {
       if(secondsRemaining.value > 0){
         secondsRemaining.value--;
         _updateHomeWidget();
+        _updateNotification();
       } else {
         _timer?.cancel();
         isRunning.value = false;
         secondsRemaining.value = totalSeconds.value;
         isOnBreak.value = true;
         _updateHomeWidget();
+        _updateNotification();
         if (onTimerComplete != null) {
           onTimerComplete!();
         }
@@ -101,6 +137,7 @@ class TimerController extends GetxController {
     });
     isRunning.value = true;
     _updateHomeWidget();
+    _showNotification();
   }
 
   void startBreakTimer(){
@@ -110,12 +147,14 @@ class TimerController extends GetxController {
       if(breakSecondsRemaining.value > 0){
         breakSecondsRemaining.value --;
         _updateHomeWidget();
+        _updateNotification();
       } else {
         _timer?.cancel();
         isRunning.value = false;
         breakSecondsRemaining.value = totalBreakSeconds.value;
         isOnBreak.value = false;
         _updateHomeWidget();
+        _updateNotification();
         if (onBreakComplete != null) {
           onBreakComplete!();
         }
@@ -123,12 +162,14 @@ class TimerController extends GetxController {
     });
     isRunning.value = true;
     _updateHomeWidget();
+    _showNotification();
   }
 
   void pauseTimer() {
     _timer?.cancel();
     isRunning.value = false;
     _updateHomeWidget();
+    _updateNotification();
   }
 
   void resetTimer() {
@@ -138,6 +179,7 @@ class TimerController extends GetxController {
     breakSecondsRemaining.value = totalBreakSeconds.value;
     isOnBreak.value = false;
     _updateHomeWidget();
+    _updateNotification();
   }
 
   void resetAll(){
@@ -150,11 +192,13 @@ class TimerController extends GetxController {
     onTimerComplete = null;
     onBreakComplete = null;
     _clearHomeWidget();
+    _hideNotification();
   }
 
   void setTaskTitle(String title) {
     currentTaskTitle.value = title;
     _updateHomeWidget();
+    _updateNotification();
   }
 
   

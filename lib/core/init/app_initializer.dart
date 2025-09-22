@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:farmodo/core/di/injection.dart';
+import 'package:farmodo/core/services/notification_service.dart';
 import 'package:farmodo/data/services/sample_data_service.dart';
 import 'package:farmodo/firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -30,6 +31,7 @@ final class AppInitializer {
   ));
     await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
     await setupDependencies();
+    await NotificationService.initialize();
 
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
