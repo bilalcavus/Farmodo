@@ -2,6 +2,7 @@ import 'package:farmodo/core/services/permission_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
+import 'package:farmodo/feature/tasks/viewmodel/timer_controller.dart';
 
 class NotificationService {
   static final FlutterLocalNotificationsPlugin _notifications = FlutterLocalNotificationsPlugin();
@@ -9,23 +10,23 @@ class NotificationService {
   static const String _timerChannelId = 'pomodoro_timer_channel';
   static const String _timerChannelName = 'Pomodoro Timer';
   static const String _timerChannelDescription = 'Pomodoro timer notifications';
+  static const String _iosCategoryId = 'pomodoro_actions';
 
   static Future<void> initialize() async {
-    const androidSettings = AndroidInitializationSettings('@mipmap/launcher_icon');
-    const iosSettings = DarwinInitializationSettings(
+    const androidSettings = AndroidInitializationSettings('@drawable/ic_notification');
+    final iosSettings = DarwinInitializationSettings(
       requestAlertPermission: true,
       requestBadgePermission: true,
       requestSoundPermission: true,
     );
     
-    const initSettings = InitializationSettings(
+    final initSettings = InitializationSettings(
       android: androidSettings,
       iOS: iosSettings,
     );
 
     await _notifications.initialize(
       initSettings,
-      onDidReceiveNotificationResponse: _onNotificationTap,
     );
 
     // Android notification channel oluştur
@@ -79,33 +80,35 @@ class NotificationService {
       playSound: false,
       enableVibration: false,
       silent: true,
+      colorized: true,
+      color: Colors.redAccent,
+      // Small icon ve large icon'u mevcut launcher ikonuyla hizala
+      icon: '@drawable/ic_notification',
+      largeIcon: const DrawableResourceAndroidBitmap('@drawable/ic_notification'),
       category: AndroidNotificationCategory.progress,
-      actions: [
-        AndroidNotificationAction(
-          'play_pause',
-          isRunning ? 'Pause' : 'Play',
-          icon: const DrawableResourceAndroidBitmap('@drawable/ic_play'),
-        ),
-        const AndroidNotificationAction(
-          'reset',
-          'Reset',
-          icon: DrawableResourceAndroidBitmap('@drawable/ic_refresh'),
-        ),
-        const AndroidNotificationAction(
-          'open_app',
-          'Open App',
-          icon: DrawableResourceAndroidBitmap('@drawable/ic_open'),
-        ),
-      ],
+      subText: status,
+      styleInformation: BigTextStyleInformation(
+        '$status • $taskTitle',
+        contentTitle: '<b>$timeText</b>',
+        htmlFormatContentTitle: true,
+      ),
+
     );
 
-    final notificationDetails = NotificationDetails(android: androidDetails);
+    const iosDetails = DarwinNotificationDetails(
+      categoryIdentifier: _iosCategoryId,
+      presentAlert: true,
+      presentBadge: true,
+      presentSound: true,
+    );
+
+    final notificationDetails = NotificationDetails(android: androidDetails, iOS: iosDetails);
 
     try {
       await _notifications.show(
         _timerNotificationId,
-        'Pomodoro Timer - $status',
-        '$timeText\n$taskTitle',
+        timeText,
+        '$status • $taskTitle',
         notificationDetails,
       );
       debugPrint('✅ Notification başarıyla gösterildi');
@@ -135,42 +138,9 @@ class NotificationService {
     await _notifications.cancel(_timerNotificationId);
   }
 
-  static void _onNotificationTap(NotificationResponse response) {
-    final actionId = response.actionId;
-    
-    switch (actionId) {
-      case 'play_pause':
-        // Timer controller'dan play/pause tetikle
-        try {
-          final timerController = Get.find<dynamic>();
-          if (timerController.isRunning.value) {
-            timerController.pauseTimer();
-          } else {
-            timerController.startTimer();
-          }
-        } catch (e) {
-          debugPrint('Timer controller bulunamadı: $e');
-        }
-        break;
-      case 'reset':
-        // Timer controller'dan reset tetikle
-        try {
-          Get.find<dynamic>().resetTimer();
-        } catch (e) {
-          debugPrint('Timer controller bulunamadı: $e');
-        }
-        break;
-      case 'open_app':
-        // Uygulamayı aç
-        Get.toNamed('/home');
-        break;
-      default:
-        // Notification'a tıklama - uygulamayı aç
-        Get.toNamed('/home');
-        break;
-    }
-  }
+  
 
+  
   // Foreground service için
   static Future<void> startForegroundService() async {
     const androidDetails = AndroidNotificationDetails(
@@ -185,6 +155,8 @@ class NotificationService {
       playSound: false,
       enableVibration: false,
       silent: true,
+      icon: '@drawable/ic_notification',
+      largeIcon: DrawableResourceAndroidBitmap('@drawable/ic_notification'),
     );
 
     const notificationDetails = NotificationDetails(android: androidDetails);

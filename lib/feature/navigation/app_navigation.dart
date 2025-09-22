@@ -22,19 +22,23 @@ class AppNavigation extends StatelessWidget {
         statusBarBrightness: Brightness.light, // iOS ikonları
       ),
       child: Obx(() {
-        return Scaffold(
-          body: IndexedStack(
-            index: navController.currentIndex.value,
-            children:  [
-              HomeView(),
-              TaskView(),
-              FarmGameView(),
-              AccountView()
-            ],
-          ),
-          bottomNavigationBar: CustomBottomNavigation(
-            currentIndex: navController.currentIndex.value,
-            onTap: navController.changePage,
+        return SafeArea(
+          bottom: true,
+          top: false,
+          child: Scaffold(
+            body: IndexedStack(
+              index: navController.currentIndex.value,
+              children:  [
+                HomeView(),
+                TaskView(),
+                FarmGameView(),
+                AccountView()
+              ],
+            ),
+            bottomNavigationBar: CustomBottomNavigation(
+              currentIndex: navController.currentIndex.value,
+              onTap: navController.changePage,
+            ),
           ),
         );
       }),

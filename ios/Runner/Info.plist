@@ -48,6 +48,15 @@
     </dict>
 </array>
 
+<key>UIBackgroundModes</key>
+<array>
+    <string>fetch</string>
+    <string>remote-notification</string>
+</array>
+<key>NSUserNotificationAlertStyle</key>
+<string>alert</string>
+
+
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
