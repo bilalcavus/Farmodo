@@ -13,6 +13,7 @@ import 'package:farmodo/feature/navigation/navigation_controller.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:kartal/kartal.dart';
@@ -90,6 +91,10 @@ class _AccountViewState extends State<AccountView> {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
+        systemOverlayStyle: SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+          statusBarIconBrightness: Brightness.dark,
+        ),
         backgroundColor: Colors.transparent,
         title: Text('Profile', style: TextStyle(color: AppColors.textPrimary, fontSize: context.dynamicHeight(0.022), fontWeight: FontWeight.w600)),
         centerTitle: true,

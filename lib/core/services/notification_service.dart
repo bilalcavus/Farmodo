@@ -1,8 +1,6 @@
 import 'package:farmodo/core/services/permission_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:get/get.dart';
-import 'package:farmodo/feature/tasks/viewmodel/timer_controller.dart';
 
 class NotificationService {
   static final FlutterLocalNotificationsPlugin _notifications = FlutterLocalNotificationsPlugin();
@@ -60,10 +58,8 @@ class NotificationService {
     // Permission kontrolü
     final hasPermission = await PermissionService.checkNotificationPermission();
     if (!hasPermission) {
-      debugPrint('❌ Notification permission yok, istiyoruz...');
       final granted = await PermissionService.requestNotificationPermission();
       if (!granted) {
-        debugPrint('❌ Notification permission reddedildi');
         return;
       }
     }
