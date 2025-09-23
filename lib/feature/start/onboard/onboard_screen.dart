@@ -173,6 +173,7 @@ class _OnboardScreenState extends State<OnboardScreen> {
               },
             ),
           ),
+          context.dynamicHeight(0.03).height,
           OnboardPageIndicator(
             currentPage: _currentPage,
             totalPages: _onboardData.length,

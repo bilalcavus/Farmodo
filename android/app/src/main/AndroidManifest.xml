@@ -16,6 +16,9 @@
         android:icon="@mipmap/launcher_icon"
         android:usesCleartextTraffic="false"
         android:allowBackup="false">
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/ic_notification" />
         <activity
             android:name=".MainActivity"
             android:exported="true"

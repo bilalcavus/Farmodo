@@ -45,8 +45,8 @@ android {
         applicationId = "com.bilalcavus.farmodo"
         minSdk = flutter.minSdkVersion
         targetSdk = 35
-        versionCode = 10
-        versionName = "1.2.1"
+        versionCode = 11
+        versionName = "1.2.2"
     }
 
     buildTypes {
@@ -58,6 +58,12 @@ android {
                 "proguard-rules.pro"
             )
         }
+    }
+
+    lint {
+        // Avoid Windows file locking issues during release builds
+        checkReleaseBuilds = false
+        abortOnError = false
     }
 }
 

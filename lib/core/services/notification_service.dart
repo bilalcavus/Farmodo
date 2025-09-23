@@ -93,8 +93,6 @@ class NotificationService {
       playSound: false,
       enableVibration: false,
       silent: true,
-      colorized: true,
-      color: Colors.redAccent,
       icon: '@drawable/ic_notification',
       largeIcon: const DrawableResourceAndroidBitmap('@drawable/ic_notification'),
       category: AndroidNotificationCategory.progress,
