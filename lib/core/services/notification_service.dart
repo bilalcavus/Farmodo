@@ -11,24 +11,41 @@ class NotificationService {
   static const String _iosCategoryId = 'pomodoro_actions';
 
   static Future<void> initialize() async {
-    const androidSettings = AndroidInitializationSettings('@drawable/ic_notification');
-    final iosSettings = DarwinInitializationSettings(
-      requestAlertPermission: true,
-      requestBadgePermission: true,
-      requestSoundPermission: true,
-    );
-    
-    final initSettings = InitializationSettings(
-      android: androidSettings,
-      iOS: iosSettings,
-    );
+    try {
+      const androidSettings = AndroidInitializationSettings('@drawable/ic_notification');
+      final iosSettings = DarwinInitializationSettings(
+        requestAlertPermission: true,
+        requestBadgePermission: true,
+        requestSoundPermission: true,
+      );
+      
+      final initSettings = InitializationSettings(
+        android: androidSettings,
+        iOS: iosSettings,
+      );
 
-    await _notifications.initialize(
-      initSettings,
-    );
+      final initialized = await _notifications.initialize(
+        initSettings,
+        onDidReceiveNotificationResponse: _onNotificationTapped,
+      );
 
-    // Android notification channel oluştur
-    await _createNotificationChannel();
+      if (initialized == true) {
+        debugPrint('✅ Notification service initialized successfully');
+        
+        // Android notification channel oluştur
+        await _createNotificationChannel();
+      } else {
+        debugPrint('❌ Notification service initialization failed');
+      }
+    } catch (e) {
+      debugPrint('❌ Notification service initialization error: $e');
+      rethrow;
+    }
+  }
+
+  static void _onNotificationTapped(NotificationResponse response) {
+    debugPrint('🔔 Notification tapped: ${response.payload}');
+    // Notification'a tıklandığında yapılacak işlemler
   }
 
   static Future<void> _createNotificationChannel() async {

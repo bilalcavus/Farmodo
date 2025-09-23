@@ -29,13 +29,22 @@ final class AppInitializer {
       systemNavigationBarColor: Colors.transparent,
       statusBarBrightness: Brightness.dark,
   ));
-    await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-    await setupDependencies();
-    await NotificationService.initialize();
+    
+    try {
+      await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+      await setupDependencies();
+      
+      // Notification service'i initialize et
+      await NotificationService.initialize();
+      Logger().i('Notification service initialized successfully');
 
-    final user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      await SampleDataService().checkExistingData(user.uid);
+      final user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        await SampleDataService().checkExistingData(user.uid);
+      }
+    } catch (e) {
+      Logger().e('App initialization error: $e');
+      // Notification service initialize edilemese bile uygulama açılsın
     }
   }
 }

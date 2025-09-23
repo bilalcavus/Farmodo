@@ -1,4 +1,5 @@
 import 'package:farmodo/core/di/injection.dart';
+import 'package:farmodo/core/services/permission_service.dart';
 import 'package:farmodo/core/services/preferences_service.dart';
 import 'package:farmodo/core/utility/extension/route_helper.dart';
 import 'package:farmodo/data/services/auth_service.dart';
@@ -39,6 +40,10 @@ class _SplashViewState extends State<SplashView> {
   void _initializeAndNavigate() async {
     try {
       await _authService.initializeAuthState();
+      
+      // Notification permission kontrolü ve isteği
+      await _requestNotificationPermission();
+      
       await Future.delayed(const Duration(seconds: 2));
       
       if (_authService.isLoggedIn) {
@@ -53,6 +58,7 @@ class _SplashViewState extends State<SplashView> {
         }
       }
     } catch (e) {
+      debugPrint('Splash initialization error: $e');
       if (mounted) {
         if (_prefsService.isOnboardingCompleted) {
           RouteHelper.pushAndCloseOther(context, AppNavigation());
@@ -60,6 +66,20 @@ class _SplashViewState extends State<SplashView> {
           RouteHelper.pushAndCloseOther(context, OnboardScreen());
         }
       }
+    }
+  }
+
+  Future<void> _requestNotificationPermission() async {
+    try {
+      // Notification permission kontrolü
+      final hasPermission = await PermissionService.checkNotificationPermission();
+      if (!hasPermission) {
+        // Permission yoksa iste, ama uygulama açılmaya devam etsin
+        await PermissionService.requestNotificationPermission();
+      }
+    } catch (e) {
+      debugPrint('Notification permission error: $e');
+      // Permission hatası olsa bile uygulama açılsın
     }
   }
   @override
