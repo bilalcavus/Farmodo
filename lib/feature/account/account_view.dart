@@ -6,6 +6,7 @@ import 'package:farmodo/core/utility/extension/route_helper.dart';
 import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
 import 'package:farmodo/data/services/auth_service.dart';
 import 'package:farmodo/data/services/firestore_service.dart';
+import 'package:farmodo/feature/account/account_deletion_view.dart';
 import 'package:farmodo/feature/auth/login/view/login_view.dart';
 import 'package:farmodo/feature/auth/login/viewmodel/login_controller.dart';
 import 'package:farmodo/feature/gamification/view/debug_gamification_view.dart';
@@ -253,6 +254,12 @@ class _AccountViewState extends State<AccountView> {
               icon: HugeIcons.strokeRoundedCustomerSupport,
               title: 'Help & Support',
               onTap: () {},
+              isLast: true,
+            ),
+            _buildSettingsItem(
+              icon: HugeIcons.strokeRoundedDelete04,
+              title: 'Delete Account',
+              onTap: () => RouteHelper.push(context, const AccountDeletionView()),
               isLast: true,
             ),
           ],

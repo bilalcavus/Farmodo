@@ -3,6 +3,7 @@ import 'package:farmodo/data/models/user_model.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fb;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 class AuthService {
   static final AuthService _instance = AuthService._internal();
@@ -85,6 +86,7 @@ class AuthService {
     _currentUser = userModel;
     return userModel;
   }
+  
 
   Future<UserModel> loginUser({
     required String email,
@@ -154,35 +156,49 @@ class AuthService {
     _isAuthStateReady = false;
   }
 
+  Future<fb.UserCredential> signInWitApple() async {
+    final appleCredential = await SignInWithApple.getAppleIDCredential(
+      scopes: [
+        AppleIDAuthorizationScopes.email,
+        AppleIDAuthorizationScopes.fullName,
+      ]
+    );
+
+    if(appleCredential.identityToken == null){
+      throw Exception('Apple Sign-In failed: No identity token');
+    }
+
+    final oauthcredential = fb.OAuthProvider("apple.com").credential(
+      idToken: appleCredential.identityToken,
+      accessToken: appleCredential.authorizationCode,
+    );
+
+    return await _firebaseAuth.signInWithCredential(oauthcredential);
+  }
+
   Future<UserModel> signInWithGoogle() async {
     try {
-      // Check if Google Play Services is available
       if (!await _googleSignIn.isSignedIn()) {
-        // Force sign out to clear any cached state
         await _googleSignIn.signOut();
       }
 
-      // Google Sign-In'i başlat
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
       
       if (googleUser == null) {
         throw Exception('Google Sign-In iptal edildi');
       }
 
-      // Google authentication bilgilerini al
       final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
       
       if (googleAuth.accessToken == null || googleAuth.idToken == null) {
         throw Exception('Google authentication token alınamadı');
       }
 
-      // Firebase credential oluştur
       final credential = fb.GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
 
-      // Firebase ile giriş yap
       final userCredential = await _firebaseAuth.signInWithCredential(credential);
       final user = userCredential.user;
 
@@ -190,13 +206,11 @@ class AuthService {
         throw Exception('Firebase authentication başarısız');
       }
 
-      // Firestore'dan kullanıcı bilgilerini al veya oluştur
       final doc = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
       UserModel userModel;
       
       if (doc.exists) {
         userModel = UserModel.fromFirestore(doc);
-        // Son giriş zamanını güncelle
         userModel = userModel.copyWith(lastLoginAt: DateTime.now());
         await createUserInFirestore(userModel);
       } else {
@@ -252,7 +266,6 @@ class AuthService {
         throw Exception('İnternet bağlantısı hatası. Lütfen bağlantınızı kontrol edin.');
       }
       
-      // Handle Google Sign-In specific errors
       if (e.toString().contains('ApiException: 10')) {
         throw Exception('Google Sign-In yapılandırma hatası. Lütfen SHA-1 sertifika parmak izini kontrol edin.');
       }
@@ -261,9 +274,19 @@ class AuthService {
     }
   }
 
+  Future<void> deleteUserAccount() async {
+    final user = _firebaseAuth.currentUser;
+    if(user == null) return;
+
+    final userId = user.uid;
+    final batch = FirebaseFirestore.instance.batch();
+
+    final userDoc = FirebaseFirestore.instance.collection("users").doc(userId);
+    batch.delete(userDoc);
+  }
+
   Future<void> signOutGoogle() async {
     await _googleSignIn.signOut();
     await _firebaseAuth.signOut();
   }
-
 }

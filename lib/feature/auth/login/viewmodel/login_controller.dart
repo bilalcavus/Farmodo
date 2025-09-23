@@ -1,3 +1,4 @@
+import 'package:farmodo/core/components/message/snack_messages.dart';
 import 'package:farmodo/core/utility/extension/route_helper.dart';
 import 'package:farmodo/data/services/auth_service.dart';
 import 'package:farmodo/data/services/sample_data_service.dart';
@@ -17,11 +18,18 @@ class LoginController extends GetxController {
 
   final _isLoading = false.obs;
   final _googleLoading = false.obs;
+  final _appleLoading = false.obs;
   final _rememberMeCheckbox = false.obs;
+  final _deletionObscurePassword = true.obs;
+  final _agreeToTerms = false.obs;
+
   var errorMessage = ''.obs;
   RxBool get isLoading => _isLoading;
   RxBool get googleLoading => _googleLoading;
+  RxBool get appleLoading => _appleLoading;
   RxBool get rememberMeCheckBox => _rememberMeCheckbox;
+  RxBool get deletionObscurePassword => _deletionObscurePassword;
+  RxBool get agreeToTerms => _agreeToTerms;
 
   final _obsecurePassword = true.obs;
   RxBool get obsecurePassword => _obsecurePassword;
@@ -62,6 +70,10 @@ class LoginController extends GetxController {
     googleLoading.value = value.value;
   }
 
+  void setAppleLoading(RxBool value){
+    appleLoading.value = value.value;
+  }
+
   void toggleRememberMe(bool? value){
     _rememberMeCheckbox.value = value ?? false;
   }
@@ -91,6 +103,53 @@ class LoginController extends GetxController {
     } finally {
       emailController.clear();
       passwordController.clear();
+      setLoading(false.obs);
+    }
+  }
+
+  Future<void> handleAppleSignIn(BuildContext context) async {
+    setAppleLoading(true.obs);
+    try {
+      await authService.signInWitApple();
+      if (context.mounted) RouteHelper.pushAndCloseOther(context, AppNavigation());
+    } catch (e) {
+      debugPrint('$e');
+    } finally {
+      setAppleLoading(false.obs);
+    }
+  }
+
+  Future<void> handleDeleteAccount(BuildContext context, {required String password}) async {
+    setLoading(true.obs);
+    errorMessage.value = "";
+    try {
+      final user = authService.firebaseUser;
+      if (user == null) {
+        errorMessage.value = 'user not found';
+        return;
+      }
+      final credential = EmailAuthProvider.credential(email: user.email!, password: password);
+
+      await user.reauthenticateWithCredential(credential);
+      await authService.deleteUserAccount();
+      await user.delete();
+
+      if (context.mounted) {
+        SnackMessages().showSuccessSnack("Account has been deleted successfully");
+      }
+    } on FirebaseAuthException catch (e) {
+      if (context.mounted) {
+        errorMessage.value = "Hesap silme hatası";
+        if(e.code == 'wrong-password') {
+          errorMessage.value = "Yanlış parola";
+        } else if(e.code == "requires-recent-login"){
+          errorMessage.value = "Tekrar giriş gerekli";
+        } else if(e.code == "user-not-found"){
+          errorMessage.value = "Kullanıcı bulunamadı";
+        }
+      }
+      rethrow;
+    } finally{
       setLoading(false.obs);
     }
   }

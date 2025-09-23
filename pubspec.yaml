@@ -29,6 +29,9 @@ dependencies:
   #Local
   sqflite: ^2.4.2
 
+  #Auth
+  sign_in_with_apple: ^7.0.1 
+
   #Utility
   logger: ^2.6.1
   home_widget: ^0.8.0

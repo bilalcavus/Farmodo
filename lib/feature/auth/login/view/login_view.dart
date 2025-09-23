@@ -1,3 +1,4 @@
+import 'package:farmodo/core/components/loading_icon.dart';
 import 'package:farmodo/core/components/text_field/custom_text_field.dart';
 import 'package:farmodo/core/utility/constants/text_strings.dart';
 import 'package:farmodo/core/di/injection.dart';
@@ -5,6 +6,7 @@ import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/core/utility/extension/ontap_extension.dart';
 import 'package:farmodo/core/utility/extension/route_helper.dart';
 import 'package:farmodo/core/theme/app_colors.dart';
+import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
 import 'package:farmodo/feature/auth/login/viewmodel/login_controller.dart';
 import 'package:farmodo/feature/auth/login/widget/forgot_password.dart';
 import 'package:farmodo/feature/auth/login/widget/login_button.dart';
@@ -88,7 +90,28 @@ class _LoginViewState extends State<LoginView> {
                   ],
                 ),
                 SizedBox(height: context.dynamicHeight(.02)),
-                SocialNetworkLogin(loginController: loginController),
+                Obx((){
+                  return Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      loginController.googleLoading.value ? LoadingIcon(
+                        iconColor: Colors.black,
+                      ) :
+                      SocialNetworkLogin(
+                        assetPath: "assets/logo/google-icon.png",
+                        onTap: () async => await loginController.handleGoogleSignIn(context)),
+                      context.dynamicWidth(0.08).width,
+                      loginController.appleLoading.value ? LoadingIcon(
+                        iconColor: Colors.black,
+                      ) : 
+                      SocialNetworkLogin(
+                        assetPath: "assets/logo/apple_icon.png",
+                        onTap: () async => await loginController.handleAppleSignIn(context)),
+                      ],
+                    );
+                  }
+                ),
                 SizedBox(height: context.dynamicHeight(.15)),
                 _buildPrivacyTermsText(context),
               ],

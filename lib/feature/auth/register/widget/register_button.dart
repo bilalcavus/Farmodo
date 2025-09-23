@@ -26,7 +26,7 @@ class RegisterButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(16)
         ),
         child: Obx((){
-          return registerController.isLoading.value ? LoadingIcon() : ButtonText(text: 'Sign up',);
+          return registerController.isLoading.value ? LoadingIcon(iconColor: Colors.black,) : ButtonText(text: 'Sign up',);
         })
       ).onTap(() async => await registerController.handleRegister(context)),
     );

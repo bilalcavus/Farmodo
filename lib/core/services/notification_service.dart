@@ -95,7 +95,6 @@ class NotificationService {
       silent: true,
       colorized: true,
       color: Colors.redAccent,
-      // Small icon ve large icon'u mevcut launcher ikonuyla hizala
       icon: '@drawable/ic_notification',
       largeIcon: const DrawableResourceAndroidBitmap('@drawable/ic_notification'),
       category: AndroidNotificationCategory.progress,

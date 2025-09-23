@@ -28,7 +28,7 @@ class LoginButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(16)
         ),
         child: Obx((){
-          return loginController.isLoading.value ? LoadingIcon() : ButtonText(text: 'Login',);
+          return loginController.isLoading.value ? LoadingIcon(iconColor: Colors.white,) : ButtonText(text: 'Login',);
         })
       ).onTap(() async {
         await loginController.handleLogin(context);

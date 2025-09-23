@@ -27,7 +27,9 @@ class TaskAddButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(14),
         ),
         child: Center(child: Obx((){
-          return (taskController.loadingStates[LoadingType.general] ?? false) ? LoadingIcon() : ButtonText(text: 'Add',);
+          return (taskController.loadingStates[LoadingType.general] ?? false)
+           ? LoadingIcon(iconColor: Colors.white)
+           : ButtonText(text: 'Add',);
         })),
       ),
     ).onTap(() async {
