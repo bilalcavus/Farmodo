@@ -1,8 +1,6 @@
 import 'dart:async';
 
-import 'package:farmodo/core/services/home_widget_service.dart';
 import 'package:farmodo/core/services/notification_service.dart';
-import 'package:farmodo/core/services/widget_interaction_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -24,57 +22,7 @@ class TimerController extends GetxController {
   VoidCallback? onTimerComplete;
   VoidCallback? onBreakComplete;
 
-  @override
-  void onInit() {
-    super.onInit();
-    _setupWidgetInteraction();
-    _checkWidgetActions();
-  }
 
-  void _setupWidgetInteraction() {
-    WidgetInteractionService.listenToWidgetActions((action) {
-      _handleWidgetAction(action);
-    });
-  }
-
-  void _checkWidgetActions() async {
-    final action = await WidgetInteractionService.getLastWidgetAction();
-    if (action != null) {
-      _handleWidgetAction(action);
-      await WidgetInteractionService.clearWidgetAction();
-    }
-  }
-
-  void _handleWidgetAction(String action) {
-    switch (action) {
-      case 'start_timer':
-        if (!isRunning.value && (totalSeconds.value > 0 || totalBreakSeconds.value > 0)) {
-          if (isOnBreak.value) {
-            startBreakTimer();
-          } else {
-            startTimer();
-          }
-        }
-        break;
-      case 'pause_timer':
-        if (isRunning.value) {
-          pauseTimer();
-        }
-        break;
-      case 'open_app':
-        break;
-    }
-  }
-
-  void _updateHomeWidget() {
-    HomeWidgetService.updateWidget(
-      isRunning: isRunning.value,
-      secondsRemaining: isOnBreak.value ? breakSecondsRemaining.value : secondsRemaining.value,
-      isOnBreak: isOnBreak.value,
-      totalSeconds: isOnBreak.value ? totalBreakSeconds.value : totalSeconds.value,
-      taskTitle: currentTaskTitle.value,
-    );
-  }
 
   void _updateNotification() {
     final timeText = formatTime(isOnBreak.value ? breakSecondsRemaining.value : secondsRemaining.value);
@@ -95,7 +43,6 @@ class TimerController extends GetxController {
     final status = isOnBreak.value ? 'Break' : 'Work';
     final progressValue = isOnBreak.value ? breakProgress : progress;
 
-    debugPrint('🕐 Timer notification gösteriliyor: $timeText - $status');
     
     NotificationService.showTimerNotification(
       timeText: timeText,
@@ -110,9 +57,7 @@ class TimerController extends GetxController {
     NotificationService.hideTimerNotification();
   }
 
-  void _clearHomeWidget() {
-    HomeWidgetService.clearWidget();
-  }
+  
 
   void startTimer(){
     if(isRunning.value) return;
@@ -120,14 +65,12 @@ class TimerController extends GetxController {
     _timer = Timer.periodic(Duration(seconds: 1), (_){
       if(secondsRemaining.value > 0){
         secondsRemaining.value--;
-        _updateHomeWidget();
         _updateNotification();
       } else {
         _timer?.cancel();
         isRunning.value = false;
         secondsRemaining.value = totalSeconds.value;
         isOnBreak.value = true;
-        _updateHomeWidget();
         _updateNotification();
         if (onTimerComplete != null) {
           onTimerComplete!();
@@ -136,7 +79,6 @@ class TimerController extends GetxController {
       }
     });
     isRunning.value = true;
-    _updateHomeWidget();
     _showNotification();
   }
 
@@ -146,14 +88,12 @@ class TimerController extends GetxController {
     _timer = Timer.periodic(Duration(seconds: 1), (_){
       if(breakSecondsRemaining.value > 0){
         breakSecondsRemaining.value --;
-        _updateHomeWidget();
         _updateNotification();
       } else {
         _timer?.cancel();
         isRunning.value = false;
         breakSecondsRemaining.value = totalBreakSeconds.value;
         isOnBreak.value = false;
-        _updateHomeWidget();
         _updateNotification();
         if (onBreakComplete != null) {
           onBreakComplete!();
@@ -161,14 +101,12 @@ class TimerController extends GetxController {
       }
     });
     isRunning.value = true;
-    _updateHomeWidget();
     _showNotification();
   }
 
   void pauseTimer() {
     _timer?.cancel();
     isRunning.value = false;
-    _updateHomeWidget();
     _updateNotification();
   }
 
@@ -178,7 +116,6 @@ class TimerController extends GetxController {
     secondsRemaining.value = totalSeconds.value;
     breakSecondsRemaining.value = totalBreakSeconds.value;
     isOnBreak.value = false;
-    _updateHomeWidget();
     _updateNotification();
   }
 
@@ -191,13 +128,11 @@ class TimerController extends GetxController {
     currentTaskTitle.value = '';
     onTimerComplete = null;
     onBreakComplete = null;
-    _clearHomeWidget();
     _hideNotification();
   }
 
   void setTaskTitle(String title) {
     currentTaskTitle.value = title;
-    _updateHomeWidget();
     _updateNotification();
   }
 

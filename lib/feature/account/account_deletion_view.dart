@@ -150,9 +150,9 @@ class WarningBox extends StatelessWidget {
         width: context.dynamicWidth(0.8),
         padding: context.padding.low,
         decoration: BoxDecoration(
-          color: Colors.red.withOpacity(0.1),
+          color: Colors.red.withAlpha(25),
           borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: Colors.red.withOpacity(0.3)),
+          border: Border.all(color: Colors.red.withAlpha(75)),
         ),
         child: Row(
           children: [

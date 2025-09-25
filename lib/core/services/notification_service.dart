@@ -69,9 +69,7 @@ class NotificationService {
     required String status,
     required bool isRunning,
     required double progress,
-  }) async {
-    debugPrint('🔔 Notification gösteriliyor: $timeText - $status');
-    
+  }) async {    
     // Permission kontrolü
     final hasPermission = await PermissionService.checkNotificationPermission();
     if (!hasPermission) {

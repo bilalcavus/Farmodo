@@ -7,7 +7,6 @@ import 'package:farmodo/data/services/auth_service.dart';
 import 'package:farmodo/feature/tasks/view/add_task_view.dart';
 import 'package:farmodo/feature/tasks/viewmodel/tasks_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get_rx/src/rx_workers/rx_workers.dart';
 import 'package:get/get.dart';
 
 class CurrentTaskBox extends StatefulWidget {

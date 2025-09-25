@@ -24,7 +24,7 @@ class OnboardPageIndicator extends StatelessWidget {
           decoration: BoxDecoration(
             color: currentPage == index
                 ? Colors.lightGreenAccent
-                : Colors.grey.withOpacity(0.4),
+                : Colors.grey.withAlpha(100),
             borderRadius: BorderRadius.circular(4.0),
           ),
         ),

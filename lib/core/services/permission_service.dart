@@ -14,7 +14,6 @@ class PermissionService {
       final result = await Permission.notification.request();
       return result.isGranted;
     } catch (e) {
-      print('Permission request error: $e');
       return false;
     }
   }
@@ -24,7 +23,6 @@ class PermissionService {
       final status = await Permission.notification.status;
       return status.isGranted;
     } catch (e) {
-      print('Permission check error: $e');
       return false;
     }
   }
