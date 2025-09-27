@@ -4,6 +4,7 @@ import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
 import 'package:farmodo/data/services/auth_service.dart';
 import 'package:farmodo/data/services/gamification/gamification_service.dart';
 import 'package:flutter/material.dart';
+import 'package:kartal/kartal.dart';
 
 class UserXp extends StatelessWidget {
   const UserXp({
@@ -20,10 +21,9 @@ class UserXp extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          // XP Container
           Container(
             height: context.dynamicHeight(0.04),
-            padding: EdgeInsets.symmetric(horizontal: 12),
+            padding: context.padding.low,
             decoration: BoxDecoration(
               color: Colors.grey.shade100,
               borderRadius: BorderRadius.circular(12),
@@ -78,11 +78,8 @@ class UserXp extends StatelessWidget {
               ],
             ),
           ),
-          
         ],
       ),
     );
   }
-
-  
 }

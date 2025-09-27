@@ -15,7 +15,7 @@ class SucceedTaskPage extends StatelessWidget {
           padding: EdgeInsets.symmetric(vertical: context.dynamicHeight(0.08)),
           child: Column(
             children: [
-              Image.asset('assets/images/medal.png', height: context.dynamicHeight(0.4),),
+              Image.asset('assets/images/medal.png', height: context.dynamicHeight(0.4)),
               Text('Congratulations!', style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                 fontWeight: FontWeight.bold
               )),

@@ -3,6 +3,7 @@ import 'package:farmodo/core/di/injection.dart';
 import 'package:farmodo/core/theme/app_colors.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/core/utility/extension/route_helper.dart';
+import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
 import 'package:farmodo/data/services/auth_service.dart';
 import 'package:farmodo/feature/tasks/view/add_task_view.dart';
 import 'package:farmodo/feature/tasks/viewmodel/tasks_controller.dart';
@@ -112,7 +113,7 @@ void _showLoginBottomSheet() {
                         Text('NO TASKS YET', style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                           fontWeight: FontWeight.bold
                         )),
-                        SizedBox(height: context.dynamicHeight(0.01)),
+                        context.dynamicHeight(0.01).height,
                         Text('Please create a task first.', style: Theme.of(context).textTheme.bodyMedium),
                         TextButton(
                           onPressed: () {
