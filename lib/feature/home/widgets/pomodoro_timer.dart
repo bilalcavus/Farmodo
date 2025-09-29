@@ -48,11 +48,10 @@ class PomodoroTimer extends StatelessWidget {
                     timerController.isOnBreak.value
                         ? timerController.formatTime(timerController.breakSecondsRemaining.value)
                         : timerController.formatTime(timerController.secondsRemaining.value),
-                    style:  TextStyle(
-                      fontSize: context.dynamicHeight(0.05),
+                    style: Theme.of(context).textTheme.displayLarge?.copyWith(
                       color: AppColors.textPrimary,
                       fontWeight: FontWeight.w700,
-                    ),
+                    )
                   ),
                   timerController.isOnBreak.value == true ?
                   Text('Break Time', style: Theme.of(context).textTheme.bodyMedium?.copyWith(

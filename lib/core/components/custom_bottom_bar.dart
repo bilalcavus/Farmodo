@@ -58,6 +58,14 @@ class CustomBottomNavigation extends StatelessWidget {
             child: _buildNavItem(
               context,
               index: 3,
+              icon: Icons.leaderboard_outlined,
+              label: 'Leaderboard'
+            ),
+          ),
+          Expanded(
+            child: _buildNavItem(
+              context,
+              index: 4,
               icon: Icons.account_circle,
               label: 'Profile'
             ),

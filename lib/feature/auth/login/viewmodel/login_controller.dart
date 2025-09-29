@@ -110,7 +110,7 @@ class LoginController extends GetxController {
   Future<void> handleAppleSignIn(BuildContext context) async {
     setAppleLoading(true.obs);
     try {
-      await authService.signInWitApple();
+      await authService.signInWithApple();
       if (context.mounted) RouteHelper.pushAndCloseOther(context, AppNavigation());
     } catch (e) {
       debugPrint('$e');

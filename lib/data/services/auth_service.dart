@@ -32,6 +32,12 @@ class AuthService {
     }
   }
 
+  Future<String?> getUserPhotoUrl(String uid) async {
+    final snapshot = await FirebaseFirestore.instance.collection('users').doc(uid).get();
+    return snapshot.data()?['photoUrl'];
+  }
+
+
   Future<void> fetchAndSetCurrentUser() async {
     if (firebaseUser == null) return;
     final doc = await FirebaseFirestore.instance.collection('users').doc(firebaseUser?.uid).get();
@@ -156,7 +162,7 @@ class AuthService {
     _isAuthStateReady = false;
   }
 
-  Future<fb.UserCredential> signInWitApple() async {
+  Future<fb.UserCredential> signInWithApple() async {
     final appleCredential = await SignInWithApple.getAppleIDCredential(
       scopes: [
         AppleIDAuthorizationScopes.email,
@@ -201,6 +207,7 @@ class AuthService {
 
       final userCredential = await _firebaseAuth.signInWithCredential(credential);
       final user = userCredential.user;
+      final photoUrl = firebaseUser?.photoURL;
 
       if (user == null) {
         throw Exception('Firebase authentication başarısız');
@@ -221,7 +228,7 @@ class AuthService {
           level: 0,
           xp: 0,
           totalPomodoro: 0,
-          avatarUrl: user.photoURL,
+          avatarUrl: photoUrl,
           createdAt: DateTime.now(),
           lastLoginAt: DateTime.now(),
           isActive: true,

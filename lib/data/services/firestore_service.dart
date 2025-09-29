@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:farmodo/data/models/reward_model.dart';
+import 'package:farmodo/data/models/user_model.dart';
 import 'package:farmodo/data/models/user_task_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -12,6 +13,39 @@ class FirestoreService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   DocumentSnapshot? lastActiveDoc;
   DocumentSnapshot? lastCompletedDoc;
+
+  Future<List<UserModel>> getXpLeaderboard() async {
+    final uid = _auth.currentUser?.uid;
+    if (uid == null) return [];
+    final query = _firestore
+        .collection('users')
+        .orderBy('xp', descending: true)
+        .limit(10);
+    final snapshot = await query.get();
+    return snapshot.docs.map((doc) => UserModel.fromFirestore(doc)).toList();
+  }
+
+  Future<List<UserModel>> getTaskLeaderboard() async {
+    final uid = _auth.currentUser?.uid;
+    if (uid == null) return [];
+    final query = _firestore
+        .collection('users')
+        .orderBy('totalPomodoro', descending: true)
+        .limit(10);
+    final snapshot = await query.get();
+    return snapshot.docs.map((doc) => UserModel.fromFirestore(doc)).toList();
+  }
+
+  Future<List<UserModel>> getLevelLeaderboard() async {
+    final uid = _auth.currentUser?.uid;
+    if (uid == null) return [];
+    final query = _firestore
+        .collection('users')
+        .orderBy('level', descending: true)
+        .limit(10);
+    final snapshot = await query.get();
+    return snapshot.docs.map((doc) => UserModel.fromFirestore(doc)).toList();
+  }
 
 
   Future<void> addTask(String title, String focusType, int duration, int xpReward, int totalSessions) async {
