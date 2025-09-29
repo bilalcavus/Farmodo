@@ -11,6 +11,8 @@ enum AchievementType {
   streak,           // Ardışık günler
   collection,       // Koleksiyon tamamlama
   special,          // Özel başarılar
+  nightCare,      // Gece bakım
+  morningCare,   // Sabah bakımı
 }
 
 enum AchievementRarity {

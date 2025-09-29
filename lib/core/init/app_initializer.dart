@@ -34,7 +34,6 @@ final class AppInitializer {
       await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
       await setupDependencies();
       
-      // Notification service'i initialize et
       await NotificationService.initialize();
       Logger().i('Notification service initialized successfully');
 

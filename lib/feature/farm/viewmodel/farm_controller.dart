@@ -1,8 +1,10 @@
+import 'package:farmodo/core/components/message/snack_messages.dart';
 import 'package:farmodo/data/models/animal_model.dart';
 import 'package:farmodo/data/services/animal_service.dart';
 import 'package:farmodo/data/services/auth_service.dart';
 import 'package:farmodo/data/services/gamification/gamification_service.dart';
 import 'package:farmodo/feature/auth/login/viewmodel/login_controller.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class FarmController extends GetxController {
@@ -29,6 +31,24 @@ class FarmController extends GetxController {
     loadAnimals();
   }
 
+  bool isMorning(){
+    final now = DateTime.now();
+    if (now.hour == 8 || now.hour == 7) {
+      return true;
+    }
+    return false;
+  }
+
+  bool isNight(){
+    final now = DateTime.now();
+    if (now.hour == 22 || now.hour == 23 || now.hour == 0) {
+      return true;
+    }
+    return false;
+  }
+  
+
+
   Future<void> loadAnimals() async {
     isLoading.value = true;
     errorMessage.value = '';
@@ -54,14 +74,29 @@ class FarmController extends GetxController {
 
   // Hayvanı besle
   Future<void> feedAnimal(String animalId) async {
+    if (authService.firebaseUser == null) return;
+
     feedingAnimalId.value = animalId;
     errorMessage.value = '';
-    try {
-      await _animalService.feedAnimal(animalId);
-      await loadAnimals();
-      await _gamificationService.triggerCareAction('feedAnimals', animalId: animalId);
-      await authService.fetchAndSetCurrentUser();
-      loginController.refreshUserXp();
+    try {      
+      if (authService.currentUser!.xp > 0) {
+        await _animalService.feedAnimal(animalId);
+        await loadAnimals();
+        await _gamificationService.triggerCareAction('feedAnimals', animalId: animalId);
+        if(isMorning()){
+          await _gamificationService.triggerCareAction("morningCare", animalId : animalId);
+          debugPrint("Special action triggered");
+        }
+        if (isNight()) {
+          await _gamificationService.triggerCareAction("nightCare", animalId : animalId);
+          debugPrint("Special action triggered");
+        }
+        await authService.fetchAndSetCurrentUser();
+        loginController.refreshUserXp();
+      } else {
+        SnackMessages().showErrorSnack("Not enough xp");
+      }
+      
     } catch (e) {
       errorMessage.value = e.toString();
     } finally {
@@ -75,11 +110,23 @@ class FarmController extends GetxController {
     lovingAnimalId.value = animalId;
     
     try {
-      await _animalService.loveAnimal(animalId);
-      await loadAnimals();
-      await _gamificationService.triggerCareAction('loveAnimals', animalId: animalId);
-      await authService.fetchAndSetCurrentUser();
-      loginController.refreshUserXp();
+      if (authService.currentUser!.xp > 0) {
+        await _animalService.loveAnimal(animalId);
+        await loadAnimals();
+        await _gamificationService.triggerCareAction('loveAnimals', animalId: animalId);
+         if(isMorning()){
+          await _gamificationService.triggerCareAction("morningCare", animalId : animalId);
+          debugPrint("Special action triggered");
+        }
+        if (isNight()) {
+          await _gamificationService.triggerCareAction("nightCare", animalId : animalId);
+          debugPrint("Special action triggered");
+        }
+        await authService.fetchAndSetCurrentUser();
+        loginController.refreshUserXp();
+      } else {
+        SnackMessages().showErrorSnack("Not enough xp");
+      }
     } catch (e) {
       errorMessage.value = e.toString();
     } finally {
@@ -93,11 +140,23 @@ class FarmController extends GetxController {
     playingAnimalId.value = animalId;
     
     try {
-      await _animalService.playWithAnimal(animalId);
-      await loadAnimals();
-      await _gamificationService.triggerCareAction('playWithAnimals', animalId: animalId);
-      await authService.fetchAndSetCurrentUser();
-      loginController.refreshUserXp();
+      if (authService.currentUser!.xp > 0) {
+        await _animalService.playWithAnimal(animalId);
+        await loadAnimals();
+        await _gamificationService.triggerCareAction('playWithAnimals', animalId: animalId);
+         if(isMorning()){
+          await _gamificationService.triggerCareAction("morningCare", animalId : animalId);
+          debugPrint("Special action triggered");
+        }
+        if (isNight()) {
+          await _gamificationService.triggerCareAction("nightCare", animalId : animalId);
+          debugPrint("Special action triggered");
+        }
+        await authService.fetchAndSetCurrentUser();
+        loginController.refreshUserXp();
+      } else {
+        SnackMessages().showErrorSnack("Not enough xp");
+      }
     } catch (e) {
       errorMessage.value = e.toString();
     } finally {
@@ -111,11 +170,23 @@ class FarmController extends GetxController {
     healingAnimalId.value = animalId;
     
     try {
-      await _animalService.healAnimal(animalId);
-      await loadAnimals(); // Hayvanları yeniden yükle
-      await _gamificationService.triggerCareAction('healAnimals', animalId: animalId);
-      await authService.fetchAndSetCurrentUser();
-      loginController.refreshUserXp();
+      if (authService.currentUser!.xp > 0) {
+        await _animalService.healAnimal(animalId);
+        await loadAnimals(); // Hayvanları yeniden yükle
+        await _gamificationService.triggerCareAction('healAnimals', animalId: animalId);
+         if(isMorning()){
+          await _gamificationService.triggerCareAction("morningCare", animalId : animalId);
+          debugPrint("Special action triggered");
+        }
+        if (isNight()) {
+          await _gamificationService.triggerCareAction("nightCare", animalId : animalId);
+          debugPrint("Special action triggered");
+        }
+        await authService.fetchAndSetCurrentUser();
+        loginController.refreshUserXp();
+      } else {
+        SnackMessages().showErrorSnack("Not enough xp");
+      }
     } catch (e) {
       errorMessage.value = e.toString();
     } finally {

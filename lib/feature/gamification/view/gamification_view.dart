@@ -1,4 +1,7 @@
+import 'package:farmodo/core/di/injection.dart';
 import 'package:farmodo/core/theme/app_colors.dart';
+import 'package:farmodo/data/services/auth_service.dart';
+import 'package:farmodo/data/services/sample_data_service.dart';
 import 'package:farmodo/feature/gamification/viewmodel/gamification_controller.dart';
 import 'package:farmodo/feature/gamification/widget/achievements/achievements_tab.dart';
 import 'package:farmodo/feature/gamification/widget/main/stat_cards.dart';
@@ -34,6 +37,7 @@ class _GamificationViewState extends State<GamificationView>
 
   @override
   Widget build(BuildContext context) {
+    final authService = getIt<AuthService>();
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
@@ -49,7 +53,10 @@ class _GamificationViewState extends State<GamificationView>
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh_sharp, color: Colors.white),
-            onPressed: () => gamificationController.refreshGamification(),
+            onPressed: () async {
+              await SampleDataService().checkExistingData(authService.firebaseUser!.uid);
+              gamificationController.refreshGamification();
+            } 
           ),
         ],
         bottom: TabBar(

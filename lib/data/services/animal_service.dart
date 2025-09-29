@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:farmodo/data/models/animal_model.dart';
 import 'package:farmodo/data/models/reward_model.dart';
+import 'package:farmodo/data/services/auth_service.dart';
 import 'package:farmodo/data/services/gamification/gamification_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -12,6 +13,7 @@ class AnimalService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GamificationService _gamificationService = GamificationService();
+  final AuthService _authService = AuthService();
 
   Future<List<FarmAnimal>> getUserAnimals() async {
     final uid = _auth.currentUser?.uid;
@@ -123,6 +125,7 @@ class AnimalService {
           .collection('animals')
           .doc(animalId)
           .get();
+      
 
       if (animalDoc.exists) {
         final animal = FarmAnimal.fromFirestore(animalDoc);
@@ -147,7 +150,8 @@ class AnimalService {
             });
         await _firestore.runTransaction((transaction) async {
           transaction.update(_firestore.collection('users').doc(uid), {
-            'xp': FieldValue.increment(-20),
+            if(_authService.currentUser!.xp > 0)
+              'xp': FieldValue.increment(-20),
           });
         });
         if (levelGained > 0) {
@@ -196,6 +200,7 @@ class AnimalService {
 
             await _firestore.runTransaction((transaction) async {
           transaction.update(_firestore.collection('users').doc(uid), {
+            if(_authService.currentUser!.xp > 0)
             'xp': FieldValue.increment(-10),
           });
 
@@ -244,6 +249,7 @@ class AnimalService {
             });
         await _firestore.runTransaction((transaction) async {
           transaction.update(_firestore.collection('users').doc(uid), {
+            if(_authService.currentUser!.xp > 0)
             'xp': FieldValue.increment(-30),
           });
         });
@@ -293,6 +299,7 @@ class AnimalService {
             
         await _firestore.runTransaction((transaction) async {
           transaction.update(_firestore.collection('users').doc(uid), {
+            if(_authService.currentUser!.xp > 0)
             'xp': FieldValue.increment(-50),
           });
         });
@@ -431,7 +438,7 @@ class AnimalService {
         ///her saat başı %2 azalır
         final newLove = (animal.status.love - (hoursSinceLastLoving * 0.02)).clamp(0.0, 1.0);
 
-        final newHealth = (animal.status.health - ((1 - newHunger) * 0.05)).clamp(0.0, 1.0);
+        final newHealth = (animal.status.health - ((1 - newHunger) * 0.1)).clamp(0.0, 1.0);
 
         if (newHunger != animal.status.hunger || newEnergy != animal.status.energy || newLove != animal.status.love) {
           final updatedStatus = animal.status.copyWith(

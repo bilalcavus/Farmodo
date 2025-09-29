@@ -12,8 +12,8 @@ class SnackMessages {
       'Hata',
       message,
       snackPosition: SnackPosition.TOP,
-      backgroundColor: Colors.red.withAlpha(30),
-      colorText: Colors.grey.shade900,
+      backgroundColor: Colors.red,
+      colorText: Colors.white,
       duration: const Duration(seconds: 3),
     );
   }

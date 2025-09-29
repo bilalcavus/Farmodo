@@ -284,22 +284,22 @@ class FarmAnimal {
   }
 
   FarmAnimal feed() {
-    final newStatus = status.updateHunger(0.2 + status.hunger);
+    final newStatus = status.updateHunger(0.1 + status.hunger);
     return copyWith(status: newStatus).addExperience(4); // Besleme: 10 XP
   }
 
   FarmAnimal love() {
-    final newStatus = status.updateLove(status.love + 0.2);
+    final newStatus = status.updateLove(status.love + 0.1);
     return copyWith(status: newStatus).addExperience(4); // Sevgi: 15 XP
   }
 
   FarmAnimal play() {
-    final newStatus = status.updateEnergy(status.energy + 0.3);
+    final newStatus = status.updateEnergy(status.energy + 0.1);
     return copyWith(status: newStatus).addExperience(4); // Oynama: 20 XP
   }
 
   FarmAnimal heal() {
-    final newStatus = status.updateHealth(1.0);
+    final newStatus = status.updateHealth(status.health + 0.1);
     return copyWith(status: newStatus).addExperience(4); // İyileştirme: 25 XP
   }
 

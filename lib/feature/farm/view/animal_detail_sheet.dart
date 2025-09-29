@@ -99,10 +99,8 @@ class _AnimalDetailSheetState extends State<AnimalDetailSheet> {
               imagePath: 'assets/images/actions/feed.png',
               imageHeight: 50,
               isLoading:  _farmController.feedingAnimalId.value == widget.animal.id,
-              onTap: () {
-                _farmController.feedAnimal(widget.animal.id);
-                SnackMessages().showAnimalAction('Hayvan beslediniz!', Colors.green);
-              }
+              onTap: () => _farmController.feedAnimal(widget.animal.id)
+            
             ),
             _buildActionButton(
               title: 'Love',
@@ -112,10 +110,7 @@ class _AnimalDetailSheetState extends State<AnimalDetailSheet> {
               imageHeight: 50,
               color: Colors.pink,
               isLoading: _farmController.lovingAnimalId.value == widget.animal.id,
-              onTap: ()  {
-                _farmController.loveAnimal(widget.animal.id);
-                SnackMessages().showAnimalAction('Hayvana sevgi gösterdiniz!', Colors.pink);
-              }
+              onTap: () => _farmController.loveAnimal(widget.animal.id)
             ),
             _buildActionButton(
               title: 'Play',
@@ -125,10 +120,7 @@ class _AnimalDetailSheetState extends State<AnimalDetailSheet> {
               imageHeight: 50,
               color: Colors.blue,
               isLoading: _farmController.playingAnimalId.value == widget.animal.id,
-              onTap: () {
-                _farmController.playWithAnimal(widget.animal.id);
-                SnackMessages().showAnimalAction('Hayvanla oynadınız!', Colors.blue);
-              } 
+              onTap: () => _farmController.playWithAnimal(widget.animal.id)
             ),
             _buildActionButton(
               title: 'Heal',
@@ -138,10 +130,7 @@ class _AnimalDetailSheetState extends State<AnimalDetailSheet> {
               imageHeight: 50,
               color: Colors.green,
               isLoading: _farmController.healingAnimalId.value == widget.animal.id,
-              onTap: () {
-                _farmController.healAnimal(widget.animal.id);
-                SnackMessages().showAnimalAction('Hayvanı iyileştirdiniz!', Colors.green);
-              } 
+              onTap: () => _farmController.healAnimal(widget.animal.id)
             ),
           ],
         )),
