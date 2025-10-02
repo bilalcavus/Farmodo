@@ -1,26 +1,26 @@
 class TextStrings {
   // Privacy Policy
   static const String privacyPolicy = '''
-Farmodo uygulaması kullanıcılarının gizliliğini korumaya kararlıdır. Kişisel bilgilerinizi nasıl topladığımızı, kullandığımızı ve koruduğumuzu bu gizlilik sözleşmesi açıklar.
+The Farmodo app is committed to protecting the privacy of its users. This privacy policy explains how we collect, use, and protect your personal information.
 
-• Google hesabı ile giriş yaptığınızda email adresi, ad ve profil fotoğrafı toplarız
-• Çiftlik ve hayvan yönetimi verileriniz Firebase'de güvenle saklanır
-• Verilerinizi üçüncü taraflarla paylaşmayız
-• Hesabınızı sildiğinizde verileriniz güvenli şekilde silinir
+• When you log in with a Google account, we collect your email address, name, and profile photo.
+• Your farm and animal management data is securely stored in Firebase.
+• We do not share your data with third parties.
+• Your data is securely deleted when you delete your account.
 
-Daha fazla bilgi için tam gizlilik politikamızı inceleyebilirsiniz.
+For more information, please review our full privacy policy.
 ''';
 
   // Terms and Conditions
   static const String termsAndConditions = '''
-Farmodo uygulamasını kullanarak aşağıdaki şartları kabul etmiş olursunuz:
+By using the Farmodo app, you agree to the following terms:
 
-• Uygulamayı yalnızca yasal amaçlar için kullanacaksınız
-• Başkalarının haklarını ihlal etmeyeceksiniz
-• Uygulamayı güvenlik açıklarını sömürmek için kullanmayacaksınız
-• Gerçek olmayan bilgiler vermeyeceksiniz
-• Bu şartları ihlal etmeniz durumunda hesabınız askıya alınabilir
+• You will use the app only for lawful purposes.
+• You will not violate the rights of others.
+• You will not use the app to exploit security vulnerabilities.
+• You will not provide false information.
+• If you violate these terms, your account may be suspended.
 
-Bu şartlar Türkiye Cumhuriyeti mevzuatına tabidir.
+These terms are subject to the legislation of the Republic of Turkey.
 ''';
 }

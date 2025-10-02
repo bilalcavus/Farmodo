@@ -17,7 +17,7 @@ class GamificationController extends GetxController {
   final RxBool isLoadingQuests = false.obs;
   final RxBool isLoadingUserData = false.obs;
   
-  final RxString achievementFilter = 'Tümü'.obs;
+  final RxString achievementFilter = 'All'.obs;
   final RxString questFilter = 'Aktif'.obs;
 
   var errorMessage = ''.obs;
@@ -138,28 +138,28 @@ class GamificationController extends GetxController {
   List<Achievement> get filteredAchievements {
     List<Achievement> result;
     switch (achievementFilter.value) {
-      case 'Tümü':
+      case 'All':
         result = achievements;
         break;
-      case 'Açık':
+      case 'Unlocked':
         result = unlockedAchievements;
         break;
-      case 'Kilitli':
+      case 'Locked':
         result = lockedAchievements;
         break;
-      case 'Yaygın':
+      case 'Widespread':
         result = achievements.where((a) => a.rarity == AchievementRarity.common).toList();
         break;
-      case 'Nadir':
+      case 'Rare':
         result = achievements.where((a) => a.rarity == AchievementRarity.rare).toList();
         break;
-      case 'Az Bulunur':
+      case 'Epic':
         result = achievements.where((a) => a.rarity == AchievementRarity.epic).toList();
         break;
-      case 'Efsanevi':
+      case 'Legendary':
         result = achievements.where((a) => a.rarity == AchievementRarity.legendary).toList();
         break;
-      case 'Efsane':
+      case 'Legend':
         result = achievements.where((a) => a.rarity == AchievementRarity.legendary).toList();
         break;
       default:
@@ -215,17 +215,17 @@ class GamificationController extends GetxController {
   // Filtrelenmiş görevleri getir
   List<Quest> get filteredQuests {
     switch (questFilter.value) {
-      case 'Aktif':
+      case 'Active':
         return activeQuests;
-      case 'Günlük':
+      case 'Daily':
         return dailyQuests;
-      case 'Haftalık':
+      case 'Weekly':
         return weeklyQuests;
-      case 'Özel':
+      case 'Special':
         return specialQuests;
-      case 'Etkinlik':
+      case 'Event':
         return eventQuests;
-      case 'Tamamlanan':
+      case 'Completed':
         return completedQuests;
       default:
         return activeQuests;

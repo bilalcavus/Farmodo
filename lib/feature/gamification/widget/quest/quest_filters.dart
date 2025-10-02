@@ -24,29 +24,29 @@ class QuestFilters extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         children: [
           FilterChipWidget(
-            label: 'Aktif', 
-            isSelected: controller.questFilter.value == 'Aktif', 
-            onTap: () => controller.setQuestFilter('Aktif')),
+            label: 'Active', 
+            isSelected: controller.questFilter.value == 'Active', 
+            onTap: () => controller.setQuestFilter('Active')),
           FilterChipWidget(
-            label: 'Günlük',
-            isSelected: controller.questFilter.value == 'Günlük', 
-            onTap: () => controller.setQuestFilter('Günlük')),
+            label: 'Daily',
+            isSelected: controller.questFilter.value == 'Daily', 
+            onTap: () => controller.setQuestFilter('Daily')),
           FilterChipWidget(
-            label: 'Haftalık', 
-            isSelected: controller.questFilter.value == 'Haftalık', 
-            onTap: () => controller.setQuestFilter('Haftalık')),
+            label: 'Weekly', 
+            isSelected: controller.questFilter.value == 'Weekly', 
+            onTap: () => controller.setQuestFilter('Weekly')),
           FilterChipWidget(
-            label: 'Özel',
-            isSelected: controller.questFilter.value == 'Özel', 
-            onTap: () => controller.setQuestFilter('Özel')),
+            label: 'Special',
+            isSelected: controller.questFilter.value == 'Special', 
+            onTap: () => controller.setQuestFilter('Special')),
           FilterChipWidget(
-            label: 'Etkinlik', 
-            isSelected: controller.questFilter.value == 'Etkinlik', 
-            onTap: () => controller.setQuestFilter('Etkinlik')),
+            label: 'Event', 
+            isSelected: controller.questFilter.value == 'Event', 
+            onTap: () => controller.setQuestFilter('Event')),
           FilterChipWidget(
-            label: 'Tamamlanan',
-            isSelected: controller.questFilter.value == 'Tamamlanan', 
-            onTap: () => controller.setQuestFilter('Tamamlanan')),
+            label: 'Completed',
+            isSelected: controller.questFilter.value == 'Completed', 
+            onTap: () => controller.setQuestFilter('Completed')),
         ],
       )),
     );

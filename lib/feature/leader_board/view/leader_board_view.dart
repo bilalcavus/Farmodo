@@ -7,7 +7,6 @@ import 'package:farmodo/feature/leader_board/view/tabs/xp_leader_board.dart';
 import 'package:farmodo/feature/leader_board/viewmodel/leader_board_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:iconsax/iconsax.dart';
 

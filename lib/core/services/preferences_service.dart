@@ -40,4 +40,50 @@ class PreferencesService {
   Set<String> getAllKeys() {
     return _prefs?.getKeys() ?? {};
   }
+
+  // Generic methods for boolean preferences
+  bool getBool(String key, bool defaultValue) {
+    return _prefs?.getBool(key) ?? defaultValue;
+  }
+
+  Future<bool> setBool(String key, bool value) async {
+    return await _prefs?.setBool(key, value) ?? false;
+  }
+
+  // Generic methods for string preferences
+  String getString(String key, String defaultValue) {
+    return _prefs?.getString(key) ?? defaultValue;
+  }
+
+  Future<bool> setString(String key, String value) async {
+    return await _prefs?.setString(key, value) ?? false;
+  }
+
+  // Generic methods for integer preferences
+  int getInt(String key, int defaultValue) {
+    return _prefs?.getInt(key) ?? defaultValue;
+  }
+
+  Future<bool> setInt(String key, int value) async {
+    return await _prefs?.setInt(key, value) ?? false;
+  }
+
+  // Generic methods for double preferences
+  double getDouble(String key, double defaultValue) {
+    return _prefs?.getDouble(key) ?? defaultValue;
+  }
+
+  Future<bool> setDouble(String key, double value) async {
+    return await _prefs?.setDouble(key, value) ?? false;
+  }
+
+  // Remove a specific key
+  Future<bool> remove(String key) async {
+    return await _prefs?.remove(key) ?? false;
+  }
+
+  // Clear all preferences
+  Future<bool> clear() async {
+    return await _prefs?.clear() ?? false;
+  }
 }

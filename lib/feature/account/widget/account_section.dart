@@ -3,6 +3,7 @@ import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/core/utility/extension/route_helper.dart';
 import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
 import 'package:farmodo/feature/account/account_deletion_view.dart';
+import 'package:farmodo/feature/account/profile_detail_view.dart';
 import 'package:farmodo/feature/account/widget/settings_item_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
@@ -35,15 +36,10 @@ class AccountSection extends StatelessWidget {
               context: context,
               icon: HugeIcons.strokeRoundedUser,
               title: 'Profile Detail',
-              onTap: () {},
+              onTap: () => RouteHelper.push(context, const ProfileDetailView()),
             ),
           
-            SettingsItemWidget(
-              context: context,
-              icon: HugeIcons.strokeRoundedCustomerSupport,
-              title: 'Help & Support',
-              onTap: () {},
-            ),
+            
             SettingsItemWidget(
               context: context,
               icon: HugeIcons.strokeRoundedDelete04,

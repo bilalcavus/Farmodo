@@ -141,7 +141,7 @@ Widget _buildProgress(BuildContext context, quest, userQuest) {
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
       Text(
-        'İlerleme',
+        'Progress',
         style: Theme.of(context).textTheme.labelLarge?.copyWith(
               color: Colors.grey.shade700,
             ),
@@ -182,7 +182,7 @@ Widget _buildCompletedBadge(BuildContext context) {
       borderRadius: BorderRadius.circular(12),
     ),
     child: Text(
-      '✅ Tamamlandı!',
+      '✅ Completed!',
       style: Theme.of(context).textTheme.labelMedium?.copyWith(
             color: Colors.green,
             fontWeight: FontWeight.bold,

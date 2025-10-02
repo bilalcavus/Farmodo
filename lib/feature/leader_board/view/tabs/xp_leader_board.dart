@@ -4,8 +4,10 @@ import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
 import 'package:farmodo/core/utility/mixin/loading_mixin.dart';
 import 'package:farmodo/data/services/auth_service.dart';
+import 'package:farmodo/feature/account/widget/login_prompt.dart';
 import 'package:farmodo/feature/leader_board/viewmodel/leader_board_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:kartal/kartal.dart';
 
 class XpLeaderBoard extends StatefulWidget {
   const XpLeaderBoard({super.key, required this.controller});
@@ -25,14 +27,21 @@ class _XpLeaderBoardState extends State<XpLeaderBoard> with LoadingMixin {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Scaffold(
+    final authService = getIt<AuthService>();
+    bool isLoggedIn = authService.isLoggedIn;
+    return  Scaffold(
       body: ValueListenableBuilder<bool>(
         valueListenable: isLoadingNotifier,
         builder: (context, loading, _) {
           if (loading) {
             return const Center(child: CircularProgressIndicator());
           }
-          return SizedBox(
+          return !isLoggedIn ? Center(
+            child: Padding(
+              padding: context.padding.horizontalNormal,
+              child: LoginPrompt(context: context, title: "Log in to access all features", subtitle: "Log in to see leaderboard",),
+            )
+          ) :  SizedBox(
             height: double.infinity,
             child: ListView.builder(
               itemCount: widget.controller.xpLeaderboard.length,
@@ -54,6 +63,7 @@ class _XpLeaderBoardState extends State<XpLeaderBoard> with LoadingMixin {
                       ))
                     ],
                   ),
+                  
                   leading: Text("${index + 1}"),
                   trailing: Text("${user.xp}", style: theme.textTheme.bodyMedium?.copyWith(
                     fontWeight: FontWeight.bold

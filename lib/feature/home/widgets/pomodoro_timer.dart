@@ -1,6 +1,5 @@
 
 import 'package:farmodo/core/theme/app_colors.dart';
-import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/feature/tasks/viewmodel/timer_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';

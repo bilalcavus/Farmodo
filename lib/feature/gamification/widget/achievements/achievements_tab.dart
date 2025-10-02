@@ -123,7 +123,7 @@ class AchievementsTab extends StatelessWidget {
             context.dynamicHeight(0.03).height,
             if (userAchievement != null) ...[
               Text(
-                'İlerleme',
+                'Progress',
                 style: Theme.of(context).textTheme.labelLarge?.copyWith(
                   color: Colors.grey.shade700,
                 )
@@ -157,7 +157,7 @@ class AchievementsTab extends StatelessWidget {
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Text(
-                        '✅ Açıldı!',
+                        '✅ Unlocked!',
                         style: Theme.of(context).textTheme.labelMedium?.copyWith(
                           color: Colors.green,
                           fontWeight: FontWeight.bold,
@@ -186,7 +186,7 @@ class AchievementsTab extends StatelessWidget {
                   ),
                   context.dynamicWidth(0.03).width,
                   Text(
-                    '+${achievement.xpReward} XP Ödülü',
+                    '+${achievement.xpReward} XP Rewards',
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                       color: achievement.rarityColor,

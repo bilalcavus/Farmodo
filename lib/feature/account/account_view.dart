@@ -109,7 +109,7 @@ class _AccountViewState extends State<AccountView> {
             ),
             context.dynamicHeight(0.04).height,
             if (!_authService.isLoggedIn) ...[
-              LoginPrompt(context: context),
+              LoginPrompt(context: context, title: 'Log in to access all features', subtitle: 'Sync your data and buy your animals'),
               context.dynamicHeight(0.04).height,
             ],
             if (_authService.isLoggedIn)

@@ -4,8 +4,10 @@ import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
 import 'package:farmodo/core/utility/mixin/loading_mixin.dart';
 import 'package:farmodo/data/services/auth_service.dart';
+import 'package:farmodo/feature/account/widget/login_prompt.dart';
 import 'package:farmodo/feature/leader_board/viewmodel/leader_board_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:kartal/kartal.dart';
 
 class PomodoroLeaderBoard extends StatefulWidget {
   const PomodoroLeaderBoard({super.key, required this.controller});
@@ -25,7 +27,14 @@ class _XpLeaderBoardState extends State<PomodoroLeaderBoard> with LoadingMixin {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Scaffold(
+    final authService = getIt<AuthService>();
+    bool isLoggedIn = authService.isLoggedIn;
+    return !isLoggedIn ? Center(
+            child: Padding(
+              padding: context.padding.horizontalNormal,
+              child: LoginPrompt(context: context, title: "Log in to access all features", subtitle: "Log in to see leaderboard",),
+        )
+      ): Scaffold(
       body: ValueListenableBuilder<bool>(
         valueListenable: isLoadingNotifier,
         builder: (context, loading, _) {

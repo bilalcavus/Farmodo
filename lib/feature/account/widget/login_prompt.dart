@@ -9,14 +9,17 @@ import 'package:hugeicons/hugeicons.dart';
 class LoginPrompt extends StatelessWidget {
   const LoginPrompt({
     super.key,
-    required this.context,
+    required this.context, required this.title, required this.subtitle,
   });
 
   final BuildContext context;
+  final String title;
+  final String subtitle;
 
   @override
   Widget build(BuildContext context) {
     return Container(
+      height: context.dynamicHeight(0.25),
       width: double.infinity,
       padding: EdgeInsets.all(context.dynamicHeight(0.02)),
       decoration: BoxDecoration(
@@ -33,7 +36,7 @@ class LoginPrompt extends StatelessWidget {
           ),
           context.dynamicHeight(0.01).height,
           Text(
-            'Log in to access all features',
+            title,
             style: TextStyle(
               color: AppColors.textPrimary,
               fontSize: context.dynamicHeight(0.018),
@@ -43,7 +46,7 @@ class LoginPrompt extends StatelessWidget {
           ),
           context.dynamicHeight(0.01).height,
           Text(
-            'Sync your data and buy your animals',
+            subtitle,
             style: TextStyle(
               color: AppColors.textSecondary,
               fontSize: context.dynamicHeight(0.015),

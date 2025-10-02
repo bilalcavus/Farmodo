@@ -42,7 +42,7 @@ class _GamificationViewState extends State<GamificationView>
       backgroundColor: AppColors.background,
       appBar: AppBar(
         title:  Text(
-          'Başarılar & Görevler',
+          'Achievements & Quests',
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
             color: Colors.white
           )
@@ -68,11 +68,11 @@ class _GamificationViewState extends State<GamificationView>
           tabs: const [
             Tab(
               icon: Icon(HugeIcons.strokeRoundedChampion),
-              text: 'Başarılar',
+              text: 'Achievements',
             ),
             Tab(
               icon: Icon(HugeIcons.strokeRoundedStickyNote01),
-              text: 'Görevler',
+              text: 'Quests',
             ),
           ],
         ),

@@ -287,15 +287,15 @@ class _AchievementUnlockAnimationState extends State<AchievementUnlockAnimation>
   String _getRarityText(AchievementRarity rarity) {
     switch (rarity) {
       case AchievementRarity.common:
-        return 'Yaygın';
+        return 'Widespread';
       case AchievementRarity.uncommon:
-        return 'Nadir';
+        return 'Rare';
       case AchievementRarity.rare:
-        return 'Az Bulunur';
+        return 'Epic';
       case AchievementRarity.epic:
-        return 'Efsanevi';
+        return 'Legendary';
       case AchievementRarity.legendary:
-        return 'Efsane';
+        return 'Legend';
     }
   }
 }

@@ -65,14 +65,14 @@ class _LoginViewState extends State<LoginView> {
                   );
                 }
                 ),
-                SizedBox(height: context.dynamicHeight(.02)),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Spacer(),
-                    ForgotPassword()
-                  ],
-                ),
+                // SizedBox(height: context.dynamicHeight(.02)),
+                // Row(
+                //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //   children: [
+                //     Spacer(),
+                //     ForgotPassword()
+                //   ],
+                // ),
                 
                 SizedBox(height: context.dynamicHeight(.02)),
                 LoginButton(loginController: loginController,),
@@ -81,7 +81,7 @@ class _LoginViewState extends State<LoginView> {
                   leftText: "Don't have an account?",
                   rightText: "Sign up",
                   onTap: () => RouteHelper.push(context, RegisterView()),),
-                SizedBox(height: context.dynamicHeight(.04)),
+                SizedBox(height: context.dynamicHeight(.02)),
                 Row(
                   children: [
                     horizontalLine(),
@@ -91,7 +91,7 @@ class _LoginViewState extends State<LoginView> {
                 ),
                 SizedBox(height: context.dynamicHeight(.02)),
                 Obx((){
-                  return Row(
+                  return Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -100,19 +100,23 @@ class _LoginViewState extends State<LoginView> {
                       ) :
                       SocialNetworkLogin(
                         assetPath: "assets/logo/google-icon.png",
-                        onTap: () async => await loginController.handleGoogleSignIn(context)),
-                      context.dynamicWidth(0.08).width,
+                        onTap: () async => await loginController.handleGoogleSignIn(context),
+                        text: "Sign in with Google",  
+                      ),
+                      context.dynamicHeight(0.01).height,
                       loginController.appleLoading.value ? LoadingIcon(
                         iconColor: Colors.black,
                       ) : 
                       SocialNetworkLogin(
                         assetPath: "assets/logo/apple_icon.png",
-                        onTap: () async => await loginController.handleAppleSignIn(context)),
+                        onTap: () async => await loginController.handleAppleSignIn(context),
+                        text: "Sign in with Apple",
+                      ),
                       ],
                     );
                   }
                 ),
-                SizedBox(height: context.dynamicHeight(.15)),
+                SizedBox(height: context.dynamicHeight(.03)),
                 _buildPrivacyTermsText(context),
               ],
             ),
@@ -166,10 +170,10 @@ class _LoginViewState extends State<LoginView> {
             height: 1.3,
           ),
           children: [
-            TextSpan(text: 'Giriş yaparak veya kayıt olarak '),
+            TextSpan(text: 'Signing up or logging in you agree to the '),
             WidgetSpan(
               child: Text(
-                'gizlilik sözleşmesi',
+                'privacy policy',
                 style: TextStyle(
                   fontSize: context.dynamicWidth(0.032),
                   color: Colors.pink,
@@ -178,10 +182,10 @@ class _LoginViewState extends State<LoginView> {
                 ),
               ).onTap(() => _showPrivacyPolicy(context)),
             ),
-            TextSpan(text: ' ve '),
+            TextSpan(text: ' and '),
             WidgetSpan(
               child: Text(
-                'kullanım şartlarını',
+                'terms of service',
                 style: TextStyle(
                   fontSize: context.dynamicWidth(0.032),
                   color: Colors.pink,
@@ -190,7 +194,6 @@ class _LoginViewState extends State<LoginView> {
                 ),
               ).onTap(() => _showTermsOfService(context)),
             ),
-            TextSpan(text: ' kabul etmiş olursunuz.'),
           ],
         ),
       ),
@@ -202,17 +205,17 @@ class _LoginViewState extends State<LoginView> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Gizlilik Sözleşmesi'),
+          title: Text('Privacy Policy'),
           content: SingleChildScrollView(
             child: Text(
-              TextStrings.termsAndConditions,
+              TextStrings.privacyPolicy,
               style: TextStyle(fontSize: 14),
             ),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: Text('Tamam', style: TextStyle(color: Colors.pink)),
+              child: Text('Done', style: TextStyle(color: Colors.pink)),
             ),
           ],
         );
@@ -225,17 +228,17 @@ class _LoginViewState extends State<LoginView> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Kullanım Şartları'),
+          title: Text('Terms of Service'),
           content: SingleChildScrollView(
             child: Text(
-              TextStrings.privacyPolicy,
+              TextStrings.termsAndConditions,
               style: TextStyle(fontSize: 14),
             ),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: Text('Tamam', style: TextStyle(color: Colors.pink)),
+              child: Text('Done', style: TextStyle(color: Colors.pink)),
             ),
           ],
         );

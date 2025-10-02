@@ -22,7 +22,7 @@ class StatCards extends StatelessWidget {
               Expanded(
                 child: _buildStatCard(
                   context,
-                  'Başarılar',
+                  'Achievements',
                   '${gamificationController.totalUnlockedAchievements}/${gamificationController.totalAchievements}',
                   Icons.emoji_events,
                   Colors.orange,
@@ -33,7 +33,7 @@ class StatCards extends StatelessWidget {
               Expanded(
                 child: _buildStatCard(
                   context,
-                  'Görevler',
+                  'Quests',
                   '${gamificationController.totalCompletedQuests}/${gamificationController.totalQuests}',
                   Icons.assignment_turned_in,
                   Colors.blue,
@@ -44,11 +44,11 @@ class StatCards extends StatelessWidget {
               Expanded(
                 child: _buildStatCard(
                   context,
-                  'Toplam XP',
+                  'Total XP',
                   '${gamificationController.totalEarnedXP}',
                   Icons.star,
                   Colors.purple,
-                  'Kazanılan',
+                  'Gained',
                 ),
               ),
             ],
