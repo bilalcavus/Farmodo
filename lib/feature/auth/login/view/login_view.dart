@@ -8,7 +8,6 @@ import 'package:farmodo/core/utility/extension/route_helper.dart';
 import 'package:farmodo/core/theme/app_colors.dart';
 import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
 import 'package:farmodo/feature/auth/login/viewmodel/login_controller.dart';
-import 'package:farmodo/feature/auth/login/widget/forgot_password.dart';
 import 'package:farmodo/feature/auth/login/widget/login_button.dart';
 import 'package:farmodo/feature/auth/login/widget/sign_options_section.dart';
 import 'package:farmodo/feature/auth/login/widget/social_network_login.dart';

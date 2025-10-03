@@ -1,5 +1,7 @@
 import 'package:farmodo/core/di/injection.dart';
 import 'package:farmodo/core/theme/app_colors.dart';
+import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
+import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
 import 'package:farmodo/data/services/firestore_service.dart';
 import 'package:farmodo/feature/leader_board/view/tabs/level_leader_board.dart';
 import 'package:farmodo/feature/leader_board/view/tabs/pomodoro_leader_board.dart';
@@ -7,8 +9,6 @@ import 'package:farmodo/feature/leader_board/view/tabs/xp_leader_board.dart';
 import 'package:farmodo/feature/leader_board/viewmodel/leader_board_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:hugeicons/hugeicons.dart';
-import 'package:iconsax/iconsax.dart';
 
 class LeaderBoardView extends StatefulWidget {
   const LeaderBoardView({super.key});
@@ -43,46 +43,68 @@ class _LeaderBoardViewState extends State<LeaderBoardView> with TickerProviderSt
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.primary,
-        title: Text("Leaderboard", style: theme.textTheme.bodyLarge?.copyWith(
-          fontWeight: FontWeight.w600,
+        iconTheme: IconThemeData(
           color: Colors.white
-        )),
+        ),
+        elevation: 0,
+        title: Text(
+          "🏆 Leaderboard",
+          style: theme.textTheme.titleMedium?.copyWith(
+            fontWeight: FontWeight.w600,
+            color: Colors.white
+          ),
+        ),
         bottom: TabBar(
           controller: _tabController,
-          indicatorColor: Colors.white,
-          labelColor: Colors.white,
-          unselectedLabelColor: Colors.white70,
-          dividerColor: Colors.white,
-          tabs: const [
+          labelColor: AppColors.background,
+          unselectedLabelColor: AppColors.background,
+          labelStyle: const TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
+          unselectedLabelStyle: const TextStyle(
+            fontWeight: FontWeight.w600,
+          ),
+          tabs:  [
             Tab(
-              icon: Icon(Icons.star),
-              text: 'XP',
-            ),
-            Tab(
-              icon: Icon(HugeIcons.strokeRoundedCrown),
-              text: 'Level',
-            ),
-            Tab(
-              icon: Icon(Iconsax.task),
-              text: 'Pomodoro',
-            )
-          ]
-        ),
-      ),
-      body: SafeArea(
-        child: Column(
-          children: [
-            Expanded(
-              child: TabBarView(
-                controller: _tabController,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  XpLeaderBoard(controller: _controller),
-                  LevelLeaderBoard(controller: _controller),
-                  PomodoroLeaderBoard(controller: _controller,),
-              ]
-            ))
+                  Icon(Icons.star_rounded),
+                  context.dynamicWidth(0.015).width,
+                  Text('XP'),
+                ],
+              ),
+            ),
+            Tab(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.emoji_events_rounded),
+                  context.dynamicWidth(0.015).width,
+                  Text('Level'),
+                ],
+              ),
+            ),
+            Tab(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.timer_rounded),
+                  context.dynamicWidth(0.015).width,
+                  Text('Pomodoro'),
+                ],
+              ),
+            ),
           ],
         ),
+      ),
+      body: TabBarView(
+        controller: _tabController,
+        children: [
+          XpLeaderBoard(controller: _controller),
+          LevelLeaderBoard(controller: _controller),
+          PomodoroLeaderBoard(controller: _controller),
+        ],
       ),
     );
   }

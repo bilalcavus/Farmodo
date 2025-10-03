@@ -7,6 +7,7 @@ import 'package:farmodo/data/services/auth_service.dart';
 import 'package:farmodo/feature/account/widget/login_prompt.dart';
 import 'package:farmodo/feature/leader_board/viewmodel/leader_board_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:kartal/kartal.dart';
 
 class XpLeaderBoard extends StatefulWidget {
@@ -18,62 +19,150 @@ class XpLeaderBoard extends StatefulWidget {
   State<XpLeaderBoard> createState() => _XpLeaderBoardState();
 }
 
+// Map for rank images
+const Map<int, String> thirdMap = {
+  1: 'assets/images/first.png',
+  2: 'assets/images/second.png',
+  3: 'assets/images/third.png',
+};
+
 class _XpLeaderBoardState extends State<XpLeaderBoard> with LoadingMixin {
-  final thirdMap = {
-    1: 'assets/images/first.png',
-    2: 'assets/images/second.png',
-    3: 'assets/images/third.png',
-  };
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final authService = getIt<AuthService>();
     bool isLoggedIn = authService.isLoggedIn;
-    return  Scaffold(
-      body: ValueListenableBuilder<bool>(
-        valueListenable: isLoadingNotifier,
-        builder: (context, loading, _) {
-          if (loading) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          return !isLoggedIn ? Center(
-            child: Padding(
-              padding: context.padding.horizontalNormal,
-              child: LoginPrompt(context: context, title: "Log in to access all features", subtitle: "Log in to see leaderboard",),
-            )
-          ) :  SizedBox(
-            height: double.infinity,
-            child: ListView.builder(
-              itemCount: widget.controller.xpLeaderboard.length,
-              itemBuilder: (context, index) {
-                final user = widget.controller.xpLeaderboard[index];
-                final authService = getIt<AuthService>();
-                bool isCurrentUser = authService.currentUser?.id == user.id; 
-                return ListTile(
-                  title: Row(
-                    children: [
-                      Image.asset(thirdMap[index + 1] ?? 'assets/images/user_avatar.png', height: context.dynamicHeight(.048)),
-                      Text(user.displayName, style: theme.textTheme.bodyLarge?.copyWith(
-                        color: isCurrentUser ? AppColors.primary : null,
-                        fontWeight: isCurrentUser ? FontWeight.bold : FontWeight.w500
-                      )),
-                      context.dynamicWidth(0.01).width,
-                      if(isCurrentUser) Text('(You)', style: theme.textTheme.bodySmall?.copyWith(
-                        color: Colors.grey.shade600
-                      ))
-                    ],
-                  ),
-                  
-                  leading: Text("${index + 1}"),
-                  trailing: Text("${user.xp}", style: theme.textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.bold
-                  )),
-                );
-              },
-            ),
-          );
-        },
+    
+    return Obx(() {
+  if (!isLoggedIn) {
+    return Center(
+      child: Padding(
+        padding: context.padding.horizontalNormal,
+        child: LoginPrompt(
+          context: context,
+          title: "Log in to access all features",
+          subtitle: "Log in to see leaderboard",
+        ),
       ),
     );
   }
-}
+
+  if (widget.controller.isLoading.value) {
+    return const Center(child: CircularProgressIndicator());
+  }
+
+  if (widget.controller.xpLeaderboard.isEmpty) {
+    return Center(
+      child: Text("No leaderboard data yet"),
+    );
+  }
+
+  return ListView.builder(
+    padding: const EdgeInsets.symmetric(vertical: 8),
+    itemCount: widget.controller.xpLeaderboard.length,
+    itemBuilder: (context, index) {
+      final user = widget.controller.xpLeaderboard[index];
+      final isCurrentUser = getIt<AuthService>().currentUser?.id == user.id;
+      final rank = index + 1;
+
+      return _buildLeaderboardItem(
+        context: context,
+        theme: Theme.of(context),
+        user: user,
+        rank: rank,
+        isCurrentUser: isCurrentUser,
+        value: user.xp,
+      );
+    },
+  );
+});
+    }
+  
+  }
+
+  Widget _buildLeaderboardItem({
+    required BuildContext context,
+    required ThemeData theme,
+    required dynamic user,
+    required int rank,
+    required bool isCurrentUser,
+    required int value,
+  }) {
+    final rankColor = _getRankColor(rank);
+    
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      decoration: BoxDecoration(
+        color: isCurrentUser 
+            ? AppColors.primary.withAlpha(20) 
+            : rank <= 3 
+                ? rankColor.withAlpha(15)
+                : AppColors.surface,
+        borderRadius: context.border.normalBorderRadius,
+        border: isCurrentUser 
+            ? Border.all(color: AppColors.primary.withAlpha(75), width: 1.5)
+            : null
+      ),
+      child: Row(
+        children: [
+          Center(
+            child: rank <= 3
+                ? Image.asset(
+                    thirdMap[rank] ?? 'assets/images/user_avatar.png',
+                    height: 40,
+                    width: 40,
+                  )
+                : Text(
+                    "$rank",
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: const Color(0xFF10B981),
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+          ),
+          
+          context.dynamicWidth(0.017).width,
+          
+          Expanded(
+            child: Text(
+              user.displayName,
+              style: theme.textTheme.bodyLarge?.copyWith(
+                color: isCurrentUser ? AppColors.primary : AppColors.textPrimary,
+                fontWeight: isCurrentUser ? FontWeight.w600 : FontWeight.w500,
+              ),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: BoxDecoration(
+              color: const Color(0xFFFFB800).withOpacity(0.1),
+              borderRadius: BorderRadius.circular(6),
+            ),
+            child: Text(
+              "$value XP",
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: const Color(0xFFFFB800),
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Color _getRankColor(int rank) {
+    switch (rank) {
+      case 1:
+        return const Color(0xFFFFD700); // Gold
+      case 2:
+        return const Color(0xFFC0C0C0); // Silver
+      case 3:
+        return const Color(0xFFCD7F32); // Bronze
+      default:
+        return AppColors.primary;
+    }
+  }
+

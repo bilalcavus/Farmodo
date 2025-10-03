@@ -29,55 +29,132 @@ class _XpLeaderBoardState extends State<PomodoroLeaderBoard> with LoadingMixin {
     final theme = Theme.of(context);
     final authService = getIt<AuthService>();
     bool isLoggedIn = authService.isLoggedIn;
-    return !isLoggedIn ? Center(
-            child: Padding(
-              padding: context.padding.horizontalNormal,
-              child: LoginPrompt(context: context, title: "Log in to access all features", subtitle: "Log in to see leaderboard",),
-        )
-      ): Scaffold(
-      body: ValueListenableBuilder<bool>(
-        valueListenable: isLoadingNotifier,
-        builder: (context, loading, _) {
-          if (loading) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          return SizedBox(
-            height: double.infinity,
-            child: ListView.builder(
-              itemCount: widget.controller.pomodoroLeaderboard.length,
-              itemBuilder: (context, index) {
-                final user = widget.controller.pomodoroLeaderboard[index];
-                final authService = getIt<AuthService>();
-                bool isCurrentUser = authService.currentUser?.id == user.id; 
-                return Column(
-                  children: [
-                    ListTile(
-                      title: Row(
-                        children: [
-                          Image.asset(thirdMap[index + 1] ?? 'assets/images/user_avatar.png', height: context.dynamicHeight(.05)),
-                          Text(user.displayName, style: theme.textTheme.bodyLarge?.copyWith(
-                            color: isCurrentUser ? AppColors.primary : null,
-                            fontWeight: isCurrentUser ? FontWeight.bold : FontWeight.w500
-                          )),
-                          context.dynamicWidth(0.01).width,
-                          if(isCurrentUser) Text('(You)', style: theme.textTheme.bodySmall?.copyWith(
-                            color: Colors.grey.shade600
-                          ))
-                        ],
-                      ),
-                      leading: Text("${index + 1}"),
-                      trailing: Text("${user.totalPomodoro}", style: theme.textTheme.bodyMedium?.copyWith(
-                        fontWeight: FontWeight.bold
-                      )),
-                    ),
-                    
-                  ],
-                );
-              },
-            ),
+    
+    return ValueListenableBuilder<bool>(
+      valueListenable: isLoadingNotifier,
+      builder: (context, loading, _) {
+        if (loading) {
+          return const Center(
+            child: CircularProgressIndicator(),
           );
-        },
+        }
+        
+        return !isLoggedIn ? Center(
+          child: Padding(
+            padding: context.padding.horizontalNormal,
+            child: LoginPrompt(
+              context: context, 
+              title: "Log in to access all features", 
+              subtitle: "Log in to see leaderboard",
+            ),
+          )
+        ) : ListView.builder(
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          itemCount: widget.controller.pomodoroLeaderboard.length,
+          itemBuilder: (context, index) {
+            final user = widget.controller.pomodoroLeaderboard[index];
+            final authService = getIt<AuthService>();
+            bool isCurrentUser = authService.currentUser?.id == user.id;
+            final rank = index + 1;
+            
+            return _buildLeaderboardItem(
+              context: context,
+              theme: theme,
+              user: user,
+              rank: rank,
+              isCurrentUser: isCurrentUser,
+              value: user.totalPomodoro,
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Widget _buildLeaderboardItem({
+    required BuildContext context,
+    required ThemeData theme,
+    required dynamic user,
+    required int rank,
+    required bool isCurrentUser,
+    required int value,
+  }) {
+    final rankColor = _getRankColor(rank);
+    
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      decoration: BoxDecoration(
+        color: isCurrentUser 
+            ? AppColors.primary.withAlpha(20) 
+            : rank <= 3 
+                ? rankColor.withAlpha(15)
+                : AppColors.surface,
+        borderRadius: context.border.normalBorderRadius,
+        border: isCurrentUser 
+            ? Border.all(color: AppColors.primary.withAlpha(75), width: 1)
+            : null,
+      ),
+      child: Row(
+        children: [
+          Center(
+            child: rank <= 3
+                ? Image.asset(
+                    thirdMap[rank] ?? 'assets/images/user_avatar.png',
+                    height: 40,
+                    width: 40,
+                  )
+                : Text(
+                    "$rank",
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: const Color(0xFF10B981),
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+          ),
+          
+          context.dynamicWidth(0.017).width,
+          
+          Expanded(
+            child: Text(
+              user.displayName,
+              style: theme.textTheme.bodyLarge?.copyWith(
+                color: isCurrentUser ? AppColors.primary : AppColors.textPrimary,
+                fontWeight: isCurrentUser ? FontWeight.w600 : FontWeight.w500,
+              ),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: BoxDecoration(
+              color: const Color(0xFF10B981).withOpacity(0.1),
+              borderRadius: BorderRadius.circular(6),
+            ),
+            child: Text(
+              "$value Pomodoros",
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: const Color(0xFF10B981),
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ],
       ),
     );
+  }
+
+  Color _getRankColor(int rank) {
+    switch (rank) {
+      case 1:
+        return const Color(0xFFFFD700); // Gold
+      case 2:
+        return const Color(0xFFC0C0C0); // Silver
+      case 3:
+        return const Color(0xFFCD7F32); // Bronze
+      default:
+        return AppColors.primary;
+    }
   }
 }
