@@ -15,19 +15,19 @@ mixin TaskViewMixin on State<TaskView> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       taskController.getActiveTask();
       taskController.getCompletedTask();
-    activeScrollController.addListener(() {
-        if (activeScrollController.position.pixels >=
-            activeScrollController.position.maxScrollExtent - 200) {
-          taskController.getActiveTask(loadMore: true);
-        }
-      });
+    // activeScrollController.addListener(() {
+    //     if (activeScrollController.position.pixels >=
+    //         activeScrollController.position.maxScrollExtent - 200) {
+    //       taskController.getActiveTask(loadMore: true);
+    //     }
+    //   });
 
-      completedScrollController.addListener(() {
-        if (completedScrollController.position.pixels >=
-            completedScrollController.position.maxScrollExtent - 200) {
-          taskController.getCompletedTask(loadMore: true);
-        }
-      });
+      // completedScrollController.addListener(() {
+      //   if (completedScrollController.position.pixels >=
+      //       completedScrollController.position.maxScrollExtent - 200) {
+      //     taskController.getCompletedTask(loadMore: true);
+      //   }
+      // });
     });
   }
   @override

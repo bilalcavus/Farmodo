@@ -84,6 +84,14 @@ class CustomTaskList extends StatelessWidget {
   Widget _buildTaskList(BuildContext context, bool isLoading) {
     return Stack(
       children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('Showing the last 10 tasks', style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: Colors.grey.shade500
+            )),
+          ],
+        ),
         ListView.builder(
           controller: scrollController,
           padding: EdgeInsets.symmetric(

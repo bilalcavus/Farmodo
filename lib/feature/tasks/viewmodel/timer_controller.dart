@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:farmodo/core/services/notification_service.dart';
+import 'package:farmodo/core/services/home_widget_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -36,6 +37,19 @@ class TimerController extends GetxController {
       isRunning: isRunning.value,
       progress: progressValue,
     );
+
+    // Widget'ı güncelle
+    _updateWidget();
+  }
+
+  void _updateWidget() {
+    HomeWidgetService.updateTimerStatus(
+      isRunning: isRunning.value,
+      secondsRemaining: isOnBreak.value ? breakSecondsRemaining.value : secondsRemaining.value,
+      isOnBreak: isOnBreak.value,
+      totalSeconds: isOnBreak.value ? totalBreakSeconds.value : totalSeconds.value,
+      taskTitle: currentTaskTitle.value.isEmpty ? 'No active task' : currentTaskTitle.value,
+    );
   }
 
   void _showNotification() {
@@ -55,6 +69,8 @@ class TimerController extends GetxController {
 
   void _hideNotification() {
     NotificationService.hideTimerNotification();
+    // Widget'ı temizle
+    HomeWidgetService.clearWidget();
   }
 
   

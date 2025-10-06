@@ -1,7 +1,9 @@
 
 import 'package:farmodo/core/theme/app_colors.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
+import 'package:farmodo/core/utility/extension/route_helper.dart';
 import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
+import 'package:farmodo/feature/home/view/widget_guide_view.dart';
 import 'package:farmodo/feature/home/widgets/full_screen_timer.dart';
 import 'package:farmodo/feature/tasks/viewmodel/tasks_controller.dart';
 import 'package:farmodo/feature/tasks/viewmodel/timer_controller.dart';
@@ -51,7 +53,10 @@ class _TimeStartButtonState extends State<TimeStartButton> {
           context.dynamicWidth(0.03).width,
           ActionButton(
             onPressed: () => toggleFullScreen(context),
-            icon:  Icon(HugeIcons.strokeRoundedFullScreen, color: Colors.black87, size: context.dynamicHeight(0.025),))
+            icon:  Icon(HugeIcons.strokeRoundedFullScreen, color: Colors.black87, size: context.dynamicHeight(0.025))
+          ),
+          context.dynamicWidth(0.03).width,
+          ActionButton(onPressed: () => RouteHelper.push(context, const WidgetGuideView()), icon: Icon(Icons.widgets_outlined))
         ],
       );
       }),

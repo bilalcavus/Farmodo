@@ -15,7 +15,8 @@
         android:layout_marginTop="8dp"
         android:background="@drawable/progress_background"
         android:progressDrawable="@drawable/progress_drawable"
-        android:rotation="-90" />
+        android:rotation="-90"
+        android:max="100" />
 
     <!-- Timer Text -->
     <TextView
@@ -26,7 +27,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="8dp"
         android:text="00:00"
-        android:textColor="#FFFFFF"
+        android:textColor="#FFE11D48"
         android:textSize="18sp"
         android:textStyle="bold" />
 
@@ -41,7 +42,7 @@
         android:gravity="center"
         android:maxLines="1"
         android:text="No active task"
-        android:textColor="#CCCCCC"
+        android:textColor="#FF6B7280"
         android:textSize="12sp" />
 
     <!-- Status Text (Break/Work) -->

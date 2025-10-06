@@ -78,6 +78,7 @@ class AuthService {
         displayName: user.displayName ?? '',
         level: 1,
         xp: 0,
+        coins: 500,
         totalPomodoro: 0,
         avatarUrl: user.photoURL,
         createdAt: DateTime.now(),
@@ -115,8 +116,9 @@ class AuthService {
         id: user.uid,
         email: user.email ?? '',
         displayName: user.displayName ?? '',
-        level: 0,
+        level: 1,
         xp: 0,
+        coins: 500,
         totalPomodoro: 0,
         avatarUrl: user.photoURL,
         createdAt: DateTime.now(),
@@ -162,7 +164,7 @@ class AuthService {
     _isAuthStateReady = false;
   }
 
-  Future<fb.UserCredential> signInWithApple() async {
+  Future<UserModel> signInWithApple() async {
     final appleCredential = await SignInWithApple.getAppleIDCredential(
       scopes: [
         AppleIDAuthorizationScopes.email,
@@ -179,7 +181,41 @@ class AuthService {
       accessToken: appleCredential.authorizationCode,
     );
 
-    return await _firebaseAuth.signInWithCredential(oauthcredential);
+    final userCredential = await _firebaseAuth.signInWithCredential(oauthcredential);
+    final user = userCredential.user;
+    final photoUrl = firebaseUser?.photoURL;
+
+    if (user == null) {
+      throw Exception("Apple auth failed");
+    }
+
+    final doc = await _firestore.collection('users').doc(user.uid).get();
+    UserModel userModel;
+
+    if (doc.exists) {
+      userModel = UserModel.fromFirestore(doc);
+      userModel = userModel.copyWith(lastLoginAt: DateTime.now());
+      await createUserInFirestore(userModel);
+    } else {
+       userModel = UserModel(
+          id: user.uid,
+          email: user.email ?? '',
+          displayName: user.displayName ?? '',
+          level: 1,
+          xp: 0,
+          coins: 500,
+          totalPomodoro: 0,
+          avatarUrl: photoUrl,
+          createdAt: DateTime.now(),
+          lastLoginAt: DateTime.now(),
+          isActive: true,
+          userPreferences: null,
+          isPremiumUser: false,
+        );
+        await createUserInFirestore(userModel);
+    }
+    _currentUser = userModel;
+    return userModel;
   }
 
   Future<UserModel> signInWithGoogle() async {
@@ -225,8 +261,9 @@ class AuthService {
           id: user.uid,
           email: user.email ?? '',
           displayName: user.displayName ?? '',
-          level: 0,
+          level: 1,
           xp: 0,
+          coins: 500,
           totalPomodoro: 0,
           avatarUrl: photoUrl,
           createdAt: DateTime.now(),

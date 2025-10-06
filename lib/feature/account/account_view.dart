@@ -9,6 +9,7 @@ import 'package:farmodo/feature/account/widget/header_section.dart';
 import 'package:farmodo/feature/account/widget/login_prompt.dart';
 import 'package:farmodo/feature/account/widget/preferences_section.dart';
 import 'package:farmodo/feature/auth/login/viewmodel/login_controller.dart';
+import 'package:farmodo/feature/home/widgets/home_header.dart';
 import 'package:farmodo/feature/navigation/navigation_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -97,23 +98,26 @@ class _AccountViewState extends State<AccountView> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            HeaderSection(
-              context: context,
-              handleText: handleText,
-              joinedYearText: joinedYearText,
-              isLoadingStats: isLoadingStats,
-              authService: _authService,
-              tasksCompleted: tasksCompleted,
-              totalXp: totalXp,
-              daysActive: daysActive,
-            ),
-            context.dynamicHeight(0.04).height,
+            
+            // HeaderSection(
+            //   context: context,
+            //   handleText: handleText,
+            //   joinedYearText: joinedYearText,
+            //   isLoadingStats: isLoadingStats,
+            //   authService: _authService,
+            //   tasksCompleted: tasksCompleted,
+            //   totalXp: totalXp,
+            //   daysActive: daysActive,
+            // ),
             if (!_authService.isLoggedIn) ...[
               LoginPrompt(context: context, title: 'Log in to access all features', subtitle: 'Sync your data and buy your animals'),
               context.dynamicHeight(0.04).height,
             ],
-            if (_authService.isLoggedIn)
-            AccountSection(context: context),
+            if (_authService.isLoggedIn) ...[
+              LevelBar(authService: _authService),
+              context.dynamicHeight(0.04).height,
+              AccountSection(context: context),
+            ],
             context.dynamicHeight(0.03).height,
             PreferencesSection(context: context, authService: _authService, loginController: loginController)
           ],

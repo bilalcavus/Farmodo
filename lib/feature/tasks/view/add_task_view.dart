@@ -242,7 +242,7 @@ class SessionSelection extends StatelessWidget {
           return Obx((){
             return Container(
               decoration: BoxDecoration(
-                color: taskController.selectedTotalSession.value == session ? AppColors.primary : Colors.grey.shade200,
+                color: taskController.selectedTotalSession.value == session ? AppColors.danger : Colors.grey.shade200,
                 borderRadius: BorderRadius.circular(16)
               ),
               child: Center(child: Text(

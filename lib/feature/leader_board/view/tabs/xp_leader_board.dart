@@ -31,9 +31,7 @@ class _XpLeaderBoardState extends State<XpLeaderBoard> with LoadingMixin {
   Widget build(BuildContext context) {
     final authService = getIt<AuthService>();
     bool isLoggedIn = authService.isLoggedIn;
-    
-    return Obx(() {
-  if (!isLoggedIn) {
+    if (!isLoggedIn) {
     return Center(
       child: Padding(
         padding: context.padding.horizontalNormal,
@@ -45,7 +43,8 @@ class _XpLeaderBoardState extends State<XpLeaderBoard> with LoadingMixin {
       ),
     );
   }
-
+    
+    return Obx(() {
   if (widget.controller.isLoading.value) {
     return const Center(child: CircularProgressIndicator());
   }

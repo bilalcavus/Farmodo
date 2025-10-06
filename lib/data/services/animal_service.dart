@@ -57,14 +57,14 @@ class AnimalService {
       final userDoc = await _firestore.collection('users').doc(uid).get();
       if (!userDoc.exists) throw Exception('User not found');
       
-      final currentXp = (userDoc.data()?['xp'] as int?) ?? 0;
-      if (currentXp < reward.xpCost) {
-        throw Exception('Yetersiz XP. Gerekli: ${reward.xpCost}, Mevcut: $currentXp');
+      final currentCoin = (userDoc.data()?['coins'] as int?) ?? 0;
+      if (currentCoin < reward.xpCost) {
+        throw Exception('Yetersiz Coin. Gerekli: ${reward.xpCost}, Mevcut: $currentCoin');
       }
 
       await _firestore.runTransaction((transaction) async {
         transaction.update(_firestore.collection('users').doc(uid), {
-          'xp': FieldValue.increment(-reward.xpCost),
+          'coins': FieldValue.increment(-reward.xpCost),
         });
 
         final animal = FarmAnimal.fromReward(

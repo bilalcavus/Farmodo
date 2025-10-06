@@ -28,7 +28,6 @@ class FarmGame extends FlameGame {
   // Test method for placement mode
   void testPlacementMode() {
     if (farmAnimals.isNotEmpty) {
-      developer.log('Testing placement mode with first animal', name: 'FarmGame');
       enterPlacementMode(farmAnimals.first);
     } else {
       developer.log('No animals available for placement mode test', name: 'FarmGame');
@@ -136,9 +135,7 @@ class FarmGame extends FlameGame {
   void updateFarmAnimals(List<FarmAnimal> animals) {
     // Check if game is loaded
     if (gridOrigin == null) return;
-    
-    developer.log('Updating farm animals: ${animals.length} animals', name: 'FarmGame');
-    
+        
     // Remove existing farm animal sprites safely
     final existingSprites = children.whereType<FarmAnimalSprite>().toList();
     for (final sprite in existingSprites) {
@@ -174,7 +171,6 @@ class FarmGame extends FlameGame {
         Sprite? animalSprite;
         if (animalSprites.containsKey(animal.id)) {
           animalSprite = animalSprites[animal.id];
-          developer.log('Found sprite for ${animal.name}: ${animalSprite != null}', name: 'FarmGame');
         } else {
           developer.log('No sprite found for ${animal.name} (ID: ${animal.id})', name: 'FarmGame');
         }
@@ -193,17 +189,12 @@ class FarmGame extends FlameGame {
   
   // Hayvan görsellerini asset'lerden yükle
   Future<void> _loadRequiredSprites(List<FarmAnimal> animals) async {
-    developer.log('Loading sprites for ${animals.length} animals from assets...', name: 'FarmGame');
     
     for (final animal in animals) {
       final animalId = animal.id;
       
-      developer.log('Processing animal: ${animal.name} (ID: $animalId)', name: 'FarmGame');
-      developer.log('  - coverUrl: ${animal.coverUrl}', name: 'FarmGame');
-      
       // Bu hayvanın sprite'ı zaten yüklü mü?
       if (animalSprites.containsKey(animalId)) {
-        developer.log('✓ Sprite already loaded for ${animal.name}', name: 'FarmGame');
         continue;
       }
       
@@ -212,22 +203,15 @@ class FarmGame extends FlameGame {
       if (!spriteLoaded) {
         try {
           final assetPath = 'assets/images/cover/${animal.rewardId.toLowerCase()}.png';
-          developer.log('Trying to load from animal name: $assetPath', name: 'FarmGame');
           final img = await images.load(assetPath);
           animalSprites[animalId] = Sprite(img);
-          developer.log('✓ Successfully loaded sprite from animal name for ${animal.name}', name: 'FarmGame');
           spriteLoaded = true;
         } catch (e) {
           developer.log('✗ Failed to load from animal name: $e', name: 'FarmGame');
         }
       }
-      
-      if (!spriteLoaded) {
-        developer.log('⚠ No valid sprite found for ${animal.name}, will use default circle', name: 'FarmGame');
-      }
     }
     
-    developer.log('Sprite loading completed. Total loaded sprites: ${animalSprites.length}', name: 'FarmGame');
   }
   
   // Kullanılmayan sprite'ları temizle
@@ -244,7 +228,6 @@ class FarmGame extends FlameGame {
     
     for (final key in spritesToRemove) {
       animalSprites.remove(key);
-      developer.log('Cleaned up unused sprite: $key', name: 'FarmGame');
     }
   }
 
@@ -493,7 +476,6 @@ class FarmGame extends FlameGame {
 
   // Farm animal drag methods
   void startDragAnimal(FarmAnimalSprite animalSprite) {
-    developer.log('Starting drag for animal: ${animalSprite.animal.name}', name: 'FarmGame');
     draggingFarmAnimal = animalSprite;
     animalSprite.isDragging = true;
     animalSprite.priority = 20; // Bring to front during drag
@@ -562,7 +544,6 @@ class FarmGame extends FlameGame {
   }
 
   void _swapAnimalPositions(FarmAnimalSprite animal1, FarmAnimalSprite animal2) {
-    developer.log('Swapping positions: ${animal1.animal.name} <-> ${animal2.animal.name}', name: 'FarmGame');
     
     // Store original positions
     final temp1Row = animal1.gridRow!;
@@ -592,9 +573,7 @@ class FarmGame extends FlameGame {
     _updateFarmAnimalsOrder();
   }
 
-  void _moveAnimalToPosition(FarmAnimalSprite animal, int row, int col) {
-    developer.log('Moving animal ${animal.animal.name} to position ($row, $col)', name: 'FarmGame');
-    
+  void _moveAnimalToPosition(FarmAnimalSprite animal, int row, int col) {    
     // Update grid position
     animal.gridRow = row;
     animal.gridCol = col;
@@ -613,7 +592,6 @@ class FarmGame extends FlameGame {
 
   void _returnAnimalToOriginalPosition() {
     if (draggingFarmAnimal != null) {
-      developer.log('Returning animal ${draggingFarmAnimal!.animal.name} to original position', name: 'FarmGame');
       final originalRow = draggingFarmAnimal!.gridRow!;
       final originalCol = draggingFarmAnimal!.gridCol!;
       draggingFarmAnimal!.position = isoPositionOf(originalRow, originalCol) + animalOffset;
@@ -643,7 +621,6 @@ class FarmGame extends FlameGame {
 
   // Placement mode methods
   void enterPlacementMode(FarmAnimal animal) {
-    developer.log('Entering placement mode for animal: ${animal.name}', name: 'FarmGame');
     isInPlacementMode = true;
     animalToPlace = animal;
     
@@ -661,7 +638,6 @@ class FarmGame extends FlameGame {
   }
   
   void exitPlacementMode() {
-    developer.log('Exiting placement mode', name: 'FarmGame');
     isInPlacementMode = false;
     animalToPlace = null;
     
@@ -709,18 +685,14 @@ class FarmGame extends FlameGame {
 
   // Manual event handling methods (kept for compatibility)
   void handleTapDown(Vector2 position) {
-    developer.log('Tap detected at position: $position, placement mode: $isInPlacementMode', name: 'FarmGame');
     
     if (isInPlacementMode) {
-      developer.log('In placement mode, checking grid tap', name: 'FarmGame');
       // In placement mode, check if user tapped on a grid
       if (isInsideGrid(position)) {
         final tile = nearestTile(position);
-        developer.log('Grid tap detected at (${tile.row}, ${tile.col})', name: 'FarmGame');
         placeAnimalAtGrid(tile.row, tile.col);
       } else {
         // Tapped outside grid, exit placement mode
-        developer.log('Tapped outside grid, exiting placement mode', name: 'FarmGame');
         exitPlacementMode();
       }
       return;
@@ -728,7 +700,6 @@ class FarmGame extends FlameGame {
     
     final hitSprite = _hitFarmAnimal(position);
     if (hitSprite != null && draggingFarmAnimal == null) {
-      developer.log('Animal tap detected: ${hitSprite.animal.name}', name: 'FarmGame');
       if (onAnimalTap != null) {
         onAnimalTap!(hitSprite.animal);
       }
@@ -740,13 +711,11 @@ class FarmGame extends FlameGame {
 
   // Manual event handling methods (kept for compatibility)
   void handleDragStart(Vector2 position) {
-    developer.log('Drag start at position: $position, placement mode: $isInPlacementMode', name: 'FarmGame');
     // Disable dragging when in placement mode
     if (isInPlacementMode) return;
     
     final hitSprite = _hitFarmAnimal(position);
     if (hitSprite != null) {
-      developer.log('Starting drag for animal: ${hitSprite.animal.name}', name: 'FarmGame');
       startDragAnimal(hitSprite);
     } else {
       developer.log('No animal found at drag start position', name: 'FarmGame');
@@ -758,18 +727,15 @@ class FarmGame extends FlameGame {
     if (isInPlacementMode) return;
     
     if (draggingFarmAnimal != null) {
-      developer.log('Drag update: moving animal to $position', name: 'FarmGame');
       updateDragAnimal(position);
     }
   }
 
   void handleDragEnd(Vector2 position) {
-    developer.log('Drag end at position: $position', name: 'FarmGame');
     // Disable dragging when in placement mode
     if (isInPlacementMode) return;
     
     if (draggingFarmAnimal != null) {
-      developer.log('Ending drag for animal: ${draggingFarmAnimal!.animal.name}', name: 'FarmGame');
       endDragAnimal();
     }
   }
@@ -1132,7 +1098,6 @@ class FarmAnimalSprite extends PositionComponent with TapCallbacks {
   bool onTapDown(TapDownEvent event) {
     final farmGame = parent as FarmGame?;
     if (farmGame != null) {
-      developer.log('FarmAnimalSprite tap detected: ${animal.name}', name: 'FarmGame');
       if (farmGame.onAnimalTap != null) {
         farmGame.onAnimalTap!(animal);
       }

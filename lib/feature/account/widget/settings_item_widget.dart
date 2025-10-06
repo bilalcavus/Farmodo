@@ -23,7 +23,6 @@ class SettingsItemWidget extends StatelessWidget {
       color: Colors.transparent,
       child: Container(
         padding: EdgeInsets.symmetric(
-          horizontal: context.dynamicWidth(0.05),
           vertical: context.dynamicHeight(0.02)
         ),
         child: Row(

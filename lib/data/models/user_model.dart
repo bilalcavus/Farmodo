@@ -8,6 +8,7 @@ class UserModel {
   final String displayName;
   final int level;
   final int xp;
+  final int coins;
   final int totalPomodoro;
   final String? avatarUrl;
   final DateTime createdAt;
@@ -23,6 +24,7 @@ class UserModel {
     required this.displayName,
     required this.level,
     required this.xp,
+    required this.coins,
     required this.totalPomodoro,
     this.avatarUrl,
     required this.createdAt,
@@ -40,6 +42,7 @@ class UserModel {
       displayName: json['display_name'],
       level: json['level'],
       xp: json['xp'],
+      coins: json['coins'],
       totalPomodoro: json['total_pomodoro'],
       avatarUrl: json['avatar_url'],
       createdAt: DateTime.parse(json['created_at']),
@@ -63,6 +66,7 @@ class UserModel {
       displayName: data['displayName'] ?? '',
       level: data['level'] ?? 0,
       xp: data['xp'] ?? 0,
+      coins: data['coins'] ?? 0,
       totalPomodoro: data['totalPomodoro'] ?? 0,
       avatarUrl: data['avatarUrl'],
       createdAt: (data['createdAt'] as Timestamp).toDate(),
@@ -83,6 +87,7 @@ class UserModel {
       'display_name': displayName,
       'level': level,
       'xp': xp,
+      'coins': coins,
       'total_pomodoro': totalPomodoro,
       'avatar_url': avatarUrl,
       'created_at': createdAt.toIso8601String(),
@@ -100,6 +105,7 @@ class UserModel {
       'displayName': displayName,
       'level': level,
       'xp': xp,
+      'coins': coins,
       'totalPomodoro': totalPomodoro,
       'avatarUrl': avatarUrl,
       'createdAt': Timestamp.fromDate(createdAt),
@@ -117,6 +123,7 @@ class UserModel {
     String? displayName,
     int? level,
     int? xp,
+    int? coins,
     int? totalPomodoro,
     String? avatarUrl,
     DateTime? createdAt,
@@ -132,6 +139,7 @@ class UserModel {
       displayName: displayName ?? this.displayName,
       level: level ?? this.level,
       xp: xp ?? this.xp,
+      coins: coins ?? this.coins,
       totalPomodoro: totalPomodoro ?? this.totalPomodoro,
       avatarUrl: avatarUrl ?? this.avatarUrl,
       createdAt: createdAt ?? this.createdAt,

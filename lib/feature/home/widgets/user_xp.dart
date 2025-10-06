@@ -3,9 +3,7 @@ import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
 import 'package:farmodo/data/services/auth_service.dart';
 import 'package:farmodo/data/services/gamification/gamification_service.dart';
-import 'package:farmodo/feature/leader_board/view/leader_board_view.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:kartal/kartal.dart';
 
 class UserXp extends StatelessWidget {
@@ -83,35 +81,7 @@ class UserXp extends StatelessWidget {
           
           context.dynamicWidth(0.02).width,
           
-          GestureDetector(
-            onTap: () => Get.to(() => const LeaderBoardView()),
-            child: Container(
-              height: context.dynamicHeight(0.04),
-              padding: EdgeInsets.symmetric(horizontal: 12),
-              decoration: BoxDecoration(
-                color: AppColors.danger.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppColors.danger.withOpacity(0.3)),
-              ),
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.emoji_events_rounded,
-                    color: AppColors.danger,
-                    size: context.dynamicHeight(0.025),
-                  ),
-                  context.dynamicWidth(0.01).width,
-                  Text(
-                    'Leaderboard',
-                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                      color: AppColors.danger,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
+         
         ],
       ),
     );

@@ -15,8 +15,6 @@ class FirestoreService {
   DocumentSnapshot? lastCompletedDoc;
 
   Future<List<UserModel>> getXpLeaderboard() async {
-    // final uid = _auth.currentUser?.uid;
-    // if (uid == null) return [];
     final query = _firestore
         .collection('users')
         .orderBy('xp', descending: true)
@@ -26,8 +24,6 @@ class FirestoreService {
   }
 
   Future<List<UserModel>> getTaskLeaderboard() async {
-    // final uid = _auth.currentUser?.uid;
-    // if (uid == null) return [];
     final query = _firestore
         .collection('users')
         .orderBy('totalPomodoro', descending: true)
@@ -37,8 +33,6 @@ class FirestoreService {
   }
 
   Future<List<UserModel>> getLevelLeaderboard() async {
-    // final uid = _auth.currentUser?.uid;
-    // if (uid == null) return [];
     final query = _firestore
         .collection('users')
         .orderBy('level', descending: true)
@@ -160,6 +154,7 @@ Future<List<Reward>> getStoreItems() async {
 
       transaction.update(userRef, {
         'xp': currentXp + task.xpReward,
+        'level': ((currentXp + task.xpReward) ~/ 100) + 1,
         'totalPomodoro': currentTotalPomodoro + 1,
       });
     });
@@ -187,5 +182,4 @@ Future<List<Reward>> getStoreItems() async {
       'createdAt': FieldValue.serverTimestamp(),
     });
   }
-  
 }

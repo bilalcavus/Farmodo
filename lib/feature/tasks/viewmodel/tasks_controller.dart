@@ -19,7 +19,7 @@ class TasksController extends GetxController {
   List<int> pomodoroTimes = List.generate(20, (index) => (index + 1) * 5);
   List<int> totalSessions = [1,2,3,4,5];
   RxnInt selectedTotalSession = RxnInt();
-  RxnInt selectedPomodoroTime = RxnInt();
+  RxInt selectedPomodoroTime = RxInt(5);
   var userTasks = <UserTaskModel>[].obs;
   var completedUserTasks = <UserTaskModel>[].obs;
   var activeUserTasks = <UserTaskModel>[].obs;
@@ -68,7 +68,7 @@ class TasksController extends GetxController {
     );
   }
 
-  void setSelectedPomodoroTime(int? duration){
+  void setSelectedPomodoroTime(int duration){
     selectedPomodoroTime.value = duration;
     _updateXp();
   }
@@ -147,7 +147,7 @@ class TasksController extends GetxController {
       return;
     }
 
-    if (selectedPomodoroTime.value == null && selectedTotalSession.value == null) {
+    if (selectedTotalSession.value == null) {
       errorMessage.value = 'Select farmodo minutes or session';
       return;
     }
@@ -167,7 +167,7 @@ class TasksController extends GetxController {
       await firestoreService.addTask(
         titleController.text.trim(),
         focusTypeController.text.trim(),
-        selectedPomodoroTime.value!,
+        selectedPomodoroTime.value,
         xp.value.toInt(),
         selectedTotalSession.value!,
       );
