@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:audioplayers/audioplayers.dart';
 import 'package:farmodo/core/services/notification_service.dart';
 import 'package:farmodo/core/services/home_widget_service.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +11,7 @@ class TimerController extends GetxController {
   RxInt secondsRemaining = RxInt(0);
   var totalBreakSeconds = (5 * 60).obs;
   var breakSecondsRemaining = (5 * 60).obs;
+  final player = AudioPlayer();
   Timer? _timer;
   Timer? get timer => _timer;
   var isRunning = false.obs;
@@ -91,6 +93,7 @@ class TimerController extends GetxController {
         if (onTimerComplete != null) {
           onTimerComplete!();
         }
+        _playCompletionSound();
         startBreakTimer();
       }
     });
@@ -111,6 +114,7 @@ class TimerController extends GetxController {
         breakSecondsRemaining.value = totalBreakSeconds.value;
         isOnBreak.value = false;
         _updateNotification();
+        _playCompletionSound();
         if (onBreakComplete != null) {
           onBreakComplete!();
         }
@@ -151,7 +155,15 @@ class TimerController extends GetxController {
     currentTaskTitle.value = title;
     _updateNotification();
   }
+  
 
+    Future<void> _playCompletionSound() async {
+  try {
+    await player.play(AssetSource('sounds/complete_sound.mp3'));
+  } catch (e) {
+    debugPrint('Sound play error: $e');
+  }
+}
   
 
   String formatTime(int seconds) {

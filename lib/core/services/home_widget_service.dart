@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:home_widget/home_widget.dart';
 
 class HomeWidgetService {
@@ -61,7 +62,7 @@ class HomeWidgetService {
         iOSName: 'PomodoroTimerWidget',
       );
     } catch (e) {
-      print('Widget temizleme hatası: $e');
+      debugPrint('Widget temizleme hatası: $e');
     }
   }
 
@@ -72,7 +73,7 @@ class HomeWidgetService {
       await HomeWidget.saveWidgetData<String>('test_key', 'test_value');
       return true;
     } catch (e) {
-      print('Widget desteği kontrolü hatası: $e');
+      debugPrint('Widget desteği kontrolü hatası: $e');
       return false;
     }
   }

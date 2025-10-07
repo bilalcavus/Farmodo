@@ -5,7 +5,6 @@ import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
 import 'package:farmodo/data/services/auth_service.dart';
 import 'package:farmodo/data/services/firestore_service.dart';
 import 'package:farmodo/feature/account/widget/account_section.dart';
-import 'package:farmodo/feature/account/widget/header_section.dart';
 import 'package:farmodo/feature/account/widget/login_prompt.dart';
 import 'package:farmodo/feature/account/widget/preferences_section.dart';
 import 'package:farmodo/feature/auth/login/viewmodel/login_controller.dart';

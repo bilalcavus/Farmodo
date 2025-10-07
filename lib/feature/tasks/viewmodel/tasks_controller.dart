@@ -1,3 +1,4 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:farmodo/data/models/user_task_model.dart';
 import 'package:farmodo/data/services/auth_service.dart';
 import 'package:farmodo/data/services/firestore_service.dart';
@@ -16,6 +17,7 @@ class TasksController extends GetxController {
   final titleController = TextEditingController();
   final focusTypeController = TextEditingController();
   final taskSelectController = TextEditingController();
+  final player = AudioPlayer();
   List<int> pomodoroTimes = List.generate(20, (index) => (index + 1) * 5);
   List<int> totalSessions = [1,2,3,4,5];
   RxnInt selectedTotalSession = RxnInt();
@@ -107,8 +109,9 @@ class TasksController extends GetxController {
       loginController.refreshUserXp();
       
       if (willBeCompleted) {
-        _clearTimer();
+        await _playCompletionSound();
         Get.to(() => SucceedTaskPage());
+        _clearTimer();
       } else {
         _restartTask(task);
       }
@@ -118,6 +121,15 @@ class TasksController extends GetxController {
       setLoading(LoadingType.general, false);
     }
   }
+
+  Future<void> _playCompletionSound() async {
+  try {
+    await player.play(AssetSource('sounds/success.mp3'));
+  } catch (e) {
+    debugPrint('sound error: $e');
+  }
+}
+
 
   Future<void> _refreshTasks() async {
     await getActiveTask();
@@ -256,5 +268,6 @@ class TasksController extends GetxController {
     titleController.dispose();
     focusTypeController.dispose();
     taskSelectController.dispose();
+    player.dispose();
   }
 }

@@ -21,17 +21,7 @@ class WidgetGuideView extends StatelessWidget {
           padding: context.padding.normal,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Başlık
-              Text(
-                'Farmodo Widget\'ını Ana Ekrana Ekleyin',
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  color: AppColors.textPrimary,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              context.dynamicHeight(0.02).height,
-              
+            children: [              
               Text(
                 'Widget\'ı ana ekranınıza ekleyerek Pomodoro timer\'ınızı hızlıca kontrol edebilirsiniz.',
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(

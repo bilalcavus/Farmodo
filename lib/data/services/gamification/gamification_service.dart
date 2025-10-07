@@ -253,7 +253,6 @@ Future<void> updateQuestProgress(
     }
   }
 
-  // Görevi tamamla
   Future<void> _completeQuest(String questId, Quest quest) async {
     final uid = _auth.currentUser?.uid;
     if (uid == null) return;
@@ -402,6 +401,10 @@ Future<void> updateQuestProgress(
           final userAchievement = userAchievements.firstWhereOrNull(
             (ua) => ua.achievementId == achievement.id,
           );
+          final currentProgress = userAchievement?.progress ?? 0;
+          if (currentProgress >= achievement.targetValue) {
+            continue; // Zaten tamamlanmış
+          }
           await updateAchievementProgress(
             achievement.id,
             animalCount,
@@ -418,6 +421,10 @@ Future<void> updateQuestProgress(
           final userQuest = userQuests.firstWhereOrNull(
             (uq) => uq.questId == quest.id,
           );
+          final currentProgress = userQuest?.progress ?? 0;
+          if (currentProgress >= quest.targetValue) {
+            continue; // Zaten tamamlanmış
+          }
           await updateQuestProgress(
             quest.id,
             animalCount,
@@ -495,6 +502,9 @@ Future<void> updateQuestProgress(
             (ua) => ua.achievementId == achievement.id,
           );
           final currentProgress = userAchievement?.progress ?? 0;
+          if (currentProgress >= achievement.targetValue) {
+            continue; // Zaten tamamlanmış
+          }
           await updateAchievementProgress(
             achievement.id,
             currentProgress + 1,
@@ -512,6 +522,9 @@ Future<void> updateQuestProgress(
             (uq) => uq.questId == quest.id,
           );
           final currentProgress = userQuest?.progress ?? 0;
+          if (currentProgress >= quest.targetValue) {
+            continue; // Zaten tamamlanmış
+          }
           await updateQuestProgress(
             quest.id,
             currentProgress + 1,
