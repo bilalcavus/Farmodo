@@ -5,10 +5,10 @@ import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
 import 'package:farmodo/data/services/auth_service.dart';
 import 'package:farmodo/data/services/firestore_service.dart';
 import 'package:farmodo/feature/account/widget/account_section.dart';
+import 'package:farmodo/feature/account/widget/level_bar.dart';
 import 'package:farmodo/feature/account/widget/login_prompt.dart';
 import 'package:farmodo/feature/account/widget/preferences_section.dart';
 import 'package:farmodo/feature/auth/login/viewmodel/login_controller.dart';
-import 'package:farmodo/feature/home/widgets/home_header.dart';
 import 'package:farmodo/feature/navigation/navigation_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -23,7 +23,6 @@ class AccountView extends StatefulWidget {
 class _AccountViewState extends State<AccountView> {
   final AuthService _authService = AuthService();
   final FirestoreService _firestoreService = FirestoreService();
-  bool isDarkMode = false;
   bool isLoadingStats = true;
   int tasksCompleted = 0;
   int totalXp = 0;

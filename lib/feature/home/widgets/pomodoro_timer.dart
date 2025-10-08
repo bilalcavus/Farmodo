@@ -40,7 +40,7 @@ class _PomodoroTimerState extends State<PomodoroTimer> with SingleTickerProvider
 
   void _updateAnimation(bool isRunning) {
     if (isRunning) {
-      if (!_animationController.isAnimating) {
+      if (!_animationController.isAnimating && _animationController.duration != null) {
         _animationController.repeat();
       }
     } else {
@@ -83,7 +83,6 @@ class _PomodoroTimerState extends State<PomodoroTimer> with SingleTickerProvider
          
          return Column(
            children: [
-              // Break Type Toggle (sadece default task kullanılıyorsa göster)
               if (isUsingDefault) ...[
                 BreakTypeToggle(tasksController: tasksController),
                 SizedBox(height: context.dynamicHeight(0.02)),
@@ -272,7 +271,7 @@ class BreakTypeToggle extends StatelessWidget {
           vertical: context.dynamicHeight(0.01),
         ),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.danger : Colors.grey.shade200,
+          color: isSelected ? AppColors.danger : Colors.grey.shade100,
           borderRadius: context.border.lowBorderRadius
         ),
         child: Text(

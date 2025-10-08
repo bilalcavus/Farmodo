@@ -18,12 +18,12 @@ class DefaultTaskData {
       id: 'default_task',
       focusType: "General", 
       title: title,
-      xpReward: 200,
+      xpReward: 500,
       isCompleted: false, 
       duration: 25,
       breakDuration: breakDuration,
       totalSessions: 4,
-      completedSessions: 0, 
+      completedSessions: 0,
       createdAt: DateTime.now()
     );
   }

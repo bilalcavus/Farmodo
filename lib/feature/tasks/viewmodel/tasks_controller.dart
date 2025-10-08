@@ -111,7 +111,7 @@ class TasksController extends GetxController {
   void selectTask(int index, UserTaskModel task){
     selctedTaskIndex.value = index;
     isUsingDefaultTask.value = false;
-    defaultTaskCurrentSession.value = 0; // Default task session'ı sıfırla
+    defaultTaskCurrentSession.value = 0;
     timerController.setTaskTitle(task.title);
     TimerHelper.setupTaskTimer(
       timerController, task, () async => await completeTaskById(task.id));
@@ -133,10 +133,8 @@ class TasksController extends GetxController {
     timerController.breakSecondsRemaining.value = defaultTask.breakDuration * 60;
     
     timerController.onTimerComplete = () async {
-      // Work session tamamlandı, break başlayacak
       defaultTaskCurrentSession.value++;
       
-      // Break sonrası ne olacağını ayarla
       timerController.onBreakComplete = () async {
         await _handleDefaultTaskBreakComplete();
       };
@@ -147,10 +145,8 @@ class TasksController extends GetxController {
     final bool willBeCompleted = defaultTaskCurrentSession.value >= defaultTask.totalSessions;
     
     if (willBeCompleted) {
-      // Tüm sessionlar tamamlandı
       if (authService.isLoggedIn) {
         try {
-          // Sadece XP ver, task'ı Firestore'a kaydetme
           await firestoreService.updateUserXp(defaultTask.xpReward);
           await authService.fetchAndSetCurrentUser(); 
           loginController.refreshUserXp();
@@ -164,11 +160,7 @@ class TasksController extends GetxController {
       _clearTimer();
       defaultTaskCurrentSession.value = 0;
       
-      if (activeUserTasks.isEmpty) {
-        selectDefaultTask();
-      } else {
-        isUsingDefaultTask.value = false;
-      }
+      selectDefaultTask();
     } else {
       _setupDefaultTaskTimer();
       timerController.startTimer();
@@ -200,9 +192,7 @@ class TasksController extends GetxController {
         Get.to(() => SucceedTaskPage());
         _clearTimer();
         
-        if (activeUserTasks.isEmpty) {
-          selectDefaultTask();
-        }
+        selectDefaultTask();
       } else {
         _restartTask(task);
       }

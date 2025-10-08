@@ -285,11 +285,25 @@ Future<void> updateQuestProgress(
     final uid = _auth.currentUser?.uid;
     if (uid == null) return;
 
+    try {
+      final userDoc = await _firestore.collection('users').doc(uid).get();
+      if (!userDoc.exists) return;
+      
+      final currentXp = (userDoc.data()?['xp'] as int?) ?? 0;
+      final newXp = currentXp + xpAmount;
+      final newLevel = (newXp ~/ 100) + 1;
+
       await _repository.updateDocument(
         collectionPath: 'users',
         docId: uid,
-        data: {'xp': FieldValue.increment(xpAmount)},
+        data: {
+          'xp': newXp,
+          'level': newLevel,
+        },
       );
+    } catch (e) {
+      debugPrint('Error giving XP reward: $e');
+    }
   }
 
   Future<void> _giveCoinReward(int coinAmount) async {

@@ -112,9 +112,12 @@ Future<List<Reward>> getStoreItems() async {
       final userDoc = await userRef.get();
       final currentXp = (userDoc.data()?['xp'] as int?) ?? 0;
       final currentTotalPomodoro = userDoc.data()?['totalPomodoro'] ?? 0;
+      final newXp = currentXp + xpToAdd;
+      final newLevel = (newXp ~/ 100) + 1;
 
       await userRef.update({
-        'xp': currentXp + xpToAdd,
+        'xp': newXp,
+        'level': newLevel,
         'totalPomodoro': currentTotalPomodoro + 1
       });
     } catch (e) {
@@ -146,6 +149,9 @@ Future<List<Reward>> getStoreItems() async {
       final currentTotalPomodoro = (userSnapshot.data()?['totalPomodoro'] ?? 0) as int;
       int newCompletedSessions = task.completedSessions + 1;
       bool taskDone = newCompletedSessions >= task.totalSessions;
+      
+      final newXp = currentXp + task.xpReward;
+      final newLevel = (newXp ~/ 100) + 1;
 
       transaction.update(taskRef, {
         'isCompleted': taskDone,
@@ -153,8 +159,8 @@ Future<List<Reward>> getStoreItems() async {
         });
 
       transaction.update(userRef, {
-        'xp': currentXp + task.xpReward,
-        'level': ((currentXp + task.xpReward) ~/ 100) + 1,
+        'xp': newXp,
+        'level': newLevel,
         'totalPomodoro': currentTotalPomodoro + 1,
       });
     });
