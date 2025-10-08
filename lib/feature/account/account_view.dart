@@ -83,45 +83,72 @@ class _AccountViewState extends State<AccountView> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: AppBar(
-        systemOverlayStyle: SystemUiOverlayStyle(
-          statusBarColor: Colors.transparent,
-          statusBarIconBrightness: Brightness.dark,
-        ),
-        backgroundColor: Colors.transparent,
-        title: Text('Profile', style: TextStyle(color: AppColors.textPrimary, fontSize: context.dynamicHeight(0.022), fontWeight: FontWeight.w600)),
-        centerTitle: true,
-      ),
+      appBar: _buildAppBar(context),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(context.dynamicHeight(0.02)),
+        padding: EdgeInsets.symmetric(
+          horizontal: context.dynamicWidth(0.04),
+          vertical: context.dynamicHeight(0.02),
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            
-            // HeaderSection(
-            //   context: context,
-            //   handleText: handleText,
-            //   joinedYearText: joinedYearText,
-            //   isLoadingStats: isLoadingStats,
-            //   authService: _authService,
-            //   tasksCompleted: tasksCompleted,
-            //   totalXp: totalXp,
-            //   daysActive: daysActive,
-            // ),
             if (!_authService.isLoggedIn) ...[
-              LoginPrompt(context: context, title: 'Log in to access all features', subtitle: 'Sync your data and buy your animals'),
-              context.dynamicHeight(0.04).height,
+              LoginPrompt(
+                context: context, 
+                title: 'Log in to unlock features', 
+                subtitle: 'Sync your data, track progress and earn rewards'
+              ),
+              context.dynamicHeight(0.03).height,
             ],
             if (_authService.isLoggedIn) ...[
               LevelBar(authService: _authService),
-              context.dynamicHeight(0.04).height,
+              context.dynamicHeight(0.03).height,
               AccountSection(context: context),
+              context.dynamicHeight(0.03).height,
             ],
-            context.dynamicHeight(0.03).height,
-            PreferencesSection(context: context, authService: _authService, loginController: loginController)
+            PreferencesSection(
+              context: context, 
+              authService: _authService, 
+              loginController: loginController
+            ),
           ],
         ),
       ),
+    );
+  }
+
+  PreferredSizeWidget _buildAppBar(BuildContext context) {
+    return AppBar(
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      systemOverlayStyle: const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.dark,
+      ),
+      toolbarHeight: context.dynamicHeight(0.08),
+      title: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Profile',
+            style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+              fontWeight: FontWeight.w700,
+              color: AppColors.textPrimary,
+              letterSpacing: -0.5,
+            ),
+          ),
+          Text(
+            _authService.isLoggedIn 
+              ? 'Your account and settings'
+              : 'Personalize your experience',
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: AppColors.textSecondary,
+              fontWeight: FontWeight.w400,
+            ),
+          ),
+        ],
+      ),
+      centerTitle: false,
     );
   }
 }

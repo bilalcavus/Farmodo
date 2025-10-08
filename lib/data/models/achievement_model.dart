@@ -32,6 +32,7 @@ class Achievement {
   final AchievementRarity rarity;
   final int targetValue;
   final int xpReward;
+  final int coinReward;
   final bool isUnlocked;
   final DateTime? unlockedAt;
   final Map<String, dynamic>? metadata;
@@ -45,6 +46,7 @@ class Achievement {
     required this.rarity,
     required this.targetValue,
     required this.xpReward,
+    required this.coinReward,
     this.isUnlocked = false,
     this.unlockedAt,
     this.metadata,
@@ -64,6 +66,7 @@ class Achievement {
       ),
       targetValue: json['targetValue'],
       xpReward: json['xpReward'],
+      coinReward: json['coinReward'],
       isUnlocked: json['isUnlocked'] ?? false,
       unlockedAt: json['unlockedAt'] != null 
           ? DateTime.parse(json['unlockedAt']) 
@@ -87,6 +90,7 @@ class Achievement {
       ),
       targetValue: data['targetValue'] ?? 0,
       xpReward: data['xpReward'] ?? 0,
+      coinReward: data['coinReward'] ?? 0,
       isUnlocked: data['isUnlocked'] ?? false,
       unlockedAt: data['unlockedAt'] != null 
           ? (data['unlockedAt'] as Timestamp).toDate() 
@@ -105,6 +109,7 @@ class Achievement {
       'rarity': rarity.toString().split('.').last,
       'targetValue': targetValue,
       'xpReward': xpReward,
+      'coinReward': coinReward,
       'isUnlocked': isUnlocked,
       'unlockedAt': unlockedAt?.toIso8601String(),
       'metadata': metadata,
@@ -120,6 +125,7 @@ class Achievement {
       'rarity': rarity.toString().split('.').last,
       'targetValue': targetValue,
       'xpReward': xpReward,
+      'coinReward': coinReward,
       'isUnlocked': isUnlocked,
       'unlockedAt': unlockedAt != null ? Timestamp.fromDate(unlockedAt!) : null,
       'metadata': metadata,
@@ -135,6 +141,7 @@ class Achievement {
     AchievementRarity? rarity,
     int? targetValue,
     int? xpReward,
+    int? coinReward,
     bool? isUnlocked,
     DateTime? unlockedAt,
     Map<String, dynamic>? metadata,
@@ -148,6 +155,7 @@ class Achievement {
       rarity: rarity ?? this.rarity,
       targetValue: targetValue ?? this.targetValue,
       xpReward: xpReward ?? this.xpReward,
+      coinReward: coinReward ?? this.coinReward,
       isUnlocked: isUnlocked ?? this.isUnlocked,
       unlockedAt: unlockedAt ?? this.unlockedAt,
       metadata: metadata ?? this.metadata,

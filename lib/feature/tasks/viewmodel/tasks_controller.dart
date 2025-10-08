@@ -1,5 +1,6 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:farmodo/data/models/user_task_model.dart';
+import 'package:farmodo/data/sample_data/default_task_data.dart';
 import 'package:farmodo/data/services/auth_service.dart';
 import 'package:farmodo/data/services/firestore_service.dart';
 import 'package:farmodo/feature/auth/login/viewmodel/login_controller.dart';
@@ -18,6 +19,8 @@ class TasksController extends GetxController {
   final focusTypeController = TextEditingController();
   final taskSelectController = TextEditingController();
   final player = AudioPlayer();
+  RxInt defaultPomodoroTime = 25.obs;
+  RxInt defaultTotalSession = 4.obs;
   List<int> pomodoroTimes = List.generate(20, (index) => (index + 1) * 5);
   List<int> totalSessions = [1,2,3,4,5];
   RxnInt selectedTotalSession = RxnInt();
@@ -29,6 +32,10 @@ class TasksController extends GetxController {
   var errorMessage = ''.obs;
   var shakeTaskBox = false.obs;
   RxDouble xp = 0.0.obs;
+  late UserTaskModel defaultTask;
+  var isUsingDefaultTask = false.obs;
+  var defaultTaskCurrentSession = 0.obs;
+  var defaultBreakType = BreakDurationType.short.obs;
   final FirestoreService firestoreService;
   final AuthService authService;
   final TimerController timerController;
@@ -44,12 +51,33 @@ class TasksController extends GetxController {
 
   @override
   void onInit() {
+    _initializeDefaultTask();
     _updateXp();
     ever(selectedPomodoroTime, (_) => _updateXp());
-    // Trigger initial task loads
-    getActiveTask();
-    getCompletedTask();
+    
+    selectDefaultTask();
+    
+    _loadInitialTasks();
     super.onInit();
+  }
+
+  Future<void> _loadInitialTasks() async {
+    await getActiveTask();
+    await getCompletedTask();
+  }
+
+  void _initializeDefaultTask() {
+    defaultTask = DefaultTaskData.getUserDefaultTaskModel(breakType: defaultBreakType.value);
+  }
+
+  void setDefaultBreakType(BreakDurationType breakType) {
+    defaultBreakType.value = breakType;
+    defaultTask = DefaultTaskData.getUserDefaultTaskModel(breakType: breakType);
+    
+    if (isUsingDefaultTask.value) {
+      timerController.totalBreakSeconds.value = defaultTask.breakDuration * 60;
+      timerController.breakSecondsRemaining.value = defaultTask.breakDuration * 60;
+    }
   }
   void setLoading(LoadingType type, bool value) {
     loadingStates[type] = value;
@@ -82,10 +110,69 @@ class TasksController extends GetxController {
 
   void selectTask(int index, UserTaskModel task){
     selctedTaskIndex.value = index;
+    isUsingDefaultTask.value = false;
+    defaultTaskCurrentSession.value = 0; // Default task session'ı sıfırla
     timerController.setTaskTitle(task.title);
     TimerHelper.setupTaskTimer(
       timerController, task, () async => await completeTaskById(task.id));
     resetShake();
+  }
+
+  void selectDefaultTask() {
+    isUsingDefaultTask.value = true;
+    selctedTaskIndex.value = -1;
+    timerController.setTaskTitle(defaultTask.title);
+    _setupDefaultTaskTimer();
+    resetShake();
+  }
+
+  void _setupDefaultTaskTimer() {
+    timerController.totalSeconds.value = defaultTask.duration * 60;
+    timerController.secondsRemaining.value = defaultTask.duration * 60;
+    timerController.totalBreakSeconds.value = defaultTask.breakDuration * 60;
+    timerController.breakSecondsRemaining.value = defaultTask.breakDuration * 60;
+    
+    timerController.onTimerComplete = () async {
+      // Work session tamamlandı, break başlayacak
+      defaultTaskCurrentSession.value++;
+      
+      // Break sonrası ne olacağını ayarla
+      timerController.onBreakComplete = () async {
+        await _handleDefaultTaskBreakComplete();
+      };
+    };
+  }
+
+  Future<void> _handleDefaultTaskBreakComplete() async {
+    final bool willBeCompleted = defaultTaskCurrentSession.value >= defaultTask.totalSessions;
+    
+    if (willBeCompleted) {
+      // Tüm sessionlar tamamlandı
+      if (authService.isLoggedIn) {
+        try {
+          // Sadece XP ver, task'ı Firestore'a kaydetme
+          await firestoreService.updateUserXp(defaultTask.xpReward);
+          await authService.fetchAndSetCurrentUser(); 
+          loginController.refreshUserXp();
+        } catch (e) {
+          debugPrint('XP update failed: $e');
+        }
+      }
+      
+      await _playCompletionSound();
+      Get.to(() => SucceedTaskPage());
+      _clearTimer();
+      defaultTaskCurrentSession.value = 0;
+      
+      if (activeUserTasks.isEmpty) {
+        selectDefaultTask();
+      } else {
+        isUsingDefaultTask.value = false;
+      }
+    } else {
+      _setupDefaultTaskTimer();
+      timerController.startTimer();
+    }
   }
 
   Future<void> completeTaskById(String taskId) async {
@@ -112,6 +199,10 @@ class TasksController extends GetxController {
         await _playCompletionSound();
         Get.to(() => SucceedTaskPage());
         _clearTimer();
+        
+        if (activeUserTasks.isEmpty) {
+          selectDefaultTask();
+        }
       } else {
         _restartTask(task);
       }
@@ -140,6 +231,19 @@ class TasksController extends GetxController {
   void _clearTimer(){
     timerController.resetAll();
     selctedTaskIndex.value = -1;
+  }
+
+  void endCurrentSession() {
+    timerController.resetAll();
+    
+    selctedTaskIndex.value = -1;
+    
+    defaultTaskCurrentSession.value = 0;
+
+    timerController.isRunning.value = false;
+    timerController.isOnBreak.value = false;
+    
+    selectDefaultTask();
   }
 
   void _restartTask(UserTaskModel task){
@@ -224,7 +328,7 @@ class TasksController extends GetxController {
         }
       }
     } catch (e) {
-      // Error fetching tasks
+      errorMessage.value = '$e';
     } finally {
       setLoading(loadingFlag, false);
     }

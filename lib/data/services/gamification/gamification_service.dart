@@ -244,6 +244,7 @@ Future<void> updateQuestProgress(
           'lastUpdated': Timestamp.fromDate(DateTime.now()),
         });
       await _giveXpReward(achievement.xpReward);
+      if(achievement.coinReward > 0) await _giveCoinReward(achievement.coinReward);
       _showAchievementUnlockAnimation(achievement);
       _notifications.showAchievementUnlocked(achievement);
       final cached = await fetchUserAchievements(forceRefresh: true);

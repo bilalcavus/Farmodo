@@ -37,17 +37,32 @@ class _CurrentTaskProgressState extends State<CurrentTaskProgress> {
   Widget build(BuildContext context) {
     return Obx(() {
       final selectedIndex = widget.tasksController.selctedTaskIndex.value;
+      final isUsingDefault = widget.tasksController.isUsingDefaultTask.value;
       
-      if (selectedIndex == -1 || 
-          widget.tasksController.activeUserTasks.isEmpty ||
-          selectedIndex >= widget.tasksController.activeUserTasks.length) {
-        return CurrentTaskBox(
-          tasksController: widget.tasksController, controller: _controller);
+      // Default task kullanılıyorsa, default task bilgilerini göster
+      if (isUsingDefault) {
+        final task = widget.tasksController.defaultTask;
+        final currentSession = widget.tasksController.defaultTaskCurrentSession.value;
+        final progress = currentSession / task.totalSessions;
+        return _buildTaskCard(context, task, progress, currentSession);
+      }
+      
+      // Custom task seçilmişse, o task'ın bilgilerini göster
+      if (selectedIndex != -1 && 
+          widget.tasksController.activeUserTasks.isNotEmpty &&
+          selectedIndex < widget.tasksController.activeUserTasks.length) {
+        final task = widget.tasksController.activeUserTasks[selectedIndex];
+        final progress = task.completedSessions / task.totalSessions;
+        return _buildTaskCard(context, task, progress, task.completedSessions);
       }
 
-      final task = widget.tasksController.activeUserTasks[selectedIndex];
-      final progress = task.completedSessions / task.totalSessions;
-      
+      // Hiçbir task seçilmemişse, task seçim kutusunu göster
+      return CurrentTaskBox(
+          tasksController: widget.tasksController, controller: _controller);
+    });
+  }
+
+  Widget _buildTaskCard(BuildContext context, task, double progress, int completedSessions) {
       return Container(
         width: context.dynamicWidth(0.85),
         margin: EdgeInsets.symmetric(horizontal: context.dynamicWidth(0.04)),
@@ -153,7 +168,7 @@ class _CurrentTaskProgressState extends State<CurrentTaskProgress> {
                 ),
                 SizedBox(height: context.dynamicHeight(0.008)),
                 Text(
-                  '${task.completedSessions}/${task.totalSessions} sessions completed',
+                  '$completedSessions/${task.totalSessions} sessions completed',
                   style: Theme.of(context).textTheme.labelSmall?.copyWith(
                         color: AppColors.textSecondary,
                         fontWeight: FontWeight.w500,
@@ -164,7 +179,6 @@ class _CurrentTaskProgressState extends State<CurrentTaskProgress> {
           ],
         ),
       );
-    });
   }
 
   Color _getProgressColor(double progress) {

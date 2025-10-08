@@ -71,12 +71,10 @@ class AchievementCard extends StatelessWidget {
                           : Colors.grey.shade200,
                       shape: BoxShape.circle,
                     ),
-                    child: Icon(
-                      Icons.emoji_events,
-                      size: context.dynamicHeight(0.04),
-                      color: isUnlocked
-                          ? achievement.rarityColor
-                          : Colors.grey.shade400,
+                    child: Image.asset(
+                      achievement.iconPath,
+                      height: context.dynamicHeight(0.04),
+                    
                     ),
                   ),
                 ),

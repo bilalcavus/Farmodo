@@ -33,7 +33,7 @@ class PomodoroTimeSelection extends StatelessWidget {
               child: CupertinoPicker(
                 itemExtent: 28,
                 scrollController: FixedExtentScrollController(
-                  initialItem: taskController.pomodoroTimes.indexOf(taskController.selectedPomodoroTime.value),
+                  initialItem: taskController.pomodoroTimes.indexOf(taskController.defaultPomodoroTime.value),
                 ),
                 onSelectedItemChanged: (index){
                   taskController.setSelectedPomodoroTime(taskController.pomodoroTimes[index]);

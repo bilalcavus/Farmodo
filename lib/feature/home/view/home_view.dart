@@ -2,8 +2,9 @@ import 'package:farmodo/core/di/injection.dart';
 import 'package:farmodo/core/theme/app_colors.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
-import 'package:farmodo/feature/home/widgets/current_task_progress.dart';
+import 'package:farmodo/data/services/auth_service.dart';
 import 'package:farmodo/feature/home/widgets/home_header.dart';
+import 'package:farmodo/feature/home/widgets/pomodoro_timer.dart';
 import 'package:farmodo/feature/home/widgets/time_start_button.dart';
 import 'package:farmodo/feature/navigation/navigation_controller.dart';
 import 'package:farmodo/feature/tasks/viewmodel/tasks_controller.dart';
@@ -19,16 +20,10 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      tasksController.getActiveTask();
-    });
-  }
   final timerController = getIt<TimerController>();
   final tasksController = Get.put(getIt<TasksController>());
   final navigationController = getIt<NavigationController>();
+  final authService = getIt<AuthService>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,12 +33,12 @@ class _HomeViewState extends State<HomeView> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const HomeHeader(),
-              context.dynamicHeight(0.04).height,
-              // PomodoroTimer(timerController: timerController),
+              if(authService.isLoggedIn) const HomeHeader(),
+              context.dynamicHeight(0.05).height,
+              PomodoroTimer(timerController: timerController),
+              context.dynamicHeight(0.02).height,
+              
               TimeStartButton(timerController: timerController, tasksController: tasksController),
-              context.dynamicHeight(0.01).height,
-              CurrentTaskProgress(tasksController: tasksController),
             ],
         )),
       ),

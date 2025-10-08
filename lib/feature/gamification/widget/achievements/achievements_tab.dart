@@ -1,6 +1,7 @@
 
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
+import 'package:farmodo/data/models/achievement_model.dart';
 import 'package:farmodo/feature/gamification/viewmodel/gamification_controller.dart';
 import 'package:farmodo/feature/gamification/widget/achievements/achievement_card.dart';
 import 'package:farmodo/feature/gamification/widget/achievements/achievements_filters.dart';
@@ -70,7 +71,7 @@ class AchievementsTab extends StatelessWidget {
       );
     });
   }
-  void _showAchievementDetail(achievement, userAchievement) {
+  void _showAchievementDetail(Achievement achievement, userAchievement) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -167,36 +168,62 @@ class AchievementsTab extends StatelessWidget {
                 ],
               ),
             ],
-            
             context.dynamicHeight(0.03).height,
-            
-            // Ödül
-            Container(
-              padding: EdgeInsets.all(context.dynamicWidth(0.04)),
-              decoration: BoxDecoration(
-                color: achievement.rarityColor.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.star,
-                    color: achievement.rarityColor,
-                    size: context.dynamicHeight(0.03),
-                  ),
-                  context.dynamicWidth(0.03).width,
-                  Text(
-                    '+${achievement.xpReward} XP Rewards',
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: achievement.rarityColor,
-                    ),
-                  ),
-                ],
-              ),
+            Column(
+              children: [
+                RewardContainer(
+                  achievement: achievement,
+                  title: '+${achievement.xpReward} XP Rewards',
+                  icon: Icons.star,
+                ),
+                context.dynamicHeight(0.01).height,
+                RewardContainer(
+                  achievement: achievement,
+                  title: '+${achievement.coinReward} Coin Rewards',
+                  icon: Icons.monetization_on
+                )
+              ],
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class RewardContainer extends StatelessWidget {
+  const RewardContainer({
+    super.key, required this.achievement, required this.title, required this.icon,
+  });
+
+  final Achievement achievement;
+  final String title;
+  final IconData icon;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(context.dynamicWidth(0.04)),
+      decoration: BoxDecoration(
+        color: achievement.rarityColor.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
+        children: [
+          Icon(
+            icon,
+            color: achievement.rarityColor,
+            size: context.dynamicHeight(0.03),
+          ),
+          context.dynamicWidth(0.03).width,
+          Text(
+            title,
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.bold,
+              color: achievement.rarityColor,
+            ),
+          ),
+        ],
       ),
     );
   }

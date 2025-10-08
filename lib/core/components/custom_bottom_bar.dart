@@ -2,6 +2,7 @@ import 'package:farmodo/core/theme/app_colors.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/core/utility/extension/ontap_extension.dart';
 import 'package:flutter/material.dart';
+import 'package:kartal/kartal.dart';
 
 class CustomBottomNavigation extends StatelessWidget {
   final int currentIndex;
@@ -82,7 +83,7 @@ class CustomBottomNavigation extends StatelessWidget {
       ),
       decoration: BoxDecoration(
         color: Colors.transparent,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: context.border.lowBorderRadius
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,

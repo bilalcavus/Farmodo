@@ -45,7 +45,6 @@ class UserXp extends StatelessWidget {
           
           context.dynamicWidth(0.02).width,
           
-          // Coin Container
           Container(
             height: context.dynamicHeight(0.04),
             padding: EdgeInsets.symmetric(horizontal: 12),
@@ -79,9 +78,6 @@ class UserXp extends StatelessWidget {
             ),
           ),
           
-          context.dynamicWidth(0.02).width,
-          
-         
         ],
       ),
     );

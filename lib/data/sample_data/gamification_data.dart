@@ -33,7 +33,8 @@ class GamificationSampleData {
         type: AchievementType.animalCount,
         rarity: AchievementRarity.common,
         targetValue: 1,
-        xpReward: 50,
+        xpReward: 100,
+        coinReward: 50
       ),
       
       Achievement(
@@ -45,6 +46,7 @@ class GamificationSampleData {
         rarity: AchievementRarity.uncommon,
         targetValue: 5,
         xpReward: 150,
+        coinReward: 75,
       ),
       
       Achievement(
@@ -55,7 +57,8 @@ class GamificationSampleData {
         type: AchievementType.animalCount,
         rarity: AchievementRarity.rare,
         targetValue: 10,
-        xpReward: 300,
+        xpReward: 800,
+        coinReward: 400,
       ),
       
       Achievement(
@@ -66,7 +69,8 @@ class GamificationSampleData {
         type: AchievementType.animalCount,
         rarity: AchievementRarity.epic,
         targetValue: 25,
-        xpReward: 500,
+        xpReward: 2000,
+        coinReward: 1000
       ),
       
       Achievement(
@@ -78,6 +82,7 @@ class GamificationSampleData {
         rarity: AchievementRarity.legendary,
         targetValue: 50,
         xpReward: 1000,
+        coinReward: 500
       ),
       
       // Bakım aksiyonları başarıları
@@ -89,7 +94,8 @@ class GamificationSampleData {
         type: AchievementType.feedAnimals,
         rarity: AchievementRarity.common,
         targetValue: 100,
-        xpReward: 100,
+        xpReward: 4000,
+        coinReward: 2000,
       ),
       
       Achievement(
@@ -100,7 +106,8 @@ class GamificationSampleData {
         type: AchievementType.loveAnimals,
         rarity: AchievementRarity.common,
         targetValue: 100,
-        xpReward: 100,
+        xpReward: 2000,
+        coinReward: 1000
       ),
       
       Achievement(
@@ -111,7 +118,8 @@ class GamificationSampleData {
         type: AchievementType.playWithAnimals,
         rarity: AchievementRarity.common,
         targetValue: 100,
-        xpReward: 100,
+        xpReward: 4000,
+        coinReward: 2000,
       ),
       
       Achievement(
@@ -122,7 +130,8 @@ class GamificationSampleData {
         type: AchievementType.healAnimals,
         rarity: AchievementRarity.uncommon,
         targetValue: 50,
-        xpReward: 150,
+        xpReward: 3000,
+        coinReward: 1500
       ),
       
       Achievement(
@@ -133,7 +142,8 @@ class GamificationSampleData {
         type: AchievementType.healAnimals,
         rarity: AchievementRarity.legendary,
         targetValue: 1000,
-        xpReward: 1500,
+        xpReward: 40000,
+        coinReward: 20000
       ),
       
       // Özel başarılar
@@ -145,7 +155,8 @@ class GamificationSampleData {
         type: AchievementType.special,
         rarity: AchievementRarity.uncommon,
         targetValue: 1,
-        xpReward: 75,
+        xpReward: 100,
+        coinReward: 50,
       ),
       
       Achievement(
@@ -156,7 +167,8 @@ class GamificationSampleData {
         type: AchievementType.special,
         rarity: AchievementRarity.uncommon,
         targetValue: 1,
-        xpReward: 75,
+        xpReward: 500,
+        coinReward: 250
       ),
       
       Achievement(
@@ -167,7 +179,8 @@ class GamificationSampleData {
         type: AchievementType.special,
         rarity: AchievementRarity.rare,
         targetValue: 1,
-        xpReward: 200,
+        xpReward: 1000,
+        coinReward: 500
       ),
     ];
   }

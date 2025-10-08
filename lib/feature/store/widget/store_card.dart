@@ -24,7 +24,6 @@ class StoreCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final double padding = context.dynamicHeight(0.01);
-    final double starSize = context.dynamicHeight(0.025);
     final double buttonFont = context.dynamicHeight(0.016);
     final rewardController = getIt<RewardController>();
     return Padding(
@@ -84,9 +83,9 @@ class StoreCard extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Image.asset('assets/images/xp_star.png', height: starSize),
+                        Icon(Icons.monetization_on, color: Colors.amber),
                         Text(
-                          '${reward.xpCost} XP',
+                          '${reward.xpCost} Coin',
                           style: Theme.of(context).textTheme.labelLarge?.copyWith(
                             fontWeight: FontWeight.bold,
                           ),

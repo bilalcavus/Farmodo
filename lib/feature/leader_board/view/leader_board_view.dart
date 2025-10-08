@@ -42,13 +42,13 @@ class _LeaderBoardViewState extends State<LeaderBoardView> with TickerProviderSt
     final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: AppColors.primary,
+        backgroundColor: AppColors.danger,
         iconTheme: IconThemeData(
           color: Colors.white
         ),
         elevation: 0,
         title: Text(
-          "🏆 Leaderboard",
+          "Leaderboard",
           style: theme.textTheme.titleMedium?.copyWith(
             fontWeight: FontWeight.w600,
             color: Colors.white
@@ -58,6 +58,8 @@ class _LeaderBoardViewState extends State<LeaderBoardView> with TickerProviderSt
           controller: _tabController,
           labelColor: AppColors.background,
           unselectedLabelColor: AppColors.background,
+          indicatorColor: Colors.white,
+          dividerColor: Colors.white54,
           labelStyle: const TextStyle(
             fontWeight: FontWeight.bold,
           ),

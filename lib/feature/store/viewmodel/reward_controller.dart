@@ -76,20 +76,6 @@ class RewardController extends GetxController {
     }
   }
 
-  Future<void> ownedAnimal(String rewardId) async {
-    errorMessage.value = '';
-    try {
-      final value = await animalService.userOwnedAnimal(rewardId);
-      _isOwnedAnimal.value = value;
-      if (value) {
-        ownedRewardIds.add(rewardId);
-      } else {
-        ownedRewardIds.remove(rewardId);
-      }
-    } catch (e) {
-      errorMessage.value = e.toString();
-    }
-  }
 
   Future<void> loadOwnedRewards() async {
     try {
