@@ -1,4 +1,5 @@
 import 'package:farmodo/core/services/preferences_service.dart';
+import 'package:farmodo/core/theme/theme_controller.dart';
 import 'package:farmodo/data/services/animal_service.dart';
 import 'package:farmodo/data/services/auth_service.dart';
 import 'package:farmodo/data/services/firestore_service.dart';
@@ -39,5 +40,8 @@ Future<void> setupDependencies() async {
   getIt.registerLazySingleton(() => GamificationController());
   getIt.registerLazySingleton(() => FarmController(getIt(), getIt()));
   getIt.registerLazySingleton(() => NavigationController());
+  getIt.registerLazySingleton(() => ThemeController());
+
+
 
 }

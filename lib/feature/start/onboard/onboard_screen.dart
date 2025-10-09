@@ -83,11 +83,11 @@ class _OnboardScreenState extends State<OnboardScreen> {
       }
       
       if (mounted) {
-        RouteHelper.pushAndCloseOther(context, AppNavigation());
+        RouteHelper.pushAndCloseOther(context, AppNavigation(initialIndex: 0));
       }
     } catch (e) {
       if (mounted) {
-        RouteHelper.pushAndCloseOther(context, AppNavigation());
+        RouteHelper.pushAndCloseOther(context, AppNavigation(initialIndex: 0));
       }
     } finally {
       if (mounted) {

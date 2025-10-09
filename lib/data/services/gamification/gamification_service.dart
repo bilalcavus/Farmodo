@@ -290,6 +290,7 @@ Future<void> updateQuestProgress(
       if (!userDoc.exists) return;
       
       final currentXp = (userDoc.data()?['xp'] as int?) ?? 0;
+      final currentLevel = (userDoc.data()?['level'] as int?) ?? 0;
       final newXp = currentXp + xpAmount;
       final newLevel = (newXp ~/ 100) + 1;
 

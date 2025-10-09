@@ -52,7 +52,7 @@ class _SplashViewState extends State<SplashView> {
       
       if (mounted) {
         if (_prefsService.isOnboardingCompleted) {
-          RouteHelper.pushAndCloseOther(context, AppNavigation());
+          RouteHelper.pushAndCloseOther(context, AppNavigation(initialIndex: 0));
         } else {
           RouteHelper.pushAndCloseOther(context, OnboardScreen());
         }
@@ -61,7 +61,7 @@ class _SplashViewState extends State<SplashView> {
       debugPrint('Splash initialization error: $e');
       if (mounted) {
         if (_prefsService.isOnboardingCompleted) {
-          RouteHelper.pushAndCloseOther(context, AppNavigation());
+          RouteHelper.pushAndCloseOther(context, AppNavigation(initialIndex: 0));
         } else {
           RouteHelper.pushAndCloseOther(context, OnboardScreen());
         }

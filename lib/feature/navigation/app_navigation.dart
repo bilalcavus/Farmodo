@@ -9,17 +9,22 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 class AppNavigation extends StatelessWidget {
-  AppNavigation({super.key});
+  AppNavigation({super.key, required this.initialIndex}){
+    navController.currentIndex.value = initialIndex;
+  }
 
-  final NavigationController navController = Get.put(NavigationController());
+  final NavigationController navController = Get.put(NavigationController(), permanent: true);
+  
+  final int initialIndex;
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent, // Arka plan rengi
+        statusBarColor: Colors.transparent,
         statusBarIconBrightness: Brightness.dark, // Android ikonları
-        statusBarBrightness: Brightness.light, // iOS ikonları
+        statusBarBrightness: isDark ? Brightness.dark : Brightness.light, // iOS ikonları
       ),
       child: Obx(() {
         return SafeArea(

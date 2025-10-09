@@ -19,7 +19,6 @@ class XpLeaderBoard extends StatefulWidget {
   State<XpLeaderBoard> createState() => _XpLeaderBoardState();
 }
 
-// Map for rank images
 const Map<int, String> thirdMap = {
   1: 'assets/images/first.png',
   2: 'assets/images/second.png',
@@ -87,7 +86,7 @@ class _XpLeaderBoardState extends State<XpLeaderBoard> with LoadingMixin {
     required int value,
   }) {
     final rankColor = _getRankColor(rank);
-    
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -95,8 +94,8 @@ class _XpLeaderBoardState extends State<XpLeaderBoard> with LoadingMixin {
         color: isCurrentUser 
             ? AppColors.primary.withAlpha(20) 
             : rank <= 3 
-                ? rankColor.withAlpha(15)
-                : AppColors.surface,
+                ? rankColor.withAlpha(35)
+                : isDark ? AppColors.darkSurface :  AppColors.surface,
         borderRadius: context.border.normalBorderRadius,
         border: isCurrentUser 
             ? Border.all(color: AppColors.primary.withAlpha(75), width: 1.5)
@@ -106,18 +105,18 @@ class _XpLeaderBoardState extends State<XpLeaderBoard> with LoadingMixin {
         children: [
           Center(
             child: rank <= 3
-                ? Image.asset(
-                    thirdMap[rank] ?? 'assets/images/user_avatar.png',
-                    height: 40,
-                    width: 40,
-                  )
-                : Text(
-                    "$rank",
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: const Color(0xFF10B981),
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
+            ? Image.asset(
+                thirdMap[rank] ?? 'assets/images/user_avatar.png',
+                height: 40,
+                width: 40,
+              )
+            : Text(
+                "$rank",
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: const Color(0xFF10B981),
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
           ),
           
           context.dynamicWidth(0.017).width,
@@ -126,7 +125,7 @@ class _XpLeaderBoardState extends State<XpLeaderBoard> with LoadingMixin {
             child: Text(
               user.displayName,
               style: theme.textTheme.bodyLarge?.copyWith(
-                color: isCurrentUser ? AppColors.primary : AppColors.textPrimary,
+                color: isCurrentUser ? AppColors.primary : null,
                 fontWeight: isCurrentUser ? FontWeight.w600 : FontWeight.w500,
               ),
               overflow: TextOverflow.ellipsis,

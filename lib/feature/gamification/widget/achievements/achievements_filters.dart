@@ -4,6 +4,7 @@ import 'package:farmodo/feature/gamification/viewmodel/gamification_controller.d
 import 'package:farmodo/feature/gamification/widget/main/filter_chip_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
+import 'package:kartal/kartal.dart';
 
 class AchievementsFilters extends StatelessWidget {
   const AchievementsFilters({
@@ -19,7 +20,7 @@ class AchievementsFilters extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: context.dynamicHeight(0.05),
-      padding: EdgeInsets.symmetric(horizontal: context.dynamicWidth(0.02)),
+      padding: context.padding.horizontalLow,
       child: Obx(() => ListView(
         scrollDirection: Axis.horizontal,
         children: [

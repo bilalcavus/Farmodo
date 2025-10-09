@@ -1,4 +1,5 @@
 import 'package:farmodo/core/di/injection.dart';
+import 'package:farmodo/core/theme/app_container_styles.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/data/services/auth_service.dart';
 import 'package:farmodo/feature/store/store_view.dart';
@@ -39,13 +40,13 @@ class FarmEmptyState extends StatelessWidget {
                   width: context.dynamicWidth(0.25),
                   height: context.dynamicHeight(0.12),
                   decoration: BoxDecoration(
-                    color: Colors.green.withAlpha(25),
+                    color: Colors.green.withAlpha(55),
                     shape: BoxShape.circle,
                   ),
                   child: Icon(
                     Icons.pets,
                     size: context.dynamicHeight(0.06),
-                    color: Colors.green.withAlpha(25),
+                    color: Colors.green
                   ),
                 ),
               );
@@ -59,15 +60,14 @@ class FarmEmptyState extends StatelessWidget {
             duration: const Duration(milliseconds: 1000),
             tween: Tween(begin: 0.0, end: 1.0),
             builder: (context, value, child) {
-              return Opacity(
+              return Opacity( 
                 opacity: value,
                 child: Transform.translate(
                   offset: Offset(0, 20 * (1 - value)),
                   child: Text(
                     'Çiftliğiniz Boş',
-                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
                       fontWeight: FontWeight.bold,
-                      color: Colors.grey.shade700,
                     ),
                   ),
                 ),
@@ -158,18 +158,13 @@ class FarmEmptyState extends StatelessWidget {
                     margin: EdgeInsets.symmetric(
                       horizontal: context.dynamicWidth(0.05),
                     ),
-                    decoration: BoxDecoration(
-                      color: Colors.grey.shade50,
-                      borderRadius: BorderRadius.circular(15),
-                      border: Border.all(color: Colors.grey.shade200),
-                    ),
+                    decoration: AppContainerStyles.secondaryContainer(context),
                     child: Column(
                       children: [
                         Text(
                           'Hayvan Bakım Özellikleri',
-                          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
                             fontWeight: FontWeight.bold,
-                            color: Colors.grey.shade700,
                           ),
                         ),
                         

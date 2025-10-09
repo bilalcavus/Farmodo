@@ -48,7 +48,6 @@ class AnimalStatusBar extends StatelessWidget {
               label,
               style: const TextStyle(
                 fontWeight: FontWeight.w500,
-                color: AppColors.textPrimary,
               ),
             ),
             const Spacer(),

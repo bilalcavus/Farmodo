@@ -1,4 +1,5 @@
 import 'package:farmodo/core/theme/app_colors.dart';
+import 'package:farmodo/core/theme/app_container_styles.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
 import 'package:farmodo/data/services/auth_service.dart';
@@ -24,18 +25,13 @@ class UserXp extends StatelessWidget {
           Container(
             height: context.dynamicHeight(0.04),
             padding: context.padding.horizontalLow,
-            decoration: BoxDecoration(
-              color: Colors.grey.shade100,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: AppColors.border),
-            ),
+            decoration: AppContainerStyles.secondaryContainer(context),
             child: Row(
               children: [
                 Image.asset('assets/images/xp_star.png', height: context.dynamicHeight(0.03)),
                 Text(
                   '${authService.currentUser?.xp ?? 0} XP',
                   style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                    color: AppColors.textPrimary,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -47,20 +43,16 @@ class UserXp extends StatelessWidget {
           
           Container(
             height: context.dynamicHeight(0.04),
-            padding: EdgeInsets.symmetric(horizontal: 12),
-            decoration: BoxDecoration(
-              color: Colors.grey.shade100,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: AppColors.border),
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            decoration: AppContainerStyles.secondaryContainer(context),
             child: Row(
               children: [
                 Icon(
                   Icons.monetization_on,
-                  color: Colors.amber,
+                  color: AppColors.warning,
                   size: context.dynamicHeight(0.025),
                 ),
-                SizedBox(width: 8),
+                const SizedBox(width: 8),
                 FutureBuilder<Map<String, int>>(
                   future: GamificationService().getUserStats(),
                   builder: (context, snapshot) {
@@ -68,7 +60,6 @@ class UserXp extends StatelessWidget {
                     return Text(
                       '$coins Coin',
                       style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                        color: AppColors.textPrimary,
                         fontWeight: FontWeight.w500,
                       ),
                     );

@@ -16,10 +16,11 @@ class CustomBottomNavigation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       height: context.dynamicHeight(0.08),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDark ? AppColors.darkBottomNavbar : AppColors.lightSurface,
         boxShadow: [
           BoxShadow(
             color: Colors.black.withAlpha(15),
@@ -28,6 +29,7 @@ class CustomBottomNavigation extends StatelessWidget {
           ),
         ],
       ),
+
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [

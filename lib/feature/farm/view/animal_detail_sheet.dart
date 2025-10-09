@@ -33,13 +33,7 @@ class _AnimalDetailSheetState extends State<AnimalDetailSheet> {
   Widget build(BuildContext context) {
     return Container(
       height: context.dynamicHeight(0.85),
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(25),
-          topRight: Radius.circular(25),
-        ),
-      ),
+      decoration: AppContainerStyles.secondaryContainer(context),
       child: Column(
         children: [
           context.dynamicHeight(0.015).height,
@@ -246,23 +240,17 @@ class NicknameSection extends StatelessWidget {
         Row(
           children: [
             Expanded(
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade100,
-                  borderRadius: BorderRadius.circular(10)
-                ),
-                child: TextField(
-                  controller: _nicknameController,
-                  decoration: InputDecoration(
-                    hintText: 'Enter nickname...',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide.none
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 12,
-                    ),
+              child: TextField(
+                controller: _nicknameController,
+                decoration: InputDecoration(
+                  hintText: 'Enter nickname...',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 12,
                   ),
                 ),
               ),
@@ -336,11 +324,7 @@ class AnimalDetail extends StatelessWidget {
           
           Container(
             padding: EdgeInsets.all(context.dynamicWidth(0.04)),
-            decoration: BoxDecoration(
-              color: Colors.grey.shade50,
-              borderRadius: BorderRadius.circular(15),
-              border: Border.all(color: Colors.grey.shade300),
-            ),
+            decoration: AppContainerStyles.primaryContainer(context),
             child: Column(
               children: [
                 AnimalDetailInfo(label: 'Name', value: updatedAnimal.name, context: context),
@@ -413,16 +397,13 @@ class AnimalDetailInfo extends StatelessWidget {
               '$label:',
               style: Theme.of(context).textTheme.labelLarge?.copyWith(
                 fontWeight: FontWeight.bold,
-                color: Colors.grey,
               ),
             ),
           ),
           Expanded(
             child: Text(
               value,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Colors.black87,
-              ),
+              style: Theme.of(context).textTheme.bodyMedium,
               softWrap: true,
               overflow: TextOverflow.visible,
             ),

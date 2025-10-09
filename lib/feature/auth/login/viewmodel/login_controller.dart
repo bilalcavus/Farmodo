@@ -96,7 +96,7 @@ class LoginController extends GetxController {
       }
 
       if (context.mounted) {
-        RouteHelper.pushAndCloseOther(context, AppNavigation());
+        RouteHelper.pushAndCloseOther(context, AppNavigation(initialIndex: 0));
       }
     } catch (e) {
       errorMessage.value = e.toString();
@@ -111,7 +111,7 @@ class LoginController extends GetxController {
     setAppleLoading(true.obs);
     try {
       await authService.signInWithApple();
-      if (context.mounted) RouteHelper.pushAndCloseOther(context, AppNavigation());
+      if (context.mounted) RouteHelper.pushAndCloseOther(context, AppNavigation(initialIndex: 0));
     } catch (e) {
       debugPrint('$e');
     } finally {
@@ -174,7 +174,7 @@ class LoginController extends GetxController {
       await authService.signInWithGoogle();
       _userXp.value = authService.currentUser?.xp ?? 0;
       if (context.mounted) {
-        RouteHelper.pushAndCloseOther(context, AppNavigation());
+        RouteHelper.pushAndCloseOther(context, AppNavigation(initialIndex: 0));
       }
     } catch (e) {
       if (context.mounted) {

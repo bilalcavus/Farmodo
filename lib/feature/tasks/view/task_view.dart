@@ -1,5 +1,6 @@
 import 'package:farmodo/core/di/injection.dart';
 import 'package:farmodo/core/theme/app_colors.dart';
+import 'package:farmodo/core/theme/app_container_styles.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/core/utility/extension/route_helper.dart';
 import 'package:farmodo/data/models/user_task_model.dart';
@@ -30,7 +31,6 @@ class _TaskViewState extends State<TaskView> with TaskViewMixin {
       initialIndex: 0,
       length: 2,
       child: Scaffold(
-        backgroundColor: AppColors.background,
         appBar: _buildAppBar(),
         body: _buildTabBarView(),
         floatingActionButton: _buildFloatingButton(context),
@@ -62,7 +62,7 @@ class _TaskViewState extends State<TaskView> with TaskViewMixin {
         elevation: 0,
         icon: const Icon(Icons.add, color: Colors.white),
         label: Text(
-          'New Task',
+          'Custom Task',
           style: Theme.of(context).textTheme.labelLarge?.copyWith(
             color: Colors.white,
             fontWeight: FontWeight.w600,
@@ -73,10 +73,11 @@ class _TaskViewState extends State<TaskView> with TaskViewMixin {
   }
 
   void _showLoginBottomSheet() {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.transparent,
+      backgroundColor: isDark ? AppColors.darkSurface : AppColors.lightSurface,
       builder: (context) => LoginBottomSheet(
         title: 'Login to create a task',
         subTitle: 'You need to log in to save your tasks and track your progress.',
@@ -107,14 +108,12 @@ class _TaskViewState extends State<TaskView> with TaskViewMixin {
           'My Tasks',
           style: Theme.of(context).textTheme.headlineMedium?.copyWith(
             fontWeight: FontWeight.w700,
-            color: AppColors.textPrimary,
             letterSpacing: -0.5,
           ),
         ),
         Text(
           'Manage your custom tasks',
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
-            color: AppColors.textSecondary,
             fontWeight: FontWeight.w400,
           ),
         ),
@@ -123,6 +122,7 @@ class _TaskViewState extends State<TaskView> with TaskViewMixin {
   }
 
   PreferredSizeWidget _buildTabBar() {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return PreferredSize(
       preferredSize: Size.fromHeight(context.dynamicHeight(0.06)),
       child: Padding(
@@ -131,20 +131,15 @@ class _TaskViewState extends State<TaskView> with TaskViewMixin {
         ).copyWith(bottom: context.dynamicHeight(0.015)),
         child: Container(
           height: context.dynamicHeight(0.045),
-          decoration: BoxDecoration(
-            color: Colors.grey.shade100,
-            borderRadius: BorderRadius.circular(12),
-          ),
+          decoration: AppContainerStyles.primaryContainer(context),
           padding: EdgeInsets.all(context.dynamicHeight(0.005)),
           child: TabBar(
             indicator: BoxDecoration(
-              color: Colors.white,
               borderRadius: BorderRadius.circular(10),
             ),
             indicatorSize: TabBarIndicatorSize.tab,
             dividerHeight: 0,
-            labelColor: AppColors.textPrimary,
-            unselectedLabelColor: AppColors.textSecondary,
+            unselectedLabelColor: isDark ? AppColors.lightTextSecondary : AppColors.darkTextSecondary,
             labelStyle: Theme.of(context).textTheme.labelLarge?.copyWith(
               fontWeight: FontWeight.w600,
             ),

@@ -1,5 +1,4 @@
 import 'package:farmodo/core/di/injection.dart';
-import 'package:farmodo/core/theme/app_colors.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
 import 'package:farmodo/data/services/auth_service.dart';
@@ -70,7 +69,7 @@ class _AccountViewState extends State<AccountView> {
 
     setState(() {
       totalXp = user?.xp ?? 0;
-      tasksCompleted = computedTasks;
+      tasksCompleted = computedTasks; 
       daysActive = computedDays;
       joinedYearText = joinedYear;
       handleText = '@${_authService.firebaseUser?.email?.split('@').first ?? 'guest'}';
@@ -81,8 +80,35 @@ class _AccountViewState extends State<AccountView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
-      appBar: _buildAppBar(context),
+      appBar: AppBar(
+      elevation: 0,
+      systemOverlayStyle: const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.dark,
+      ),
+      toolbarHeight: context.dynamicHeight(0.08),
+      title: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Profile',
+            style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+              fontWeight: FontWeight.w700,
+              letterSpacing: -0.5,
+            ),
+          ),
+          Text(
+            _authService.isLoggedIn 
+              ? 'Your account and settings'
+              : 'Personalize your experience',
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              fontWeight: FontWeight.w400,
+            ),
+          ),
+        ],
+      ),
+      centerTitle: false,
+    ),
       body: SingleChildScrollView(
         padding: EdgeInsets.symmetric(
           horizontal: context.dynamicWidth(0.04),
@@ -113,41 +139,6 @@ class _AccountViewState extends State<AccountView> {
           ],
         ),
       ),
-    );
-  }
-
-  PreferredSizeWidget _buildAppBar(BuildContext context) {
-    return AppBar(
-      backgroundColor: Colors.transparent,
-      elevation: 0,
-      systemOverlayStyle: const SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        statusBarIconBrightness: Brightness.dark,
-      ),
-      toolbarHeight: context.dynamicHeight(0.08),
-      title: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Profile',
-            style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-              fontWeight: FontWeight.w700,
-              color: AppColors.textPrimary,
-              letterSpacing: -0.5,
-            ),
-          ),
-          Text(
-            _authService.isLoggedIn 
-              ? 'Your account and settings'
-              : 'Personalize your experience',
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: AppColors.textSecondary,
-              fontWeight: FontWeight.w400,
-            ),
-          ),
-        ],
-      ),
-      centerTitle: false,
     );
   }
 }

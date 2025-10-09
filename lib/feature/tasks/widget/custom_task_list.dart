@@ -1,5 +1,6 @@
 
 import 'package:farmodo/core/theme/app_colors.dart';
+import 'package:farmodo/core/theme/app_container_styles.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/core/utility/extension/ontap_extension.dart';
 import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
@@ -87,7 +88,7 @@ class CustomTaskList extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('Showing the last 10 tasks', style: Theme.of(context).textTheme.bodySmall?.copyWith(
+            Text('Showing the last 10 custom tasks', style: Theme.of(context).textTheme.bodySmall?.copyWith(
               color: Colors.grey.shade500
             )),
           ],
@@ -113,17 +114,7 @@ class CustomTaskList extends StatelessWidget {
     return Container(
       margin: EdgeInsets.symmetric(vertical: context.dynamicHeight(0.008), horizontal: context.dynamicWidth(0.002)),
       padding: context.padding.normal,
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(context.dynamicHeight(0.01)),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.border.withAlpha(25),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
+      decoration: AppContainerStyles.glassContainer(context),
       child: Row(
         children: [
           Expanded(
@@ -133,7 +124,6 @@ class CustomTaskList extends StatelessWidget {
                 Text(
                   task.title,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    color: AppColors.textPrimary,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -147,7 +137,7 @@ class CustomTaskList extends StatelessWidget {
                         borderRadius: BorderRadius.circular(context.dynamicHeight(0.008))
                       ),
                       child: Text('#${task.focusType}',
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           color: focusTypeColor(task.focusType),
                           fontWeight: FontWeight.bold
                       ))),
@@ -194,7 +184,7 @@ class CustomTaskList extends StatelessWidget {
           Text(
             text,
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: AppColors.textSecondary,
+
               fontWeight: FontWeight.w500,
             ),
           ),

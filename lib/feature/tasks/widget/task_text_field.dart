@@ -13,11 +13,13 @@ class TaskTextField extends StatelessWidget {
   final String hintText;
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
     return TextField(
       controller: controller,
       textCapitalization: TextCapitalization.words,
-      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-        color: AppColors.textPrimary,
+      style: theme.textTheme.bodyMedium?.copyWith(
+        color: theme.textTheme.bodyMedium?.color,
         fontSize: context.dynamicHeight(0.018)
       ),
       decoration: InputDecoration(
@@ -26,10 +28,9 @@ class TaskTextField extends StatelessWidget {
           color: AppColors.textSecondary,
         ),
         filled: true,
-        fillColor: AppColors.surface,
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(context.dynamicWidth(0.04)),
-          borderSide: BorderSide(color: AppColors.border),
+          borderSide: isDark ? BorderSide(color: AppColors.darkBorder) : BorderSide(color: AppColors.border),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(context.dynamicWidth(0.04)),

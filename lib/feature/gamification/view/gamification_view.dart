@@ -38,8 +38,8 @@ class _GamificationViewState extends State<GamificationView>
   @override
   Widget build(BuildContext context) {
     final authService = getIt<AuthService>();
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
-      backgroundColor: AppColors.background,
       appBar: AppBar(
         title:  Text(
           'Achievements & Quests',
@@ -48,7 +48,7 @@ class _GamificationViewState extends State<GamificationView>
           )
         ),
         iconTheme: const IconThemeData(color: Colors.white),
-        backgroundColor: AppColors.primary,
+        backgroundColor: isDark ? AppColors.darkSurface : AppColors.primary,
         elevation: 0,
         actions: [
           IconButton(
@@ -64,7 +64,7 @@ class _GamificationViewState extends State<GamificationView>
           indicatorColor: Colors.white,
           labelColor: Colors.white,
           unselectedLabelColor: Colors.white70,
-          dividerColor: Colors.white,
+          dividerColor: Colors.transparent,
           tabs: const [
             Tab(
               icon: Icon(HugeIcons.strokeRoundedChampion),

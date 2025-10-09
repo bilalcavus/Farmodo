@@ -1,6 +1,7 @@
 
 import 'package:farmodo/core/components/card/show_alert_dialog.dart';
 import 'package:farmodo/core/theme/app_colors.dart';
+import 'package:farmodo/core/theme/app_container_styles.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/core/utility/extension/route_helper.dart';
 import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
@@ -46,7 +47,7 @@ class _TimeStartButtonState extends State<TimeStartButton> {
               onPressed: () => widget.timerController.resetTimer(),
               buttonText: "Reset"
             ),
-            icon: Icon(HugeIcons.strokeRoundedRefresh, color: Colors.black, size: context.dynamicHeight(0.02))
+            icon: Icon(HugeIcons.strokeRoundedRefresh, size: context.dynamicHeight(0.02))
           ),
           context.dynamicWidth(0.03).width,
           ActionButton(
@@ -68,7 +69,7 @@ class _TimeStartButtonState extends State<TimeStartButton> {
           context.dynamicWidth(0.03).width,
           ActionButton(
             onPressed: () => toggleFullScreen(context),
-            icon:  Icon(HugeIcons.strokeRoundedFullScreen, color: Colors.black87, size: context.dynamicHeight(0.025))
+            icon:  Icon(HugeIcons.strokeRoundedFullScreen, size: context.dynamicHeight(0.025))
           ),
           context.dynamicWidth(0.03).width,
           ActionButton(onPressed: () => RouteHelper.push(context, const WidgetGuideView()), icon: Icon(Icons.widgets_outlined))
@@ -106,14 +107,7 @@ class ActionButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(context.dynamicHeight(0.05)),
-        color: Colors.transparent,
-        border: Border.all(
-          color: Colors.grey.shade300,
-          width: 2
-        )
-      ),
+      decoration: AppContainerStyles.primaryContainer(context),
       child: IconButton(
         onPressed: () => onPressed(),
         icon: icon,

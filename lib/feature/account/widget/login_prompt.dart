@@ -1,10 +1,12 @@
 import 'package:farmodo/core/theme/app_colors.dart';
+import 'package:farmodo/core/theme/app_container_styles.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/core/utility/extension/route_helper.dart';
 import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
 import 'package:farmodo/feature/auth/login/view/login_view.dart';
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:kartal/kartal.dart';
 
 class LoginPrompt extends StatelessWidget {
   const LoginPrompt({
@@ -19,14 +21,9 @@ class LoginPrompt extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: context.dynamicHeight(0.25),
       width: double.infinity,
       padding: EdgeInsets.all(context.dynamicHeight(0.02)),
-      decoration: BoxDecoration(
-        color: AppColors.primary.withAlpha(25),
-        borderRadius: BorderRadius.circular(context.dynamicHeight(0.02)),
-        border: Border.all(color: AppColors.primary.withAlpha(50)),
-      ),
+      decoration: AppContainerStyles.accentContainer(context, accentColor: AppColors.primary, borderRadius: context.border.normalBorderRadius),
       child: Column(
         children: [
           Icon(
@@ -38,7 +35,6 @@ class LoginPrompt extends StatelessWidget {
           Text(
             title,
             style: TextStyle(
-              color: AppColors.textPrimary,
               fontSize: context.dynamicHeight(0.018),
               fontWeight: FontWeight.w600,
             ),
@@ -61,8 +57,7 @@ class LoginPrompt extends StatelessWidget {
                 RouteHelper.push(context, const LoginView());
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primary,
-                padding: EdgeInsets.symmetric(vertical: context.dynamicHeight(0.015)),
+                padding: context.padding.verticalLow,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(context.dynamicHeight(0.015)),
                 ),

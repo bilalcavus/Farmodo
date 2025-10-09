@@ -1,3 +1,5 @@
+import 'package:farmodo/core/theme/app_colors.dart';
+import 'package:farmodo/core/theme/app_container_styles.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:flutter/material.dart';
 
@@ -31,19 +33,15 @@ class DropMenu extends StatelessWidget {
         Container(
           height: context.dynamicHeight(0.065),
           padding: EdgeInsets.symmetric(horizontal: context.dynamicWidth(0.025)),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(context.dynamicWidth(0.04)),
-            border: Border.all(color: Colors.black.withAlpha(20))
-          ),
+          decoration: AppContainerStyles.primaryContainer(context),
           child: DropdownButtonHideUnderline(
             child: DropdownButtonFormField<String>(
               initialValue: controller.text.isEmpty ? null : controller.text,
               hint: Text(
                 hint,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Colors.black38
-                ),
+                  color: AppColors.textSecondary,
+                )
               ),
               icon: Icon(Icons.keyboard_arrow_down, color: Colors.grey[600]),
               decoration: InputDecoration(
@@ -53,10 +51,8 @@ class DropMenu extends StatelessWidget {
                 focusedBorder: InputBorder.none,
               ),
               borderRadius: BorderRadius.circular(context.dynamicWidth(0.04)),
-              dropdownColor: Colors.white,
               elevation: 3,
               style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                color: Colors.black87,
                 fontSize: context.dynamicHeight(0.3),
               ),
               items: List.generate(items.length, (index) {

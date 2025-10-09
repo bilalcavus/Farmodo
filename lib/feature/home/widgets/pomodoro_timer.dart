@@ -161,21 +161,22 @@ class TimerContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return CustomPaint(
       painter: ProgressBorderPainter(
         progress: progress,
         progressColor: progressColor,
-        backgroundColor: Colors.grey.shade200,
+        backgroundColor: isDark ? AppColors.darkBorder : AppColors.lightBorder,
       ),
       child: Container(
         width: context.dynamicWidth(0.6),
         padding: EdgeInsets.all(context.dynamicHeight(0.01)),
         decoration: BoxDecoration(
-          color: AppColors.background,
+          color: Theme.of(context).colorScheme.surface,
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.1),
               blurRadius: 8,
               offset: const Offset(0, 4),
             ),
@@ -188,17 +189,15 @@ class TimerContainer extends StatelessWidget {
                   ? widget.timerController.formatTime(widget.timerController.breakSecondsRemaining.value)
                   :  widget.timerController.formatTime(widget.timerController.secondsRemaining.value),
               style: Theme.of(context).textTheme.displayLarge?.copyWith(
-                color: AppColors.textPrimary,
                 fontWeight: FontWeight.w700,
               ),
               textAlign: TextAlign.center,
             ),
             widget.timerController.isOnBreak.value == true ?
              Text('Break Time', style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-               color: AppColors.textPrimary,
                fontWeight: FontWeight.w700,
              )) :
-             SizedBox.shrink(),
+             const SizedBox.shrink(),
           ],
         ),
       ),
@@ -216,13 +215,13 @@ class BreakTypeToggle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Obx(() {
       final currentBreakType = tasksController.defaultBreakType.value;
       final isRunning = tasksController.timerController.isRunning.value;
       
       return Container(
         decoration: BoxDecoration(
-          color: Colors.grey.shade100,
           borderRadius: BorderRadius.circular(8),
         ),
         child: Row(
@@ -233,6 +232,7 @@ class BreakTypeToggle extends StatelessWidget {
               label: 'Short Break (5m)',
               isSelected: currentBreakType == BreakDurationType.short,
               isEnabled: !isRunning,
+              isDarkMode: isDark,
               onTap: () {
                 if (!isRunning) {
                   tasksController.setDefaultBreakType(BreakDurationType.short);
@@ -244,6 +244,7 @@ class BreakTypeToggle extends StatelessWidget {
               label: 'Long Break (15m)',
               isSelected: currentBreakType == BreakDurationType.long,
               isEnabled: !isRunning,
+              isDarkMode: isDark,
               onTap: () {
                 if (!isRunning) {
                   tasksController.setDefaultBreakType(BreakDurationType.long);
@@ -262,6 +263,7 @@ class BreakTypeToggle extends StatelessWidget {
     required bool isSelected,
     required bool isEnabled,
     required VoidCallback onTap,
+    required bool isDarkMode,
   }) {
     return GestureDetector(
       onTap: isEnabled ? onTap : null,
@@ -271,15 +273,15 @@ class BreakTypeToggle extends StatelessWidget {
           vertical: context.dynamicHeight(0.01),
         ),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.danger : Colors.grey.shade100,
+          color: isSelected ? AppColors.danger : isDarkMode ? AppColors.darkSurface : AppColors.lightSurface,
           borderRadius: context.border.lowBorderRadius
         ),
         child: Text(
           label,
           style: Theme.of(context).textTheme.labelMedium?.copyWith(
-            color: isSelected 
-              ? Colors.white 
-              : (isEnabled ? AppColors.textPrimary : AppColors.textSecondary),
+            color: isDarkMode 
+              ? isSelected ? AppColors.darkTextPrimary: isEnabled ? AppColors.darkTextPrimary : AppColors.darkTextSecondary
+              : isSelected ? AppColors.darkTextPrimary : isEnabled ? AppColors.lightTextPrimary : AppColors.lightTextSecondary,
             fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
           ),
         ),

@@ -1,8 +1,8 @@
+import 'package:farmodo/core/theme/app_container_styles.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/core/utility/extension/ontap_extension.dart';
 import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
 import 'package:flutter/material.dart';
-import 'package:kartal/kartal.dart';
 
 class SocialNetworkLogin extends StatelessWidget {
   const SocialNetworkLogin({
@@ -19,10 +19,7 @@ class SocialNetworkLogin extends StatelessWidget {
     return Container(
       width: double.infinity,
       height: context.dynamicHeight(0.055),
-      decoration: BoxDecoration(
-        color: Colors.grey.shade200,
-        borderRadius: context.border.normalBorderRadius
-      ),
+      decoration: AppContainerStyles.glassContainer(context),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,

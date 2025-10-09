@@ -35,7 +35,7 @@ class SucceedTaskPage extends StatelessWidget {
                   color: Colors.black87,
                   fontWeight: FontWeight.w600
                 ),),
-              ).onTap(() => RouteHelper.pushAndCloseOther(context, AppNavigation()))
+              ).onTap(() => RouteHelper.pushAndCloseOther(context, AppNavigation(initialIndex: 0)))
             ],
           ),
         ),

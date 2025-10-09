@@ -7,6 +7,7 @@ import 'package:farmodo/data/models/reward_model.dart';
 import 'package:farmodo/feature/store/viewmodel/reward_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
+import 'package:kartal/kartal.dart';
 
 class StoreCard extends StatelessWidget {
   final Reward reward;
@@ -33,13 +34,11 @@ class StoreCard extends StatelessWidget {
       ),
       child: Obx((){
         final isOwned = rewardController.ownedRewardIds.contains(reward.id);
+        final isDark = Theme.of(context).brightness == Brightness.dark;
         return Container(
           decoration: BoxDecoration(
-            color: AppColors.surface,
-            borderRadius: BorderRadius.circular(cardRadius),
-            // border: Border.all(
-            //   color: isOwned ? Colors.green : AppColors.primary.withAlpha(25),
-            // ),
+            color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
+            borderRadius: context.border.normalBorderRadius
           ),
           child: Padding(
             padding: EdgeInsets.all(padding),
@@ -50,8 +49,8 @@ class StoreCard extends StatelessWidget {
                   flex: 3,
                   child: Container(
                     decoration: BoxDecoration(
-                      color: Colors.grey.shade100,
-                      borderRadius: BorderRadius.circular(context.dynamicHeight(0.016))
+                      color: isDark ? const Color.fromARGB(255, 10, 16, 28) : Colors.grey.shade100,
+                      borderRadius: context.border.normalBorderRadius
                     ),
                     child: Center(
                       child: Image.asset(
@@ -105,10 +104,10 @@ class StoreCard extends StatelessWidget {
                     ElevatedButton(
                       onPressed: isBuying ? null : onBuy,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.textPrimary,
-                        foregroundColor: AppColors.surface,
+                        backgroundColor: AppColors.secondary,
+                        foregroundColor: isDark ? AppColors.lightTextPrimary : AppColors.darkTextPrimary,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10)
+                          borderRadius: context.border.normalBorderRadius
                         )
                       ),
                       child: isBuying

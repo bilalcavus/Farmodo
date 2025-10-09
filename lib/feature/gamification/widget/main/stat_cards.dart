@@ -1,4 +1,5 @@
 
+import 'package:farmodo/core/theme/app_container_styles.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
 import 'package:farmodo/feature/gamification/viewmodel/gamification_controller.dart';
@@ -59,17 +60,7 @@ class StatCards extends StatelessWidget {
   Widget _buildStatCard(BuildContext context, String title, String value, IconData icon, Color color, String subtitle) {
     return Container(
       padding: EdgeInsets.all(context.dynamicWidth(0.03)),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(context.dynamicHeight(0.016)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withAlpha(25),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
+      decoration: AppContainerStyles.primaryContainer(context),
       child: Column(
         children: [
           Icon(

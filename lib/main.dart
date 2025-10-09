@@ -1,8 +1,11 @@
+import 'package:farmodo/core/di/injection.dart';
 import 'package:farmodo/core/init/app_initializer.dart';
 import 'package:farmodo/core/theme/app_theme.dart';
+import 'package:farmodo/core/theme/theme_controller.dart';
 import 'package:farmodo/feature/start/splash/splash_view.dart';
 import 'package:flutter/material.dart';
-import 'package:get/route_manager.dart';
+import 'package:get/get.dart';
+
 
 void main() async { 
   await AppInitializer().make();
@@ -14,12 +17,17 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Farmodo',
-      theme: AppTheme.light,
-      themeMode: ThemeMode.light,
-      home: SplashView(),
+    final themeController = getIt<ThemeController>();
+    return GetBuilder<ThemeController>(
+      init: themeController,
+      builder: (controller) =>  GetMaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'Farmodo',
+        theme: AppTheme.light,
+        darkTheme: AppTheme.dark,
+        themeMode: controller.isDarkMode ? ThemeMode.dark : ThemeMode.light,
+        home: SplashView(),
+      ),
     );
   }
 }

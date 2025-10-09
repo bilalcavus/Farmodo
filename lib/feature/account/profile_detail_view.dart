@@ -1,5 +1,6 @@
 import 'package:farmodo/core/di/injection.dart';
 import 'package:farmodo/core/theme/app_colors.dart';
+import 'package:farmodo/core/theme/app_container_styles.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
 import 'package:farmodo/data/models/achievement_model.dart';
@@ -97,7 +98,6 @@ class _ProfileDetailViewState extends State<ProfileDetailView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
       appBar: AppBar(
         systemOverlayStyle: SystemUiOverlayStyle(
           statusBarColor: Colors.transparent,
@@ -107,7 +107,6 @@ class _ProfileDetailViewState extends State<ProfileDetailView> {
         title: Text(
           'Profile Detail',
           style: TextStyle(
-            color: AppColors.textPrimary,
             fontSize: context.dynamicHeight(0.022),
             fontWeight: FontWeight.w600,
           ),
@@ -120,7 +119,6 @@ class _ProfileDetailViewState extends State<ProfileDetailView> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Profile Header
             _buildProfileHeader(context),
             context.dynamicHeight(0.03).height,
             
@@ -147,17 +145,7 @@ class _ProfileDetailViewState extends State<ProfileDetailView> {
         : (user?.displayName ?? 'Guest User');
 
     return Container(
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(context.dynamicHeight(0.02)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withAlpha(25),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
+      decoration: AppContainerStyles.primaryContainer(context),
       padding: EdgeInsets.all(context.dynamicHeight(0.025)),
       child: Column(
         children: [
@@ -172,7 +160,6 @@ class _ProfileDetailViewState extends State<ProfileDetailView> {
           Text(
             displayName,
             style: TextStyle(
-              color: AppColors.textPrimary,
               fontSize: context.dynamicHeight(0.028),
               fontWeight: FontWeight.w700,
             ),
@@ -204,17 +191,7 @@ class _ProfileDetailViewState extends State<ProfileDetailView> {
 
   Widget _buildStatisticsSection(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(context.dynamicHeight(0.02)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withAlpha(25),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
+      decoration: AppContainerStyles.primaryContainer(context),
       padding: EdgeInsets.all(context.dynamicHeight(0.025)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -222,7 +199,6 @@ class _ProfileDetailViewState extends State<ProfileDetailView> {
           Text(
             'Statistics',
             style: TextStyle(
-              color: AppColors.textPrimary,
               fontSize: context.dynamicHeight(0.02),
               fontWeight: FontWeight.w600,
             ),
@@ -275,11 +251,7 @@ class _ProfileDetailViewState extends State<ProfileDetailView> {
   }) {
     return Container(
       padding: EdgeInsets.all(context.dynamicHeight(0.02)),
-      decoration: BoxDecoration(
-        color: AppColors.background,
-        borderRadius: BorderRadius.circular(context.dynamicHeight(0.015)),
-        border: Border.all(color: AppColors.border),
-      ),
+      decoration: AppContainerStyles.primaryContainer(context),
       child: isWide
           ? Row(
               children: [
@@ -296,7 +268,6 @@ class _ProfileDetailViewState extends State<ProfileDetailView> {
                       Text(
                         value,
                         style: TextStyle(
-                          color: AppColors.textPrimary,
                           fontSize: context.dynamicHeight(0.022),
                           fontWeight: FontWeight.w700,
                         ),
@@ -324,7 +295,6 @@ class _ProfileDetailViewState extends State<ProfileDetailView> {
                 Text(
                   value,
                   style: TextStyle(
-                    color: AppColors.textPrimary,
                     fontSize: context.dynamicHeight(0.022),
                     fontWeight: FontWeight.w700,
                   ),
@@ -345,17 +315,7 @@ class _ProfileDetailViewState extends State<ProfileDetailView> {
 
   Widget _buildProfileInfoSection(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(context.dynamicHeight(0.02)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withAlpha(25),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
+      decoration: AppContainerStyles.primaryContainer(context),
       padding: EdgeInsets.all(context.dynamicHeight(0.025)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -363,8 +323,7 @@ class _ProfileDetailViewState extends State<ProfileDetailView> {
           Text(
             'Profile Information',
             style: TextStyle(
-              color: AppColors.textPrimary,
-              fontSize: context.dynamicHeight(0.02),
+              fontSize: context.dynamicHeight(0.017),
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -406,26 +365,17 @@ class _ProfileDetailViewState extends State<ProfileDetailView> {
         Text(
           label,
           style: TextStyle(
-            color: AppColors.textSecondary,
             fontSize: context.dynamicHeight(0.014),
             fontWeight: FontWeight.w500,
           ),
         ),
         context.dynamicHeight(0.008).height,
         Container(
-          decoration: BoxDecoration(
-            color: isEditable ? AppColors.background : AppColors.background.withAlpha(100),
-            borderRadius: BorderRadius.circular(context.dynamicHeight(0.01)),
-            border: Border.all(
-              color: isEditable ? AppColors.primary : AppColors.border,
-              width: isEditable ? 1.5 : 1,
-            ),
-          ),
+          decoration: AppContainerStyles.secondaryContainer(context),
           child: TextField(
             controller: controller,
-            enabled: isEditable,
+            enabled: false,
             style: TextStyle(
-              color: AppColors.textPrimary,
               fontSize: context.dynamicHeight(0.016),
             ),
             decoration: InputDecoration(
@@ -434,7 +384,7 @@ class _ProfileDetailViewState extends State<ProfileDetailView> {
                 color: AppColors.textSecondary,
                 size: context.dynamicHeight(0.02),
               ),
-              border: InputBorder.none,
+              border: OutlineInputBorder(),
               contentPadding: EdgeInsets.symmetric(
                 horizontal: context.dynamicWidth(0.04),
                 vertical: context.dynamicHeight(0.015),
@@ -448,17 +398,7 @@ class _ProfileDetailViewState extends State<ProfileDetailView> {
 
   Widget _buildAchievementsSection(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(context.dynamicHeight(0.02)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withAlpha(25),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
+      decoration: AppContainerStyles.primaryContainer(context),
       padding: EdgeInsets.all(context.dynamicHeight(0.025)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -469,7 +409,6 @@ class _ProfileDetailViewState extends State<ProfileDetailView> {
               Text(
                 'Achievements',
                 style: TextStyle(
-                  color: AppColors.textPrimary,
                   fontSize: context.dynamicHeight(0.02),
                   fontWeight: FontWeight.w600,
                 ),
@@ -477,7 +416,6 @@ class _ProfileDetailViewState extends State<ProfileDetailView> {
               Obx(() => Text(
                 '${_gamificationController.totalUnlockedAchievements}/${_gamificationController.totalAchievements}',
                 style: TextStyle(
-                  color: AppColors.textSecondary,
                   fontSize: context.dynamicHeight(0.014),
                   fontWeight: FontWeight.w500,
                 ),
@@ -532,7 +470,6 @@ class _ProfileDetailViewState extends State<ProfileDetailView> {
                   Text(
                     'Unlocked (${unlockedAchievements.length})',
                     style: TextStyle(
-                      color: AppColors.textPrimary,
                       fontSize: context.dynamicHeight(0.016),
                       fontWeight: FontWeight.w600,
                     ),
@@ -594,7 +531,7 @@ class _ProfileDetailViewState extends State<ProfileDetailView> {
       margin: EdgeInsets.only(bottom: context.dynamicHeight(0.01)),
       padding: EdgeInsets.all(context.dynamicHeight(0.015)),
       decoration: BoxDecoration(
-        color: isUnlocked ? achievement.rarityColor.withAlpha(25) : AppColors.background,
+        color: isUnlocked ? achievement.rarityColor.withAlpha(25) : null,
         borderRadius: BorderRadius.circular(context.dynamicHeight(0.01)),
         border: Border.all(
           color: isUnlocked ? achievement.rarityColor : AppColors.border,

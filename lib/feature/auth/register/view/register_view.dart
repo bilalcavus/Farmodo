@@ -5,7 +5,6 @@ import 'package:farmodo/core/di/injection.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/core/utility/extension/ontap_extension.dart';
 import 'package:farmodo/core/utility/extension/route_helper.dart';
-import 'package:farmodo/core/theme/app_colors.dart';
 import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
 import 'package:farmodo/feature/auth/login/viewmodel/login_controller.dart';
 import 'package:farmodo/feature/auth/login/widget/sign_options_section.dart';
@@ -29,7 +28,6 @@ class _RegisterViewState extends State<RegisterView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
       ),
@@ -46,7 +44,7 @@ class _RegisterViewState extends State<RegisterView> {
                 SizedBox(height: context.dynamicHeight(.015)),
                 Text('Sign up to start your goals!', style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   fontWeight: FontWeight.w400,
-                  color: Colors.grey.shade700
+                  color: Colors.grey.shade600
                 )),
                 SizedBox(height: context.dynamicHeight(.05)),
                 CustomTextField(
@@ -54,13 +52,13 @@ class _RegisterViewState extends State<RegisterView> {
                   hintText: 'Display Name',
                   prefixIcon: Icon(HugeIcons.strokeRoundedUser)
                   ),
-                SizedBox(height: context.dynamicHeight(.02)),
+                SizedBox(height: context.dynamicHeight(.015)),
                 CustomTextField(
                   controller: registerController.emailcontroller,
                   hintText: 'Email',
                   prefixIcon: Icon(HugeIcons.strokeRoundedMail01),
                   ),
-                SizedBox(height: context.dynamicHeight(.02)),
+                SizedBox(height: context.dynamicHeight(.015)),
                 Obx((){
                   return  CustomTextField(
                     controller: registerController.passwordController,
@@ -73,7 +71,7 @@ class _RegisterViewState extends State<RegisterView> {
                     );
                   }
                 ),
-                SizedBox(height: context.dynamicHeight(.02)),
+                SizedBox(height: context.dynamicHeight(.015)),
                 Obx((){
                   return CustomTextField(
                     controller: registerController.passwordConfirmController,
@@ -97,7 +95,7 @@ class _RegisterViewState extends State<RegisterView> {
                     horizontalLine()
                   ],
                 ),
-                context.dynamicHeight(.03).height,
+                context.dynamicHeight(.01).height,
                 Obx((){
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -145,7 +143,6 @@ class _RegisterViewState extends State<RegisterView> {
       child: Text(
         'or continue with',
         style: TextStyle(
-          color: Colors.black.withAlpha(150),
           fontSize: context.dynamicWidth(0.035),
         ),
       ),
@@ -153,10 +150,12 @@ class _RegisterViewState extends State<RegisterView> {
   }
 
   Widget horizontalLine() {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
     return Expanded(
       child: Container(
         height: 1,
-        color: Colors.black.withAlpha(50),
+        color: isDark ? Colors.white.withAlpha(50) :  Colors.black.withAlpha(50),
       ),
     );
   }

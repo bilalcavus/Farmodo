@@ -1,3 +1,4 @@
+import 'package:farmodo/core/theme/app_colors.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/core/utility/extension/ontap_extension.dart';
 import 'package:farmodo/core/utility/extension/route_helper.dart';
@@ -18,17 +19,20 @@ class LoginButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
     return Center(
       child: Container(
         alignment: Alignment.center,
-        width: context.dynamicWidth(0.85),
-        height: context.dynamicHeight(0.06),
+        width: context.dynamicWidth(0.7),
+        height: context.dynamicHeight(0.05),
         decoration: BoxDecoration(
-          color: Colors.black,
+          color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
           borderRadius: BorderRadius.circular(16)
         ),
+
         child: Obx((){
-          return loginController.isLoading.value ? LoadingIcon(iconColor: Colors.white,) : ButtonText(text: 'Login',);
+          return loginController.isLoading.value ? LoadingIcon(iconColor: Colors.white,) : ButtonText(text: 'Sign in');
         })
       ).onTap(() async {
         await loginController.handleLogin(context);
@@ -37,7 +41,7 @@ class LoginButton extends StatelessWidget {
             return;
           }
           if(context.mounted && loginController.errorMessage.value.isEmpty){
-            RouteHelper.pushAndCloseOther(context, AppNavigation());
+            RouteHelper.pushAndCloseOther(context, AppNavigation(initialIndex: 0));
           }
         }
       ),

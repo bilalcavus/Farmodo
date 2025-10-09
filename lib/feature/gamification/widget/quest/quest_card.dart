@@ -97,7 +97,6 @@ class QuestCard extends StatelessWidget {
                         quest.title,
                         style: Theme.of(context).textTheme.labelLarge?.copyWith(
                           fontWeight: FontWeight.bold,
-                          color: isCompleted || isExpired ? Colors.black87 : Colors.black87,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -142,9 +141,7 @@ class QuestCard extends StatelessWidget {
           // Görev açıklaması
           Text(
             quest.description,
-            style: Theme.of(context).textTheme.labelMedium?.copyWith(
-              color: isCompleted || isExpired ? Colors.black54 : Colors.black54,
-            ),
+            style: Theme.of(context).textTheme.labelMedium,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),
@@ -164,7 +161,6 @@ class QuestCard extends StatelessWidget {
                       '$progress/${quest.targetValue}',
                       style: Theme.of(context).textTheme.labelSmall?.copyWith(
                         fontWeight: FontWeight.w500,
-                        color: isCompleted || isExpired ? Colors.black54 : Colors.black54,
                       ),
                     ),
                     if (isCompleted)

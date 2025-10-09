@@ -1,14 +1,14 @@
+import 'package:farmodo/core/components/card/show_alert_dialog.dart';
 import 'package:farmodo/core/di/injection.dart';
-import 'package:farmodo/core/services/preferences_service.dart';
-import 'package:farmodo/core/theme/app_colors.dart';
+import 'package:farmodo/core/theme/theme_controller.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/core/utility/extension/route_helper.dart';
 import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
 import 'package:farmodo/data/services/auth_service.dart';
 import 'package:farmodo/feature/account/widget/settings_item_widget.dart';
-import 'package:farmodo/feature/auth/login/view/login_view.dart';
 import 'package:farmodo/feature/auth/login/viewmodel/login_controller.dart';
 import 'package:farmodo/feature/gamification/view/debug_gamification_view.dart';
+import 'package:farmodo/feature/navigation/app_navigation.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -29,38 +29,15 @@ class PreferencesSection extends StatefulWidget {
 }
 
 class _PreferencesSectionState extends State<PreferencesSection> {
-  final PreferencesService _preferencesService = getIt<PreferencesService>();
-  bool _notificationsEnabled = true;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadNotificationSettings();
-  }
-
-  Future<void> _loadNotificationSettings() async {
-    final isEnabled = await _preferencesService.getBool('notifications_enabled', true);
-    setState(() {
-      _notificationsEnabled = isEnabled;
-    });
-  }
-
-  Future<void> _toggleNotifications(bool value) async {
-    setState(() {
-      _notificationsEnabled = value;
-    });
-    await _preferencesService.setBool('notifications_enabled', value);
-  }
-
   @override
   Widget build(BuildContext context) {
+    final themeController = getIt<ThemeController>();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           'Preferences & Logout',
           style: TextStyle(
-            color: AppColors.textPrimary,
             fontSize: context.dynamicHeight(0.015),
             fontWeight: FontWeight.w300,
           ),
@@ -68,20 +45,18 @@ class _PreferencesSectionState extends State<PreferencesSection> {
         context.dynamicHeight(0.02).height,
         Column(
           children: [
-          
-             SettingsItemWidget(
+            SettingsItemWidget(
               context: context,
-              icon: HugeIcons.strokeRoundedNotification02,
-              title: 'Notification',
-              trailing: Switch(
-                value: _notificationsEnabled,
-                onChanged: _toggleNotifications,
-                activeThumbColor: AppColors.textPrimary,
-                inactiveThumbColor: Colors.grey[400],
-                inactiveTrackColor: Colors.grey[300],
-              ),
+              icon: HugeIcons.strokeRoundedMoon02,
+              title: "Dark Mode",
+              trailing: Obx(() => Switch.adaptive(
+                inactiveTrackColor: Colors.grey.shade800,
+                value: themeController.isDarkMode,
+                onChanged: (value) => themeController.toggleTheme(),
+                ),
+              )
             ),
-           
+            
             kDebugMode ? 
             SettingsItemWidget(
               icon: Icons.bug_report,
@@ -93,10 +68,17 @@ class _PreferencesSectionState extends State<PreferencesSection> {
               icon: HugeIcons.strokeRoundedLogout04,
               title: 'Logout',
               onTap: () async {
-                await widget.loginController.handleLogout();
-                if (context.mounted && !widget.authService.isLoggedIn) {
-                  RouteHelper.pushAndCloseOther(context, const LoginView());
-                }
+                showAlertDialog(
+                  context: context,
+                  title: "Exit App",
+                  content: "Are you sure to want you exit the app?",
+                  onPressed: () async {
+                    await widget.loginController.handleLogout();
+                      if (context.mounted && !widget.authService.isLoggedIn) {
+                        RouteHelper.pushAndCloseOther(context, AppNavigation(initialIndex: 0));
+                      }
+                  },
+                  buttonText: "Exit");
               },
               context: context,
             ) : SizedBox.shrink(),

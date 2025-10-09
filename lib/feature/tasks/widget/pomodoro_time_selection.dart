@@ -1,4 +1,4 @@
-import 'package:farmodo/core/theme/app_colors.dart';
+import 'package:farmodo/core/theme/app_container_styles.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/feature/tasks/viewmodel/tasks_controller.dart';
 import 'package:flutter/cupertino.dart';
@@ -18,14 +18,11 @@ class PomodoroTimeSelection extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(context.dynamicHeight(0.01)),
       height: context.dynamicHeight(0.1),
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(16),
-      ),
+      decoration: AppContainerStyles.secondaryContainer(context),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text('Select farmodo minutes', style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.textPrimary, fontWeight: FontWeight.w600)),
+          Text('Select farmodo minutes', style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600)),
           Obx(() {
             return SizedBox(
               height: context.dynamicHeight(0.2),
@@ -40,13 +37,11 @@ class PomodoroTimeSelection extends StatelessWidget {
                 },
                 children: taskController.pomodoroTimes.map((time) => 
                   Center(
-                    child: Text('$time minutes',
-                      style: Theme.of(context).textTheme.bodyLarge)
-                  )
-                ).toList()
-              ),
-            );
-          }
+                    child: Text('$time minutes', style: Theme.of(context).textTheme.bodyLarge)
+                  )).toList()
+                ),
+              );
+            }
           ),
         ],
       ),

@@ -21,14 +21,12 @@ class CustomTextField extends StatelessWidget {
     return TextField(
       controller: controller,
       obscureText: obscureText,
-      style: const TextStyle(color: Colors.black),
+
       decoration: InputDecoration(
         prefixIcon: prefixIcon,
         suffixIcon: suffixIcon,
         hintText: hintText,
-        hintStyle: TextStyle(color: Colors.black.withAlpha(150)),
         filled: true,
-        fillColor: Colors.black.withAlpha(5),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(context.dynamicWidth(0.04)),
           borderSide: BorderSide(color: Colors.black.withAlpha(40)),

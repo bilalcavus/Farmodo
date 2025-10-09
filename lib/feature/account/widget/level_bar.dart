@@ -1,4 +1,5 @@
 import 'package:farmodo/core/theme/app_colors.dart';
+import 'package:farmodo/core/theme/app_container_styles.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
 import 'package:farmodo/data/services/auth_service.dart';
@@ -26,16 +27,13 @@ class LevelBar extends StatelessWidget {
       children: [
         Container(
           padding: EdgeInsets.symmetric(horizontal: context.dynamicWidth(0.02), vertical: context.dynamicHeight(0.005)),
-          decoration: BoxDecoration(
-            color: AppColors.danger.withAlpha(25),
-            borderRadius: context.border.normalBorderRadius,
-          ),
+          decoration: AppContainerStyles.accentContainer(context, accentColor: AppColors.danger, borderRadius: context.border.normalBorderRadius),
           child: Text(
             'Lv $level',
             style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                  color: AppColors.danger,
-                  fontWeight: FontWeight.w700,
-                ),
+              color: AppColors.danger,
+              fontWeight: FontWeight.w700,
+            ),
           ),
         ),
         context.dynamicWidth(0.015).width,
@@ -62,11 +60,7 @@ class LevelBar extends StatelessWidget {
         ),
         context.dynamicWidth(0.02).width,
         Text(
-          '$xpIntoLevel/100',
-          style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                color: AppColors.textSecondary,
-                fontWeight: FontWeight.w600,
-              ),
+          '$xpIntoLevel/100', style: Theme.of(context).textTheme.labelMedium?.copyWith(fontWeight: FontWeight.w600),
         ),
       ],
     );

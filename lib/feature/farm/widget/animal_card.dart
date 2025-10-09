@@ -1,4 +1,5 @@
 import 'package:farmodo/core/theme/app_colors.dart';
+import 'package:farmodo/core/theme/app_container_styles.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/core/utility/extension/ontap_extension.dart';
 import 'package:farmodo/data/models/animal_model.dart';
@@ -18,18 +19,9 @@ class AnimalCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withAlpha(20),
-            blurRadius: 15,
-            offset: const Offset(0, 5),
-          ),
-        ],
-      ),
+      decoration: AppContainerStyles.secondaryContainer(context),
       child: Column(
         children: [
           // Hayvan resmi ve durum göstergeleri
@@ -45,7 +37,7 @@ class AnimalCard extends StatelessWidget {
                       topLeft: Radius.circular(20),
                       topRight: Radius.circular(20),
                     ),
-                    color: AppColors.background,
+                    color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
                     image: DecorationImage(
                       image: AssetImage(animal.imageUrl),
                       fit: BoxFit.cover,
@@ -127,8 +119,6 @@ class AnimalCard extends StatelessWidget {
                     animal.nickname.isNotEmpty ? animal.nickname : animal.name,
                     style: Theme.of(context).textTheme.titleSmall?.copyWith(
                       fontWeight: FontWeight.w700,
-                      color: AppColors.textPrimary,
-                      fontSize: 14,
                   ),
                   overflow: TextOverflow.ellipsis,
                   maxLines: 1,
@@ -153,9 +143,7 @@ class AnimalCard extends StatelessWidget {
                       Text(
                         '${animal.experience} XP',
                         style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                          color: AppColors.textSecondary,
                           fontWeight: FontWeight.w600,
-                          fontSize: 11,
                         ),
                       ),
                     ],
@@ -190,87 +178,4 @@ class AnimalCard extends StatelessWidget {
       ),
     ).onTap(onTap!);
   }
-
-  // Positioned _statusBar(BuildContext context) {
-  //   return Positioned(
-  //                 bottom: context.dynamicHeight(0.012),
-  //                 left: context.dynamicWidth(0.02),
-  //                 right: context.dynamicWidth(0.02),
-  //                 child: Container(
-  //                   padding: EdgeInsets.all(context.dynamicWidth(0.015)),
-  //                   decoration: BoxDecoration(
-  //                     color: AppColors.surface.withAlpha(240),
-  //                     borderRadius: BorderRadius.circular(12),
-  //                     boxShadow: [
-  //                       BoxShadow(
-  //                         color: Colors.black.withAlpha(25),
-  //                         blurRadius: 8,
-  //                         offset: const Offset(0, 2),
-  //                       ),
-  //                     ],
-  //                   ),
-  //                   child: Row(
-  //                     children: [
-  //                       _buildModernStatusIndicator(
-  //                         animal.status.hunger,
-  //                         const Color(0xFFF59E0B),
-  //                         Icons.restaurant_rounded,
-  //                       ),
-  //                       SizedBox(width: context.dynamicWidth(0.012)),
-  //                       _buildModernStatusIndicator(
-  //                         animal.status.love,
-  //                         const Color(0xFFEC4899),
-  //                         Icons.favorite_rounded,
-  //                       ),
-  //                       SizedBox(width: context.dynamicWidth(0.012)),
-  //                       _buildModernStatusIndicator(
-  //                         animal.status.energy,
-  //                         AppColors.primary,
-  //                         Icons.flash_on_rounded,
-  //                       ),
-  //                       SizedBox(width: context.dynamicWidth(0.012)),
-  //                       _buildModernStatusIndicator(
-  //                         animal.status.health,
-  //                         const Color(0xFF10B981),
-  //                         Icons.health_and_safety_rounded,
-  //                       ),
-  //                     ],
-  //                   ),
-  //                 ),
-  //               );
-  // }
-
-  // Widget _buildModernStatusIndicator(double value, Color color, IconData icon) {
-  //   return Builder(
-  //     builder: (context) => Expanded(
-  //       child: Column(
-  //         children: [
-  //           Icon(
-  //             icon,
-  //             color: color,
-  //             size: context.dynamicHeight(0.014),
-  //           ),
-  //           SizedBox(height: context.dynamicHeight(0.006)),
-  //           Container(
-  //             height: context.dynamicHeight(0.004),
-  //             decoration: BoxDecoration(
-  //               color: AppColors.border,
-  //               borderRadius: BorderRadius.circular(2),
-  //             ),
-  //             child: FractionallySizedBox(
-  //               alignment: Alignment.centerLeft,
-  //               widthFactor: value,
-  //               child: Container(
-  //                 decoration: BoxDecoration(
-  //                   color: color,
-  //                   borderRadius: BorderRadius.circular(2),
-  //                 ),
-  //               ),
-  //             ),
-  //           ),
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
 }

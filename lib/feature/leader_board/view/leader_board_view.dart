@@ -40,9 +40,10 @@ class _LeaderBoardViewState extends State<LeaderBoardView> with TickerProviderSt
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: AppColors.danger,
+        backgroundColor: isDark ? AppColors.darkSurface : AppColors.danger,
         iconTheme: IconThemeData(
           color: Colors.white
         ),
@@ -59,7 +60,7 @@ class _LeaderBoardViewState extends State<LeaderBoardView> with TickerProviderSt
           labelColor: AppColors.background,
           unselectedLabelColor: AppColors.background,
           indicatorColor: Colors.white,
-          dividerColor: Colors.white54,
+          dividerColor: Colors.transparent,
           labelStyle: const TextStyle(
             fontWeight: FontWeight.bold,
           ),

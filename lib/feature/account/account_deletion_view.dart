@@ -32,7 +32,6 @@ class _AccountDeletionViewState extends State<AccountDeletionView> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Scaffold(
-      backgroundColor: AppColors.background,
       appBar: AppBar(
         title: Text('Delete account', style: theme.textTheme.bodyLarge),
         centerTitle: true,

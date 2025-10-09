@@ -1,4 +1,5 @@
 import 'package:farmodo/core/theme/app_colors.dart';
+import 'package:farmodo/core/theme/app_container_styles.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
 import 'package:flutter/material.dart';
@@ -10,11 +11,8 @@ class WidgetGuideView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
       appBar: AppBar(
-        title: Text('Widget Ekleme Rehberi', style: Theme.of(context).textTheme.titleMedium,),
-        backgroundColor: AppColors.surface,
-        foregroundColor: AppColors.textPrimary,
+        title: Text('Widget Ekleme Rehberi', style: Theme.of(context).textTheme.titleMedium),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -87,11 +85,7 @@ class WidgetGuideView extends StatelessWidget {
     return Container(
       width: double.infinity,
       padding: context.padding.normal,
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: context.border.normalBorderRadius,
-        border: Border.all(color: AppColors.border),
-      ),
+      decoration: AppContainerStyles.secondaryContainer(context),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -102,7 +96,6 @@ class WidgetGuideView extends StatelessWidget {
               Text(
                 platform,
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  color: AppColors.textPrimary,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -131,11 +124,9 @@ class WidgetGuideView extends StatelessWidget {
             child: Center(
               child: Text(
                 number,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  fontWeight: FontWeight.bold
+                )
               ),
             ),
           ),
@@ -143,9 +134,7 @@ class WidgetGuideView extends StatelessWidget {
           Expanded(
             child: Text(
               text,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: AppColors.textPrimary,
-              ),
+              style: Theme.of(context).textTheme.bodySmall
             ),
           ),
         ],
@@ -157,11 +146,7 @@ class WidgetGuideView extends StatelessWidget {
     return Container(
       width: double.infinity,
       padding: context.padding.normal,
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: context.border.normalBorderRadius,
-        border: Border.all(color: AppColors.border),
-      ),
+      decoration: AppContainerStyles.secondaryContainer(context),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -172,7 +157,6 @@ class WidgetGuideView extends StatelessWidget {
               Text(
                 'Widget Özellikleri',
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  color: AppColors.textPrimary,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -199,9 +183,7 @@ class WidgetGuideView extends StatelessWidget {
           Expanded(
             child: Text(
               text,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: AppColors.textPrimary,
-              ),
+              style: Theme.of(context).textTheme.bodySmall
             ),
           ),
         ],
@@ -213,22 +195,17 @@ class WidgetGuideView extends StatelessWidget {
     return Container(
       width: double.infinity,
       padding: context.padding.normal,
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: context.border.normalBorderRadius,
-        border: Border.all(color: AppColors.border),
-      ),
+      decoration:  AppContainerStyles.secondaryContainer(context),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Icon(Icons.help_outline, color: AppColors.danger, size: 24),
+              Icon(Icons.help_outline, color: AppColors.danger),
               context.dynamicWidth(0.02).width,
               Text(
                 'Sorun Giderme',
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  color: AppColors.textPrimary,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -261,7 +238,7 @@ class WidgetGuideView extends StatelessWidget {
     String solution,
   ) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
+      padding: context.padding.onlyBottomLow,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -272,12 +249,11 @@ class WidgetGuideView extends StatelessWidget {
               fontWeight: FontWeight.w600,
             ),
           ),
-          const SizedBox(height: 4),
+          context.dynamicHeight(0.007).height,
           Text(
             solution,
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
               color: AppColors.textSecondary,
-              fontSize: 12,
             ),
           ),
         ],

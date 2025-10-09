@@ -5,7 +5,6 @@ import 'package:farmodo/core/di/injection.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/core/utility/extension/ontap_extension.dart';
 import 'package:farmodo/core/utility/extension/route_helper.dart';
-import 'package:farmodo/core/theme/app_colors.dart';
 import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
 import 'package:farmodo/feature/auth/login/viewmodel/login_controller.dart';
 import 'package:farmodo/feature/auth/login/widget/login_button.dart';
@@ -27,8 +26,9 @@ class _LoginViewState extends State<LoginView> {
   LoginController loginController = getIt<LoginController>();
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
     return Scaffold(
-      backgroundColor: AppColors.background,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
       ),
@@ -43,9 +43,9 @@ class _LoginViewState extends State<LoginView> {
                   fontWeight: FontWeight.w500,
                 )),
                 SizedBox(height: context.dynamicHeight(.015)),
-                Text('Sign in to continue your goals!', style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                Text('Sign in to continue your focus!', style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   fontWeight: FontWeight.w400,
-                  color: Colors.grey.shade700
+                  color: Colors.grey.shade600
                 )),
                 SizedBox(height: context.dynamicHeight(.05)),
                 CustomTextField(
@@ -59,7 +59,10 @@ class _LoginViewState extends State<LoginView> {
                     controller: loginController.passwordController,
                     hintText: 'Password',
                     prefixIcon: Icon(HugeIcons.strokeRoundedLockPassword),
-                    suffixIcon: togglePasswordView(),
+                    suffixIcon: IconButton(
+                      onPressed: () => loginController.obsecurePassword.value = !loginController.obsecurePassword.value,
+                      icon: Icon(loginController.obsecurePassword.value ?  Icons.visibility : Icons.visibility_off)
+                    ),
                     obscureText: loginController.obsecurePassword.value
                   );
                 }
@@ -98,7 +101,7 @@ class _LoginViewState extends State<LoginView> {
                         iconColor: Colors.black,
                       ) :
                       SocialNetworkLogin(
-                        assetPath: "assets/logo/google-icon.png",
+                        assetPath:  "assets/logo/google-icon.png",
                         onTap: () async => await loginController.handleGoogleSignIn(context),
                         text: "Sign in with Google",  
                       ),
@@ -107,7 +110,7 @@ class _LoginViewState extends State<LoginView> {
                         iconColor: Colors.black,
                       ) : 
                       SocialNetworkLogin(
-                        assetPath: "assets/logo/apple_icon.png",
+                        assetPath: isDark ? "assets/logo/apple_white_icon.png" : "assets/logo/apple_icon.png",
                         onTap: () async => await loginController.handleAppleSignIn(context),
                         text: "Sign in with Apple",
                       ),
@@ -125,34 +128,26 @@ class _LoginViewState extends State<LoginView> {
     );
   }
 
-  Widget togglePasswordView() {
-    return Obx((){
-      return loginController.obsecurePassword.value 
-      ? Icon(HugeIcons.strokeRoundedView)
-      : Icon(HugeIcons.strokeRoundedViewOffSlash)
-        .onTap(() => loginController.toggleLoginPasswordVisibility());
-      }
-    );
-  }
-
+  
   Padding horizontalLineText(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: context.dynamicWidth(0.04)),
       child: Text(
         'or continue with',
         style: TextStyle(
-          color: Colors.black.withAlpha(150),
           fontSize: context.dynamicWidth(0.035),
         ),
       ),
     );
   }
 
-  Widget horizontalLine() {
+   Widget horizontalLine() {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
     return Expanded(
       child: Container(
         height: 1,
-        color: Colors.black.withAlpha(50),
+        color: isDark ? Colors.white.withAlpha(50) :  Colors.black.withAlpha(50),
       ),
     );
   }

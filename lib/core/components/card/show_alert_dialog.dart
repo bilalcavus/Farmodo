@@ -13,8 +13,10 @@ Future<bool?> showAlertDialog({
       context: context,
       builder: (context) {
         return AlertDialog.adaptive(
-          title:  Text(title),
-          content:  Text(content),
+          titleTextStyle: Theme.of(context).textTheme.bodyLarge,
+          
+          title: Text(title),
+          content: Text(content),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),

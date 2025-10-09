@@ -80,7 +80,7 @@ class _XpLeaderBoardState extends State<LevelLeaderBoard> with LoadingMixin {
     required int value,
   }) {
     final rankColor = _getRankColor(rank);
-    
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -89,7 +89,7 @@ class _XpLeaderBoardState extends State<LevelLeaderBoard> with LoadingMixin {
             ? AppColors.primary.withAlpha(20) 
             : rank <= 3 
                 ? rankColor.withAlpha(15)
-                : AppColors.surface,
+                : isDark ? AppColors.darkSurface :  AppColors.surface,
         borderRadius: context.border.normalBorderRadius,
         border: isCurrentUser 
             ? Border.all(color: AppColors.primary.withAlpha(75), width: 1)
@@ -118,7 +118,7 @@ class _XpLeaderBoardState extends State<LevelLeaderBoard> with LoadingMixin {
             child: Text(
               user.displayName,
               style: theme.textTheme.bodyLarge?.copyWith(
-                color: isCurrentUser ? AppColors.primary : AppColors.textPrimary,
+                color: isCurrentUser ? AppColors.primary : null,
                 fontWeight: isCurrentUser ? FontWeight.w600 : FontWeight.w500,
               ),
               overflow: TextOverflow.ellipsis,

@@ -1,6 +1,7 @@
 import 'package:farmodo/core/components/drop_menu.dart';
 import 'package:farmodo/core/di/injection.dart';
 import 'package:farmodo/core/theme/app_colors.dart';
+import 'package:farmodo/core/theme/app_container_styles.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/core/utility/extension/ontap_extension.dart';
 import 'package:farmodo/core/utility/extension/route_helper.dart';
@@ -12,6 +13,7 @@ import 'package:farmodo/feature/tasks/widget/pomodoro_time_selection.dart';
 import 'package:farmodo/feature/tasks/widget/task_add_button.dart';
 import 'package:farmodo/feature/tasks/widget/task_text_field.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 
 class AddTaskView extends StatefulWidget {
@@ -36,10 +38,11 @@ class _AddTaskViewState extends State<AddTaskView> {
   }
 
   void _showLoginBottomSheet() {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.transparent,
+      backgroundColor: isDark ? AppColors.darkSurface : Colors.white,
       builder: (context) => LoginBottomSheet(
         title: 'Login to create a task',
         subTitle: 'You need to log in to save your tasks and track your progress.',
@@ -50,9 +53,8 @@ class _AddTaskViewState extends State<AddTaskView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
       appBar: AppBar(
-        title: Text('Add New Task', style: Theme.of(context).textTheme.titleMedium?.copyWith(color: AppColors.textPrimary)),
+        title: Text('Add Custom Task', style: Theme.of(context).textTheme.titleMedium),
         centerTitle: true,
         backgroundColor: Colors.transparent,
       ),
@@ -63,9 +65,9 @@ class _AddTaskViewState extends State<AddTaskView> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Enter the task name', style: Theme.of(context).textTheme.labelLarge?.copyWith(color: AppColors.textSecondary)),
+              Text('Enter the task name', style: Theme.of(context).textTheme.labelLarge),
               TaskTextField(controller: taskController.titleController, hintText: 'Task name'),
-              SizedBox(height: context.dynamicHeight(0.02)),
+              context.dynamicHeight(0.02).height,
               DropMenu(
                 controller: taskController.focusTypeController,
                 label: 'Enter Focus Type',
@@ -76,7 +78,7 @@ class _AddTaskViewState extends State<AddTaskView> {
                 'Play',
                 'Sport'
               ]),
-              SizedBox(height: context.dynamicHeight(0.02)),
+              context.dynamicHeight(0.02).height,
               SessionSelection(taskController: taskController),
               context.dynamicHeight(0.02).height,
               PomodoroTimeSelection(taskController: taskController),
@@ -90,14 +92,13 @@ class _AddTaskViewState extends State<AddTaskView> {
                       'XP Gain : $xp',
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         fontWeight: FontWeight.w600,
-                        color: AppColors.textPrimary,
                       ),
                     );
                     }
                   ),
                 ],
               ),
-              SizedBox(height: context.dynamicHeight(0.04)),
+              context.dynamicHeight(0.04).height,
               TaskAddButton(taskController: taskController),
             ],
           ),
@@ -116,14 +117,8 @@ class LoginBottomSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: MediaQuery.of(context).size.height * 0.6,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(context.dynamicHeight(0.03)),
-          topRight: Radius.circular(context.dynamicHeight(0.03)),
-        ),
-      ),
+      height: context.dynamicHeight(0.6),
+      decoration:  AppContainerStyles.primaryContainer(context),
       child: Padding(
         padding: EdgeInsets.all(context.dynamicHeight(0.03)),
         child: Column(
@@ -154,7 +149,6 @@ class LoginBottomSheet extends StatelessWidget {
             Text(
               title,
               style: TextStyle(
-                color: AppColors.textPrimary,
                 fontSize: context.dynamicHeight(0.024),
                 fontWeight: FontWeight.w700,
               ),
@@ -164,7 +158,6 @@ class LoginBottomSheet extends StatelessWidget {
             Text(
               subTitle,
               style: TextStyle(
-                color: AppColors.textSecondary,
                 fontSize: context.dynamicHeight(0.018),
               ),
               textAlign: TextAlign.center,
@@ -203,7 +196,6 @@ class LoginBottomSheet extends StatelessWidget {
               child: Text(
                 'Late for now',
                 style: TextStyle(
-                  color: AppColors.textSecondary,
                   fontSize: context.dynamicHeight(0.018),
                   fontWeight: FontWeight.w500,
                 ),
@@ -241,14 +233,18 @@ class SessionSelection extends StatelessWidget {
           return Obx((){
             return Container(
               decoration: BoxDecoration(
-                color: taskController.selectedTotalSession.value == session ? AppColors.danger : Colors.grey.shade200,
+                color: taskController.selectedTotalSession.value == session 
+                ? AppColors.danger
+                : Theme.of(context).brightness == Brightness.dark
+                  ? AppColors.darkSurface
+                  : AppColors.lightSurface, 
                 borderRadius: BorderRadius.circular(16)
               ),
               child: Center(child: Text(
                 '$session session',
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                  color: taskController.selectedTotalSession.value == session ? Colors.white : Colors.black
+                  color: taskController.selectedTotalSession.value == session ? Colors.white : null
                 ),
               )),
             );

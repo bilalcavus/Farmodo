@@ -1,3 +1,4 @@
+import 'package:farmodo/core/theme/app_container_styles.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
 import 'package:farmodo/data/models/quest_model.dart';
@@ -35,8 +36,6 @@ class QuestsTab extends StatelessWidget {
           icon: HugeIcons.strokeRoundedStickyNote01,
         );
       }
-    
-      
     
       return RefreshIndicator(
         onRefresh: () => gamificationController.refreshGamification(),
@@ -79,10 +78,7 @@ class QuestsTab extends StatelessWidget {
     backgroundColor: Colors.transparent,
     builder: (context) => Container(
       height: context.dynamicHeight(0.6),
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
+      decoration: AppContainerStyles.secondaryContainer(context),
       padding: EdgeInsets.all(context.dynamicWidth(0.05)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -99,6 +95,7 @@ class QuestsTab extends StatelessWidget {
       ),
     );
   }
+
   Widget _buildQuestHeader(BuildContext context, quest) {
   return Row(
     children: [
@@ -120,14 +117,8 @@ class QuestsTab extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(quest.title, style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            Text(quest.description, style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                color: Colors.grey.shade600,
-              ),
-            ),
+            Text(quest.title, style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
+            Text(quest.description, style: Theme.of(context).textTheme.labelLarge),
           ],
         ),
       ),
@@ -142,9 +133,7 @@ Widget _buildProgress(BuildContext context, quest, userQuest) {
     children: [
       Text(
         'Progress',
-        style: Theme.of(context).textTheme.labelLarge?.copyWith(
-              color: Colors.grey.shade700,
-            ),
+        style: Theme.of(context).textTheme.labelLarge
       ),
       context.dynamicHeight(0.01).height,
       LinearProgressIndicator(
@@ -159,9 +148,7 @@ Widget _buildProgress(BuildContext context, quest, userQuest) {
         children: [
           Text(
             '${userQuest.progress}/${quest.targetValue}',
-            style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                  color: Colors.grey.shade600,
-                ),
+            style: Theme.of(context).textTheme.labelMedium
           ),
           if (userQuest.status == QuestStatus.completed)
             _buildCompletedBadge(context),

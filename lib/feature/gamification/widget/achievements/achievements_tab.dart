@@ -1,4 +1,5 @@
 
+import 'package:farmodo/core/theme/app_container_styles.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
 import 'package:farmodo/data/models/achievement_model.dart';
@@ -78,13 +79,7 @@ class AchievementsTab extends StatelessWidget {
       backgroundColor: Colors.transparent,
       builder: (context) => Container(
         height: context.dynamicHeight(0.6),
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(20),
-            topRight: Radius.circular(20),
-          ),
-        ),
+        decoration: AppContainerStyles.secondaryContainer(context),
         padding: EdgeInsets.all(context.dynamicWidth(0.05)),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -112,9 +107,7 @@ class AchievementsTab extends StatelessWidget {
                       ),
                       Text(
                         achievement.description,
-                        style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                          color: Colors.grey.shade600,
-                        )
+                        style: Theme.of(context).textTheme.labelLarge
                       ),
                     ],
                   ),
@@ -125,9 +118,7 @@ class AchievementsTab extends StatelessWidget {
             if (userAchievement != null) ...[
               Text(
                 'Progress',
-                style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                  color: Colors.grey.shade700,
-                )
+                style: Theme.of(context).textTheme.labelLarge
               ),
               context.dynamicHeight(0.01).height,
               LinearProgressIndicator(
@@ -142,10 +133,7 @@ class AchievementsTab extends StatelessWidget {
                 children: [
                   Text(
                     '${userAchievement.progress}/${achievement.targetValue}',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey.shade600,
-                    ),
+                    style: Theme.of(context).textTheme.bodyMedium
                   ),
                   if (userAchievement.isUnlocked)
                     Container(

@@ -1,3 +1,4 @@
+import 'package:farmodo/core/theme/app_colors.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/core/utility/extension/ontap_extension.dart';
 import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
@@ -21,28 +22,16 @@ class AchievementCard extends StatelessWidget {
     final isUnlocked = userAchievement?.isUnlocked ?? false;
     final progress = userAchievement?.progress ?? 0;
     final progressPercentage = (progress / achievement.targetValue).clamp(0.0, 1.0);
-
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       margin: EdgeInsets.all(context.dynamicWidth(0.02)),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: isUnlocked
-              ? [
-                  achievement.rarityColor.withAlpha(25),
-                  achievement.rarityColor.withAlpha(15),
-                ]
-              : [
-                  Colors.grey.shade100,
-                  Colors.grey.shade50,
-                ],
-        ),
+        color: isUnlocked ? achievement.rarityColor.withAlpha(25) : isDark ? AppColors.darkSurface : AppColors.lightSurface,
         border: Border.all(
           color: isUnlocked
               ? achievement.rarityColor.withAlpha(75)
-              : Colors.grey.shade300,
+              : isDark ? AppColors.darkBorder : AppColors.lightBorder,
           width: 2,
         ),
         boxShadow: [
@@ -62,20 +51,10 @@ class AchievementCard extends StatelessWidget {
               children: [
                 // Ana ikon
                 Center(
-                  child: Container(
-                    width: context.dynamicWidth(0.12),
-                    height: context.dynamicHeight(0.08),
-                    decoration: BoxDecoration(
-                      color: isUnlocked
-                          ? achievement.rarityColor.withAlpha(50)
-                          : Colors.grey.shade200,
-                      shape: BoxShape.circle,
-                    ),
-                    child: Image.asset(
-                      achievement.iconPath,
-                      height: context.dynamicHeight(0.04),
-                    
-                    ),
+                  child: Image.asset(
+                    achievement.iconPath,
+                    height: context.dynamicHeight(0.055),
+                  
                   ),
                 ),
                 
@@ -125,7 +104,6 @@ class AchievementCard extends StatelessWidget {
                     achievement.title,
                     style: Theme.of(context).textTheme.labelLarge?.copyWith(
                       fontWeight: FontWeight.bold,
-                      color: isUnlocked ? Colors.black87 : Colors.grey.shade600,
                     ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
@@ -136,9 +114,7 @@ class AchievementCard extends StatelessWidget {
                   // Açıklama
                   Text(
                     achievement.description,
-                    style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                      color: isUnlocked ? Colors.black54 : Colors.grey.shade500,
-                    ),
+                    style: Theme.of(context).textTheme.labelMedium,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -156,7 +132,6 @@ class AchievementCard extends StatelessWidget {
                             '$progress/${achievement.targetValue}',
                             style: Theme.of(context).textTheme.labelSmall?.copyWith(
                               fontWeight: FontWeight.w500,
-                              color: isUnlocked ? Colors.black54 : Colors.grey.shade600,
                             ),
                           ),
                           if (isUnlocked)
@@ -172,9 +147,9 @@ class AchievementCard extends StatelessWidget {
                       context.dynamicHeight(0.005).height,
                       LinearProgressIndicator(
                         value: progressPercentage,
-                        backgroundColor: Colors.grey.shade300,
+                        backgroundColor: isDark ? AppColors.darkBorder : AppColors.lightBorder,
                         valueColor: AlwaysStoppedAnimation<Color>(
-                          isUnlocked ? achievement.rarityColor : Colors.grey.shade400,
+                          isUnlocked ? achievement.rarityColor : Colors.amber
                         ),
                         minHeight: context.dynamicHeight(0.008),
                       ),

@@ -29,7 +29,7 @@ class SettingsItemWidget extends StatelessWidget {
           children: [
             Icon(
               icon,
-              color: title == 'Logout' ? AppColors.danger : AppColors.textPrimary,
+              color: title == 'Logout' ? AppColors.danger : null,
               size: context.dynamicHeight(0.028 ),
             ),
             context.dynamicWidth(0.04).width,
@@ -37,7 +37,6 @@ class SettingsItemWidget extends StatelessWidget {
               child: Text(
                 title,
                 style: TextStyle(
-                  color: AppColors.textPrimary,
                   fontSize: context.dynamicHeight(0.016),
                   fontWeight: FontWeight.w400,
                 ),
@@ -45,7 +44,6 @@ class SettingsItemWidget extends StatelessWidget {
             ),
             trailing ?? Icon(
               Icons.chevron_right,
-              color: AppColors.textPrimary,
               size: context.dynamicHeight(0.02),
             ),
           ],

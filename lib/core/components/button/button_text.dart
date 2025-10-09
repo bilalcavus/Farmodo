@@ -11,9 +11,7 @@ class ButtonText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Text(
-      text, style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-        color: Colors.white
-      )
+      text, style: Theme.of(context).textTheme.bodyLarge
     );
   }
 }

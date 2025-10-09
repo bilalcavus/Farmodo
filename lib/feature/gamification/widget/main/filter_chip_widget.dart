@@ -16,13 +16,14 @@ class FilterChipWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Padding(
       padding: EdgeInsets.only(right: context.dynamicWidth(0.02)),
       child: FilterChip(
         label: Text(
           label,
           style: Theme.of(context).textTheme.labelSmall?.copyWith(
-            color: isSelected ? Colors.white : Colors.grey.shade700,
+            color: isSelected ? Colors.white : isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
             fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
           ),
         ),
@@ -32,9 +33,9 @@ class FilterChipWidget extends StatelessWidget {
         },
         selectedColor: AppColors.primary,
         checkmarkColor: Colors.white,
-        backgroundColor: Colors.grey.shade200,
+        backgroundColor: isDark ? AppColors.darkSurface : AppColors.lightSurface,
         side: BorderSide(
-          color: isSelected ? AppColors.primary : Colors.grey.shade300,
+          color: isSelected ? AppColors.primary : isDark ? AppColors.darkBorder : AppColors.lightBorder,
           width: isSelected ? 2 : 1,
         ),
         padding: EdgeInsets.symmetric(
