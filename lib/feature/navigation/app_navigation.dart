@@ -23,7 +23,7 @@ class AppNavigation extends StatelessWidget {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
-        statusBarIconBrightness: Brightness.dark, // Android ikonları
+        statusBarIconBrightness: Brightness.light, // Android ikonları
         statusBarBrightness: isDark ? Brightness.dark : Brightness.light, // iOS ikonları
       ),
       child: Obx(() {

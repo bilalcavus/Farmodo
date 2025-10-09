@@ -87,7 +87,6 @@ class _TaskViewState extends State<TaskView> with TaskViewMixin {
 
   PreferredSizeWidget _buildAppBar() {
     return AppBar(
-      backgroundColor: Colors.transparent,
       elevation: 0,
       systemOverlayStyle: const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
