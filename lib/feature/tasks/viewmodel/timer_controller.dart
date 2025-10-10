@@ -1,8 +1,11 @@
 import 'dart:async';
 
 import 'package:audioplayers/audioplayers.dart';
+import 'package:farmodo/core/utility/constants/storage_keys.dart';
 import 'package:farmodo/core/services/notification_service.dart';
 import 'package:farmodo/core/services/home_widget_service.dart';
+import 'package:farmodo/core/services/preferences_service.dart';
+import 'package:farmodo/data/services/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -17,6 +20,19 @@ class TimerController extends GetxController {
   var isRunning = false.obs;
   var isOnBreak = false.obs;
   var currentTaskTitle = ''.obs;
+  var isRestoring = false.obs;
+
+  final PreferencesService _prefsService = PreferencesService.instance;
+  final AuthService _authService = AuthService();
+
+  String? get _userId => _authService.getCurrentUserId;
+  
+  String get _keyTotalSeconds => StorageKeys.userKey(_userId, StorageKeys.timerTotalSeconds);
+  String get _keySecondsRemaining => StorageKeys.userKey(_userId, StorageKeys.timerSecondsRemaining);
+  String get _keyTotalBreakSeconds => StorageKeys.userKey(_userId, StorageKeys.timerTotalBreakSeconds);
+  String get _keyBreakSecondsRemaining => StorageKeys.userKey(_userId, StorageKeys.timerBreakSecondsRemaining);
+  String get _keyIsOnBreak => StorageKeys.userKey(_userId, StorageKeys.timerIsOnBreak);
+  String get _keyCurrentTaskTitle => StorageKeys.userKey(_userId, StorageKeys.timerCurrentTaskTitle);
   
   double get progress => totalSeconds.value == 0 ? 0.0 : (totalSeconds.value - secondsRemaining.value) / totalSeconds.value;
   double get breakProgress => totalBreakSeconds.value == 0 ? 0.0 : (totalBreakSeconds.value - breakSecondsRemaining.value) / totalBreakSeconds.value;
@@ -84,12 +100,16 @@ class TimerController extends GetxController {
       if(secondsRemaining.value > 0){
         secondsRemaining.value--;
         _updateNotification();
+        if (secondsRemaining.value % 5 == 0) {
+          saveTimerState();
+        }
       } else {
         _timer?.cancel();
         isRunning.value = false;
         secondsRemaining.value = totalSeconds.value;
         isOnBreak.value = true;
         _updateNotification();
+        saveTimerState();
         if (onTimerComplete != null) {
           onTimerComplete!();
         }
@@ -99,6 +119,7 @@ class TimerController extends GetxController {
     });
     isRunning.value = true;
     _showNotification();
+    saveTimerState();
   }
 
   void startBreakTimer(){
@@ -108,12 +129,16 @@ class TimerController extends GetxController {
       if(breakSecondsRemaining.value > 0){
         breakSecondsRemaining.value --;
         _updateNotification();
+        if (breakSecondsRemaining.value % 5 == 0) {
+          saveTimerState();
+        }
       } else {
         _timer?.cancel();
         isRunning.value = false;
         breakSecondsRemaining.value = totalBreakSeconds.value;
         isOnBreak.value = false;
         _updateNotification();
+        saveTimerState();
         _playCompletionSound();
         if (onBreakComplete != null) {
           onBreakComplete!();
@@ -122,12 +147,14 @@ class TimerController extends GetxController {
     });
     isRunning.value = true;
     _showNotification();
+    saveTimerState();
   }
 
   void pauseTimer() {
     _timer?.cancel();
     isRunning.value = false;
     _updateNotification();
+    saveTimerState();
   }
 
   void resetTimer() {
@@ -137,6 +164,7 @@ class TimerController extends GetxController {
     breakSecondsRemaining.value = totalBreakSeconds.value;
     isOnBreak.value = false;
     _updateNotification();
+    saveTimerState();
   }
 
   void resetAll(){
@@ -149,11 +177,13 @@ class TimerController extends GetxController {
     onTimerComplete = null;
     onBreakComplete = null;
     _hideNotification();
+    clearSavedTimerState();
   }
 
   void setTaskTitle(String title) {
     currentTaskTitle.value = title;
     _updateNotification();
+    saveTimerState();
   }
   
 
@@ -170,6 +200,61 @@ class TimerController extends GetxController {
     final minutes = (seconds ~/ 60).toString().padLeft(2, '0');
     final secs = (seconds % 60).toString().padLeft(2, '0');
     return '$minutes:$secs';
+  }
+
+  Future<void> saveTimerState() async {
+    if (isRestoring.value) return;
+    
+    try {
+      await _prefsService.setInt(_keyTotalSeconds, totalSeconds.value);
+      await _prefsService.setInt(_keySecondsRemaining, secondsRemaining.value);
+      await _prefsService.setInt(_keyTotalBreakSeconds, totalBreakSeconds.value);
+      await _prefsService.setInt(_keyBreakSecondsRemaining, breakSecondsRemaining.value);
+      await _prefsService.setBool(_keyIsOnBreak, isOnBreak.value);
+      await _prefsService.setString(_keyCurrentTaskTitle, currentTaskTitle.value);
+    } catch (e) {
+      debugPrint('Timer state save error: $e');
+    }
+  }
+
+  Future<void> restoreTimerState() async {
+    isRestoring.value = true;
+    try {
+      final savedTotalSeconds = _prefsService.getInt(_keyTotalSeconds, 0);
+      final savedSecondsRemaining = _prefsService.getInt(_keySecondsRemaining, 0);
+      final savedTotalBreakSeconds = _prefsService.getInt(_keyTotalBreakSeconds, 0);
+      final savedBreakSecondsRemaining = _prefsService.getInt(_keyBreakSecondsRemaining, 0);
+      final savedIsOnBreak = _prefsService.getBool(_keyIsOnBreak, false);
+      final savedTaskTitle = _prefsService.getString(_keyCurrentTaskTitle, '');
+
+      if (savedTotalSeconds > 0 || savedTotalBreakSeconds > 0) {
+        totalSeconds.value = savedTotalSeconds;
+        secondsRemaining.value = savedSecondsRemaining;
+        totalBreakSeconds.value = savedTotalBreakSeconds;
+        breakSecondsRemaining.value = savedBreakSecondsRemaining;
+        isOnBreak.value = savedIsOnBreak;
+        currentTaskTitle.value = savedTaskTitle;
+        
+        _updateNotification();
+      }
+    } catch (e) {
+      debugPrint('Timer state restore error: $e');
+    } finally {
+      isRestoring.value = false;
+    }
+  }
+
+  Future<void> clearSavedTimerState() async {
+    try {
+      await _prefsService.remove(_keyTotalSeconds);
+      await _prefsService.remove(_keySecondsRemaining);
+      await _prefsService.remove(_keyTotalBreakSeconds);
+      await _prefsService.remove(_keyBreakSecondsRemaining);
+      await _prefsService.remove(_keyIsOnBreak);
+      await _prefsService.remove(_keyCurrentTaskTitle);
+    } catch (e) {
+      debugPrint('Timer state clear error: $e');
+    }
   }
 
   @override

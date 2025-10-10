@@ -8,7 +8,9 @@ import 'package:farmodo/data/services/auth_service.dart';
 import 'package:farmodo/feature/account/widget/settings_item_widget.dart';
 import 'package:farmodo/feature/auth/login/viewmodel/login_controller.dart';
 import 'package:farmodo/feature/gamification/view/debug_gamification_view.dart';
+import 'package:farmodo/feature/home/widgets/widget_guide_view.dart';
 import 'package:farmodo/feature/navigation/app_navigation.dart';
+import 'package:farmodo/feature/tasks/viewmodel/tasks_controller.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -56,7 +58,12 @@ class _PreferencesSectionState extends State<PreferencesSection> {
                 ),
               )
             ),
-            
+            SettingsItemWidget(
+              context: context,
+              icon: Icons.widgets_outlined,
+              title: "Home Screen Widget",
+              onTap: () => RouteHelper.push(context, const WidgetGuideView()),
+            ),
             kDebugMode ? 
             SettingsItemWidget(
               icon: Icons.bug_report,
@@ -71,8 +78,10 @@ class _PreferencesSectionState extends State<PreferencesSection> {
                 showAlertDialog(
                   context: context,
                   title: "Exit App",
-                  content: "Are you sure to want you exit the app?",
+                  content: "Are you sure to want you logout?",
                   onPressed: () async {
+                    final tasksController = getIt<TasksController>();
+                    await tasksController.handleUserChange();
                     await widget.loginController.handleLogout();
                       if (context.mounted && !widget.authService.isLoggedIn) {
                         RouteHelper.pushAndCloseOther(context, AppNavigation(initialIndex: 0));

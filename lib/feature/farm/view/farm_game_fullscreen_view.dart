@@ -87,7 +87,6 @@ class _FarmGameFullscreenViewState extends State<FarmGameFullscreenView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
       body: Stack(
         children: [
           // Fullscreen Game Area

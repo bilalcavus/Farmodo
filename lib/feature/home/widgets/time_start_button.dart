@@ -3,9 +3,7 @@ import 'package:farmodo/core/components/card/show_alert_dialog.dart';
 import 'package:farmodo/core/theme/app_colors.dart';
 import 'package:farmodo/core/theme/app_container_styles.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
-import 'package:farmodo/core/utility/extension/route_helper.dart';
 import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
-import 'package:farmodo/feature/home/widgets/widget_guide_view.dart';
 import 'package:farmodo/feature/home/widgets/full_screen_timer.dart';
 import 'package:farmodo/feature/tasks/viewmodel/tasks_controller.dart';
 import 'package:farmodo/feature/tasks/viewmodel/timer_controller.dart';
@@ -13,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:iconsax/iconsax.dart';
 
 class TimeStartButton extends StatefulWidget {
   const TimeStartButton({
@@ -58,7 +57,7 @@ class _TimeStartButtonState extends State<TimeStartButton> {
               onPressed: () => widget.tasksController.endCurrentSession(),
               buttonText: "OK"
             ),
-            icon: Icon(HugeIcons.strokeRoundedDelete02, color: Colors.red, size: context.dynamicHeight(0.02))
+            icon: Icon(Iconsax.stop, color: Colors.red, size: context.dynamicHeight(0.023))
           ),
           context.dynamicWidth(0.03).width,
           PlayButton(
@@ -71,8 +70,6 @@ class _TimeStartButtonState extends State<TimeStartButton> {
             onPressed: () => toggleFullScreen(context),
             icon:  Icon(HugeIcons.strokeRoundedFullScreen, size: context.dynamicHeight(0.025))
           ),
-          context.dynamicWidth(0.03).width,
-          ActionButton(onPressed: () => RouteHelper.push(context, const WidgetGuideView()), icon: Icon(Icons.widgets_outlined))
         ],
       );
       }),
@@ -133,27 +130,20 @@ class PlayButton extends StatelessWidget {
         child: IconButton(onPressed: timerController.isRunning.value
           ? () => timerController.pauseTimer()
           : () {
-              // Eğer break modundaysa, break timer'ı başlat
               if (timerController.isOnBreak.value) {
                 timerController.startBreakTimer();
                 return;
               }
 
-              // Eğer timer zaten ayarlanmışsa (default veya custom task seçilmiş)
               if (timerController.totalSeconds.value > 0) {
                 timerController.startTimer();
                 return;
               }
-
-              // Timer ayarlanmamış, task seçmemiz gerekiyor
-              
-              // Eğer custom task seçiliyse, onu kullan
               if (selectedIndex != -1 && 
                   tasksController.activeUserTasks.isNotEmpty &&
                   selectedIndex < tasksController.activeUserTasks.length) {
                 tasksController.selectTask(selectedIndex, tasksController.activeUserTasks[selectedIndex]);
               } else {
-                // Yoksa default task'ı kullan
                 tasksController.selectDefaultTask();
               }
               

@@ -1,4 +1,6 @@
 import 'package:audioplayers/audioplayers.dart';
+import 'package:farmodo/core/utility/constants/storage_keys.dart';
+import 'package:farmodo/core/services/preferences_service.dart';
 import 'package:farmodo/data/models/user_task_model.dart';
 import 'package:farmodo/data/sample_data/default_task_data.dart';
 import 'package:farmodo/data/services/auth_service.dart';
@@ -47,6 +49,15 @@ class TasksController extends GetxController {
     LoadingType.completed: false
   }.obs;
 
+  final PreferencesService _prefsService = PreferencesService.instance;
+
+  String? get _userId => authService.getCurrentUserId;
+  
+  String get _keyIsUsingDefaultTask => StorageKeys.userKey(_userId, StorageKeys.taskIsUsingDefault);
+  String get _keyDefaultTaskCurrentSession => StorageKeys.userKey(_userId, StorageKeys.taskDefaultCurrentSession);
+  String get _keySelectedTaskId => StorageKeys.userKey(_userId, StorageKeys.taskSelectedTaskId);
+  String get _keyDefaultBreakType => StorageKeys.userKey(_userId, StorageKeys.taskDefaultBreakType);
+
   TasksController(this.firestoreService, this.authService, this.timerController, this.loginController);
 
   @override
@@ -54,9 +65,6 @@ class TasksController extends GetxController {
     _initializeDefaultTask();
     _updateXp();
     ever(selectedPomodoroTime, (_) => _updateXp());
-    
-    selectDefaultTask();
-    
     _loadInitialTasks();
     super.onInit();
   }
@@ -64,6 +72,13 @@ class TasksController extends GetxController {
   Future<void> _loadInitialTasks() async {
     await getActiveTask();
     await getCompletedTask();
+    
+    await timerController.restoreTimerState();
+    final hadSavedState = await restoreTaskState();
+    
+    if (!hadSavedState) {
+      selectDefaultTask();
+    }
   }
 
   void _initializeDefaultTask() {
@@ -78,6 +93,7 @@ class TasksController extends GetxController {
       timerController.totalBreakSeconds.value = defaultTask.breakDuration * 60;
       timerController.breakSecondsRemaining.value = defaultTask.breakDuration * 60;
     }
+    saveTaskState();
   }
   void setLoading(LoadingType type, bool value) {
     loadingStates[type] = value;
@@ -116,6 +132,7 @@ class TasksController extends GetxController {
     TimerHelper.setupTaskTimer(
       timerController, task, () async => await completeTaskById(task.id));
     resetShake();
+    saveTaskState();
   }
 
   void selectDefaultTask() {
@@ -124,6 +141,7 @@ class TasksController extends GetxController {
     timerController.setTaskTitle(defaultTask.title);
     _setupDefaultTaskTimer();
     resetShake();
+    saveTaskState();
   }
 
   void _setupDefaultTaskTimer() {
@@ -134,6 +152,7 @@ class TasksController extends GetxController {
     
     timerController.onTimerComplete = () async {
       defaultTaskCurrentSession.value++;
+      saveTaskState();
       
       timerController.onBreakComplete = () async {
         await _handleDefaultTaskBreakComplete();
@@ -164,6 +183,7 @@ class TasksController extends GetxController {
     } else {
       _setupDefaultTaskTimer();
       timerController.startTimer();
+      saveTaskState();
     }
   }
 
@@ -221,6 +241,7 @@ class TasksController extends GetxController {
   void _clearTimer(){
     timerController.resetAll();
     selctedTaskIndex.value = -1;
+    clearSavedTaskState();
   }
 
   void endCurrentSession() {
@@ -234,6 +255,23 @@ class TasksController extends GetxController {
     timerController.isOnBreak.value = false;
     
     selectDefaultTask();
+    clearSavedTaskState();
+  }
+
+  Future<void> handleUserChange() async {
+    timerController.pauseTimer();
+    await saveTaskState();
+    await timerController.saveTimerState();
+    
+    timerController.resetAll();
+    selctedTaskIndex.value = -1;
+    defaultTaskCurrentSession.value = 0;
+    isUsingDefaultTask.value = false;
+    
+    selectDefaultTask();
+    
+    await Future.delayed(Duration(milliseconds: 100));
+    await _loadInitialTasks();
   }
 
   void _restartTask(UserTaskModel task){
@@ -354,6 +392,109 @@ class TasksController extends GetxController {
   void _restoreTaskSelection(UserTaskModel previousTask) {
     final index = _findTaskIndex(previousTask);
     selctedTaskIndex.value = index;
+  }
+
+  Future<void> saveTaskState() async {
+    try {
+      await _prefsService.setBool(_keyIsUsingDefaultTask, isUsingDefaultTask.value);
+      await _prefsService.setInt(_keyDefaultTaskCurrentSession, defaultTaskCurrentSession.value);
+      await _prefsService.setString(_keyDefaultBreakType, defaultBreakType.value.toString());
+      
+      if (!isUsingDefaultTask.value && selctedTaskIndex.value >= 0 && selctedTaskIndex.value < activeUserTasks.length) {
+        final selectedTask = activeUserTasks[selctedTaskIndex.value];
+        await _prefsService.setString(_keySelectedTaskId, selectedTask.id);
+      } else {
+        await _prefsService.remove(_keySelectedTaskId);
+      }
+    } catch (e) {
+      debugPrint('Task state save error: $e');
+    }
+  }
+
+  Future<bool> restoreTaskState() async {
+    timerController.isRestoring.value = true;
+    bool hadSavedState = false;
+    
+    try {
+      final savedIsUsingDefaultTask = _prefsService.getBool(_keyIsUsingDefaultTask, false);
+      final savedDefaultTaskCurrentSession = _prefsService.getInt(_keyDefaultTaskCurrentSession, 0);
+      final savedDefaultBreakType = _prefsService.getString(_keyDefaultBreakType, '');
+      final savedSelectedTaskId = _prefsService.getString(_keySelectedTaskId, '');
+
+      if (savedDefaultBreakType.isNotEmpty) {
+        if (savedDefaultBreakType.contains('short')) {
+          defaultBreakType.value = BreakDurationType.short;
+        } else if (savedDefaultBreakType.contains('long')) {
+          defaultBreakType.value = BreakDurationType.long;
+        }
+        _initializeDefaultTask();
+      }
+
+      if (savedIsUsingDefaultTask) {
+        hadSavedState = true;
+        defaultTaskCurrentSession.value = savedDefaultTaskCurrentSession;
+        isUsingDefaultTask.value = true;
+        selctedTaskIndex.value = -1;
+        
+        timerController.currentTaskTitle.value = defaultTask.title;
+        
+        if (timerController.totalSeconds.value == 0) {
+          timerController.totalSeconds.value = defaultTask.duration * 60;
+          timerController.secondsRemaining.value = defaultTask.duration * 60;
+          timerController.totalBreakSeconds.value = defaultTask.breakDuration * 60;
+          timerController.breakSecondsRemaining.value = defaultTask.breakDuration * 60;
+        }
+        
+        timerController.onTimerComplete = () async {
+          defaultTaskCurrentSession.value++;
+          saveTaskState();
+          
+          timerController.onBreakComplete = () async {
+            await _handleDefaultTaskBreakComplete();
+          };
+        };
+      } else if (savedSelectedTaskId.isNotEmpty) {
+        hadSavedState = true;
+        final taskIndex = activeUserTasks.indexWhere((task) => task.id == savedSelectedTaskId);
+        if (taskIndex >= 0) {
+          final task = activeUserTasks[taskIndex];
+          selctedTaskIndex.value = taskIndex;
+          isUsingDefaultTask.value = false;
+          
+          timerController.currentTaskTitle.value = task.title;
+          
+          if (timerController.totalSeconds.value == 0) {
+            timerController.totalSeconds.value = task.duration * 60;
+            timerController.secondsRemaining.value = task.duration * 60;
+            timerController.totalBreakSeconds.value = task.breakDuration * 60;
+            timerController.breakSecondsRemaining.value = task.breakDuration * 60;
+          }
+          
+          timerController.onTimerComplete = () async {
+            await completeTaskById(task.id);
+          };
+        } else {
+          hadSavedState = false;
+        }
+      }
+    } catch (e) {
+      debugPrint('Task state restore error: $e');
+    } finally {
+      timerController.isRestoring.value = false;
+    }
+    
+    return hadSavedState;
+  }
+
+  Future<void> clearSavedTaskState() async {
+    try {
+      await _prefsService.remove(_keyIsUsingDefaultTask);
+      await _prefsService.remove(_keyDefaultTaskCurrentSession);
+      await _prefsService.remove(_keySelectedTaskId);
+      await _prefsService.remove(_keyDefaultBreakType);
+    } catch (e) {
+      debugPrint('Task state clear error: $e');
+    }
   }
 
   @override
