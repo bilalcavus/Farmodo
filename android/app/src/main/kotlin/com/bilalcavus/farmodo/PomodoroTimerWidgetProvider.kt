@@ -34,10 +34,8 @@ class PomodoroTimerWidgetProvider : AppWidgetProvider() {
                 setTextViewText(R.id.task_title, taskTitle)
                 
                 // Durum metnini güncelle
-                val statusText = if (isOnBreak) "Break" else "Work"
-                val statusColor = if (isOnBreak) "#FF9800" else "#4CAF50"
+                val statusText = if (isOnBreak) "BREAK" else "FOCUS"
                 setTextViewText(R.id.status_text, statusText)
-                setInt(R.id.status_text, "setTextColor", android.graphics.Color.parseColor(statusColor))
                 
                 // İlerleme çubuğunu güncelle
                 val progress = if (totalSeconds > 0) {
@@ -52,17 +50,17 @@ class PomodoroTimerWidgetProvider : AppWidgetProvider() {
                 setImageViewResource(R.id.play_pause_button, buttonIcon)
                 
                 // Buton tıklama olayını ayarla
-                val intent = Intent(context, PomodoroTimerWidgetProvider::class.java).apply {
-                    action = if (isRunning) "PAUSE_TIMER" else "START_TIMER"
+                val buttonIntent = Intent(context, PomodoroTimerWidgetProvider::class.java).apply {
+                    action = if (isRunning) "PAUSE_TIMER" else "RESUME_TIMER"
                     putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
                 }
-                val pendingIntent = PendingIntent.getBroadcast(
+                val buttonPendingIntent = PendingIntent.getBroadcast(
                     context,
-                    0,
-                    intent,
+                    widgetId,
+                    buttonIntent,
                     PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
                 )
-                setOnClickPendingIntent(R.id.play_pause_button, pendingIntent)
+                setOnClickPendingIntent(R.id.play_pause_button, buttonPendingIntent)
                 
                 // Widget'a tıklama olayını ayarla (uygulamayı aç)
                 val appIntent = Intent(context, MainActivity::class.java)
@@ -83,14 +81,40 @@ class PomodoroTimerWidgetProvider : AppWidgetProvider() {
         super.onReceive(context, intent)
         
         when (intent.action) {
-            "START_TIMER" -> {
-                // Timer'ı başlat
+            "START_TIMER", "RESUME_TIMER" -> {
+                // Timer service'i başlat veya devam ettir
                 val widgetData = HomeWidgetPlugin.getData(context)
+                val secondsRemaining = widgetData.getInt("seconds_remaining", 0)
+                val totalSeconds = widgetData.getInt("total_seconds", 0)
+                val isOnBreak = widgetData.getBoolean("is_on_break", false)
+                val taskTitle = widgetData.getString("task_title", "No active task") ?: "No active task"
+                
+                if (secondsRemaining > 0) {
+                    val serviceIntent = Intent(context, TimerService::class.java).apply {
+                        action = TimerService.ACTION_RESUME_TIMER
+                        putExtra(TimerService.EXTRA_SECONDS_REMAINING, secondsRemaining)
+                        putExtra(TimerService.EXTRA_TOTAL_SECONDS, totalSeconds)
+                        putExtra(TimerService.EXTRA_IS_ON_BREAK, isOnBreak)
+                        putExtra(TimerService.EXTRA_TASK_TITLE, taskTitle)
+                    }
+                    
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                        context.startForegroundService(serviceIntent)
+                    } else {
+                        context.startService(serviceIntent)
+                    }
+                }
+                
                 widgetData.edit().putBoolean("timer_running", true).apply()
                 updateWidget(context)
             }
             "PAUSE_TIMER" -> {
-                // Timer'ı duraklat
+                // Timer service'i duraklat
+                val serviceIntent = Intent(context, TimerService::class.java).apply {
+                    action = TimerService.ACTION_PAUSE_TIMER
+                }
+                context.startService(serviceIntent)
+                
                 val widgetData = HomeWidgetPlugin.getData(context)
                 widgetData.edit().putBoolean("timer_running", false).apply()
                 updateWidget(context)

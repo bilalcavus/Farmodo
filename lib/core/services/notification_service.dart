@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:farmodo/core/services/permission_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -5,9 +7,13 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 class NotificationService {
   static final FlutterLocalNotificationsPlugin _notifications = FlutterLocalNotificationsPlugin();
   static const int _timerNotificationId = 1001;
+  static const int _completionNotificationId = 1002;
   static const String _timerChannelId = 'pomodoro_timer_channel';
   static const String _timerChannelName = 'Pomodoro Timer';
   static const String _timerChannelDescription = 'Pomodoro timer notifications';
+  static const String _completionChannelId = 'pomodoro_completion_channel';
+  static const String _completionChannelName = 'Timer Completed';
+  static const String _completionChannelDescription = 'Notifications when timer completes';
   static const String _iosCategoryId = 'pomodoro_actions';
 
   static Future<void> initialize() async {
@@ -49,7 +55,8 @@ class NotificationService {
   }
 
   static Future<void> _createNotificationChannel() async {
-    const androidChannel = AndroidNotificationChannel(
+    // Silent channel for ongoing timer
+    const timerChannel = AndroidNotificationChannel(
       _timerChannelId,
       _timerChannelName,
       description: _timerChannelDescription,
@@ -58,9 +65,22 @@ class NotificationService {
       enableVibration: false,
     );
 
-    await _notifications
-        .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
-        ?.createNotificationChannel(androidChannel);
+    // Sound channel for completion
+    const completionChannel = AndroidNotificationChannel(
+      _completionChannelId,
+      _completionChannelName,
+      description: _completionChannelDescription,
+      importance: Importance.max,
+      playSound: true,
+      enableVibration: true,
+      // Android default notification sound kullan
+    );
+
+    final plugin = _notifications
+        .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
+    
+    await plugin?.createNotificationChannel(timerChannel);
+    await plugin?.createNotificationChannel(completionChannel);
   }
 
   static Future<void> showTimerNotification({
@@ -146,7 +166,51 @@ class NotificationService {
     await _notifications.cancel(_timerNotificationId);
   }
 
-  
+  /// Timer tamamlandığında ses ve titreşimle bildirim göster
+  static Future<void> showCompletionNotification({
+    required String title,
+    required String body,
+  }) async {
+    try {
+      final androidDetails = AndroidNotificationDetails(
+        _completionChannelId,
+        _completionChannelName,
+        channelDescription: _completionChannelDescription,
+        importance: Importance.max,
+        priority: Priority.max,
+        playSound: true,
+        enableVibration: true,
+        vibrationPattern: Int64List.fromList(const [0, 200, 100, 200, 100, 200]),
+        autoCancel: true,
+        icon: '@drawable/ic_notification',
+        largeIcon: const DrawableResourceAndroidBitmap('@drawable/ic_notification'),
+      );
+
+      const iosDetails = DarwinNotificationDetails(
+        categoryIdentifier: _iosCategoryId,
+        presentAlert: true,
+        presentBadge: true,
+        presentSound: true,
+        sound: 'complete_sound.mp3',
+      );
+
+      final notificationDetails = NotificationDetails(
+        android: androidDetails,
+        iOS: iosDetails,
+      );
+
+      await _notifications.show(
+        _completionNotificationId,
+        title,
+        body,
+        notificationDetails,
+      );
+      
+      debugPrint('✅ Completion notification shown with sound');
+    } catch (e) {
+      debugPrint('❌ Completion notification error: $e');
+    }
+  }
 
   
   // Foreground service için

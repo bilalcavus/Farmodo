@@ -1,6 +1,5 @@
 import 'package:farmodo/core/di/injection.dart';
 import 'package:farmodo/core/services/preferences_service.dart';
-import 'package:farmodo/core/theme/app_colors.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/core/utility/extension/route_helper.dart';
 import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
@@ -122,7 +121,6 @@ class _OnboardScreenState extends State<OnboardScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.surface,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         systemOverlayStyle: const SystemUiOverlayStyle(

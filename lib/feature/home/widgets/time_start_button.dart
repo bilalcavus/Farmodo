@@ -1,10 +1,14 @@
 
 import 'package:farmodo/core/components/card/show_alert_dialog.dart';
+import 'package:farmodo/core/di/injection.dart';
 import 'package:farmodo/core/theme/app_colors.dart';
 import 'package:farmodo/core/theme/app_container_styles.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
+import 'package:farmodo/core/utility/extension/route_helper.dart';
 import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
+import 'package:farmodo/data/services/auth_service.dart';
 import 'package:farmodo/feature/home/widgets/full_screen_timer.dart';
+import 'package:farmodo/feature/tasks/view/add_task_view.dart';
 import 'package:farmodo/feature/tasks/viewmodel/tasks_controller.dart';
 import 'package:farmodo/feature/tasks/viewmodel/timer_controller.dart';
 import 'package:flutter/material.dart';
@@ -70,6 +74,18 @@ class _TimeStartButtonState extends State<TimeStartButton> {
             onPressed: () => toggleFullScreen(context),
             icon:  Icon(HugeIcons.strokeRoundedFullScreen, size: context.dynamicHeight(0.025))
           ),
+          context.dynamicWidth(0.03).width,
+          ActionButton(
+            icon: Icon(HugeIcons.strokeRoundedAdd01),
+            onPressed: (){
+              final authService = getIt<AuthService>();
+              if (!authService.isLoggedIn) {
+                _showLoginBottomSheet(context);
+              } else {
+                RouteHelper.push(context, const AddTaskView());
+              }
+            },
+          )
         ],
       );
       }),
@@ -92,6 +108,19 @@ class _TimeStartButtonState extends State<TimeStartButton> {
     });
   }
 }
+
+void _showLoginBottomSheet(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: isDark ? AppColors.darkSurface : AppColors.lightSurface,
+      builder: (context) => LoginBottomSheet(
+        title: 'Login to create a task',
+        subTitle: 'You need to log in to save your tasks and track your progress.',
+      ),
+    );
+  }
 
 class ActionButton extends StatelessWidget {
   const ActionButton({

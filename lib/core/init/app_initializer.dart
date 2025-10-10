@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:farmodo/core/di/injection.dart';
+import 'package:farmodo/core/services/live_activity_service.dart';
 import 'package:farmodo/core/services/notification_service.dart';
 import 'package:farmodo/data/services/sample_data_service.dart';
 import 'package:farmodo/firebase_options.dart';
@@ -9,6 +10,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:logger/logger.dart';
+import 'package:home_widget/home_widget.dart';
 
 final class AppInitializer {
   Future<void> make() async {
@@ -37,6 +39,26 @@ final class AppInitializer {
       
       await NotificationService.initialize();
       Logger().i('Notification service initialized successfully');
+      
+      try {
+        await LiveActivityService.init();
+        Logger().i('Live Activity initialized successfully');
+      } catch (e) {
+        Logger().e('Live Activity initialization error: $e');
+      }
+      
+      // Widget'ı uygulama başlarken güncelle
+      try {
+        await HomeWidget.setAppGroupId('group.com.bilalcavus.farmodo');
+        await HomeWidget.updateWidget(
+          name: 'PomodoroTimerWidgetProvider',
+          androidName: 'PomodoroTimerWidgetProvider',
+          iOSName: 'HomeScreenWidget',
+        );
+        Logger().i('Widget initialized successfully');
+      } catch (e) {
+        Logger().e('Widget initialization error: $e');
+      }
 
       final user = FirebaseAuth.instance.currentUser;
       if (user != null) {

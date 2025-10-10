@@ -24,18 +24,17 @@ class OnboardButton extends StatelessWidget {
           onPressed: onPressed,
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.lightGreenAccent,
-            foregroundColor: Colors.black,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: context.border.lowBorderRadius
             ),
             elevation: 2,
           ),
           child: Text(
             buttonText,
-            style: const TextStyle(
-              fontSize: 16,
+            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
               fontWeight: FontWeight.w600,
-            ),
+              color: Colors.black
+            )
           ),
         ),
       ),

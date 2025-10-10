@@ -1,12 +1,15 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:farmodo/core/utility/constants/storage_keys.dart';
 import 'package:farmodo/core/services/notification_service.dart';
 import 'package:farmodo/core/services/home_widget_service.dart';
+import 'package:farmodo/core/services/live_activity_service.dart';
 import 'package:farmodo/core/services/preferences_service.dart';
 import 'package:farmodo/data/services/auth_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 class TimerController extends GetxController {
@@ -24,6 +27,32 @@ class TimerController extends GetxController {
 
   final PreferencesService _prefsService = PreferencesService.instance;
   final AuthService _authService = AuthService();
+  
+  @override
+  void onInit() {
+    super.onInit();
+    // AudioPlayer'ı yapılandır (arka plan için)
+    player.setReleaseMode(ReleaseMode.stop);
+    player.setVolume(1.0);
+    // Android için audio mode
+    if (Platform.isAndroid) {
+      player.setAudioContext(
+        AudioContext(
+          iOS: AudioContextIOS(
+            category: AVAudioSessionCategory.playback,
+            options: {AVAudioSessionOptions.mixWithOthers},
+          ),
+          android: AudioContextAndroid(
+            isSpeakerphoneOn: false,
+            stayAwake: true,
+            contentType: AndroidContentType.sonification,
+            usageType: AndroidUsageType.notification,
+            audioFocus: AndroidAudioFocus.none,
+          ),
+        ),
+      );
+    }
+  }
 
   String? get _userId => _authService.getCurrentUserId;
   
@@ -58,6 +87,20 @@ class TimerController extends GetxController {
 
     // Widget'ı güncelle
     _updateWidget();
+    
+    // Live Activity'yi güncelle
+    _updateLiveActivity();
+  }
+  
+  void _updateLiveActivity() {
+    if (LiveActivityService.isActive) {
+      LiveActivityService.updateActivity(
+        remainingSeconds: isOnBreak.value ? breakSecondsRemaining.value : secondsRemaining.value,
+        totalSeconds: isOnBreak.value ? totalBreakSeconds.value : totalSeconds.value,
+        isOnBreak: isOnBreak.value,
+        isPaused: !isRunning.value,
+      );
+    }
   }
 
   void _updateWidget() {
@@ -96,6 +139,27 @@ class TimerController extends GetxController {
   void startTimer(){
     if(isRunning.value) return;
     if(totalSeconds.value == 0) return;
+    
+    // iOS için Live Activity başlat
+    if (Platform.isIOS) {
+      if (!LiveActivityService.isActive) {
+        LiveActivityService.startTimerActivity(
+          taskTitle: currentTaskTitle.value.isEmpty ? 'Focus Session' : currentTaskTitle.value,
+          totalSeconds: totalSeconds.value,
+          remainingSeconds: secondsRemaining.value,
+          isOnBreak: false,
+        );
+      } else {
+        // Zaten varsa sadece pause durumunu kaldır
+        LiveActivityService.updateActivity(
+          remainingSeconds: secondsRemaining.value,
+          totalSeconds: totalSeconds.value,
+          isOnBreak: false,
+          isPaused: false,
+        );
+      }
+    }
+    
     _timer = Timer.periodic(Duration(seconds: 1), (_){
       if(secondsRemaining.value > 0){
         secondsRemaining.value--;
@@ -114,6 +178,11 @@ class TimerController extends GetxController {
           onTimerComplete!();
         }
         _playCompletionSound();
+        // Ses ve titreşimle bildirim göster
+        NotificationService.showCompletionNotification(
+          title: '🎉 Focus Completed!',
+          body: 'Great job! Now break time.',
+        );
         startBreakTimer();
       }
     });
@@ -125,6 +194,15 @@ class TimerController extends GetxController {
   void startBreakTimer(){
     if (isRunning.value) return;
     if(totalBreakSeconds.value == 0) return;
+    
+    // iOS için break moduna geç
+    if (Platform.isIOS) {
+      LiveActivityService.switchToBreak(
+        breakSeconds: breakSecondsRemaining.value,
+        totalBreakSeconds: totalBreakSeconds.value,
+      );
+    }
+    
     _timer = Timer.periodic(Duration(seconds: 1), (_){
       if(breakSecondsRemaining.value > 0){
         breakSecondsRemaining.value --;
@@ -139,7 +217,12 @@ class TimerController extends GetxController {
         isOnBreak.value = false;
         _updateNotification();
         saveTimerState();
+        // Ses ve titreşimle bildirim göster
         _playCompletionSound();
+        NotificationService.showCompletionNotification(
+          title: '☕ Break over!',
+          body: 'Did you rest ? New session is starting!',
+        );
         if (onBreakComplete != null) {
           onBreakComplete!();
         }
@@ -153,6 +236,12 @@ class TimerController extends GetxController {
   void pauseTimer() {
     _timer?.cancel();
     isRunning.value = false;
+    
+    // iOS için Live Activity'yi pause et
+    if (Platform.isIOS) {
+      LiveActivityService.setPaused(true);
+    }
+    
     _updateNotification();
     saveTimerState();
   }
@@ -176,6 +265,12 @@ class TimerController extends GetxController {
     currentTaskTitle.value = '';
     onTimerComplete = null;
     onBreakComplete = null;
+    
+    // iOS için Live Activity'yi durdur
+    if (Platform.isIOS) {
+      LiveActivityService.stopActivity();
+    }
+    
     _hideNotification();
     clearSavedTimerState();
   }
@@ -187,13 +282,18 @@ class TimerController extends GetxController {
   }
   
 
-    Future<void> _playCompletionSound() async {
-  try {
-    await player.play(AssetSource('sounds/complete_sound.mp3'));
-  } catch (e) {
-    debugPrint('Sound play error: $e');
+  Future<void> _playCompletionSound() async {
+    try {
+      // Önce mevcut sesi durdur
+      await player.stop();
+      
+      // Yeni sesi çal
+      await player.play(AssetSource('sounds/complete_sound.mp3'));
+      debugPrint('✅ Sound played successfully');
+    } catch (e) {
+      debugPrint('❌ Sound play error: $e');
+    }
   }
-}
   
 
   String formatTime(int seconds) {

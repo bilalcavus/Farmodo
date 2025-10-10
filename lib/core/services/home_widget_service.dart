@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:home_widget/home_widget.dart';
 
 class HomeWidgetService {
-  static const String _widgetName = 'PomodoroTimerWidget';
+  static const String _widgetName = 'HomeScreenWidget';
+  static const String _appGroupId = 'group.com.bilalcavus.farmodo';
 
   /// Widget verilerini günceller
   static Future<void> updateWidget({
@@ -13,6 +14,9 @@ class HomeWidgetService {
     required String taskTitle,
   }) async {
     try {
+      // App Group ID'yi set et (iOS için gerekli)
+      await HomeWidget.setAppGroupId(_appGroupId);
+      
       await HomeWidget.saveWidgetData<bool>('timer_running', timerRunning);
       await HomeWidget.saveWidgetData<int>('seconds_remaining', secondsRemaining);
       await HomeWidget.saveWidgetData<bool>('is_on_break', isOnBreak);
@@ -23,10 +27,10 @@ class HomeWidgetService {
       await HomeWidget.updateWidget(
         name: _widgetName,
         androidName: 'PomodoroTimerWidgetProvider',
-        iOSName: 'PomodoroTimerWidget',
+        iOSName: _widgetName,
       );
     } catch (e) {
-      print('Widget güncelleme hatası: $e');
+      debugPrint('Widget güncelleme hatası: $e');
     }
   }
 
@@ -50,6 +54,8 @@ class HomeWidgetService {
   /// Widget'ı temizler
   static Future<void> clearWidget() async {
     try {
+      await HomeWidget.setAppGroupId(_appGroupId);
+      
       await HomeWidget.saveWidgetData<bool>('timer_running', false);
       await HomeWidget.saveWidgetData<int>('seconds_remaining', 0);
       await HomeWidget.saveWidgetData<bool>('is_on_break', false);
@@ -59,7 +65,7 @@ class HomeWidgetService {
       await HomeWidget.updateWidget(
         name: _widgetName,
         androidName: 'PomodoroTimerWidgetProvider',
-        iOSName: 'PomodoroTimerWidget',
+        iOSName: _widgetName,
       );
     } catch (e) {
       debugPrint('Widget temizleme hatası: $e');
