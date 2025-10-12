@@ -1,4 +1,4 @@
-
+import 'package:easy_localization/easy_localization.dart';
 import 'package:farmodo/core/components/card/show_alert_dialog.dart';
 import 'package:farmodo/core/di/injection.dart';
 import 'package:farmodo/core/theme/app_colors.dart';
@@ -13,7 +13,7 @@ import 'package:farmodo/feature/tasks/viewmodel/tasks_controller.dart';
 import 'package:farmodo/feature/tasks/viewmodel/timer_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' hide Trans;
 import 'package:hugeicons/hugeicons.dart';
 import 'package:iconsax/iconsax.dart';
 
@@ -45,10 +45,10 @@ class _TimeStartButtonState extends State<TimeStartButton> {
           ActionButton(
             onPressed: () => showAlertDialog(
               context: context,
-              title: "Reset Timer",
-              content: "Are you sure you want to reset the timer?",
+              title: 'home.reset_timer_title'.tr(),
+              content: 'home.reset_timer_content'.tr(),
               onPressed: () => widget.timerController.resetTimer(),
-              buttonText: "Reset"
+              buttonText: 'home.reset'.tr()
             ),
             icon: Icon(HugeIcons.strokeRoundedRefresh, size: context.dynamicHeight(0.02))
           ),
@@ -56,10 +56,10 @@ class _TimeStartButtonState extends State<TimeStartButton> {
           ActionButton(
             onPressed: () => showAlertDialog(
               context: context,
-              title: "End Session",
-              content: "Are you sure you want to end the current session?",
+              title: 'home.end_session_title'.tr(),
+              content: 'home.end_session_content'.tr(),
               onPressed: () => widget.tasksController.endCurrentSession(),
-              buttonText: "OK"
+              buttonText: 'common.ok'.tr()
             ),
             icon: Icon(Iconsax.stop, color: Colors.red, size: context.dynamicHeight(0.023))
           ),
@@ -116,8 +116,8 @@ void _showLoginBottomSheet(BuildContext context) {
       isScrollControlled: true,
       backgroundColor: isDark ? AppColors.darkSurface : AppColors.lightSurface,
       builder: (context) => LoginBottomSheet(
-        title: 'Login to create a task',
-        subTitle: 'You need to log in to save your tasks and track your progress.',
+        title: 'tasks.login_to_create_task'.tr(),
+        subTitle: 'tasks.login_to_save_tasks'.tr(),
       ),
     );
   }

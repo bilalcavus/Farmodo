@@ -181,7 +181,7 @@ class TimerController extends GetxController {
         // Ses ve titreşimle bildirim göster
         NotificationService.showCompletionNotification(
           title: '🎉 Focus Completed!',
-          body: 'Great job! Now break time.',
+          body: 'Great job! Break time now.',
         );
         startBreakTimer();
       }

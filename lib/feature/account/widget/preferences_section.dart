@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:farmodo/core/components/card/show_alert_dialog.dart';
 import 'package:farmodo/core/di/injection.dart';
 import 'package:farmodo/core/theme/theme_controller.dart';
@@ -7,13 +8,12 @@ import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
 import 'package:farmodo/data/services/auth_service.dart';
 import 'package:farmodo/feature/account/widget/settings_item_widget.dart';
 import 'package:farmodo/feature/auth/login/viewmodel/login_controller.dart';
-import 'package:farmodo/feature/gamification/view/debug_gamification_view.dart';
 import 'package:farmodo/feature/home/widgets/widget_guide_view.dart';
+import 'package:farmodo/feature/locale/locale_select_view.dart';
 import 'package:farmodo/feature/navigation/app_navigation.dart';
 import 'package:farmodo/feature/tasks/viewmodel/tasks_controller.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' hide Trans;
 import 'package:hugeicons/hugeicons.dart';
 
 class PreferencesSection extends StatefulWidget {
@@ -38,7 +38,7 @@ class _PreferencesSectionState extends State<PreferencesSection> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Preferences & Logout',
+          'account.preferences_and_logout'.tr(),
           style: TextStyle(
             fontSize: context.dynamicHeight(0.015),
             fontWeight: FontWeight.w300,
@@ -50,7 +50,7 @@ class _PreferencesSectionState extends State<PreferencesSection> {
             SettingsItemWidget(
               context: context,
               icon: HugeIcons.strokeRoundedMoon02,
-              title: "Dark Mode",
+              title: "account.dark_mode".tr(),
               trailing: Obx(() => Switch.adaptive(
                 inactiveTrackColor: Colors.grey.shade800,
                 value: themeController.isDarkMode,
@@ -61,24 +61,33 @@ class _PreferencesSectionState extends State<PreferencesSection> {
             SettingsItemWidget(
               context: context,
               icon: Icons.widgets_outlined,
-              title: "Home Screen Widget",
+              title: "account.home_screen_widget".tr(),
               onTap: () => RouteHelper.push(context, const WidgetGuideView()),
             ),
-            kDebugMode ? 
             SettingsItemWidget(
-              icon: Icons.bug_report,
-              title: 'Debug Gamification',
-              onTap: () => Get.to(() => const DebugGamificationView()),
               context: context,
-            ) : const SizedBox.shrink(),
+              icon: HugeIcons.strokeRoundedTranslate,
+              title: "account.language".tr(),
+              trailing: SizedBox(
+                width: context.dynamicWidth(0.4),
+                child: const LanguageSelectorWidget(),
+              ),
+            ),
+            // kDebugMode ? 
+            // SettingsItemWidget(
+            //   icon: Icons.bug_report,
+            //   title: 'Debug Gamification',
+            //   onTap: () => Get.to(() => const DebugGamificationView()),
+            //   context: context,
+            // ) : const SizedBox.shrink(),
             widget.authService.isLoggedIn ? SettingsItemWidget(
               icon: HugeIcons.strokeRoundedLogout04,
-              title: 'Logout',
+              title: 'auth.logout'.tr(),
               onTap: () async {
                 showAlertDialog(
                   context: context,
-                  title: "Exit App",
-                  content: "Are you sure to want you logout?",
+                  title: "account.exit_app".tr(),
+                  content: "account.confirm_logout".tr(),
                   onPressed: () async {
                     final tasksController = getIt<TasksController>();
                     await tasksController.handleUserChange();
@@ -87,7 +96,7 @@ class _PreferencesSectionState extends State<PreferencesSection> {
                         RouteHelper.pushAndCloseOther(context, AppNavigation(initialIndex: 0));
                       }
                   },
-                  buttonText: "Exit");
+                  buttonText: "account.exit".tr());
               },
               context: context,
             ) : SizedBox.shrink(),

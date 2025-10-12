@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:farmodo/core/theme/app_colors.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/core/components/button/button_text.dart';
@@ -30,7 +31,7 @@ class RegisterButton extends StatelessWidget {
         ),
 
         child: Obx((){
-          return registerController.isLoading.value ? LoadingIcon(iconColor: Colors.black,) : ButtonText(text: 'Sign up',);
+          return registerController.isLoading.value ? LoadingIcon(iconColor: Colors.black,) : ButtonText(text: 'auth.sign_up'.tr(),);
         })
       ).onTap(() async => await registerController.handleRegister(context)),
     );

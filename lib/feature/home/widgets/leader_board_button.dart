@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:farmodo/core/theme/app_container_styles.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
@@ -23,7 +24,7 @@ class LeaderBoardButton extends StatelessWidget {
           ),
           context.dynamicWidth(0.01).width,
           Text(
-            'Leaderboard',
+            'leaderboard.leaderboard'.tr(),
             style: Theme.of(context).textTheme.titleSmall?.copyWith(
               fontWeight: FontWeight.w600,
             ),

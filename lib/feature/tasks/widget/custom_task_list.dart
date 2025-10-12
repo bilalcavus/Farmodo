@@ -1,4 +1,5 @@
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:farmodo/core/theme/app_colors.dart';
 import 'package:farmodo/core/theme/app_container_styles.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
@@ -88,7 +89,7 @@ class CustomTaskList extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('Showing the last 10 custom tasks', style: Theme.of(context).textTheme.bodySmall?.copyWith(
+            Text('tasks.showing_last_10'.tr(), style: Theme.of(context).textTheme.bodySmall?.copyWith(
               color: Colors.grey.shade500
             )),
           ],
@@ -164,7 +165,7 @@ class CustomTaskList extends StatelessWidget {
   Widget _buildTaskMetaInfo(BuildContext context, UserTaskModel task) {
     return Row(
       children: [
-        _buildMetaItem(context, Icons.timer_sharp, '${task.duration} min', AppColors.textSecondary),
+        _buildMetaItem(context, Icons.timer_sharp, '${task.duration} ${'home.min'.tr()}', AppColors.textSecondary),
         context.dynamicWidth(0.01).width, 
         _buildMetaItem(context, Icons.star_rounded, '${task.xpReward} XP', Colors.amber),
       ],

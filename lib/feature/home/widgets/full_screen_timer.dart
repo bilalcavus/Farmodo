@@ -22,9 +22,9 @@ class FullScreenTimer extends StatelessWidget {
       body: Obx((){
         return Center(
           child: FlipTimer(
-            fontSize: context.dynamicHeight(0.37),
-            digitHeight: context.dynamicHeight(0.6),
-            digitWidth: context.dynamicWidth(0.18),
+            fontSize: context.dynamicHeight(0.4),
+            digitHeight: context.dynamicHeight(0.65),
+            digitWidth: context.dynamicWidth(0.2),
             timeString: timerController.isOnBreak.value
                 ? timerController.formatTime(timerController.breakSecondsRemaining.value)
                 : timerController.formatTime(timerController.secondsRemaining.value),

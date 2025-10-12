@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:farmodo/core/theme/app_colors.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/core/utility/extension/ontap_extension.dart';
@@ -7,7 +8,7 @@ import 'package:farmodo/core/components/button/button_text.dart';
 import 'package:farmodo/core/components/loading_icon.dart';
 import 'package:farmodo/feature/auth/login/viewmodel/login_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' hide Trans;
 
 class LoginButton extends StatelessWidget {
   const LoginButton({
@@ -32,7 +33,7 @@ class LoginButton extends StatelessWidget {
         ),
 
         child: Obx((){
-          return loginController.isLoading.value ? LoadingIcon(iconColor: Colors.white,) : ButtonText(text: 'Sign in');
+          return loginController.isLoading.value ? LoadingIcon(iconColor: Colors.white,) : ButtonText(text: 'auth.sign_in'.tr());
         })
       ).onTap(() async {
         await loginController.handleLogin(context);

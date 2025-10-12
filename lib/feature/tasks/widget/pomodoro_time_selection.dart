@@ -4,6 +4,7 @@ import 'package:farmodo/feature/tasks/viewmodel/tasks_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class PomodoroTimeSelection extends StatelessWidget {
   const PomodoroTimeSelection({
@@ -22,7 +23,7 @@ class PomodoroTimeSelection extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text('Select farmodo minutes', style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600)),
+          Text('home.select_pomodoro_minutes'.tr(), style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600)),
           Obx(() {
             return SizedBox(
               height: context.dynamicHeight(0.2),

@@ -13,6 +13,8 @@ class StorageKeys {
   static const String taskSelectedTaskId = 'task_selected_task_id';
   static const String taskDefaultBreakType = 'task_default_break_type';
 
+  static const String appLocale = 'app_locale';
+
   static String userKey(String? userId, String baseKey) {
     final prefix = userId ?? 'guest';
     return '${prefix}_$baseKey';

@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:farmodo/core/di/injection.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
@@ -91,7 +92,7 @@ class _AccountViewState extends State<AccountView> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Profile',
+            'account.profile'.tr(),
             style: Theme.of(context).textTheme.headlineMedium?.copyWith(
               fontWeight: FontWeight.w700,
               letterSpacing: -0.5,
@@ -99,8 +100,8 @@ class _AccountViewState extends State<AccountView> {
           ),
           Text(
             _authService.isLoggedIn 
-              ? 'Your account and settings'
-              : 'Personalize your experience',
+              ? 'account.your_account'.tr()
+              : 'account.personalize_experience'.tr(),
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
               fontWeight: FontWeight.w400,
             ),
@@ -120,8 +121,8 @@ class _AccountViewState extends State<AccountView> {
             if (!_authService.isLoggedIn) ...[
               LoginPrompt(
                 context: context, 
-                title: 'Log in to unlock features', 
-                subtitle: 'Sync your data, track progress and earn rewards'
+                title: 'account.login_to_unlock'.tr(), 
+                subtitle: 'account.sync_data'.tr()
               ),
               context.dynamicHeight(0.03).height,
             ],

@@ -1,6 +1,6 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:farmodo/core/components/loading_icon.dart';
 import 'package:farmodo/core/components/text_field/custom_text_field.dart';
-import 'package:farmodo/core/utility/constants/text_strings.dart';
 import 'package:farmodo/core/di/injection.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/core/utility/extension/ontap_extension.dart';
@@ -12,7 +12,7 @@ import 'package:farmodo/feature/auth/login/widget/social_network_login.dart';
 import 'package:farmodo/feature/auth/register/viewmodel/register_controller.dart';
 import 'package:farmodo/feature/auth/register/widget/register_button.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' hide Trans;
 import 'package:hugeicons/hugeicons.dart';
 
 class RegisterView extends StatefulWidget {
@@ -38,31 +38,31 @@ class _RegisterViewState extends State<RegisterView> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Join Farmodo Now ⚡️', style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                Text('auth.join_farmodo'.tr(), style: Theme.of(context).textTheme.titleLarge?.copyWith(
                   fontWeight: FontWeight.w500,
                 )),
                 SizedBox(height: context.dynamicHeight(.015)),
-                Text('Sign up to start your goals!', style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                Text('auth.sign_up_subtitle'.tr(), style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   fontWeight: FontWeight.w400,
                   color: Colors.grey.shade600
                 )),
                 SizedBox(height: context.dynamicHeight(.05)),
                 CustomTextField(
                   controller: registerController.displayNameController,
-                  hintText: 'Display Name',
+                  hintText: 'auth.display_name'.tr(),
                   prefixIcon: Icon(HugeIcons.strokeRoundedUser)
                   ),
                 SizedBox(height: context.dynamicHeight(.015)),
                 CustomTextField(
                   controller: registerController.emailcontroller,
-                  hintText: 'Email',
+                  hintText: 'auth.email'.tr(),
                   prefixIcon: Icon(HugeIcons.strokeRoundedMail01),
                   ),
                 SizedBox(height: context.dynamicHeight(.015)),
                 Obx((){
                   return  CustomTextField(
                     controller: registerController.passwordController,
-                    hintText: 'Password',
+                    hintText: 'auth.password'.tr(),
                     suffixIcon: togglePasswordView(
                       () => registerController.togglePasswordVisibility(),
                       registerController.obsecurePassword),
@@ -75,7 +75,7 @@ class _RegisterViewState extends State<RegisterView> {
                 Obx((){
                   return CustomTextField(
                     controller: registerController.passwordConfirmController,
-                    hintText: 'Confirm Password',
+                    hintText: 'auth.confirm_password'.tr(),
                     suffixIcon: togglePasswordView(
                       ()=> registerController.toggleConfirmPasswordVisibility(),
                       registerController.obsecureConfirmPassword),
@@ -86,7 +86,7 @@ class _RegisterViewState extends State<RegisterView> {
                 SizedBox(height: context.dynamicHeight(.02)),
                 RegisterButton(registerController: registerController),
                 SizedBox(height: context.dynamicHeight(.03)),
-                SignOptionsSection(leftText: 'Already have an account?', rightText: 'Sign in', onTap: ()=> RouteHelper.pop(context)),
+                SignOptionsSection(leftText: 'auth.already_have_account'.tr(), rightText: 'auth.sign_in'.tr(), onTap: ()=> RouteHelper.pop(context)),
                 SizedBox(height: context.dynamicHeight(.02)),
                 Row(
                   children: [
@@ -105,14 +105,14 @@ class _RegisterViewState extends State<RegisterView> {
                       SocialNetworkLogin(
                         assetPath: "assets/logo/google-icon.png",
                         onTap: () async => await loginController.handleGoogleSignIn(context),
-                        text: "Sign in with Google",
+                        text: "auth.sign_in_with_google".tr(),
                         ),
                       context.dynamicHeight(0.01).height,
                       loginController.appleLoading.value ? LoadingIcon(iconColor: Colors.black,) : 
                       SocialNetworkLogin(
                         assetPath: "assets/logo/apple_icon.png",
                         onTap: () async => await loginController.handleAppleSignIn(context),
-                        text: "Sign in with Apple",
+                        text: "auth.sign_in_with_apple".tr(),
                         ),
                       ],
                     );
@@ -141,7 +141,7 @@ class _RegisterViewState extends State<RegisterView> {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: context.dynamicWidth(0.04)),
       child: Text(
-        'or continue with',
+        'common.or_continue_with'.tr(),
         style: TextStyle(
           fontSize: context.dynamicWidth(0.035),
         ),
@@ -172,10 +172,10 @@ class _RegisterViewState extends State<RegisterView> {
             height: 1.3,
           ),
           children: [
-            TextSpan(text: 'Signing up or logging in you agree to the '),
+            TextSpan(text: 'auth.agree_to_terms'.tr()),
             WidgetSpan(
               child: Text(
-                'privacy policy',
+                'auth.privacy_policy'.tr(),
                 style: TextStyle(
                   fontSize: context.dynamicWidth(0.032),
                   color: Colors.pink,
@@ -184,10 +184,10 @@ class _RegisterViewState extends State<RegisterView> {
                 ),
               ).onTap(() => _showPrivacyPolicy(context)),
             ),
-            TextSpan(text: ' and '),
+            TextSpan(text: 'auth.and'.tr()),
             WidgetSpan(
               child: Text(
-                'terms of service',
+                'auth.terms_of_service'.tr(),
                 style: TextStyle(
                   fontSize: context.dynamicWidth(0.032),
                   color: Colors.pink,
@@ -207,17 +207,17 @@ class _RegisterViewState extends State<RegisterView> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Privacy Policy'),
+          title: Text('auth.privacy_policy_title'.tr()),
           content: SingleChildScrollView(
             child: Text(
-              TextStrings.privacyPolicy,
+              'privacy.privacy_policy_text'.tr(),
               style: TextStyle(fontSize: 14),
             ),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: Text('Done', style: TextStyle(color: Colors.pink)),
+              child: Text('common.done'.tr(), style: TextStyle(color: Colors.pink)),
             ),
           ],
         );
@@ -230,17 +230,17 @@ class _RegisterViewState extends State<RegisterView> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Terms of Service'),
+          title: Text('auth.terms_of_service_title'.tr()),
           content: SingleChildScrollView(
             child: Text(
-              TextStrings.termsAndConditions,
+              'terms.terms_and_conditions_text'.tr(),
               style: TextStyle(fontSize: 14),
             ),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: Text('Done', style: TextStyle(color: Colors.pink)),
+              child: Text('common.done'.tr(), style: TextStyle(color: Colors.pink)),
             ),
           ],
         );

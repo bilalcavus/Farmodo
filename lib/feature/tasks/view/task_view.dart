@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:farmodo/core/di/injection.dart';
 import 'package:farmodo/core/theme/app_colors.dart';
 import 'package:farmodo/core/theme/app_container_styles.dart';
@@ -62,7 +63,7 @@ class _TaskViewState extends State<TaskView> with TaskViewMixin {
         elevation: 0,
         icon: const Icon(Icons.add, color: Colors.white),
         label: Text(
-          'Custom Task',
+          'tasks.custom_task'.tr(),
           style: Theme.of(context).textTheme.labelLarge?.copyWith(
             color: Colors.white,
             fontWeight: FontWeight.w600,
@@ -77,10 +78,10 @@ class _TaskViewState extends State<TaskView> with TaskViewMixin {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: isDark ? AppColors.darkSurface : AppColors.lightSurface,
+        backgroundColor: isDark ? AppColors.darkSurface : AppColors.lightSurface,
       builder: (context) => LoginBottomSheet(
-        title: 'Login to create a task',
-        subTitle: 'You need to log in to save your tasks and track your progress.',
+        title: 'tasks.login_to_create_task'.tr(),
+        subTitle: 'tasks.login_to_save_tasks'.tr(),
       ),
     );
   }
@@ -104,14 +105,14 @@ class _TaskViewState extends State<TaskView> with TaskViewMixin {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'My Tasks',
+          'tasks.my_tasks'.tr(),
           style: Theme.of(context).textTheme.headlineMedium?.copyWith(
             fontWeight: FontWeight.w700,
             letterSpacing: -0.5,
           ),
         ),
         Text(
-          'Manage your custom tasks',
+          'tasks.manage_tasks'.tr(),
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
             fontWeight: FontWeight.w400,
           ),
@@ -145,9 +146,9 @@ class _TaskViewState extends State<TaskView> with TaskViewMixin {
             unselectedLabelStyle: Theme.of(context).textTheme.labelMedium?.copyWith(
               fontWeight: FontWeight.w500,
             ),
-            tabs: const [
-              Tab(text: 'Active'),
-              Tab(text: 'Completed'),
+            tabs: [
+              Tab(text: 'tasks.active'.tr()),
+              Tab(text: 'tasks.completed'.tr()),
             ],
           ),
         ),

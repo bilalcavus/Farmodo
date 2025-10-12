@@ -24,26 +24,26 @@ class AnimalStatusBar extends StatelessWidget {
         
         return Column(
           children: [
-            _buildStatusBar('Açlık', (updatedAnimal.status.hunger * 100).round(), Icons.restaurant, Colors.orange),
+            _buildStatusBar(context, 'Açlık', (updatedAnimal.status.hunger * 100).round(), Icons.restaurant, Colors.orange),
             context.dynamicHeight(0.015).height,
-            _buildStatusBar('Sevgi', (updatedAnimal.status.love * 100).round(), Icons.favorite, Colors.red),
+            _buildStatusBar(context, 'Sevgi', (updatedAnimal.status.love * 100).round(), Icons.favorite, Colors.red),
             context.dynamicHeight(0.015).height,
-            _buildStatusBar('Enerji', (updatedAnimal.status.energy * 100).round(), Icons.battery_full, Colors.blue),
+            _buildStatusBar(context, 'Enerji', (updatedAnimal.status.energy * 100).round(), Icons.battery_full, Colors.blue),
             context.dynamicHeight(0.015).height,
-            _buildStatusBar('Sağlık', (updatedAnimal.status.health * 100).round(), Icons.health_and_safety, Colors.green),
+            _buildStatusBar(context, 'Sağlık', (updatedAnimal.status.health * 100).round(), Icons.health_and_safety, Colors.green),
           ],
         );
       });
   }
 
-  Widget _buildStatusBar(String label, int value, IconData icon, Color color) {
+  Widget _buildStatusBar(BuildContext context, String label, int value, IconData icon, Color color) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           children: [
-            Icon(icon, size: 16, color: color),
-            const SizedBox(width: 8),
+            Icon(icon, color: color),
+            context.dynamicWidth(0.015).width,
             Text(
               label,
               style: const TextStyle(
@@ -55,7 +55,6 @@ class AnimalStatusBar extends StatelessWidget {
               '$value%',
               style: const TextStyle(
                 fontWeight: FontWeight.bold,
-                color: AppColors.textPrimary,
               ),
             ),
           ],

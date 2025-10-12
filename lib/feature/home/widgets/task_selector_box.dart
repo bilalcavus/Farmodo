@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:farmodo/core/components/drop_menu.dart';
 import 'package:farmodo/core/di/injection.dart';
 import 'package:farmodo/core/theme/app_colors.dart';
@@ -8,7 +9,7 @@ import 'package:farmodo/data/services/auth_service.dart';
 import 'package:farmodo/feature/tasks/view/add_task_view.dart';
 import 'package:farmodo/feature/tasks/viewmodel/tasks_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' hide Trans;
 
 class CurrentTaskBox extends StatefulWidget {
   final TasksController tasksController;
@@ -62,8 +63,8 @@ void _showLoginBottomSheet() {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (context) => LoginBottomSheet(
-        title: 'Login to create a task',
-        subTitle: 'You need to log in to save your tasks and track your progress.',
+        title: 'tasks.login_to_create_task'.tr(),
+        subTitle: 'tasks.login_to_save_tasks'.tr(),
       ),
     );
   }
@@ -104,17 +105,17 @@ void _showLoginBottomSheet() {
             ),
             child: Column(
               children: [
-                Center(child: Text('CURRENT TASK')),
+                Center(child: Text('home.current_task'.tr())),
                 Obx(() {
                   final tasks = widget.tasksController.activeUserTasks;
                   if (tasks.isEmpty) {
                     return Column(
                       children: [
-                        Text('NO TASKS YET', style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                        Text('home.no_tasks_yet'.tr(), style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                           fontWeight: FontWeight.bold
                         )),
                         context.dynamicHeight(0.01).height,
-                        Text('Please create a task first.', style: Theme.of(context).textTheme.bodyMedium),
+                        Text('home.create_task_first'.tr(), style: Theme.of(context).textTheme.bodyMedium),
                         TextButton(
                           onPressed: () {
                             if (!authService.isLoggedIn) {
@@ -123,14 +124,14 @@ void _showLoginBottomSheet() {
                               RouteHelper.push(context, const AddTaskView());
                             }
                           },
-                          child: Text('Create Task')
+                          child: Text('home.create_task'.tr())
                         ),
                       ],
                     );
                   } else {
                     return Column(
                       children: [
-                        Text('Select or create a task', style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600)),
+                        Text('home.select_or_create_task'.tr(), style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600)),
                         DropMenu(
                           controller: widget.controller,
                           hint: 'Select Task',

@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:farmodo/core/di/injection.dart';
 import 'package:farmodo/core/theme/app_colors.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
@@ -8,7 +9,7 @@ import 'package:farmodo/feature/leader_board/view/tabs/pomodoro_leader_board.dar
 import 'package:farmodo/feature/leader_board/view/tabs/xp_leader_board.dart';
 import 'package:farmodo/feature/leader_board/viewmodel/leader_board_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' hide Trans;
 
 class LeaderBoardView extends StatefulWidget {
   const LeaderBoardView({super.key});
@@ -49,7 +50,7 @@ class _LeaderBoardViewState extends State<LeaderBoardView> with TickerProviderSt
         ),
         elevation: 0,
         title: Text(
-          "Leaderboard",
+          "leaderboard.leaderboard".tr(),
           style: theme.textTheme.titleMedium?.copyWith(
             fontWeight: FontWeight.w600,
             color: Colors.white

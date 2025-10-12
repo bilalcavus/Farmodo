@@ -1,3 +1,5 @@
+import 'package:easy_localization/easy_localization.dart';
+import 'package:farmodo/core/theme/app_container_styles.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/feature/tasks/viewmodel/timer_controller.dart';
 import 'package:flutter/material.dart';
@@ -98,7 +100,7 @@ class _FlipDigitState extends State<FlipDigit>
       width: widget.width,
       height: widget.height,
       decoration: BoxDecoration(
-        color: const Color(0xFF292929),
+        color: const Color.fromARGB(255, 36, 36, 37),
         borderRadius: BorderRadius.circular(context.dynamicHeight(0.05)),
         boxShadow: [
           BoxShadow(
@@ -142,7 +144,7 @@ class FlipTimer extends StatelessWidget {
   Widget build(BuildContext context) {
     final parts = timeString.split(':');
     if (parts.length != 2) {
-      return const Text('Invalid time format');
+      return Text('home.invalid_time_format'.tr());
     }
 
     final minutes = parts[0].padLeft(2, '0');
@@ -221,10 +223,7 @@ class FlipTimer extends StatelessWidget {
     return Container(
       height: context.dynamicHeight(0.1),
       width: context.dynamicWidth(0.05),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(context.dynamicHeight(0.03)),
-        color: Color(0xff292929)
-      ),
+      decoration: AppContainerStyles.primaryContainer(context),
       child: IconButton(
         onPressed: onTap,
         icon: icon,

@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:farmodo/core/di/injection.dart';
 import 'package:farmodo/core/theme/app_colors.dart';
 import 'package:farmodo/data/services/auth_service.dart';
@@ -7,7 +8,7 @@ import 'package:farmodo/feature/gamification/widget/achievements/achievements_ta
 import 'package:farmodo/feature/gamification/widget/main/stat_cards.dart';
 import 'package:farmodo/feature/gamification/widget/quest/quests_tab.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' hide Trans;
 import 'package:hugeicons/hugeicons.dart';
 
 class GamificationView extends StatefulWidget {
@@ -42,7 +43,7 @@ class _GamificationViewState extends State<GamificationView>
     return Scaffold(
       appBar: AppBar(
         title:  Text(
-          'Achievements & Quests',
+          'gamification.achievements_and_quests'.tr(),
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
             color: Colors.white
           )
@@ -65,14 +66,14 @@ class _GamificationViewState extends State<GamificationView>
           labelColor: Colors.white,
           unselectedLabelColor: Colors.white70,
           dividerColor: Colors.transparent,
-          tabs: const [
+          tabs: [
             Tab(
               icon: Icon(HugeIcons.strokeRoundedChampion),
-              text: 'Achievements',
+              text: 'gamification.achievements'.tr(),
             ),
             Tab(
               icon: Icon(HugeIcons.strokeRoundedStickyNote01),
-              text: 'Quests',
+              text: 'gamification.quests'.tr(),
             ),
           ],
         ),

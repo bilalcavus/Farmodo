@@ -1,10 +1,11 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:farmodo/core/theme/app_colors.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
 import 'package:farmodo/feature/home/widgets/task_selector_box.dart';
 import 'package:farmodo/feature/tasks/viewmodel/tasks_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' hide Trans;
 import 'package:kartal/kartal.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 
@@ -95,7 +96,7 @@ class _CurrentTaskProgressState extends State<CurrentTaskProgress> {
                     borderRadius: BorderRadius.circular(context.dynamicHeight(0.02)),
                   ),
                   child: Text(
-                    'Current Task',
+                    'home.current_task_label'.tr(),
                     style: Theme.of(context).textTheme.labelMedium?.copyWith(
                           color: AppColors.primary,
                           fontWeight: FontWeight.w600,
@@ -141,7 +142,7 @@ class _CurrentTaskProgressState extends State<CurrentTaskProgress> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Session Progress',
+                      'home.session_progress'.tr(),
                       style: Theme.of(context).textTheme.labelLarge?.copyWith(
                             color: AppColors.textSecondary,
                             fontWeight: FontWeight.w500,
@@ -168,7 +169,7 @@ class _CurrentTaskProgressState extends State<CurrentTaskProgress> {
                 ),
                 SizedBox(height: context.dynamicHeight(0.008)),
                 Text(
-                  '$completedSessions/${task.totalSessions} sessions completed',
+                  '$completedSessions/${task.totalSessions} ${'home.sessions_completed'.tr()}',
                   style: Theme.of(context).textTheme.labelSmall?.copyWith(
                         color: AppColors.textSecondary,
                         fontWeight: FontWeight.w500,

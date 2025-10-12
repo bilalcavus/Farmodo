@@ -1,4 +1,4 @@
-
+import 'package:easy_localization/easy_localization.dart';
 import 'package:farmodo/core/di/injection.dart';
 import 'package:farmodo/core/theme/app_colors.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
@@ -119,7 +119,7 @@ class _PomodoroTimerState extends State<PomodoroTimer> with SingleTickerProvider
               )),
               SizedBox(height: context.dynamicHeight(0.01)),
               Text(
-                '$currentSession / $totalSessions sessions',
+                '$currentSession / $totalSessions ${'tasks.session'.tr()}',
                 style: Theme.of(context).textTheme.labelLarge?.copyWith(
                   color: AppColors.textSecondary,
                   fontWeight: FontWeight.w600,
@@ -194,7 +194,7 @@ class TimerContainer extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             widget.timerController.isOnBreak.value == true ?
-             Text('Break Time', style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+             Text('home.break_time'.tr(), style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                fontWeight: FontWeight.w700,
              )) :
              const SizedBox.shrink(),
@@ -229,7 +229,7 @@ class BreakTypeToggle extends StatelessWidget {
           children: [
             _buildToggleButton(
               context: context,
-              label: 'Short Break (5m)',
+              label: 'home.short_break'.tr(),
               isSelected: currentBreakType == BreakDurationType.short,
               isEnabled: !isRunning,
               isDarkMode: isDark,
@@ -241,7 +241,7 @@ class BreakTypeToggle extends StatelessWidget {
             ),
             _buildToggleButton(
               context: context,
-              label: 'Long Break (15m)',
+              label: 'home.long_break'.tr(),
               isSelected: currentBreakType == BreakDurationType.long,
               isEnabled: !isRunning,
               isDarkMode: isDark,

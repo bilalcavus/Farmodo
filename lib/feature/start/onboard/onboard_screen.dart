@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:farmodo/core/di/injection.dart';
 import 'package:farmodo/core/services/preferences_service.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
@@ -40,23 +41,29 @@ class _OnboardScreenState extends State<OnboardScreen> {
   final PreferencesService _prefsService = getIt<PreferencesService>();
   bool _isInitializing = false;
 
-  final List<OnboardData> _onboardData = [
-    OnboardData(
-      title: "Stay Focus",
-      description: "Stay focused with Pomodoro technique and complete your daily tasks to earn rewards!",
-      imagePath: "assets/images/onboard/onboard_time_bg.png",
-    ),
-    OnboardData(
-      title: "Grow Your Farm",
-      description: "Earn XP and coins by completing tasks, and watch your virtual farm flourish as you progress!",
-      imagePath: "assets/images/onboard/onboard_farm_bg.jpeg",
-    ),
-    OnboardData(
-      title: "Level Up",
-      description: "Unlock new features, animals, and decorations as you level up your farming skills!",
-      imagePath: "assets/images/onboard/level_up.png",
-    ),
-  ];
+  late final List<OnboardData> _onboardData;
+
+  @override
+  void initState() {
+    super.initState();
+    _onboardData = [
+      OnboardData(
+        title: "onboard.stay_focus_title".tr(),
+        description: "onboard.stay_focus_desc".tr(),
+        imagePath: "assets/images/onboard/onboard_time_bg.png",
+      ),
+      OnboardData(
+        title: "onboard.grow_farm_title".tr(),
+        description: "onboard.grow_farm_desc".tr(),
+        imagePath: "assets/images/onboard/onboard_farm_bg.jpeg",
+      ),
+      OnboardData(
+        title: "onboard.level_up_title".tr(),
+        description: "onboard.level_up_desc".tr(),
+        imagePath: "assets/images/onboard/level_up.png",
+      ),
+    ];
+  }
 
   Future<void> _initializeUser() async {
     final userId = _authService.firebaseUser?.uid;
@@ -132,8 +139,8 @@ class _OnboardScreenState extends State<OnboardScreen> {
           if (_currentPage < _onboardData.length - 1)
             TextButton(
               onPressed: _skipToEnd,
-              child: const Text(
-                'Skip',
+              child: Text(
+                'common.skip'.tr(),
                 style: TextStyle(color: Colors.grey),
               ),
             ),
@@ -181,8 +188,8 @@ class _OnboardScreenState extends State<OnboardScreen> {
       ),
       bottomNavigationBar: OnboardButton(
         buttonText: _currentPage == _onboardData.length - 1 
-            ? (_isInitializing ? 'Initializing...' : 'Get Started') 
-            : 'Next',
+            ? (_isInitializing ? 'onboard.initializing'.tr() : 'onboard.get_started'.tr()) 
+            : 'common.next'.tr(),
         onPressed: _isInitializing ? null : _nextPage,
       ),
     );

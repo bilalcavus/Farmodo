@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/core/utility/extension/ontap_extension.dart';
 import 'package:farmodo/core/utility/extension/route_helper.dart';
@@ -16,10 +17,10 @@ class SucceedTaskPage extends StatelessWidget {
           child: Column(
             children: [
               Image.asset('assets/images/medal.png', height: context.dynamicHeight(0.4)),
-              Text('Congratulations!', style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+              Text('home.congratulations'.tr(), style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                 fontWeight: FontWeight.bold
               )),
-              Text('Task is completed.', style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+              Text('home.task_completed'.tr(), style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                 fontWeight: FontWeight.w500
               )),
               SizedBox(height: context.dynamicHeight(0.1)),
@@ -31,7 +32,7 @@ class SucceedTaskPage extends StatelessWidget {
                   color: Colors.grey.shade200,
                   borderRadius: BorderRadius.circular(context.dynamicHeight(.02))
                 ),
-                child: Text('Back to Home', style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                child: Text('home.back_to_home'.tr(), style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                   color: Colors.black87,
                   fontWeight: FontWeight.w600
                 ),),

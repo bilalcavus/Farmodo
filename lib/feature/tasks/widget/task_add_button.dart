@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:farmodo/core/components/button/button_text.dart';
 import 'package:farmodo/core/components/loading_icon.dart';
 import 'package:farmodo/core/theme/app_colors.dart';
@@ -29,7 +30,7 @@ class TaskAddButton extends StatelessWidget {
         child: Center(child: Obx((){
           return (taskController.loadingStates[LoadingType.general] ?? false)
            ? LoadingIcon(iconColor: Colors.white)
-           : ButtonText(text: 'Add',);
+           : ButtonText(text: 'tasks.add'.tr(),);
         })),
       ),
     ).onTap(() async {

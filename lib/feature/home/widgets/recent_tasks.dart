@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:farmodo/core/theme/app_colors.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/core/utility/extension/ontap_extension.dart';
@@ -5,7 +6,7 @@ import 'package:farmodo/data/models/user_task_model.dart';
 import 'package:farmodo/feature/tasks/viewmodel/tasks_controller.dart';
 import 'package:farmodo/feature/tasks/viewmodel/timer_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' hide Trans;
 import 'package:hugeicons/hugeicons.dart';
 
 class RecentTasks extends StatelessWidget {
@@ -26,7 +27,7 @@ class RecentTasks extends StatelessWidget {
       } else if (tasksController.activeUserTasks.isEmpty) {
         return Center(
           child: Text(
-            'No tasks yet',
+            'home.no_tasks_yet_simple'.tr(),
             style: Theme.of(context).textTheme.labelLarge?.copyWith(
               color: AppColors.textSecondary,
             ),
@@ -65,10 +66,10 @@ class RecentTasks extends StatelessWidget {
                         children: [
                           _taskTitle(context, task),
                           TaskFeatures(task: task, text: '🔗 ${task.focusType} '),
-                          TaskFeatures(task: task, text: '⌛️ ${task.duration} min '),
-                          TaskFeatures(task: task, text: '⏰ ${task.breakDuration} min break time'),
-                          TaskFeatures(task: task, text: '⭐️ ${task.xpReward} XP Gain '),
-                          TaskFeatures(task: task, text: '✅ ${task.completedSessions} / ${task.totalSessions} sessions completed'),
+                          TaskFeatures(task: task, text: '⌛️ ${task.duration} ${'home.min'.tr()} '),
+                          TaskFeatures(task: task, text: '⏰ ${task.breakDuration} ${'home.min_break_time'.tr()}'),
+                          TaskFeatures(task: task, text: '⭐️ ${task.xpReward} ${'tasks.xp_gain'.tr()} '),
+                          TaskFeatures(task: task, text: '✅ ${task.completedSessions} / ${task.totalSessions} ${'home.sessions_completed'.tr()}'),
                           TimeEvent(tasksController: tasksController, timerController: timerController, index: index,),
                         ],
                       ),
@@ -102,7 +103,7 @@ class RecentTaskHeader extends StatelessWidget {
     return Padding(
         padding: EdgeInsets.symmetric(horizontal: context.dynamicWidth(0.06)),
         child: Text(
-          "Recent Tasks",
+          'home.recent_tasks'.tr(),
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
             fontWeight: FontWeight.w600,
             color: Colors.grey.shade800,

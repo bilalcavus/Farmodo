@@ -1,10 +1,11 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:farmodo/data/models/user_task_model.dart';
 
 enum BreakDurationType { short, long }
 
 class DefaultTaskData {
-  static const String title = 'Focus Session';
-  static const String description = 'Complete focus sessions to earn XP and improve your productivity!';
+  static String title = 'default_task_title'.tr();
+  static String description = 'default_task_desc'.tr();
   
   static const int shortBreakDuration = 5;
   static const int longBreakDuration = 15;

@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:farmodo/core/components/message/snack_messages.dart';
 import 'package:farmodo/core/di/injection.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
@@ -12,7 +13,7 @@ import 'package:farmodo/feature/store/widget/store_empty_state.dart';
 import 'package:farmodo/feature/home/widgets/user_xp.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' hide Trans;
 
 
 
@@ -42,7 +43,7 @@ class _StoreViewState extends State<StoreView> {
     try {
       await rewardController.buyStoreRewards(rewardId);
       if (rewardController.purchaseSucceeded.value) {
-        SnackMessages().showSuccessSnack('Hayvan satın alındı ve çiftliğinize eklendi: $name',);
+        SnackMessages().showSuccessSnack('${'store.animal_purchased'.tr()}: $name',);
         setState(() {});
       } else {
         SnackMessages().showErrorSnack(rewardController.errorMessage.value);
@@ -57,19 +58,19 @@ class _StoreViewState extends State<StoreView> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Giriş Gerekli'),
-        content: const Text('Hayvan satın almak için giriş yapmanız gerekiyor. Giriş yapmak ister misiniz?'),
+        title: Text('store.login_required'.tr()),
+        content: Text('store.login_required_desc'.tr()),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('İptal'),
+            child: Text('common.cancel'.tr()),
           ),
           TextButton(
             onPressed: () {
               Navigator.of(context).pop();
               RouteHelper.pushAndCloseOther(context, const LoginView());
             },
-            child: const Text('Giriş Yap'),
+            child: Text('store.go_to_login'.tr()),
           ),
         ],
       ),
@@ -96,7 +97,7 @@ class _StoreViewState extends State<StoreView> {
         ),
         backgroundColor: Colors.transparent,
         title: Text(
-          'Store',
+          'store.store'.tr(),
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
             fontWeight: FontWeight.w500,
           ),

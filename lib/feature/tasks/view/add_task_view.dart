@@ -7,14 +7,14 @@ import 'package:farmodo/core/utility/extension/ontap_extension.dart';
 import 'package:farmodo/core/utility/extension/route_helper.dart';
 import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
 import 'package:farmodo/data/services/auth_service.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:farmodo/feature/auth/login/view/login_view.dart';
 import 'package:farmodo/feature/tasks/viewmodel/tasks_controller.dart';
 import 'package:farmodo/feature/tasks/widget/pomodoro_time_selection.dart';
 import 'package:farmodo/feature/tasks/widget/task_add_button.dart';
 import 'package:farmodo/feature/tasks/widget/task_text_field.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:get/get_state_manager/get_state_manager.dart';
+import 'package:get/get.dart' hide Trans;
 
 class AddTaskView extends StatefulWidget {
   const AddTaskView({super.key});
@@ -54,7 +54,7 @@ class _AddTaskViewState extends State<AddTaskView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add Custom Task', style: Theme.of(context).textTheme.titleMedium),
+        title: Text('tasks.add_custom_task'.tr(), style: Theme.of(context).textTheme.titleMedium),
         centerTitle: true,
         backgroundColor: Colors.transparent,
       ),
@@ -65,18 +65,18 @@ class _AddTaskViewState extends State<AddTaskView> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Enter the task name', style: Theme.of(context).textTheme.labelLarge),
-              TaskTextField(controller: taskController.titleController, hintText: 'Task name'),
+              Text('tasks.enter_task_name'.tr(), style: Theme.of(context).textTheme.labelLarge),
+              TaskTextField(controller: taskController.titleController, hintText: 'tasks.task_name'.tr()),
               context.dynamicHeight(0.02).height,
               DropMenu(
                 controller: taskController.focusTypeController,
-                label: 'Enter Focus Type',
-                hint: 'Focus Type', items: [
-                'General',
-                'Work',
-                'Study',
-                'Play',
-                'Sport'
+                label: 'tasks.enter_focus_type'.tr(),
+                hint: 'tasks.focus_type'.tr(), items: [
+                'tasks.general'.tr(),
+                'tasks.work'.tr(),
+                'tasks.study'.tr(),
+                'tasks.play'.tr(),
+                'tasks.sport'.tr()
               ]),
               context.dynamicHeight(0.02).height,
               SessionSelection(taskController: taskController),
@@ -89,7 +89,7 @@ class _AddTaskViewState extends State<AddTaskView> {
                   Obx((){
                     final xp = taskController.xp.value;
                     return Text(
-                      'XP Gain : $xp',
+                      '${'tasks.xp_gain'.tr()} : $xp',
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         fontWeight: FontWeight.w600,
                       ),
@@ -240,8 +240,9 @@ class SessionSelection extends StatelessWidget {
                   : AppColors.lightSurface, 
                 borderRadius: BorderRadius.circular(16)
               ),
-              child: Center(child: Text(
-                '$session session',
+              child: Center(
+                child: Text(
+                '$session ${'tasks.session'.tr()}',
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.labelLarge?.copyWith(
                   color: taskController.selectedTotalSession.value == session ? Colors.white : null

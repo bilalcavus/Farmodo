@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:farmodo/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
@@ -9,7 +10,7 @@ class WidgetSettingsPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.surface,
       appBar: AppBar(
-        title: const Text('Ana Ekran Widget\'ı'),
+        title: Text('widget.home_screen_widget'.tr()),
         backgroundColor: AppColors.surface,
         foregroundColor: AppColors.textPrimary,
         elevation: 0,
@@ -38,14 +39,14 @@ class WidgetSettingsPage extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Pomodoro Timer Widget',
+                                'widget.pomodoro_timer_widget'.tr(),
                                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
                                   color: AppColors.textPrimary,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
                               Text(
-                                'Ana ekranınızda timer\'ı takip edin',
+                                'widget.track_timer_on_home'.tr(),
                                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                                   color: AppColors.textSecondary,
                                 ),
@@ -91,7 +92,7 @@ class WidgetSettingsPage extends StatelessWidget {
                                       ),
                                     ),
                                     Text(
-                                      'Work',
+                                      'widget.work'.tr(),
                                       style: TextStyle(
                                         color: AppColors.primary,
                                         fontSize: 10,
@@ -132,7 +133,7 @@ class WidgetSettingsPage extends StatelessWidget {
             ),
             const SizedBox(height: 24),
             Text(
-              'Widget\'ı Ana Ekrana Ekleme',
+              'widget.add_widget_to_home'.tr(),
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                 color: AppColors.textPrimary,
                 fontWeight: FontWeight.bold,
@@ -142,25 +143,25 @@ class WidgetSettingsPage extends StatelessWidget {
             _buildInstructionStep(
               context,
               '1',
-              'Ana ekranınızda boş bir alana uzun basın',
+              'widget.android_step_1'.tr(),
               Icons.touch_app,
             ),
             _buildInstructionStep(
               context,
               '2',
-              '"Widget\'lar" seçeneğine dokunun',
+              'widget.android_step_2'.tr(),
               Icons.widgets,
             ),
             _buildInstructionStep(
               context,
               '3',
-              '"Farmodo" uygulamasını bulun',
+              'widget.android_step_3'.tr(),
               Icons.search,
             ),
             _buildInstructionStep(
               context,
               '4',
-              '"Pomodoro Timer" widget\'ını seçin ve ana ekrana ekleyin',
+              'widget.android_step_4'.tr(),
               Icons.add,
             ),
             const SizedBox(height: 24),
@@ -177,7 +178,7 @@ class WidgetSettingsPage extends StatelessWidget {
                     const SizedBox(width: 12),
                     Expanded(
                       child: Text(
-                        'Widget, timer çalışırken gerçek zamanlı olarak güncellenir ve timer\'ı kontrol etmenizi sağlar.',
+                        'widget.widget_updates_realtime'.tr(),
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           color: AppColors.textPrimary,
                         ),
