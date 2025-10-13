@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/core/utility/extension/ontap_extension.dart';
 import 'package:farmodo/data/models/quest_model.dart';
@@ -94,7 +95,7 @@ class QuestCard extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        quest.title,
+                        quest.title.tr(),
                         style: Theme.of(context).textTheme.labelLarge?.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
@@ -140,7 +141,7 @@ class QuestCard extends StatelessWidget {
           
           // Görev açıklaması
           Text(
-            quest.description,
+            quest.description.tr(),
             style: Theme.of(context).textTheme.labelMedium,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
@@ -165,7 +166,7 @@ class QuestCard extends StatelessWidget {
                     ),
                     if (isCompleted)
                       Text(
-                        'Tamamlandı!',
+                        'gamification.completed'.tr(),
                         style: Theme.of(context).textTheme.labelSmall?.copyWith(
                           fontWeight: FontWeight.bold,
                           color: Colors.green,
@@ -269,13 +270,13 @@ class QuestCard extends StatelessWidget {
   String _getQuestTypeText(QuestType type) {
     switch (type) {
       case QuestType.daily:
-        return 'Günlük Görev';
+        return 'gamification.daily'.tr();
       case QuestType.weekly:
-        return 'Haftalık Görev';
+        return 'gamification.weekly'.tr();
       case QuestType.special:
-        return 'Özel Görev';
+        return 'gamification.special'.tr();
       case QuestType.event:
-        return 'Etkinlik Görevi';
+        return 'gamification.event'.tr();
     }
   }
 }

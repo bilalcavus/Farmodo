@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:farmodo/data/models/achievement_model.dart';
 import 'package:farmodo/data/models/quest_model.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +10,7 @@ class SnackMessages {
   void showErrorSnack(String message) {
     Get.closeAllSnackbars();
     Get.snackbar(
-      'Hata',
+      'messages.error_title'.tr(),
       message,
       snackPosition: SnackPosition.TOP,
       backgroundColor: Colors.red,
@@ -21,7 +22,7 @@ class SnackMessages {
   void showSuccessSnack(String message) {
     Get.closeAllSnackbars();
     Get.snackbar(
-      'Başarılı',
+      'messages.success_title'.tr(),
       message,
       snackPosition: SnackPosition.TOP,
       backgroundColor: Colors.green.withAlpha(30),
@@ -32,8 +33,8 @@ class SnackMessages {
 
   void showUnlockedAchievementSnack(Achievement achievement){
     Get.snackbar(
-        '🎉 Başarı Açıldı!',
-        '${achievement.title}\n+${achievement.xpReward} XP kazandınız!',
+        'gamification.achievement_unlocked_title'.tr(),
+        '${achievement.title.tr()}\n+${achievement.xpReward} ${'gamification.achievement_xp_gained'.tr()}',
         snackPosition: SnackPosition.TOP,
         backgroundColor: achievement.rarityColor,
         colorText: Colors.white,
@@ -43,8 +44,8 @@ class SnackMessages {
 
   void showQuestCompletedSnack(Quest quest, String rewardText){
     Get.snackbar(
-      '✅ Görev Tamamlandı!',
-      '${quest.title}\n$rewardText kazandınız!',
+      'gamification.quest_completed_title'.tr(),
+      '${quest.title.tr()}\n$rewardText ${'gamification.quest_rewards_gained'.tr()}',
       snackPosition: SnackPosition.TOP,
       backgroundColor: quest.typeColor,
       colorText: Colors.white,
@@ -54,8 +55,8 @@ class SnackMessages {
 
   void showUpdateSnack(){
     Get.snackbar(
-      'Updated!',
-      'Updated animal status!',
+      'messages.updated'.tr(),
+      'messages.animal_status_updated'.tr(),
       snackPosition: SnackPosition.TOP,
       backgroundColor: Colors.green,
       colorText: Colors.white,
@@ -65,7 +66,7 @@ class SnackMessages {
 
   void showAnimalAction(String message, Color color){
     Get.snackbar(
-        'Başarılı!',
+        'messages.successful'.tr(),
         message,
         snackPosition: SnackPosition.TOP,
         backgroundColor: color,

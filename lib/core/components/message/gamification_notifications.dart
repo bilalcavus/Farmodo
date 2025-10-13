@@ -1,7 +1,8 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:farmodo/data/models/achievement_model.dart';
 import 'package:farmodo/data/models/quest_model.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' hide Trans;
 
 class GamificationNotifications {
   static final GamificationNotifications _instance = GamificationNotifications._internal();
@@ -12,8 +13,8 @@ class GamificationNotifications {
   void showAchievementUnlocked(Achievement achievement) {
     Future.delayed(const Duration(seconds: 4), () {
       Get.snackbar(
-        '🎉 Başarı Açıldı!',
-        '${achievement.title}\n+${achievement.xpReward} XP kazandınız!',
+        'gamification.achievement_unlocked_title'.tr(),
+        '${achievement.title.tr()}\n+${achievement.xpReward} ${'gamification.achievement_xp_gained'.tr()}',
         snackPosition: SnackPosition.TOP,
         backgroundColor: achievement.rarityColor,
         colorText: Colors.white,
@@ -30,8 +31,8 @@ class GamificationNotifications {
     }
     
     Get.snackbar(
-      '✅ Görev Tamamlandı!',
-      '${quest.title}\n$rewardText kazandınız!',
+      'gamification.quest_completed_title'.tr(),
+      '${quest.title.tr()}\n$rewardText ${'gamification.quest_rewards_gained'.tr()}',
       snackPosition: SnackPosition.TOP,
       backgroundColor: quest.typeColor,
       colorText: Colors.white,

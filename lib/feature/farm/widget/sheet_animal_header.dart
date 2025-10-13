@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/core/utility/extension/ontap_extension.dart';
 import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
@@ -71,7 +72,7 @@ class SheetHeader extends StatelessWidget {
                             borderRadius: BorderRadius.circular(15),
                           ),
                           child: Text(
-                            'Level ${updatedAnimal.level}',
+                            '${'farm.animal_level'.tr()} ${updatedAnimal.level}',
                             style: Theme.of(context).textTheme.labelLarge?.copyWith(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
@@ -84,7 +85,7 @@ class SheetHeader extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Experience: ${updatedAnimal.experience} XP',
+                                '${'farm.experience'.tr()}: ${updatedAnimal.experience} XP',
                                 style: Theme.of(context).textTheme.labelLarge?.copyWith(
                                   fontWeight: FontWeight.w500,
                                 ),

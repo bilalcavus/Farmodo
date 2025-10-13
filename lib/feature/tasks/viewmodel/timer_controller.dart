@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:audioplayers/audioplayers.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:farmodo/core/utility/constants/storage_keys.dart';
 import 'package:farmodo/core/services/notification_service.dart';
 import 'package:farmodo/core/services/home_widget_service.dart';
@@ -10,7 +11,7 @@ import 'package:farmodo/core/services/preferences_service.dart';
 import 'package:farmodo/data/services/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' hide Trans;
 
 class TimerController extends GetxController {
   RxInt totalSeconds = RxInt(0);
@@ -180,8 +181,8 @@ class TimerController extends GetxController {
         _playCompletionSound();
         // Ses ve titreşimle bildirim göster
         NotificationService.showCompletionNotification(
-          title: '🎉 Focus Completed!',
-          body: 'Great job! Break time now.',
+          title: 'home.focus_completed'.tr(),
+          body: 'home.break_time_now'.tr(),
         );
         startBreakTimer();
       }
@@ -220,8 +221,8 @@ class TimerController extends GetxController {
         // Ses ve titreşimle bildirim göster
         _playCompletionSound();
         NotificationService.showCompletionNotification(
-          title: '☕ Break over!',
-          body: 'Did you rest ? New session is starting!',
+          title: 'home.break_over'.tr(),
+          body: 'home.break_time_message'.tr(),
         );
         if (onBreakComplete != null) {
           onBreakComplete!();
@@ -284,10 +285,7 @@ class TimerController extends GetxController {
 
   Future<void> _playCompletionSound() async {
     try {
-      // Önce mevcut sesi durdur
       await player.stop();
-      
-      // Yeni sesi çal
       await player.play(AssetSource('sounds/complete_sound.mp3'));
       debugPrint('✅ Sound played successfully');
     } catch (e) {

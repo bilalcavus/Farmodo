@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:farmodo/core/di/injection.dart';
+import 'package:farmodo/core/theme/app_container_styles.dart';
 import 'package:farmodo/core/utility/constants/locales.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/feature/locale/locale_controller.dart';
@@ -29,15 +30,8 @@ class _LanguageSelectorWidgetState extends State<LanguageSelectorWidget> {
     return Container(
       padding: EdgeInsets.symmetric(
         horizontal: context.dynamicWidth(0.03),
-        vertical: context.dynamicHeight(0.005),
       ),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: Theme.of(context).dividerColor.withOpacity(0.2),
-        ),
-      ),
+      decoration: AppContainerStyles.secondaryContainer(context),
       child: Obx(() {
         final currentLocale = localeController.getCurrentLocaleEnum();
         
@@ -83,10 +77,8 @@ class _LanguageSelectorWidgetState extends State<LanguageSelectorWidget> {
               await localeController.changeLanguage(context, newLocale);
               
               if (mounted && context.mounted) {
-                // Widget'ı yeniden oluştur
                 setState(() {});
                 
-                // Dil değişikliği bildirimini yeni dilde göster
                 Future.delayed(const Duration(milliseconds: 100), () {
                   if (mounted && context.mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(

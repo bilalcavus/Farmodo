@@ -1,4 +1,5 @@
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:farmodo/core/theme/app_container_styles.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
@@ -32,8 +33,8 @@ class AchievementsTab extends StatelessWidget {
       if (gamificationController.achievements.isEmpty) {
         return EmptyState(
           icon: HugeIcons.strokeRoundedChampion,
-          title: 'Henüz başarı yok',
-          subtitle: 'Başarılar yakında eklenecek!',
+          title: 'gamification.no_achievements'.tr(),
+          subtitle: 'gamification.no_achievements_desc'.tr(),
           context: context);
         }
     
@@ -56,7 +57,7 @@ class AchievementsTab extends StatelessWidget {
                   final achievement = gamificationController.filteredAchievements[index];
                   final userAchievement = gamificationController.getUserAchievement(achievement.id);
                   if (gamificationController.filteredAchievements.isEmpty) {
-                    return Center(child: Text('No achievements found'));
+                    return Center(child: Text('gamification.no_achievements_found'.tr()));
                     } else {
                     return AchievementCard(
                       achievement: achievement,
@@ -100,13 +101,13 @@ class AchievementsTab extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        achievement.title,
+                        achievement.title.tr(),
                         style: Theme.of(context).textTheme.titleLarge?.copyWith(
                           fontWeight: FontWeight.bold
                         )
                       ),
                       Text(
-                        achievement.description,
+                        achievement.description.tr(),
                         style: Theme.of(context).textTheme.labelLarge
                       ),
                     ],
@@ -117,7 +118,7 @@ class AchievementsTab extends StatelessWidget {
             context.dynamicHeight(0.03).height,
             if (userAchievement != null) ...[
               Text(
-                'Progress',
+                'gamification.progress'.tr(),
                 style: Theme.of(context).textTheme.labelLarge
               ),
               context.dynamicHeight(0.01).height,
@@ -146,7 +147,7 @@ class AchievementsTab extends StatelessWidget {
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Text(
-                        '✅ Unlocked!',
+                        '✅ ${'gamification.unlocked'.tr()}!',
                         style: Theme.of(context).textTheme.labelMedium?.copyWith(
                           color: Colors.green,
                           fontWeight: FontWeight.bold,
@@ -161,13 +162,13 @@ class AchievementsTab extends StatelessWidget {
               children: [
                 RewardContainer(
                   achievement: achievement,
-                  title: '+${achievement.xpReward} XP Rewards',
+                  title: '+${achievement.xpReward} ${'gamification.xp_reward'.tr()}',
                   icon: Icons.star,
                 ),
                 context.dynamicHeight(0.01).height,
                 RewardContainer(
                   achievement: achievement,
-                  title: '+${achievement.coinReward} Coin Rewards',
+                  title: '+${achievement.coinReward} ${'gamification.coin_reward'.tr()}',
                   icon: Icons.monetization_on
                 )
               ],

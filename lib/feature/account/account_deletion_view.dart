@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:farmodo/core/components/loading_icon.dart';
 import 'package:farmodo/core/components/message/snack_messages.dart';
 import 'package:farmodo/core/di/injection.dart';
@@ -6,7 +7,7 @@ import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
 import 'package:farmodo/feature/auth/login/viewmodel/login_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' hide Trans;
 import 'package:iconsax/iconsax.dart';
 import 'package:kartal/kartal.dart';
 
@@ -33,7 +34,7 @@ class _AccountDeletionViewState extends State<AccountDeletionView> {
     final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text('Delete account', style: theme.textTheme.bodyLarge),
+        title: Text('account_deletion.delete_account'.tr(), style: theme.textTheme.bodyLarge),
         centerTitle: true,
         elevation: 0,
       ),
@@ -49,13 +50,13 @@ class _AccountDeletionViewState extends State<AccountDeletionView> {
               }
               return Column(
                 children: [
-                  Text('Confirm Deletion', style: theme.textTheme.bodyLarge),
+                  Text('account_deletion.confirm_deletion'.tr(), style: theme.textTheme.bodyLarge),
                   context.dynamicHeight(0.02).height,
                   TextFormField(
                     controller: _passwordController,
                     obscureText: _loginController.deletionObscurePassword.value,
                     decoration: InputDecoration(
-                      labelText: "Current password",
+                      labelText: "account_deletion.current_password".tr(),
                       border: OutlineInputBorder(
                         borderRadius: context.border.normalBorderRadius,
                       ),
@@ -76,7 +77,7 @@ class _AccountDeletionViewState extends State<AccountDeletionView> {
                   TextFormField(
                     controller: _confirmationController,
                     decoration: InputDecoration(
-                      labelText: "Text 'delete' to confirm deletion",
+                      labelText: "account_deletion.type_delete".tr(),
                       border: OutlineInputBorder(
                         borderRadius: context.border.normalBorderRadius,
                       ),
@@ -95,7 +96,7 @@ class _AccountDeletionViewState extends State<AccountDeletionView> {
                     onChanged: (value) {
                       _loginController.agreeToTerms.value = value ?? false;
                     },
-                    title: Text('Agree to deletion'),
+                    title: Text('account_deletion.agree_to_deletion'.tr()),
                     controlAffinity: ListTileControlAffinity.platform,
                     activeColor: Colors.red,
                   ),
@@ -121,7 +122,7 @@ class _AccountDeletionViewState extends State<AccountDeletionView> {
                       child: _loginController.isLoading.value 
                         ? LoadingIcon(
                           iconColor: Colors.white,
-                        ) : Text('Delete Account permamently')),
+                        ) : Text('account_deletion.delete_account_permanently'.tr())),
                   )
                 ],
               );
@@ -163,7 +164,7 @@ class WarningBox extends StatelessWidget {
             SizedBox(width: context.dynamicWidth(0.03)),
             Expanded(
               child: Text(
-                'This action cannot be undone. Your account and all associated data will be permanently deleted.',
+                'account_deletion.warning_message'.tr(),
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: Colors.red,
                   fontWeight: FontWeight.w600,

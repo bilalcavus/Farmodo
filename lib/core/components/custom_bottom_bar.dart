@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:farmodo/core/theme/app_colors.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/core/utility/extension/ontap_extension.dart';
@@ -38,7 +39,7 @@ class CustomBottomNavigation extends StatelessWidget {
               context,
               index: 0,
               icon: Icons.timer,
-              label: 'Timer'
+              label: 'navigation.timer'.tr()
             ),
           ),
           Expanded(
@@ -46,7 +47,7 @@ class CustomBottomNavigation extends StatelessWidget {
               context,
               index: 1,
               icon: Icons.list_sharp,
-              label: 'Tasks'
+              label: 'navigation.tasks'.tr()
             ),
           ),
           Expanded(
@@ -54,7 +55,7 @@ class CustomBottomNavigation extends StatelessWidget {
               context,
               index: 2,
               icon: Icons.pets,
-              label: 'Farm'
+              label: 'navigation.farm'.tr()
             ),
           ),
           Expanded(
@@ -62,7 +63,7 @@ class CustomBottomNavigation extends StatelessWidget {
               context,
               index: 3,
               icon: Icons.account_circle,
-              label: 'Profile'
+              label: 'navigation.profile'.tr()
             ),
           ),
         ],

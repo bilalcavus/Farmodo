@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:farmodo/core/theme/app_colors.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/core/utility/extension/ontap_extension.dart';
@@ -44,21 +45,16 @@ class AchievementCard extends StatelessWidget {
       ),
       child: Column(
         children: [
-          // Başarı ikonu ve durumu
           Expanded(
             flex: 3,
             child: Stack(
               children: [
-                // Ana ikon
                 Center(
                   child: Image.asset(
                     achievement.iconPath,
                     height: context.dynamicHeight(0.055),
-                  
                   ),
                 ),
-                
-                // Nadirlik ikonu
                 Positioned(
                   top: context.dynamicHeight(0.01),
                   right: context.dynamicWidth(0.02),
@@ -101,7 +97,7 @@ class AchievementCard extends StatelessWidget {
                 children: [
                   // Başlık
                   Text(
-                    achievement.title,
+                    achievement.title.tr(),
                     style: Theme.of(context).textTheme.labelLarge?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
@@ -113,14 +109,13 @@ class AchievementCard extends StatelessWidget {
                   
                   // Açıklama
                   Text(
-                    achievement.description,
+                    achievement.description.tr(),
                     style: Theme.of(context).textTheme.labelMedium,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
                   
-                  const Spacer(),
-                  
+                  context.dynamicHeight(0.015).height,                  
                   // İlerleme çubuğu
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

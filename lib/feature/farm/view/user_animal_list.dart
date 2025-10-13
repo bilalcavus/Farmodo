@@ -29,7 +29,7 @@ class _UserAnimalList extends StatelessWidget {
               ),
               SizedBox(height: context.dynamicHeight(0.02)),
               Text(
-                'Loading your farm...',
+                'farm.loading_farm'.tr(),
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: AppColors.textSecondary,
                   fontWeight: FontWeight.w500,

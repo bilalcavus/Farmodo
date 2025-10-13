@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:farmodo/core/components/message/snack_messages.dart';
 import 'package:farmodo/core/di/injection.dart';
 import 'package:farmodo/core/theme/app_colors.dart';
@@ -16,7 +17,7 @@ import 'package:farmodo/feature/farm/widget/sheet_animal_header.dart';
 import 'package:farmodo/feature/gamification/widget/main/sheet_divider.dart';
 import 'package:farmodo/feature/navigation/navigation_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' hide Trans;
 
 part 'animal_detail_sheet.dart';
 // part 'farm_header.dart';
@@ -86,14 +87,14 @@ class ActionButtons extends StatelessWidget {
       children: [
         _buildModernActionButton(
           icon: Icons.refresh_rounded,
-          tooltip: 'Refresh',
+          tooltip: 'farm.refresh'.tr(),
           onTap: () async => await farmController.syncPurchasedAnimalsToFarm(),
           context: context
         ),
         SizedBox(width: context.dynamicWidth(0.02)),
         _buildModernActionButton(
           icon: Icons.update_rounded,
-          tooltip: 'Update Status',
+          tooltip: 'farm.update_status'.tr(),
           onTap: () async {
             await farmController.updateAnimalStatusesOverTime();
             SnackMessages().showUpdateSnack();
@@ -103,7 +104,7 @@ class ActionButtons extends StatelessWidget {
         SizedBox(width: context.dynamicWidth(0.02)),
         _buildModernActionButton(
           icon: Icons.info_outline,
-          tooltip: 'Statistics',
+          tooltip: 'farm.statistics'.tr(),
           onTap: () => _showStatsDialog(context),
           context: context
         ),
@@ -148,7 +149,7 @@ class ActionButtons extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Farm Statistics',
+                      'farm.farm_statistics'.tr(),
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.w600,
                       ),

@@ -19,7 +19,16 @@
     "next": "Next",
     "back": "Back",
     "continue": "Continue",
-    "or_continue_with": "or continue with"
+    "or_continue_with": "or continue with",
+    "login": "Log in",
+    "late_for_now": "Late for now"
+  },
+  
+  "navigation": {
+    "timer": "Timer",
+    "tasks": "Tasks",
+    "farm": "Farm",
+    "profile": "Profile"
   },
   
   "auth": {
@@ -69,6 +78,8 @@
     "focus_completed": "🎉 Focus Completed!",
     "break_over": "☕ Break over!",
     "break_time": "Break Time",
+    "break_time_now": "Great job! Break time now",
+    "break_time_message": "Did you rest? New session time is starting",
     "reset_timer_title": "Reset Timer",
     "reset_timer_content": "Are you sure you want to reset the timer?",
     "end_session_title": "End Session",
@@ -86,7 +97,7 @@
     "task_completed": "Task is completed.",
     "back_to_home": "Back to Home",
     "invalid_time_format": "Invalid time format",
-    "select_pomodoro_minutes": "Select farmodo minutes",
+    "select_pomodoro_minutes": "Select pomodoro minutes",
     "minutes": "minutes",
     "min": "min",
     "min_break_time": "min break time",
@@ -124,7 +135,8 @@
     "tasks_completed": "Tasks Completed",
     "no_tasks": "No tasks available",
     "create_first_task": "Create your first task to get started!",
-    "showing_last_10": "Showing the last 10 custom tasks"
+    "showing_last_10": "Showing the last 10 custom tasks",
+    "min": "Min"
   },
   
   "farm": {
@@ -140,6 +152,7 @@
     "play": "Play",
     "heal": "Heal",
     "save": "Save",
+    "actions": "Actions",
     "animal_name": "Name",
     "animal_description": "Description",
     "animal_level": "Level",
@@ -150,12 +163,40 @@
     "last_gaming": "Last Gaming",
     "enter_nickname": "Enter nickname...",
     "nickname": "Nickname",
+    "nickname_updated": "Nickname updated!",
+    "detail_info": "Detail Info",
+    "experience": "Experience",
     "login_to_buy_animals": "Log in to buy animals and earn achievements",
+    "login_to_purchase_animals": "You need to log in to purchase animals, complete quests, and earn achievements.",
     "no_animals": "No animals yet",
     "buy_first_animal": "Buy your first animal from the store!",
     "animals_in_farm": "animals in your farm",
     "buy_animals": "Buy animals",
-    "complete_focus_sessions": "Complete focus sessions and earn rewards"
+    "complete_focus_sessions": "Complete focus sessions and earn rewards",
+    "loading_farm": "Loading your farm...",
+    "farm_empty_title": "Your Farm is Empty",
+    "farm_empty_description": "You don't have any animals yet. Buy animals from the store to liven up your farm!",
+    "go_to_store": "Go to Store",
+    "animal_care_features": "Animal Care Features",
+    "feeding": "Feeding",
+    "feeding_description": "Feed your animals regularly",
+    "loving": "Loving",
+    "loving_description": "Show love to your animals",
+    "playing": "Playing",
+    "playing_description": "Play with your animals",
+    "health": "Health",
+    "health_description": "Heal your sick animals",
+    "stat_total": "Total",
+    "stat_favourite": "Favourite",
+    "stat_hunger": "Hunger",
+    "stat_love": "Love",
+    "stat_tired": "Tired",
+    "stat_sick": "Sick",
+    "stat_happy": "Happy",
+    "status_hunger": "Hunger",
+    "status_love": "Love",
+    "status_energy": "Energy",
+    "status_health": "Health"
   },
   
   "store": {
@@ -177,8 +218,11 @@
     "achievements_and_quests": "Achievements & Quests",
     "achievements": "Achievements",
     "quests": "Quests",
+    "progress": "Progress",
+    "completed": "Completed!",
     "xp_reward": "XP Rewards",
     "coin_reward": "Coin Rewards",
+    "gained": "Gained",
     "all": "All",
     "unlocked": "Unlocked",
     "locked": "Locked",
@@ -187,6 +231,12 @@
     "epic": "Epic",
     "legendary": "Legendary",
     "legend": "Legend",
+    "achievement_unlocked": "Achievement Unlocked!",
+    "tap_to_continue": "Tap to continue",
+    "achievement_unlocked_title": "🎉 Achievement Unlocked!",
+    "achievement_xp_gained": "XP gained!",
+    "quest_completed_title": "✅ Quest Completed!",
+    "quest_rewards_gained": "rewards gained!",
     "active": "Active",
     "daily": "Daily",
     "weekly": "Weekly",
@@ -198,7 +248,50 @@
     "no_quests": "No quests yet",
     "no_quests_desc": "Quests coming soon!",
     "no_filtered_quests": "No filtered quests",
-    "no_filtered_quests_desc": "No quests match the selected filters"
+    "no_filtered_quests_desc": "No quests match the selected filters",
+    "animal_collector": "Animal Collector",
+    "care_legend": "Care Legend",
+    "early_bird": "Early Bird",
+    "feeder": "Feeder",
+    "first_animal": "First Animal",
+    "healer": "Healer",
+    "love_giver": "Loving Heart",
+    "mega_farm": "Mega Farm",
+    "night_owl": "Night Owl",
+    "perfect_day": "Perfect Day",
+    "play_master": "Play Master",
+    "ultimate_farmer": "Ultimate Farmer",
+    "zoo_keeper": "Zoo Keeper",
+    "animal_collector_desc": "Get 5 different animals",
+    "care_legend_desc": "Perform 1000 care actions",
+    "early_bird_desc": "Care action on your farm before 7 AM",
+    "feeder_desc": "Feed animals 100 times",
+    "first_animal_desc": "You've purchased your first pet!",
+    "healer_desc": "Heal animals 50 times",
+    "love_giver_desc": "Love animals 100 times",
+    "mega_farm_desc": "Have 25 animals",
+    "night_owl_desc": "Care action on your farm before 10 PM",
+    "perfect_day_desc": "Feed, love and heal all your animals in one day",
+    "play_master_desc": "Play with animals 100 times",
+    "ultimate_farmer_desc": "Have 50 animals",
+    "zoo_keeper_desc": "Have 10 animals",
+    "daily_feed": "Daily Feed",
+    "daily_love": "Daily Love",
+    "daily_play": "Daily Play",
+    "make_new_friend": "Make New Friend",
+    "weekly_feeding_champion": "Weekly Feeding Champion",
+    "level_up": "Level Up",
+    "collection_beginning": "Collection Beginning",
+    "weekend_festival": "Weekend Festival",
+    "daily_feed_desc": "Feed 5 animals.",
+    "daily_love_desc": "Love 3 animals.",
+    "daily_play_desc": "Play with 2 animals.",
+    "make_new_friend_desc": "Buy 1 new animal.",
+    "weekly_feeding_champion_desc": "Feed 50 animals.",
+    "level_up_desc": "Level up 3 animals.",
+    "collection_beginning_desc": "Adopt 5 different types of animals.",
+    "healer_quest_desc": "Heal 10 sick animals.",
+    "weekend_festival_desc": "Perform 20 maintenance actions over the weekend."
   },
   
   "leaderboard": {
@@ -231,7 +324,21 @@
     "total_xp": "Total XP",
     "days_active": "Days Active",
     "guest": "@guest",
-    "level": "Level"
+    "level": "Level",
+    "guest_user": "Guest User",
+    "joined": "Joined",
+    "statistics": "Statistics",
+    "tasks_completed": "Tasks Completed",
+    "profile_information": "Profile Information",
+    "display_name": "Display Name",
+    "email": "Email",
+    "achievements": "Achievements",
+    "no_achievements_yet": "No achievements yet",
+    "complete_tasks_unlock": "Complete tasks to unlock achievements!",
+    "unlocked": "Unlocked",
+    "locked": "Locked",
+    "more_unlocked": "more unlocked",
+    "more_locked": "more locked"
   },
   
   "account_deletion": {
@@ -243,7 +350,8 @@
     "are_you_sure": "Are you sure you want to delete your account?",
     "cannot_be_undone": "This action cannot be undone",
     "warning": "Warning",
-    "agree_to_deletion": "Agree to deletion"
+    "agree_to_deletion": "Agree to deletion",
+    "warning_message": "This action cannot be undone. Your account and all associated data will be permanently deleted."
   },
   
   "widget": {
@@ -314,7 +422,12 @@
     "fill_all_blanks": "Fill all blanks",
     "registration_successful": "Successfully registered. Please confirm your email and don't forget look at the Spam folder",
     "remember_me": "Remember me",
-    "forgot_password": "Forgot password?"
+    "forgot_password": "Forgot password?",
+    "error_title": "Error",
+    "success_title": "Success",
+    "updated": "Updated!",
+    "animal_status_updated": "Updated animal status!",
+    "successful": "Successful!"
   }
 }
 

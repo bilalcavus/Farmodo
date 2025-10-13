@@ -4,8 +4,7 @@ import 'package:farmodo/data/models/user_task_model.dart';
 enum BreakDurationType { short, long }
 
 class DefaultTaskData {
-  static String title = 'default_task_title'.tr();
-  static String description = 'default_task_desc'.tr();
+  static String title = 'tasks.default_task_title'.tr();
   
   static const int shortBreakDuration = 5;
   static const int longBreakDuration = 15;

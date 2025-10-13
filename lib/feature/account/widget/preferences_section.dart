@@ -49,6 +49,15 @@ class _PreferencesSectionState extends State<PreferencesSection> {
           children: [
             SettingsItemWidget(
               context: context,
+              icon: HugeIcons.strokeRoundedTranslate,
+              title: "account.language".tr(),
+              trailing: SizedBox(
+                width: context.dynamicWidth(0.4),
+                child: const LanguageSelectorWidget(),
+              ),
+            ),
+            SettingsItemWidget(
+              context: context,
               icon: HugeIcons.strokeRoundedMoon02,
               title: "account.dark_mode".tr(),
               trailing: Obx(() => Switch.adaptive(
@@ -64,15 +73,7 @@ class _PreferencesSectionState extends State<PreferencesSection> {
               title: "account.home_screen_widget".tr(),
               onTap: () => RouteHelper.push(context, const WidgetGuideView()),
             ),
-            SettingsItemWidget(
-              context: context,
-              icon: HugeIcons.strokeRoundedTranslate,
-              title: "account.language".tr(),
-              trailing: SizedBox(
-                width: context.dynamicWidth(0.4),
-                child: const LanguageSelectorWidget(),
-              ),
-            ),
+            
             // kDebugMode ? 
             // SettingsItemWidget(
             //   icon: Icons.bug_report,

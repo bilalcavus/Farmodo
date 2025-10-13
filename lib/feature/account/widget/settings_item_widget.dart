@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:farmodo/core/theme/app_colors.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/core/utility/extension/ontap_extension.dart';
@@ -29,7 +30,7 @@ class SettingsItemWidget extends StatelessWidget {
           children: [
             Icon(
               icon,
-              color: title == 'Logout' ? AppColors.danger : null,
+              color: title == 'auth.logout'.tr() ? AppColors.danger : null,
               size: context.dynamicHeight(0.028 ),
             ),
             context.dynamicWidth(0.04).width,

@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:farmodo/core/theme/app_colors.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
@@ -24,13 +25,13 @@ class AnimalStatusBar extends StatelessWidget {
         
         return Column(
           children: [
-            _buildStatusBar(context, 'Açlık', (updatedAnimal.status.hunger * 100).round(), Icons.restaurant, Colors.orange),
+            _buildStatusBar(context, 'farm.status_hunger'.tr(), (updatedAnimal.status.hunger * 100).round(), Icons.restaurant, Colors.orange),
             context.dynamicHeight(0.015).height,
-            _buildStatusBar(context, 'Sevgi', (updatedAnimal.status.love * 100).round(), Icons.favorite, Colors.red),
+            _buildStatusBar(context, 'farm.status_love'.tr(), (updatedAnimal.status.love * 100).round(), Icons.favorite, Colors.red),
             context.dynamicHeight(0.015).height,
-            _buildStatusBar(context, 'Enerji', (updatedAnimal.status.energy * 100).round(), Icons.battery_full, Colors.blue),
+            _buildStatusBar(context, 'farm.status_energy'.tr(), (updatedAnimal.status.energy * 100).round(), Icons.battery_full, Colors.blue),
             context.dynamicHeight(0.015).height,
-            _buildStatusBar(context, 'Sağlık', (updatedAnimal.status.health * 100).round(), Icons.health_and_safety, Colors.green),
+            _buildStatusBar(context, 'farm.status_health'.tr(), (updatedAnimal.status.health * 100).round(), Icons.health_and_safety, Colors.green),
           ],
         );
       });

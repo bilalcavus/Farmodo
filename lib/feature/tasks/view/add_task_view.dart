@@ -26,29 +26,7 @@ class AddTaskView extends StatefulWidget {
 class _AddTaskViewState extends State<AddTaskView> {
   final taskController = getIt<TasksController>();
   final authService = getIt<AuthService>();
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!authService.isLoggedIn) {
-        _showLoginBottomSheet();
-      }
-    });
-  }
-
-  void _showLoginBottomSheet() {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: isDark ? AppColors.darkSurface : Colors.white,
-      builder: (context) => LoginBottomSheet(
-        title: 'Login to create a task',
-        subTitle: 'You need to log in to save your tasks and track your progress.',
-      ),
-    );
-  }
+ 
 
   @override
   Widget build(BuildContext context) {
@@ -178,7 +156,7 @@ class LoginBottomSheet extends StatelessWidget {
                   ),
                 ),
                 child: Text(
-                  'Log in',
+                  'common.login'.tr(),
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: context.dynamicHeight(0.02),
@@ -194,7 +172,7 @@ class LoginBottomSheet extends StatelessWidget {
                 Navigator.of(context).pop();
               },
               child: Text(
-                'Late for now',
+                'common.late_for_now'.tr(),
                 style: TextStyle(
                   fontSize: context.dynamicHeight(0.018),
                   fontWeight: FontWeight.w500,

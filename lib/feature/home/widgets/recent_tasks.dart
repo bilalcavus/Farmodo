@@ -66,7 +66,7 @@ class RecentTasks extends StatelessWidget {
                         children: [
                           _taskTitle(context, task),
                           TaskFeatures(task: task, text: '🔗 ${task.focusType} '),
-                          TaskFeatures(task: task, text: '⌛️ ${task.duration} ${'home.min'.tr()} '),
+                          TaskFeatures(task: task, text: '⌛️ ${task.duration} ${'tasks.min'.tr()} '),
                           TaskFeatures(task: task, text: '⏰ ${task.breakDuration} ${'home.min_break_time'.tr()}'),
                           TaskFeatures(task: task, text: '⭐️ ${task.xpReward} ${'tasks.xp_gain'.tr()} '),
                           TaskFeatures(task: task, text: '✅ ${task.completedSessions} / ${task.totalSessions} ${'home.sessions_completed'.tr()}'),

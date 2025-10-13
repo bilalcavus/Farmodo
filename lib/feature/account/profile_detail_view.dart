@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:farmodo/core/di/injection.dart';
 import 'package:farmodo/core/theme/app_colors.dart';
 import 'package:farmodo/core/theme/app_container_styles.dart';
@@ -10,7 +11,7 @@ import 'package:farmodo/feature/account/widget/user_avatar.dart';
 import 'package:farmodo/feature/gamification/viewmodel/gamification_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' hide Trans;
 import 'package:hugeicons/hugeicons.dart';
 
 class ProfileDetailView extends StatefulWidget {
@@ -56,7 +57,7 @@ class _ProfileDetailViewState extends State<ProfileDetailView> {
         tasksCompleted = 0;
         daysActive = 0;
         joinedYearText = '';
-        handleText = '@guest';
+        handleText = 'account.guest'.tr();
         isLoadingStats = false;
       });
       return;
@@ -105,7 +106,7 @@ class _ProfileDetailViewState extends State<ProfileDetailView> {
         ),
         backgroundColor: Colors.transparent,
         title: Text(
-          'Profile Detail',
+          'account.profile_detail'.tr(),
           style: TextStyle(
             fontSize: context.dynamicHeight(0.022),
             fontWeight: FontWeight.w600,
@@ -142,7 +143,7 @@ class _ProfileDetailViewState extends State<ProfileDetailView> {
     final user = _authService.firebaseUser;
     final displayName = _authService.currentUser?.displayName.isNotEmpty == true
         ? _authService.currentUser!.displayName
-        : (user?.displayName ?? 'Guest User');
+        : (user?.displayName ?? 'account.guest_user'.tr());
 
     return Container(
       decoration: AppContainerStyles.primaryContainer(context),
@@ -177,7 +178,7 @@ class _ProfileDetailViewState extends State<ProfileDetailView> {
           if (joinedYearText.isNotEmpty) ...[
             context.dynamicHeight(0.008).height,
             Text(
-              'Joined $joinedYearText',
+              '${'account.joined'.tr()} $joinedYearText',
               style: TextStyle(
                 color: AppColors.textSecondary,
                 fontSize: context.dynamicHeight(0.014),
@@ -197,7 +198,7 @@ class _ProfileDetailViewState extends State<ProfileDetailView> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Statistics',
+            'account.statistics'.tr(),
             style: TextStyle(
               fontSize: context.dynamicHeight(0.02),
               fontWeight: FontWeight.w600,
@@ -212,7 +213,7 @@ class _ProfileDetailViewState extends State<ProfileDetailView> {
                 Expanded(
                   child: _buildStatCard(
                     context: context,
-                    title: 'Tasks Completed',
+                    title: 'account.tasks_completed'.tr(),
                     value: tasksCompleted.toString(),
                     icon: HugeIcons.strokeRoundedCheckmarkCircle01,
                   ),
@@ -221,7 +222,7 @@ class _ProfileDetailViewState extends State<ProfileDetailView> {
                 Expanded(
                   child: _buildStatCard(
                     context: context,
-                    title: 'Total XP',
+                    title: 'account.total_xp'.tr(),
                     value: totalXp.toString(),
                     icon: HugeIcons.strokeRoundedStar,
                   ),
@@ -231,7 +232,7 @@ class _ProfileDetailViewState extends State<ProfileDetailView> {
             context.dynamicHeight(0.015).height,
             _buildStatCard(
               context: context,
-              title: 'Days Active',
+              title: 'account.days_active'.tr(),
               value: daysActive.toString(),
               icon: HugeIcons.strokeRoundedCalendar01,
               isWide: true,
@@ -321,7 +322,7 @@ class _ProfileDetailViewState extends State<ProfileDetailView> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Profile Information',
+            'account.profile_information'.tr(),
             style: TextStyle(
               fontSize: context.dynamicHeight(0.017),
               fontWeight: FontWeight.w600,
@@ -332,7 +333,7 @@ class _ProfileDetailViewState extends State<ProfileDetailView> {
           // Display Name Field
           _buildInfoField(
             context: context,
-            label: 'Display Name',
+            label: 'account.display_name'.tr(),
             controller: _displayNameController,
             icon: HugeIcons.strokeRoundedUser,
             isEditable: isEditing,
@@ -342,7 +343,7 @@ class _ProfileDetailViewState extends State<ProfileDetailView> {
           // Email Field
           _buildInfoField(
             context: context,
-            label: 'Email',
+            label: 'account.email'.tr(),
             controller: _emailController,
             icon: HugeIcons.strokeRoundedAiMail,
             isEditable: false, // Email cannot be changed
@@ -407,7 +408,7 @@ class _ProfileDetailViewState extends State<ProfileDetailView> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Achievements',
+                'account.achievements'.tr(),
                 style: TextStyle(
                   fontSize: context.dynamicHeight(0.02),
                   fontWeight: FontWeight.w600,
@@ -444,7 +445,7 @@ class _ProfileDetailViewState extends State<ProfileDetailView> {
                     ),
                     context.dynamicHeight(0.01).height,
                     Text(
-                      'No achievements yet',
+                      'account.no_achievements_yet'.tr(),
                       style: TextStyle(
                         color: AppColors.textSecondary,
                         fontSize: context.dynamicHeight(0.016),
@@ -452,7 +453,7 @@ class _ProfileDetailViewState extends State<ProfileDetailView> {
                     ),
                     context.dynamicHeight(0.005).height,
                     Text(
-                      'Complete tasks to unlock achievements!',
+                      'account.complete_tasks_unlock'.tr(),
                       style: TextStyle(
                         color: AppColors.textSecondary,
                         fontSize: context.dynamicHeight(0.014),
@@ -468,7 +469,7 @@ class _ProfileDetailViewState extends State<ProfileDetailView> {
                 // Unlocked Achievements
                 if (unlockedAchievements.isNotEmpty) ...[
                   Text(
-                    'Unlocked (${unlockedAchievements.length})',
+                    '${'account.unlocked'.tr()} (${unlockedAchievements.length})',
                     style: TextStyle(
                       fontSize: context.dynamicHeight(0.016),
                       fontWeight: FontWeight.w600,
@@ -481,7 +482,7 @@ class _ProfileDetailViewState extends State<ProfileDetailView> {
                   if (unlockedAchievements.length > 3) ...[
                     context.dynamicHeight(0.01).height,
                     Text(
-                      '+${unlockedAchievements.length - 3} more unlocked',
+                      '+${unlockedAchievements.length - 3} ${'account.more_unlocked'.tr()}',
                       style: TextStyle(
                         color: AppColors.primary,
                         fontSize: context.dynamicHeight(0.014),
@@ -495,7 +496,7 @@ class _ProfileDetailViewState extends State<ProfileDetailView> {
                 if (lockedAchievements.isNotEmpty) ...[
                   if (unlockedAchievements.isNotEmpty) context.dynamicHeight(0.02).height,
                   Text(
-                    'Locked (${lockedAchievements.length})',
+                    '${'account.locked'.tr()} (${lockedAchievements.length})',
                     style: TextStyle(
                       color: AppColors.textSecondary,
                       fontSize: context.dynamicHeight(0.016),
@@ -509,7 +510,7 @@ class _ProfileDetailViewState extends State<ProfileDetailView> {
                   if (lockedAchievements.length > 2) ...[
                     context.dynamicHeight(0.01).height,
                     Text(
-                      '+${lockedAchievements.length - 2} more locked',
+                      '+${lockedAchievements.length - 2} ${'account.more_locked'.tr()}',
                       style: TextStyle(
                         color: AppColors.textSecondary,
                         fontSize: context.dynamicHeight(0.014),

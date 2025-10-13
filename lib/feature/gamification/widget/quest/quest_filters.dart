@@ -1,4 +1,4 @@
-
+import 'package:easy_localization/easy_localization.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/feature/gamification/viewmodel/gamification_controller.dart';
 import 'package:farmodo/feature/gamification/widget/main/filter_chip_widget.dart';
@@ -24,27 +24,27 @@ class QuestFilters extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         children: [
           FilterChipWidget(
-            label: 'Active', 
+            label: 'gamification.active'.tr(), 
             isSelected: controller.questFilter.value == 'Active', 
             onTap: () => controller.setQuestFilter('Active')),
           FilterChipWidget(
-            label: 'Daily',
+            label: 'gamification.daily'.tr(),
             isSelected: controller.questFilter.value == 'Daily', 
             onTap: () => controller.setQuestFilter('Daily')),
           FilterChipWidget(
-            label: 'Weekly', 
+            label: 'gamification.weekly'.tr(), 
             isSelected: controller.questFilter.value == 'Weekly', 
             onTap: () => controller.setQuestFilter('Weekly')),
           FilterChipWidget(
-            label: 'Special',
+            label: 'gamification.special'.tr(),
             isSelected: controller.questFilter.value == 'Special', 
             onTap: () => controller.setQuestFilter('Special')),
           FilterChipWidget(
-            label: 'Event', 
+            label: 'gamification.event'.tr(), 
             isSelected: controller.questFilter.value == 'Event', 
             onTap: () => controller.setQuestFilter('Event')),
           FilterChipWidget(
-            label: 'Completed',
+            label: 'gamification.completed'.tr(),
             isSelected: controller.questFilter.value == 'Completed', 
             onTap: () => controller.setQuestFilter('Completed')),
         ],

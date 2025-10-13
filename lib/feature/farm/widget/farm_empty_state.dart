@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:farmodo/core/di/injection.dart';
 import 'package:farmodo/core/theme/app_container_styles.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
@@ -5,7 +6,7 @@ import 'package:farmodo/data/services/auth_service.dart';
 import 'package:farmodo/feature/store/store_view.dart';
 import 'package:farmodo/feature/tasks/view/add_task_view.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' hide Trans;
 
 class FarmEmptyState extends StatelessWidget {
   const FarmEmptyState({super.key});
@@ -18,8 +19,8 @@ class FarmEmptyState extends StatelessWidget {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (context) => LoginBottomSheet(
-        title: 'Log in to buy animals and earn achievements',
-        subTitle: 'You need to log in to purchase animals, complete quests, and earn achievements.',
+        title: 'farm.login_to_buy_animals'.tr(),
+        subTitle: 'farm.login_to_purchase_animals'.tr(),
       ),
     );
   }
@@ -65,7 +66,7 @@ class FarmEmptyState extends StatelessWidget {
                 child: Transform.translate(
                   offset: Offset(0, 20 * (1 - value)),
                   child: Text(
-                    'Çiftliğiniz Boş',
+                    'farm.farm_empty_title'.tr(),
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
@@ -91,7 +92,7 @@ class FarmEmptyState extends StatelessWidget {
                       horizontal: context.dynamicWidth(0.1),
                     ),
                     child: Text(
-                      'Henüz hiç hayvanınız yok. Mağazadan hayvan satın alarak çiftliğinizi canlandırın!',
+                      'farm.farm_empty_description'.tr(),
                       textAlign: TextAlign.center,
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
                         color: Colors.grey.shade600,
@@ -124,7 +125,7 @@ class FarmEmptyState extends StatelessWidget {
                       }
                     },
                     icon: const Icon(Icons.store),
-                    label: const Text('Mağazaya Git'),
+                    label: Text('farm.go_to_store'.tr()),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.green,
                       foregroundColor: Colors.white,
@@ -162,7 +163,7 @@ class FarmEmptyState extends StatelessWidget {
                     child: Column(
                       children: [
                         Text(
-                          'Hayvan Bakım Özellikleri',
+                          'farm.animal_care_features'.tr(),
                           style: Theme.of(context).textTheme.titleMedium?.copyWith(
                             fontWeight: FontWeight.bold,
                           ),
@@ -172,29 +173,29 @@ class FarmEmptyState extends StatelessWidget {
                         
                         _buildFeatureItem(
                           Icons.restaurant,
-                          'Besleme',
-                          'Hayvanlarınızı düzenli olarak besleyin',
+                          'farm.feeding'.tr(),
+                          'farm.feeding_description'.tr(),
                           Colors.orange,
                         ),
                         
                         _buildFeatureItem(
                           Icons.favorite,
-                          'Sevgi',
-                          'Hayvanlarınıza sevgi gösterin',
+                          'farm.loving'.tr(),
+                          'farm.loving_description'.tr(),
                           Colors.pink,
                         ),
                         
                         _buildFeatureItem(
                           Icons.sports_esports,
-                          'Oyun',
-                          'Hayvanlarınızla oynayın',
+                          'farm.playing'.tr(),
+                          'farm.playing_description'.tr(),
                           Colors.blue,
                         ),
                         
                         _buildFeatureItem(
                           Icons.healing,
-                          'Sağlık',
-                          'Hasta hayvanlarınızı iyileştirin',
+                          'farm.health'.tr(),
+                          'farm.health_description'.tr(),
                           Colors.green,
                         ),
                       ],

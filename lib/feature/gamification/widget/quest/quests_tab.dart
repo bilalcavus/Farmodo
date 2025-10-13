@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:farmodo/core/theme/app_container_styles.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
@@ -31,8 +32,8 @@ class QuestsTab extends StatelessWidget {
       if (gamificationController.quests.isEmpty) {
         return EmptyState(
           context: context,
-          title: 'Henüz görev yok',
-          subtitle: 'Görevler yakında eklenecek!',
+          title: 'gamification.no_quests'.tr(),
+          subtitle: 'gamification.no_quests_desc'.tr(),
           icon: HugeIcons.strokeRoundedStickyNote01,
         );
       }
@@ -52,8 +53,8 @@ class QuestsTab extends StatelessWidget {
                   if (gamificationController.filteredQuests.isEmpty) {
                     return EmptyState(
                       context: context,
-                      title: 'Filtrelenmiş görev yok',
-                      subtitle: 'Seçilen filtrelere uygun görev bulunamadı',
+                      title: 'gamification.no_filtered_quests'.tr(),
+                      subtitle: 'gamification.no_filtered_quests_desc'.tr(),
                       icon: HugeIcons.strokeRoundedStickyNote01,
                     );
                   }
@@ -96,7 +97,7 @@ class QuestsTab extends StatelessWidget {
     );
   }
 
-  Widget _buildQuestHeader(BuildContext context, quest) {
+  Widget _buildQuestHeader(BuildContext context, Quest quest) {
   return Row(
     children: [
       Container(
@@ -117,8 +118,8 @@ class QuestsTab extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(quest.title, style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
-            Text(quest.description, style: Theme.of(context).textTheme.labelLarge),
+            Text(quest.title.tr(), style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
+            Text(quest.description.tr(), style: Theme.of(context).textTheme.labelLarge),
           ],
         ),
       ),
@@ -132,7 +133,7 @@ Widget _buildProgress(BuildContext context, quest, userQuest) {
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
       Text(
-        'Progress',
+        'gamification.progress'.tr(),
         style: Theme.of(context).textTheme.labelLarge
       ),
       context.dynamicHeight(0.01).height,
@@ -169,7 +170,7 @@ Widget _buildCompletedBadge(BuildContext context) {
       borderRadius: BorderRadius.circular(12),
     ),
     child: Text(
-      '✅ Completed!',
+      '✅ ${'gamification.completed'.tr()}',
       style: Theme.of(context).textTheme.labelMedium?.copyWith(
             color: Colors.green,
             fontWeight: FontWeight.bold,
@@ -229,7 +230,7 @@ class _RewardCard extends StatelessWidget {
             Icon(icon, color: color, size: context.dynamicHeight(0.025)),
             SizedBox(width: context.dynamicWidth(0.02)),
             Text(
-              text,
+              text.tr(),
               style: Theme.of(context).textTheme.labelMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                     color: color,

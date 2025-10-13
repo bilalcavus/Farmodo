@@ -1,4 +1,5 @@
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:farmodo/core/theme/app_container_styles.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
@@ -23,7 +24,7 @@ class StatCards extends StatelessWidget {
               Expanded(
                 child: _buildStatCard(
                   context,
-                  'Achievements',
+                  'gamification.achievements'.tr(),
                   '${gamificationController.totalUnlockedAchievements}/${gamificationController.totalAchievements}',
                   Icons.emoji_events,
                   Colors.orange,
@@ -34,7 +35,7 @@ class StatCards extends StatelessWidget {
               Expanded(
                 child: _buildStatCard(
                   context,
-                  'Quests',
+                  'gamification.quests'.tr(),
                   '${gamificationController.totalCompletedQuests}/${gamificationController.totalQuests}',
                   Icons.assignment_turned_in,
                   Colors.blue,
@@ -45,11 +46,11 @@ class StatCards extends StatelessWidget {
               Expanded(
                 child: _buildStatCard(
                   context,
-                  'Total XP',
+                  'account.total_xp'.tr(),
                   '${gamificationController.totalEarnedXP}',
                   Icons.star,
                   Colors.purple,
-                  'Gained',
+                  'gamification.gained'.tr(),
                 ),
               ),
             ],

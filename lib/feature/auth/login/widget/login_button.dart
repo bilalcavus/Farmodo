@@ -25,8 +25,8 @@ class LoginButton extends StatelessWidget {
     return Center(
       child: Container(
         alignment: Alignment.center,
-        width: context.dynamicWidth(0.7),
-        height: context.dynamicHeight(0.05),
+        width: context.dynamicWidth(0.8),
+        height: context.dynamicHeight(0.06),
         decoration: BoxDecoration(
           color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
           borderRadius: BorderRadius.circular(16)

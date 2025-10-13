@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:farmodo/core/theme/app_colors.dart';
 import 'package:farmodo/core/theme/app_container_styles.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
@@ -63,7 +64,7 @@ class LoginPrompt extends StatelessWidget {
                 ),
               ),
               child: Text(
-                'Log in',
+                'common.login'.tr(),
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: context.dynamicHeight(0.018),

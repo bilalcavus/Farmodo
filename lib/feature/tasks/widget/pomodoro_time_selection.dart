@@ -38,7 +38,7 @@ class PomodoroTimeSelection extends StatelessWidget {
                 },
                 children: taskController.pomodoroTimes.map((time) => 
                   Center(
-                    child: Text('$time minutes', style: Theme.of(context).textTheme.bodyLarge)
+                    child: Text('$time ${'home.min'.tr()}', style: Theme.of(context).textTheme.bodyLarge)
                   )).toList()
                 ),
               );

@@ -69,7 +69,7 @@ class _AnimalDetailSheetState extends State<AnimalDetailSheet> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Actions',
+          'farm.actions'.tr(),
           style: Theme.of(context).textTheme.bodyLarge?.copyWith(
             fontWeight: FontWeight.bold,
           ),
@@ -86,7 +86,7 @@ class _AnimalDetailSheetState extends State<AnimalDetailSheet> {
           childAspectRatio: 1.9,
           children: [
             _buildActionButton(
-              title: 'Feed',
+              title: 'farm.feed'.tr(),
               userXpCost: '-20',
               gainAnimalXp: '+4',
               color: Colors.orange,
@@ -97,7 +97,7 @@ class _AnimalDetailSheetState extends State<AnimalDetailSheet> {
             
             ),
             _buildActionButton(
-              title: 'Love',
+              title: 'farm.love'.tr(),
               userXpCost: '-10',
               gainAnimalXp: '+4',
               imagePath: 'assets/images/actions/love.png',
@@ -107,7 +107,7 @@ class _AnimalDetailSheetState extends State<AnimalDetailSheet> {
               onTap: () => _farmController.loveAnimal(widget.animal.id)
             ),
             _buildActionButton(
-              title: 'Play',
+              title: 'farm.play'.tr(),
               userXpCost: '-30',
               gainAnimalXp: '+4',
               imagePath: 'assets/images/actions/gaming2.png',
@@ -117,7 +117,7 @@ class _AnimalDetailSheetState extends State<AnimalDetailSheet> {
               onTap: () => _farmController.playWithAnimal(widget.animal.id)
             ),
             _buildActionButton(
-              title: 'Heal',
+              title: 'farm.heal'.tr(),
               userXpCost: '-50',
               gainAnimalXp: '+4',
               imagePath: 'assets/images/actions/heal.png',
@@ -229,7 +229,7 @@ class NicknameSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Nickname',
+          'farm.nickname'.tr(),
           style: Theme.of(context).textTheme.bodyLarge?.copyWith(
             fontWeight: FontWeight.bold,
           ),
@@ -243,7 +243,7 @@ class NicknameSection extends StatelessWidget {
               child: TextField(
                 controller: _nicknameController,
                 decoration: InputDecoration(
-                  hintText: 'Enter nickname...',
+                  hintText: 'farm.enter_nickname'.tr(),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                     borderSide: BorderSide.none
@@ -265,7 +265,7 @@ class NicknameSection extends StatelessWidget {
                     widget.animal.id,
                     _nicknameController.text.trim(),
                   );
-                  SnackMessages().showAnimalAction('Nickname updated!', Colors.green);
+                  SnackMessages().showAnimalAction('farm.nickname_updated'.tr(), Colors.green);
                 }
               },
               style: ElevatedButton.styleFrom(
@@ -279,7 +279,7 @@ class NicknameSection extends StatelessWidget {
                   vertical: 12,
                 ),
               ),
-              child: const Text('Save'),
+              child: Text('farm.save'.tr()),
             ),
           ],
         ),
@@ -314,7 +314,7 @@ class AnimalDetail extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Detail Info',
+            'farm.detail_info'.tr(),
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
               fontWeight: FontWeight.bold,
             ),
@@ -327,17 +327,17 @@ class AnimalDetail extends StatelessWidget {
             decoration: AppContainerStyles.primaryContainer(context),
             child: Column(
               children: [
-                AnimalDetailInfo(label: 'Name', value: updatedAnimal.name, context: context),
-                AnimalDetailInfo(label: 'Descriptipn', value: updatedAnimal.description, context: context),
-                AnimalDetailInfo(label: 'Level', value: '${updatedAnimal.level}', context: context),
-                AnimalDetailInfo(label: 'Experience Point ',value: '${updatedAnimal.experience} XP', context: context),
-                AnimalDetailInfo(label: 'Acquire At', value:
+                AnimalDetailInfo(label: 'farm.animal_name'.tr(), value: updatedAnimal.name, context: context),
+                AnimalDetailInfo(label: 'farm.animal_description'.tr(), value: updatedAnimal.description, context: context),
+                AnimalDetailInfo(label: 'farm.animal_level'.tr(), value: '${updatedAnimal.level}', context: context),
+                AnimalDetailInfo(label: 'farm.animal_xp'.tr(),value: '${updatedAnimal.experience} XP', context: context),
+                AnimalDetailInfo(label: 'farm.acquire_at'.tr(), value:
                   '${updatedAnimal.acquiredAt.day}/${updatedAnimal.acquiredAt.month}/${updatedAnimal.acquiredAt.year}', context: context),
-                AnimalDetailInfo(label: 'Last Feeding', value:
+                AnimalDetailInfo(label: 'farm.last_feeding'.tr(), value:
                   '${updatedAnimal.status.lastFed.hour}:${updatedAnimal.status.lastFed.minute.toString().padLeft(2, '0')}', context: context),
-                AnimalDetailInfo(label: 'Last Loving', value:
+                AnimalDetailInfo(label: 'farm.last_loving'.tr(), value:
                   '${updatedAnimal.status.lastLoved.hour}:${updatedAnimal.status.lastLoved.minute.toString().padLeft(2, '0')}', context: context),
-                AnimalDetailInfo(label: 'Last Gaming', value:
+                AnimalDetailInfo(label: 'farm.last_gaming'.tr(), value:
                   '${updatedAnimal.status.lastPlayed.hour}:${updatedAnimal.status.lastPlayed.minute.toString().padLeft(2, '0')}', context: context),
               ],
             ),

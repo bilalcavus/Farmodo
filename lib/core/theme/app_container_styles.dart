@@ -2,12 +2,9 @@ import 'package:farmodo/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:kartal/kartal.dart';
 
-/// Container decoration styles for the app
-/// Use these predefined styles to maintain consistency across the app
 class AppContainerStyles {
   AppContainerStyles._();
 
-  // Light Theme Container Decorations
   static BoxDecoration lightPrimaryContainer({double borderRadius = 12}) {
     return BoxDecoration(
       color: AppColors.lightSurface,
@@ -57,7 +54,6 @@ class AppContainerStyles {
     );
   }
 
-  // Dark Theme Container Decorations
   static BoxDecoration darkPrimaryContainer({double borderRadius = 12}) {
     return BoxDecoration(
       color: AppColors.darkSurface,
@@ -107,7 +103,6 @@ class AppContainerStyles {
     );
   }
 
-  // Theme-aware getters (use these in widgets with BuildContext)
   static BoxDecoration primaryContainer(BuildContext context, {double borderRadius = 12}) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return isDark
@@ -140,7 +135,7 @@ class AppContainerStyles {
         ? darkAccentContainer(
             accentColor: accentColor,
             borderRadius: borderRadius,
-            opacity: opacity + 0.05, // Slightly more visible in dark mode
+            opacity: opacity + 0.05,
           )
         : lightAccentContainer(
             accentColor: accentColor,
@@ -149,7 +144,6 @@ class AppContainerStyles {
           );
   }
 
-  // Gradient containers
   static BoxDecoration gradientContainer({
     required List<Color> colors,
     double borderRadius = 12,
@@ -173,7 +167,6 @@ class AppContainerStyles {
     );
   }
 
-  // Glass morphism effect
   static BoxDecoration glassContainer(BuildContext context, {double borderRadius = 12}) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return BoxDecoration(

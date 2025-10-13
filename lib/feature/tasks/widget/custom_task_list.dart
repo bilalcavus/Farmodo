@@ -65,7 +65,7 @@ class CustomTaskList extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           Text(
-            'No tasks yet',
+            'home.no_tasks_yet_simple'.tr(),
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
               color: AppColors.textSecondary,
               fontWeight: FontWeight.w500,
@@ -73,7 +73,7 @@ class CustomTaskList extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            'Create your first task to get started',
+            'home.select_or_create_task'.tr(),
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
               color: AppColors.textSecondary.withAlpha(180),
             ),
@@ -165,7 +165,7 @@ class CustomTaskList extends StatelessWidget {
   Widget _buildTaskMetaInfo(BuildContext context, UserTaskModel task) {
     return Row(
       children: [
-        _buildMetaItem(context, Icons.timer_sharp, '${task.duration} ${'home.min'.tr()}', AppColors.textSecondary),
+        _buildMetaItem(context, Icons.timer_sharp, '${task.duration} ${'tasks.min'.tr()}', AppColors.textSecondary),
         context.dynamicWidth(0.01).width, 
         _buildMetaItem(context, Icons.star_rounded, '${task.xpReward} XP', Colors.amber),
       ],

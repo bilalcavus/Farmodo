@@ -1,4 +1,5 @@
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:farmodo/core/di/injection.dart';
 import 'package:farmodo/core/theme/app_colors.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
@@ -94,7 +95,7 @@ class StoreCard extends StatelessWidget {
                     context.dynamicHeight(0.006).height,
                     isOwned ?
                     Text(
-                      'Owned',
+                      'store.owned'.tr(),
                       style: TextStyle(
                         color: Colors.green,
                         fontWeight: FontWeight.bold,
@@ -116,7 +117,7 @@ class StoreCard extends StatelessWidget {
                               width: context.dynamicHeight(0.02),
                               child: const CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
                             )
-                          : Text('Buy', style: TextStyle(fontSize: buttonFont)),
+                          : Text('store.buy'.tr(), style: TextStyle(fontSize: buttonFont)),
                     )
                   ],
                 ),

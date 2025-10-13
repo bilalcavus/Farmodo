@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:farmodo/core/di/injection.dart';
 import 'package:farmodo/core/theme/app_container_styles.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
@@ -17,7 +18,7 @@ import 'package:farmodo/feature/store/store_view.dart';
 import 'package:farmodo/feature/tasks/view/add_task_view.dart';
 import 'package:flame/game.dart' hide Matrix4;
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' hide Trans;
 import 'package:hugeicons/hugeicons.dart';
 import 'package:kartal/kartal.dart';
 
@@ -215,13 +216,13 @@ class _ContentSections extends StatelessWidget {
         children: [
           FarmViewContainer(
             farmController: farmController,
-            title: "My Animals",
+            title: "farm.my_animals".tr(),
             icon: Icons.pets_rounded,
             iconColor: Color(0xFF10B981),
             iconContainerColor: Color(0xFF10B981).withAlpha(25),
             onTap: () => RouteHelper.push(context, const FarmView()),
             widget: Obx(() => 
-              Text('${farmController.totalAnimals} animals in your farm',style: Theme.of(context).textTheme.bodySmall)),
+              Text('${farmController.totalAnimals} ${'farm.animals_in_farm'.tr()}',style: Theme.of(context).textTheme.bodySmall)),
           ),
 
           context.dynamicHeight(0.01).height,
@@ -230,9 +231,9 @@ class _ContentSections extends StatelessWidget {
             farmController: farmController,
             iconContainerColor: const Color(0xFFEF4444).withAlpha(25),
             iconColor: const Color(0xFFEF4444),
-            title: "Farm Store",
+            title: "farm.farm_store".tr(),
             icon: HugeIcons.strokeRoundedShoppingCart01,
-            widget: Text('Buy animals', style: Theme.of(context).textTheme.bodySmall),
+            widget: Text('farm.buy_animals'.tr(), style: Theme.of(context).textTheme.bodySmall),
             onTap: (){
               if (!authService.isLoggedIn) {
                 _showLoginBottomSheet(context);
@@ -249,8 +250,8 @@ class _ContentSections extends StatelessWidget {
             icon: HugeIcons.strokeRoundedChampion,
             iconColor: const Color(0xFF6366F1),
             iconContainerColor: const Color(0xFF6366F1).withAlpha(25),
-            title: "Achievements & Quests",
-            widget: Text("Complete focus sessions and earn rewards", style: Theme.of(context).textTheme.bodySmall),
+            title: "gamification.achievements_and_quests".tr(),
+            widget: Text("farm.complete_focus_sessions".tr(), style: Theme.of(context).textTheme.labelSmall, maxLines: 1),
             onTap: (){
               if (!authService.isLoggedIn) {
                 _showLoginBottomSheet(context);
@@ -271,8 +272,8 @@ class _ContentSections extends StatelessWidget {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (context) => LoginBottomSheet(
-        title: 'Log in to buy animals and earn achievements',
-        subTitle: 'You need to log in to purchase animals, complete quests, and earn achievements.',
+        title: 'farm.login_to_buy_animals'.tr(),
+        subTitle: 'farm.login_to_purchase_animals'.tr(),
       ),
     );
   }

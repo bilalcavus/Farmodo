@@ -1,8 +1,9 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/core/utility/extension/ontap_extension.dart';
 import 'package:farmodo/data/models/achievement_model.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' hide Trans;
 
 class AchievementUnlockAnimation extends StatefulWidget {
   final Achievement achievement;
@@ -161,7 +162,7 @@ class _AchievementUnlockAnimationState extends State<AchievementUnlockAnimation>
                           
                           // "Achievement Unlocked" text
                           Text(
-                            '🎉 Başarı Açıldı!',
+                            'gamification.achievement_unlocked'.tr(),
                             style: Theme.of(context).textTheme.titleLarge?.copyWith(
                               fontWeight: FontWeight.bold,
                               color: widget.achievement.rarityColor,
@@ -263,7 +264,7 @@ class _AchievementUnlockAnimationState extends State<AchievementUnlockAnimation>
                           
                           // Tap to dismiss
                           Text(
-                            'Devam etmek için dokunun',
+                            'gamification.tap_to_continue'.tr(),
                             style: Theme.of(context).textTheme.labelSmall?.copyWith(
                               color: Colors.grey.shade500,
                             ),

@@ -1,4 +1,5 @@
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/feature/gamification/viewmodel/gamification_controller.dart';
 import 'package:farmodo/feature/gamification/widget/main/filter_chip_widget.dart';
@@ -25,35 +26,35 @@ class AchievementsFilters extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         children: [
           FilterChipWidget(
-            label: 'All', 
+            label: 'gamification.all'.tr(), 
             isSelected: controller.achievementFilter.value == 'All', 
             onTap: () =>controller.setAchievementFilter('All')),
           FilterChipWidget(
-            label: 'Unlocked', 
+            label: 'gamification.unlocked'.tr(), 
             isSelected: controller.achievementFilter.value == 'Unlocked', 
             onTap: () => controller.setAchievementFilter('Unlocked')),
           FilterChipWidget(
-            label: 'Locked', 
+            label: 'gamification.locked'.tr(), 
             isSelected: controller.achievementFilter.value == 'Locked', 
             onTap: () => controller.setAchievementFilter('Locked')),
           FilterChipWidget(
-            label: 'Widespread', 
+            label: 'gamification.widespread'.tr(), 
             isSelected: controller.achievementFilter.value == 'Widespread', 
             onTap: () => controller.setAchievementFilter('Widespread')),
           FilterChipWidget(
-            label: 'Rare', 
+            label: 'gamification.rare'.tr(), 
             isSelected: controller.achievementFilter.value == 'Rare', 
             onTap: () => controller.setAchievementFilter('Rare')),
           FilterChipWidget(
-            label: 'Epic', 
+            label: 'gamification.epic'.tr(), 
             isSelected: controller.achievementFilter.value == 'Epic', 
             onTap: () => controller.setAchievementFilter('Epic')),
           FilterChipWidget(
-            label: 'Legendary', 
+            label: 'gamification.legendary'.tr(), 
             isSelected: controller.achievementFilter.value == 'Legendary', 
             onTap: () => controller.setAchievementFilter('Legendary')),
           FilterChipWidget(
-            label: 'Legend',
+            label: 'gamification.legend'.tr(),
             isSelected: controller.achievementFilter.value == 'Legend', 
             onTap: () => controller.setAchievementFilter('Legend')),
         ],

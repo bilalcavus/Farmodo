@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/core/utility/extension/route_helper.dart';
 import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
@@ -21,7 +22,7 @@ class AccountSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Account',
+          'account.profile'.tr(),
           style: TextStyle(
             fontSize: context.dynamicHeight(0.015),
             fontWeight: FontWeight.w300,
@@ -33,14 +34,14 @@ class AccountSection extends StatelessWidget {
             SettingsItemWidget(
               context: context,
               icon: HugeIcons.strokeRoundedUser,
-              title: 'Profile Detail',
+              title: 'account.profile_detail'.tr(),
               onTap: () => RouteHelper.push(context, const ProfileDetailView()),
             ),
   
             SettingsItemWidget(
               context: context,
               icon: HugeIcons.strokeRoundedDelete04,
-              title: 'Delete Account',
+              title: 'account.delete_account'.tr(),
               onTap: () => RouteHelper.push(context, const AccountDeletionView()),
             ),
           ],
