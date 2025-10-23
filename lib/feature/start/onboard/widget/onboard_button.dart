@@ -1,5 +1,4 @@
 
-import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:kartal/kartal.dart';
 
@@ -19,7 +18,6 @@ class OnboardButton extends StatelessWidget {
       padding: context.padding.high,
       child: SizedBox(
         width: double.infinity,
-        height: context.dynamicHeight(0.05),
         child: ElevatedButton(
           onPressed: onPressed,
           style: ElevatedButton.styleFrom(
@@ -27,7 +25,7 @@ class OnboardButton extends StatelessWidget {
             shape: RoundedRectangleBorder(
               borderRadius: context.border.lowBorderRadius
             ),
-            elevation: 2,
+            elevation: 1,
           ),
           child: Text(
             buttonText,

@@ -167,7 +167,7 @@ class _OnboardScreenState extends State<OnboardScreen> {
                     ),
                     context.dynamicHeight(0.03).height,
                     Expanded(
-                      flex: 1,
+                      flex: 2,
                       child: OnboardContent(
                         title: data.title,
                         description: data.description,

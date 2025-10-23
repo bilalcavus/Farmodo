@@ -86,7 +86,10 @@ class _SplashViewState extends State<SplashView> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Lottie.asset('assets/lottie/blue_loading.json', height: 150)
+        child: Lottie.asset(
+          'assets/lottie/splash_lottie.json',
+          height: 100
+        ),
       ),
     );
   }

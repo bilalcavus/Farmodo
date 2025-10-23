@@ -178,8 +178,10 @@ class TimerService : Service() {
             .setContentIntent(pendingIntent)
             .setOngoing(true)
             .setSilent(true)
-            .setOnlyAlertOnce(true)
+            .setOnlyAlertOnce(true) // Samsung için sadece bir kez uyar
             .setShowWhen(false)
+            .setPriority(NotificationCompat.PRIORITY_LOW) // Samsung için düşük öncelik
+            .setVisibility(NotificationCompat.VISIBILITY_PRIVATE) // Samsung için özel görünürlük
             .build()
     }
 

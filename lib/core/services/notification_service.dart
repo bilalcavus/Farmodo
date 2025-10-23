@@ -98,13 +98,13 @@ class NotificationService {
         return;
       }
     }
-    // Progress bar için custom layout
+    // Samsung cihazları için özel optimizasyon
     final androidDetails = AndroidNotificationDetails(
       _timerChannelId,
       _timerChannelName,
       channelDescription: _timerChannelDescription,
-      importance: Importance.high,
-      priority: Priority.high,
+      importance: Importance.low, // Samsung için düşük önem
+      priority: Priority.low, // Samsung için düşük öncelik
       ongoing: true,
       autoCancel: false,
       showWhen: false,
@@ -115,12 +115,14 @@ class NotificationService {
       largeIcon: const DrawableResourceAndroidBitmap('@drawable/ic_notification'),
       category: AndroidNotificationCategory.progress,
       subText: status,
+      // Samsung için özel ayarlar
+      visibility: NotificationVisibility.private,
+      onlyAlertOnce: true, // Samsung için sadece bir kez uyar
       styleInformation: BigTextStyleInformation(
         '$status • $taskTitle',
         contentTitle: '<b>$timeText</b>',
         htmlFormatContentTitle: true,
       ),
-
     );
 
     const iosDetails = DarwinNotificationDetails(
