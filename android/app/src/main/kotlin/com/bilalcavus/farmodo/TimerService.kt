@@ -371,7 +371,7 @@ class TimerService : Service() {
         val powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
         wakeLock = powerManager.newWakeLock(
             PowerManager.PARTIAL_WAKE_LOCK,
-            "Farmodo::TimerWakeLock"
+            "Pomodoro Timer : Focus & Farm::TimerWakeLock"
         ).apply {
             acquire(10*60*1000L /*10 minutes*/)
         }

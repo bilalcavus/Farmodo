@@ -1,6 +1,6 @@
 {
   "common": {
-    "app_name": "Farmodo",
+    "app_name": "Pomodoro Timer : Focus & Farm",
     "ok": "OK",
     "cancel": "Avbryt",
     "done": "Klar",
@@ -34,7 +34,7 @@
   "auth": {
     "welcome_back": "Välkommen tillbaka! 👋",
     "sign_in_subtitle": "Logga in för att fortsätta fokusera!",
-    "join_farmodo": "Gå med i Farmodo nu ⚡️",
+    "join_farmodo": "Gå med i Pomodoro Timer : Focus & Farm nu ⚡️",
     "sign_up_subtitle": "Registrera dig för att börja dina mål!",
     "email": "E-post",
     "password": "Lösenord",
@@ -367,12 +367,12 @@
     "troubleshooting": "Felsökning",
     "android_step_1": "Håll ned på ett tomt område på startskärmen",
     "android_step_2": "Tryck på alternativet \"Widget\"",
-    "android_step_3": "Hitta \"Farmodo\"-appen",
+    "android_step_3": "Hitta \"Pomodoro Timer : Focus & Farm\"-appen",
     "android_step_4": "Välj \"Pomodoro Timer\"-widget",
     "android_step_5": "Dra till önskad position på startskärmen",
     "ios_step_1": "Håll ned på ett tomt område på startskärmen",
     "ios_step_2": "Tryck på \"+\"-knappen i övre vänstra hörnet",
-    "ios_step_3": "Sök efter \"Farmodo\"-appen",
+    "ios_step_3": "Sök efter \"Pomodoro Timer : Focus & Farm\"-appen",
     "ios_step_4": "Välj widget-storlek",
     "ios_step_5": "Tryck på \"Lägg till Widget\"-knappen",
     "feature_realtime_timer": "Realtids timer-visning",
@@ -401,11 +401,11 @@
   },
   
   "privacy": {
-    "privacy_policy_text": "Farmodo-appen är engagerad i att skydda användarnas integritet. Denna integritetspolicy förklarar hur vi samlar in, använder och skyddar din personliga information.\n\n• När du loggar in med ett Google-konto samlar vi in din e-postadress, namn och profilbild.\n• Gårds- och djursköteldata lagras säkert i Firebase.\n• Vi delar inte dina data med tredje parter.\n• Dina data tas säkert bort när du tar bort ditt konto.\n\nFör mer information, vänligen granska vår fullständiga integritetspolicy."
+    "privacy_policy_text": "Pomodoro Timer : Focus & Farm-appen är engagerad i att skydda användarnas integritet. Denna integritetspolicy förklarar hur vi samlar in, använder och skyddar din personliga information.\n\n• När du loggar in med ett Google-konto samlar vi in din e-postadress, namn och profilbild.\n• Gårds- och djursköteldata lagras säkert i Firebase.\n• Vi delar inte dina data med tredje parter.\n• Dina data tas säkert bort när du tar bort ditt konto.\n\nFör mer information, vänligen granska vår fullständiga integritetspolicy."
   },
   
   "terms": {
-    "terms_and_conditions_text": "Genom att använda Farmodo-appen accepterar du följande villkor:\n\n• Du kommer endast att använda appen för lagliga syften.\n• Du kommer inte att kränka andras rättigheter.\n• Du kommer inte att använda appen för att utnyttja säkerhetsbrister.\n• Du kommer inte att tillhandahålla falsk information.\n• Om du bryter mot dessa villkor kan ditt konto suspendas.\n\nDessa villkor är underkastade Republiken Turkiets lagar."
+    "terms_and_conditions_text": "Genom att använda Pomodoro Timer : Focus & Farm-appen accepterar du följande villkor:\n\n• Du kommer endast att använda appen för lagliga syften.\n• Du kommer inte att kränka andras rättigheter.\n• Du kommer inte att använda appen för att utnyttja säkerhetsbrister.\n• Du kommer inte att tillhandahålla falsk information.\n• Om du bryter mot dessa villkor kan ditt konto suspendas.\n\nDessa villkor är underkastade Republiken Turkiets lagar."
   },
   
   "messages": {

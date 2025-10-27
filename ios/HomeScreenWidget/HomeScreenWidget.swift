@@ -16,7 +16,7 @@ struct Provider: TimelineProvider {
             secondsRemaining: 1500,
             totalSeconds: 1500,
             isOnBreak: false,
-            taskTitle: "Farmodo Timer"
+            taskTitle: "Pomodoro Timer"
         )
     }
 

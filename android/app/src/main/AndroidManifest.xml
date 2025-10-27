@@ -13,7 +13,7 @@
 
     
     <application
-        android:label="Farmodo"
+        android:label="Pomodoro Timer"
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon"
         android:usesCleartextTraffic="false"

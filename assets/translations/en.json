@@ -1,6 +1,6 @@
 {
   "common": {
-    "app_name": "Farmodo",
+    "app_name": "Pomodoro Timer : Focus & Farm",
     "ok": "OK",
     "cancel": "Cancel",
     "done": "Done",
@@ -34,7 +34,7 @@
   "auth": {
     "welcome_back": "Welcome back! 👋",
     "sign_in_subtitle": "Sign in to continue your focus!",
-    "join_farmodo": "Join Farmodo Now ⚡️",
+    "join_farmodo": "Join Pomodoro Timer : Focus & Farm Now ⚡️",
     "sign_up_subtitle": "Sign up to start your goals!",
     "email": "Email",
     "password": "Password",
@@ -367,12 +367,12 @@
     "troubleshooting": "Troubleshooting",
     "android_step_1": "Long press on an empty area on the home screen",
     "android_step_2": "Tap on the \"Widgets\" option",
-    "android_step_3": "Find the \"Farmodo\" app",
+    "android_step_3": "Find the \"Pomodoro Timer : Focus & Farm\" app",
     "android_step_4": "Select \"Pomodoro Timer\" widget",
     "android_step_5": "Drag to the desired location on the home screen",
     "ios_step_1": "Long press on an empty area on the home screen",
     "ios_step_2": "Tap the \"+\" button in the upper left corner",
-    "ios_step_3": "Search for \"Farmodo\" app",
+    "ios_step_3": "Search for \"Pomodoro Timer : Focus & Farm\" app",
     "ios_step_4": "Select the widget size",
     "ios_step_5": "Tap the \"Add Widget\" button",
     "feature_realtime_timer": "Real-time timer display",
@@ -401,11 +401,11 @@
   },
   
   "privacy": {
-    "privacy_policy_text": "The Farmodo app is committed to protecting the privacy of its users. This privacy policy explains how we collect, use, and protect your personal information.\n\n• When you log in with a Google account, we collect your email address, name, and profile photo.\n• Your farm and animal management data is securely stored in Firebase.\n• We do not share your data with third parties.\n• Your data is securely deleted when you delete your account.\n\nFor more information, please review our full privacy policy."
+    "privacy_policy_text": "The Pomodoro Timer : Focus & Farm app is committed to protecting the privacy of its users. This privacy policy explains how we collect, use, and protect your personal information.\n\n• When you log in with a Google account, we collect your email address, name, and profile photo.\n• Your farm and animal management data is securely stored in Firebase.\n• We do not share your data with third parties.\n• Your data is securely deleted when you delete your account.\n\nFor more information, please review our full privacy policy."
   },
   
   "terms": {
-    "terms_and_conditions_text": "By using the Farmodo app, you agree to the following terms:\n\n• You will use the app only for lawful purposes.\n• You will not violate the rights of others.\n• You will not use the app to exploit security vulnerabilities.\n• You will not provide false information.\n• If you violate these terms, your account may be suspended.\n\nThese terms are subject to the legislation of the Republic of Turkey."
+    "terms_and_conditions_text": "By using the Pomodoro Timer : Focus & Farm app, you agree to the following terms:\n\n• You will use the app only for lawful purposes.\n• You will not violate the rights of others.\n• You will not use the app to exploit security vulnerabilities.\n• You will not provide false information.\n• If you violate these terms, your account may be suspended.\n\nThese terms are subject to the legislation of the Republic of Turkey."
   },
   
   "messages": {

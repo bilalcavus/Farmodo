@@ -1,6 +1,6 @@
 {
   "common": {
-    "app_name": "Farmodo",
+    "app_name": "Pomodoro Timer : Focus & Farm",
     "ok": "OK",
     "cancel": "Avbryt",
     "done": "Ferdig",
@@ -34,7 +34,7 @@
   "auth": {
     "welcome_back": "Velkommen tilbake! 👋",
     "sign_in_subtitle": "Logg inn for å fortsette å fokusere!",
-    "join_farmodo": "Bli med i Farmodo nå ⚡️",
+    "join_farmodo": "Bli med i Pomodoro Timer : Focus & Farm nå ⚡️",
     "sign_up_subtitle": "Registrer deg for å starte målene dine!",
     "email": "E-post",
     "password": "Passord",
@@ -367,12 +367,12 @@
     "troubleshooting": "Feilsøking",
     "android_step_1": "Langt trykk på et tomt område på hjemmeskjermen",
     "android_step_2": "Trykk på \"Widget\"-alternativet",
-    "android_step_3": "Finn \"Farmodo\"-appen",
+    "android_step_3": "Finn \"Pomodoro Timer : Focus & Farm\"-appen",
     "android_step_4": "Velg \"Pomodoro Timer\"-widget",
     "android_step_5": "Dra til ønsket posisjon på hjemmeskjermen",
     "ios_step_1": "Langt trykk på et tomt område på hjemmeskjermen",
     "ios_step_2": "Trykk på \"+\"-knappen øverst til venstre",
-    "ios_step_3": "Søk etter \"Farmodo\"-appen",
+    "ios_step_3": "Søk etter \"Pomodoro Timer : Focus & Farm\"-appen",
     "ios_step_4": "Velg widget-størrelse",
     "ios_step_5": "Trykk på \"Legg til Widget\"-knappen",
     "feature_realtime_timer": "Sanntid timervisning",
@@ -401,11 +401,11 @@
   },
   
   "privacy": {
-    "privacy_policy_text": "Farmodo-appen er forpliktet til å beskytte brukernes personvern. Denne personvernreglene forklarer hvordan vi samler inn, bruker og beskytter din personlige informasjon.\n\n• Når du logger inn med Google-konto, samler vi inn din e-postadresse, navn og profilbilde.\n• Gårds- og dyreadministrasjonsdata lagres sikkert i Firebase.\n• Vi deler ikke dataene dine med tredjeparter.\n• Dataene dine slettes sikkert når du sletter kontoen.\n\nFor mer informasjon, vennligst se gjennom vår fullstendige personvernregler."
+    "privacy_policy_text": "Pomodoro Timer : Focus & Farm-appen er forpliktet til å beskytte brukernes personvern. Denne personvernreglene forklarer hvordan vi samler inn, bruker og beskytter din personlige informasjon.\n\n• Når du logger inn med Google-konto, samler vi inn din e-postadresse, navn og profilbilde.\n• Gårds- og dyreadministrasjonsdata lagres sikkert i Firebase.\n• Vi deler ikke dataene dine med tredjeparter.\n• Dataene dine slettes sikkert når du sletter kontoen.\n\nFor mer informasjon, vennligst se gjennom vår fullstendige personvernregler."
   },
   
   "terms": {
-    "terms_and_conditions_text": "Ved å bruke Farmodo-appen, godtar du følgende vilkår:\n\n• Du vil bare bruke appen til lovlige formål.\n• Du vil ikke krenke andres rettigheter.\n• Du vil ikke bruke appen til å utnytte sikkerhetshull.\n• Du vil ikke gi falsk informasjon.\n• Hvis du bryter disse vilkårene, kan kontoen din bli suspendert.\n\nDisse vilkårene er underlagt Tyrkias republikks lover."
+    "terms_and_conditions_text": "Ved å bruke Pomodoro Timer : Focus & Farm-appen, godtar du følgende vilkår:\n\n• Du vil bare bruke appen til lovlige formål.\n• Du vil ikke krenke andres rettigheter.\n• Du vil ikke bruke appen til å utnytte sikkerhetshull.\n• Du vil ikke gi falsk informasjon.\n• Hvis du bryter disse vilkårene, kan kontoen din bli suspendert.\n\nDisse vilkårene er underlagt Tyrkias republikks lover."
   },
   
   "messages": {

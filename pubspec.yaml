@@ -1,5 +1,5 @@
 name: farmodo
-description: "Farmodo - Çiftlik hayvanları bakım ve görev takip uygulaması"
+description: "Pomodoro Timer : Focus & Farm"
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.4.6+1
 

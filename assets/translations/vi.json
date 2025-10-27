@@ -1,6 +1,6 @@
 {
   "common": {
-    "app_name": "Farmodo",
+    "app_name": "Pomodoro Timer : Focus & Farm",
     "ok": "OK",
     "cancel": "Hủy",
     "done": "Hoàn thành",
@@ -34,7 +34,7 @@
   "auth": {
     "welcome_back": "Chào mừng trở lại! 👋",
     "sign_in_subtitle": "Đăng nhập để tiếp tục tập trung!",
-    "join_farmodo": "Tham gia Farmodo Ngay Bây Giờ ⚡️",
+    "join_farmodo": "Tham gia Pomodoro Timer : Focus & Farm Ngay Bây Giờ ⚡️",
     "sign_up_subtitle": "Đăng ký để bắt đầu mục tiêu của bạn!",
     "email": "Email",
     "password": "Mật khẩu",
@@ -367,12 +367,12 @@
     "troubleshooting": "Khắc phục sự cố",
     "android_step_1": "Nhấn giữ vào vùng trống trên màn hình chính",
     "android_step_2": "Chạm vào tùy chọn \"Widget\"",
-    "android_step_3": "Tìm ứng dụng \"Farmodo\"",
+    "android_step_3": "Tìm ứng dụng \"Pomodoro Timer : Focus & Farm\"",
     "android_step_4": "Chọn widget \"Bộ đếm thời gian Pomodoro\"",
     "android_step_5": "Kéo đến vị trí mong muốn trên màn hình chính",
     "ios_step_1": "Nhấn giữ vào vùng trống trên màn hình chính",
     "ios_step_2": "Chạm vào nút \"+\" ở góc trên bên trái",
-    "ios_step_3": "Tìm kiếm ứng dụng \"Farmodo\"",
+    "ios_step_3": "Tìm kiếm ứng dụng \"Pomodoro Timer : Focus & Farm\"",
     "ios_step_4": "Chọn kích thước widget",
     "ios_step_5": "Chạm vào nút \"Thêm Widget\"",
     "feature_realtime_timer": "Hiển thị bộ đếm thời gian thời gian thực",
@@ -401,11 +401,11 @@
   },
   
   "privacy": {
-    "privacy_policy_text": "Ứng dụng Farmodo cam kết bảo vệ quyền riêng tư của người dùng. Chính sách bảo mật này giải thích cách chúng tôi thu thập, sử dụng và bảo vệ thông tin cá nhân của bạn.\n\n• Khi bạn đăng nhập bằng tài khoản Google, chúng tôi thu thập địa chỉ email, tên và ảnh hồ sơ của bạn.\n• Dữ liệu quản lý nông trại và động vật của bạn được lưu trữ an toàn trong Firebase.\n• Chúng tôi không chia sẻ dữ liệu của bạn với bên thứ ba.\n• Dữ liệu của bạn được xóa an toàn khi bạn xóa tài khoản.\n\nĐể biết thêm thông tin, vui lòng xem chính sách bảo mật đầy đủ của chúng tôi."
+    "privacy_policy_text": "Ứng dụng Pomodoro Timer : Focus & Farm cam kết bảo vệ quyền riêng tư của người dùng. Chính sách bảo mật này giải thích cách chúng tôi thu thập, sử dụng và bảo vệ thông tin cá nhân của bạn.\n\n• Khi bạn đăng nhập bằng tài khoản Google, chúng tôi thu thập địa chỉ email, tên và ảnh hồ sơ của bạn.\n• Dữ liệu quản lý nông trại và động vật của bạn được lưu trữ an toàn trong Firebase.\n• Chúng tôi không chia sẻ dữ liệu của bạn với bên thứ ba.\n• Dữ liệu của bạn được xóa an toàn khi bạn xóa tài khoản.\n\nĐể biết thêm thông tin, vui lòng xem chính sách bảo mật đầy đủ của chúng tôi."
   },
   
   "terms": {
-    "terms_and_conditions_text": "Bằng việc sử dụng ứng dụng Farmodo, bạn đồng ý với các điều khoản sau:\n\n• Bạn sẽ chỉ sử dụng ứng dụng cho mục đích hợp pháp.\n• Bạn sẽ không vi phạm quyền của người khác.\n• Bạn sẽ không sử dụng ứng dụng để khai thác lỗ hổng bảo mật.\n• Bạn sẽ không cung cấp thông tin sai.\n• Nếu bạn vi phạm các điều khoản này, tài khoản của bạn có thể bị đình chỉ.\n\nCác điều khoản này tuân theo luật pháp của Cộng hòa Thổ Nhĩ Kỳ."
+    "terms_and_conditions_text": "Bằng việc sử dụng ứng dụng Pomodoro Timer : Focus & Farm, bạn đồng ý với các điều khoản sau:\n\n• Bạn sẽ chỉ sử dụng ứng dụng cho mục đích hợp pháp.\n• Bạn sẽ không vi phạm quyền của người khác.\n• Bạn sẽ không sử dụng ứng dụng để khai thác lỗ hổng bảo mật.\n• Bạn sẽ không cung cấp thông tin sai.\n• Nếu bạn vi phạm các điều khoản này, tài khoản của bạn có thể bị đình chỉ.\n\nCác điều khoản này tuân theo luật pháp của Cộng hòa Thổ Nhĩ Kỳ."
   },
   
   "messages": {

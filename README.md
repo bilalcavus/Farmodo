@@ -1,10 +1,10 @@
-# Farmodo 🌾⏱️
+# Pomodoro Timer : Focus & Farm 🌾⏱️
 
-Farmodo is a unique productivity application that combines the Pomodoro Technique with farm simulation to make time management fun and rewarding.
+Pomodoro Timer : Focus & Farm is a unique productivity application that combines the Pomodoro Technique with farm simulation to make time management fun and rewarding.
 
 ## 📱 About
 
-Farmodo transforms your productivity journey into an engaging experience. Complete tasks using the Pomodoro technique, earn XP, and use your rewards to feed and grow your virtual farm animals. The more productive you are, the more your farm flourishes!
+FarmoPomodoro Timer : Focus & Farm transforms your productivity journey into an engaging experience. Complete tasks using the Pomodoro technique, earn XP, and use your rewards to feed and grow your virtual farm animals. The more productive you are, the more your farm flourishes!
 
 ## ✨ Features
 
@@ -94,7 +94,7 @@ Farmodo transforms your productivity journey into an engaging experience. Comple
 1. **Clone the repository**
 ```bash
 git clone <repository-url>
-cd Farmodo
+cd Pomodoro Timer : Focus & Farm
 ```
 
 2. **Install dependencies**

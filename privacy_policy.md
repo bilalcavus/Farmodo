@@ -1,9 +1,9 @@
-# Farmodo Gizlilik Politikası
+# Pomodoro Timer : Focus & Farm Gizlilik Politikası
 
 Son güncelleme: [18/08/2025]
 
 ## 1. Giriş
-Farmodo ("biz", "bizim", "uygulamızın") kullanıcılarının gizliliğini korumaya kararlıyız. Bu gizlilik politikası, kişisel bilgilerinizi nasıl topladığımızı, kullandığımızı ve koruduğumuzu açıklar.
+Pomodoro Timer : Focus & Farm ("biz", "bizim", "uygulamızın") kullanıcılarının gizliliğini korumaya kararlıyız. Bu gizlilik politikası, kişisel bilgilerinizi nasıl topladığımızı, kullandığımızı ve koruduğumuzu açıklar.
 
 ## 2. Topladığımız Bilgiler
 ### 2.1 Hesap Bilgileri
