@@ -44,7 +44,10 @@ class _SplashViewState extends State<SplashView> {
       // Notification permission kontrolü ve isteği
       await _requestNotificationPermission();
       
-      await Future.delayed(const Duration(seconds: 2));
+      // Battery optimization permission kontrolü ve isteği
+      await _requestBatteryOptimizationPermission();
+      
+      await Future.delayed(const Duration(seconds: 3));
       
       if (_authService.isLoggedIn) {
         await _initializeUser();
@@ -82,13 +85,33 @@ class _SplashViewState extends State<SplashView> {
       // Permission hatası olsa bile uygulama açılsın
     }
   }
+
+  Future<void> _requestBatteryOptimizationPermission() async {
+    try {
+      // Battery optimization permission kontrolü
+      final hasPermission = await PermissionService.checkBatteryOptimizationPermission();
+      if (!hasPermission) {
+        // Permission yoksa iste, ama uygulama açılmaya devam etsin
+        await PermissionService.requestBatteryOptimizationPermission();
+      }
+    } catch (e) {
+      debugPrint('Battery optimization permission error: $e');
+      // Permission hatası olsa bile uygulama açılsın
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Lottie.asset(
-          'assets/lottie/splash_lottie.json',
-          height: 100
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset('assets/logo/splash_logo.png', height: 200,),
+            Lottie.asset(
+              'assets/lottie/splash_lottie.json',
+              height: 100
+            ),
+          ],
         ),
       ),
     );
