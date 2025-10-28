@@ -227,7 +227,7 @@ class FlipTimer extends StatelessWidget {
       child: IconButton(
         onPressed: onTap,
         icon: icon,
-        color: Colors.white,),
+      ),
     );
   }
 }
