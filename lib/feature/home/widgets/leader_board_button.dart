@@ -14,8 +14,9 @@ class LeaderBoardButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: context.dynamicHeight(0.04),
+      width: context.dynamicWidth(0.35),
       padding: context.padding.horizontalLow,
-      decoration: AppContainerStyles.secondaryContainer(context),
+      decoration: AppContainerStyles.primaryContainer(context),
       child: Row(
         children: [
           Icon(

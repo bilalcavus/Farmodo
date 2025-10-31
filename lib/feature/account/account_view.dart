@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:farmodo/core/di/injection.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
+import 'package:farmodo/core/utility/extension/ontap_extension.dart';
 import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
 import 'package:farmodo/data/services/auth_service.dart';
 import 'package:farmodo/data/services/firestore_service.dart';
@@ -9,9 +10,14 @@ import 'package:farmodo/feature/account/widget/level_bar.dart';
 import 'package:farmodo/feature/account/widget/login_prompt.dart';
 import 'package:farmodo/feature/account/widget/preferences_section.dart';
 import 'package:farmodo/feature/auth/login/viewmodel/login_controller.dart';
+import 'package:farmodo/feature/home/widgets/leader_board_button.dart';
+import 'package:farmodo/feature/home/widgets/user_xp.dart';
+import 'package:farmodo/feature/leader_board/view/leader_board_view.dart';
 import 'package:farmodo/feature/navigation/navigation_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart' hide Trans;
+import 'package:get/get_core/src/get_main.dart';
 
 class AccountView extends StatefulWidget {
   const AccountView({super.key});
@@ -128,7 +134,10 @@ class _AccountViewState extends State<AccountView> {
             ],
             if (_authService.isLoggedIn) ...[
               LevelBar(authService: _authService),
-              context.dynamicHeight(0.03).height,
+              UserXp(authService: _authService),
+              context.dynamicWidth(0.02).width,
+          LeaderBoardButton().onTap(() => Get.to(() => const LeaderBoardView())),
+              context.dynamicHeight(0.015).height,
               AccountSection(context: context),
               context.dynamicHeight(0.03).height,
             ],

@@ -2,7 +2,6 @@ import 'package:farmodo/core/di/injection.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
 import 'package:farmodo/data/services/auth_service.dart';
-import 'package:farmodo/feature/home/widgets/home_header.dart';
 import 'package:farmodo/feature/home/widgets/pomodoro_timer.dart';
 import 'package:farmodo/feature/home/widgets/time_start_button.dart';
 import 'package:farmodo/feature/navigation/navigation_controller.dart';
@@ -31,7 +30,7 @@ class _HomeViewState extends State<HomeView> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              if(authService.isLoggedIn) const HomeHeader(),
+              // if(authService.isLoggedIn) const HomeHeader(),
               context.dynamicHeight(0.05).height,
               PomodoroTimer(timerController: timerController),
               context.dynamicHeight(0.02).height,

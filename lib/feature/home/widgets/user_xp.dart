@@ -7,6 +7,7 @@ import 'package:farmodo/data/services/gamification/gamification_service.dart';
 import 'package:flutter/material.dart';
 import 'package:kartal/kartal.dart';
 
+
 class UserXp extends StatelessWidget {
   const UserXp({
     super.key,
@@ -18,7 +19,7 @@ class UserXp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(context.dynamicHeight(0.02)),
+      padding: EdgeInsets.symmetric(vertical: context.dynamicHeight(0.01)),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -68,7 +69,6 @@ class UserXp extends StatelessWidget {
               ],
             ),
           ),
-          
         ],
       ),
     );
