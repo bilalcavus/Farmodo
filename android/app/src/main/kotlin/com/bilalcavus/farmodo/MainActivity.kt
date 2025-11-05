@@ -2,12 +2,14 @@ package com.bilalcavus.farmodo
 
 import android.content.Intent
 import android.os.Build
+import android.os.PowerManager
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 
 class MainActivity : FlutterActivity() {
     private val CHANNEL = "com.bilalcavus.farmodo/timer"
+    private var wakeLock: PowerManager.WakeLock? = null
     
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
@@ -33,6 +35,14 @@ class MainActivity : FlutterActivity() {
                 }
                 "stopTimerService" -> {
                     stopTimerService()
+                    result.success(true)
+                }
+                "acquireWakeLock" -> {
+                    val acquired = acquireWakeLock()
+                    result.success(acquired)
+                }
+                "releaseWakeLock" -> {
+                    releaseWakeLock()
                     result.success(true)
                 }
                 else -> {
@@ -86,11 +96,40 @@ class MainActivity : FlutterActivity() {
         }
         startService(intent)
     }
-    
+
     private fun stopTimerService() {
         val intent = Intent(this, TimerService::class.java).apply {
             action = TimerService.ACTION_STOP_TIMER
         }
         startService(intent)
+    }
+
+    private fun acquireWakeLock(): Boolean {
+        val powerManager = getSystemService(POWER_SERVICE) as PowerManager
+        if (wakeLock == null) {
+            wakeLock = powerManager.newWakeLock(
+                PowerManager.PARTIAL_WAKE_LOCK,
+                "Farmodo::TimerWakeLock"
+            ).apply {
+                setReferenceCounted(false)
+            }
+        }
+
+        if (wakeLock?.isHeld != true) {
+            wakeLock?.acquire()
+        }
+
+        return wakeLock?.isHeld == true
+    }
+
+    private fun releaseWakeLock() {
+        if (wakeLock?.isHeld == true) {
+            wakeLock?.release()
+        }
+    }
+
+    override fun onDestroy() {
+        releaseWakeLock()
+        super.onDestroy()
     }
 }

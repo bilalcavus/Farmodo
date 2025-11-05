@@ -373,7 +373,10 @@ class TimerService : Service() {
             PowerManager.PARTIAL_WAKE_LOCK,
             "Pomodoro Timer : Focus & Farm::TimerWakeLock"
         ).apply {
-            acquire(10*60*1000L /*10 minutes*/)
+            setReferenceCounted(false)
+            if (!isHeld) {
+                acquire()
+            }
         }
     }
 
@@ -387,11 +390,12 @@ class TimerService : Service() {
         super.onDestroy()
         timer?.cancel()
         timer = null
-        wakeLock?.release()
+        if (wakeLock?.isHeld == true) {
+            wakeLock?.release()
+        }
         mediaPlayer?.release()
         mediaPlayer = null
     }
 
     override fun onBind(intent: Intent?): IBinder? = null
 }
-
