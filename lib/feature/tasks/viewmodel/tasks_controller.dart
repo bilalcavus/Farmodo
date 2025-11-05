@@ -292,12 +292,12 @@ class TasksController extends GetxController {
     }
 
     if (selectedTotalSession.value == null) {
-      errorMessage.value = 'Select farmodo minutes or session';
+      errorMessage.value = 'Select pomodoro minutes or session';
       return;
     }
 
     if (selectedTotalSession.value == null) {
-      errorMessage.value = 'Select farmodo session';
+      errorMessage.value = 'Select pomodoro session';
       return;
     }
     

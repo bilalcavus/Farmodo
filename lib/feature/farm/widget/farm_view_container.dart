@@ -52,15 +52,17 @@ class FarmViewContainer extends StatelessWidget {
                   ),
                 ),
                 context.dynamicWidth(0.04).width,
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(title, style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700,)),
-                    context.dynamicHeight(0.005).height,
-                    widget,
-                  ],
+                Expanded(
+                  flex: 9,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(title, style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700)),
+                      context.dynamicHeight(0.005).height,
+                      widget,
+                    ],
+                  ),
                 ),
-                Spacer(),
                 Icon(
                   Icons.arrow_forward_ios_rounded,
                   size: context.dynamicHeight(0.02),

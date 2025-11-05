@@ -222,7 +222,7 @@ class _ContentSections extends StatelessWidget {
             iconContainerColor: Color(0xFF10B981).withAlpha(25),
             onTap: () => RouteHelper.push(context, const FarmView()),
             widget: Obx(() => 
-              Text('${farmController.totalAnimals} ${'farm.animals_in_farm'.tr()}',style: Theme.of(context).textTheme.bodySmall)),
+              Text('${farmController.totalAnimals} ${'farm.animals_in_farm'.tr()}',style: Theme.of(context).textTheme.labelSmall)),
           ),
 
           context.dynamicHeight(0.01).height,
@@ -233,7 +233,7 @@ class _ContentSections extends StatelessWidget {
             iconColor: const Color(0xFFEF4444),
             title: "farm.farm_store".tr(),
             icon: HugeIcons.strokeRoundedShoppingCart01,
-            widget: Text('farm.buy_animals'.tr(), style: Theme.of(context).textTheme.bodySmall),
+            widget: Text('farm.buy_animals'.tr(), style: Theme.of(context).textTheme.labelSmall, softWrap: true,),
             onTap: (){
               if (!authService.isLoggedIn) {
                 _showLoginBottomSheet(context);
@@ -251,7 +251,8 @@ class _ContentSections extends StatelessWidget {
             iconColor: const Color(0xFF6366F1),
             iconContainerColor: const Color(0xFF6366F1).withAlpha(25),
             title: "gamification.achievements_and_quests".tr(),
-            widget: Text("farm.complete_focus_sessions".tr(), style: Theme.of(context).textTheme.labelSmall, maxLines: 1),
+            widget: Text("farm.complete_focus_sessions".tr(), 
+              style: Theme.of(context).textTheme.labelSmall, overflow: TextOverflow.ellipsis, softWrap: true,),
             onTap: (){
               if (!authService.isLoggedIn) {
                 _showLoginBottomSheet(context);

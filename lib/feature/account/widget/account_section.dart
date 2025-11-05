@@ -1,7 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/core/utility/extension/route_helper.dart';
-import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
 import 'package:farmodo/feature/account/account_deletion_view.dart';
 import 'package:farmodo/feature/account/profile_detail_view.dart';
 import 'package:farmodo/feature/account/widget/settings_item_widget.dart';
@@ -28,7 +27,6 @@ class AccountSection extends StatelessWidget {
             fontWeight: FontWeight.w300,
           ),
         ),
-        context.dynamicHeight(0.02).height,
         Column(
           children: [
             SettingsItemWidget(

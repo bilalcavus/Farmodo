@@ -13,12 +13,6 @@ class FullScreenTimer extends StatelessWidget {
     final timerController = getIt<TimerController>();
     return Scaffold(
       backgroundColor: Colors.black,
-      appBar: AppBar(
-        iconTheme: const IconThemeData(
-          color: Colors.white,
-        ),
-        backgroundColor: Colors.black,
-      ),
       body: Obx((){
         return Center(
           child: FlipTimer(
@@ -29,9 +23,9 @@ class FullScreenTimer extends StatelessWidget {
                 ? timerController.formatTime(timerController.breakSecondsRemaining.value)
                 : timerController.formatTime(timerController.secondsRemaining.value),
             timerController: timerController,
-          )
-        );
-      }
+            )
+          );
+        }
       ),
     );
   }

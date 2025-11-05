@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:farmodo/core/theme/app_container_styles.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
+import 'package:farmodo/core/utility/extension/route_helper.dart';
 import 'package:farmodo/feature/tasks/viewmodel/timer_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
@@ -99,17 +100,7 @@ class _FlipDigitState extends State<FlipDigit>
     return Container(
       width: widget.width,
       height: widget.height,
-      decoration: BoxDecoration(
-        color: const Color.fromARGB(255, 36, 36, 37),
-        borderRadius: BorderRadius.circular(context.dynamicHeight(0.05)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withAlpha(75),
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
+      decoration: AppContainerStyles.darkSecondaryContainer(context),
       child: Center(
         child: Text(
           digit,
@@ -156,6 +147,7 @@ class FlipTimer extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            SizedBox(height: context.dynamicHeight(0.05)),
             FlipDigit(
               digit: minutes[0],
               width: digitWidth,
@@ -169,7 +161,7 @@ class FlipTimer extends StatelessWidget {
               fontSize: fontSize,
             ),
             SizedBox(
-              width: 50,
+              width: context.dynamicHeight(0.14),
               height: digitHeight,
               child: Center(
                 child: Text(
@@ -198,36 +190,37 @@ class FlipTimer extends StatelessWidget {
             ),
           ],
         ),
+      
         SizedBox(height: context.dynamicHeight(0.05)),
-        Obx((){
-          return Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              timerButton(Icon(HugeIcons.strokeRoundedRefresh), context, () => timerController.resetTimer()),
-              SizedBox(width: context.dynamicWidth(.04)),
-              timerButton(
-                timerController.isRunning.value 
-                ? Icon(HugeIcons.strokeRoundedPause) 
-                : Icon(HugeIcons.strokeRoundedPlay), 
-                context,
-                timerController.isRunning.value ? () => timerController.pauseTimer() : () => timerController.startTimer()),
-            ],
-          );
-        }
-        )
+        Container(
+          decoration: AppContainerStyles.darkSecondaryContainer(context),
+          width: context.dynamicWidth(0.2),
+          child: Obx((){
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                timerButton(
+                  timerController.isRunning.value 
+                  ? Icon(HugeIcons.strokeRoundedPause) 
+                  : Icon(HugeIcons.strokeRoundedPlay), 
+                  context,
+                  timerController.isRunning.value ? () => timerController.pauseTimer() : () => timerController.startTimer()),
+                SizedBox(width: context.dynamicWidth(.04)),
+                timerButton(Icon(Icons.fullscreen_exit), context, () => RouteHelper.pop(context)),
+              ],
+            );
+          }
+          ),
+        ),
       ],
     );
   }
 
   Widget timerButton(Widget icon, BuildContext context, VoidCallback onTap) {
-    return Container(
-      height: context.dynamicHeight(0.1),
-      width: context.dynamicWidth(0.05),
-      decoration: AppContainerStyles.primaryContainer(context),
-      child: IconButton(
-        onPressed: onTap,
-        icon: icon,
-      ),
+    return IconButton(
+      onPressed: onTap,
+      icon: icon,
+      color: Colors.white,
     );
   }
 }

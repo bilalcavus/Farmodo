@@ -93,6 +93,10 @@ class _AccountViewState extends State<AccountView> {
         statusBarColor: Colors.transparent,
         statusBarIconBrightness: Brightness.dark,
       ),
+      actions: [
+        _authService.isLoggedIn ? 
+        LeaderBoardButton().onTap(() => Get.to(() => const LeaderBoardView())) : SizedBox.shrink(),
+      ],
       toolbarHeight: context.dynamicHeight(0.08),
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -135,9 +139,7 @@ class _AccountViewState extends State<AccountView> {
             if (_authService.isLoggedIn) ...[
               LevelBar(authService: _authService),
               UserXp(authService: _authService),
-              context.dynamicWidth(0.02).width,
-          LeaderBoardButton().onTap(() => Get.to(() => const LeaderBoardView())),
-              context.dynamicHeight(0.015).height,
+              context.dynamicWidth(0.03).height,
               AccountSection(context: context),
               context.dynamicHeight(0.03).height,
             ],
