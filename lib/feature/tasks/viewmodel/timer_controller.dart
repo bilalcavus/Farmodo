@@ -5,6 +5,7 @@ import 'package:farmodo/core/utility/constants/storage_keys.dart';
 import 'package:farmodo/core/services/notification_service.dart';
 import 'package:farmodo/core/services/home_widget_service.dart';
 import 'package:farmodo/core/services/live_activity_service.dart';
+import 'package:farmodo/core/services/android_timer_service.dart';
 import 'package:farmodo/core/services/preferences_service.dart';
 import 'package:farmodo/data/services/auth_service.dart';
 import 'package:farmodo/feature/tasks/utility/player_config.dart';
@@ -23,6 +24,7 @@ class TimerController extends GetxController {
   var isOnBreak = false.obs;
   var currentTaskTitle = ''.obs;
   var isRestoring = false.obs;
+  DateTime? _lastTick;
 
   final PreferencesService _prefsService = PreferencesService.instance;
   final AuthService _authService = AuthService();
@@ -41,6 +43,8 @@ class TimerController extends GetxController {
   String get _keyBreakSecondsRemaining => StorageKeys.userKey(_userId, StorageKeys.timerBreakSecondsRemaining);
   String get _keyIsOnBreak => StorageKeys.userKey(_userId, StorageKeys.timerIsOnBreak);
   String get _keyCurrentTaskTitle => StorageKeys.userKey(_userId, StorageKeys.timerCurrentTaskTitle);
+  String get _keyLastTick => StorageKeys.userKey(_userId, StorageKeys.timerLastTick);
+  String get _keyIsRunning => StorageKeys.userKey(_userId, StorageKeys.timerIsRunning);
   
   double get progress => totalSeconds.value == 0 ? 0.0 : (totalSeconds.value - secondsRemaining.value) / totalSeconds.value;
   double get breakProgress => totalBreakSeconds.value == 0 ? 0.0 : (totalBreakSeconds.value - breakSecondsRemaining.value) / totalBreakSeconds.value;
@@ -74,30 +78,11 @@ class TimerController extends GetxController {
       }
     }
     
-    _timer = Timer.periodic(Duration(seconds: 1), (_){
-      if(secondsRemaining.value > 0){
-        secondsRemaining.value--;
-        _updateNotification();
-        if (secondsRemaining.value % 5 == 0) {
-          saveTimerState();
-        }
-      } else {
-        _timer?.cancel();
-        isRunning.value = false;
-        secondsRemaining.value = totalSeconds.value;
-        isOnBreak.value = true;
-        _updateNotification();
-        saveTimerState();
-        if (onTimerComplete != null) {
-          onTimerComplete!();
-        }
-        playerConfig.playCompletionSound();
-        NotificationService.showCompletionNotification(
-          title: 'home.focus_completed'.tr(),
-          body: 'home.break_time_now'.tr(),
-        );
-        startBreakTimer();
-      }
+    AndroidTimerService.acquireWakeLock();
+    _lastTick = DateTime.now();
+    _timer?.cancel();
+    _timer = Timer.periodic(const Duration(seconds: 1), (_) {
+      _handleFocusTick();
     });
     isRunning.value = true;
     _showNotification();
@@ -115,29 +100,11 @@ class TimerController extends GetxController {
       );
     }
     
-    _timer = Timer.periodic(Duration(seconds: 1), (_){
-      if(breakSecondsRemaining.value > 0){
-        breakSecondsRemaining.value --;
-        _updateNotification();
-        if (breakSecondsRemaining.value % 5 == 0) {
-          saveTimerState();
-        }
-      } else {
-        _timer?.cancel();
-        isRunning.value = false;
-        breakSecondsRemaining.value = totalBreakSeconds.value;
-        isOnBreak.value = false;
-        _updateNotification();
-        saveTimerState();
-        playerConfig.playCompletionSound();
-        NotificationService.showCompletionNotification(
-          title: 'home.break_over'.tr(),
-          body: 'home.break_time_message'.tr(),
-        );
-        if (onBreakComplete != null) {
-          onBreakComplete!();
-        }
-      }
+    AndroidTimerService.acquireWakeLock();
+    _lastTick = DateTime.now();
+    _timer?.cancel();
+    _timer = Timer.periodic(const Duration(seconds: 1), (_) {
+      _handleBreakTick();
     });
     isRunning.value = true;
     _showNotification();
@@ -147,6 +114,8 @@ class TimerController extends GetxController {
   void pauseTimer() {
     _timer?.cancel();
     isRunning.value = false;
+    _lastTick = null;
+    AndroidTimerService.releaseWakeLock();
     
     if (Platform.isIOS) {
       LiveActivityService.setPaused(true);
@@ -162,6 +131,8 @@ class TimerController extends GetxController {
     secondsRemaining.value = totalSeconds.value;
     breakSecondsRemaining.value = totalBreakSeconds.value;
     isOnBreak.value = false;
+    _lastTick = null;
+    AndroidTimerService.releaseWakeLock();
     _updateNotification();
     saveTimerState();
   }
@@ -175,6 +146,8 @@ class TimerController extends GetxController {
     currentTaskTitle.value = '';
     onTimerComplete = null;
     onBreakComplete = null;
+    _lastTick = null;
+    AndroidTimerService.releaseWakeLock();
     
     if (Platform.isIOS) {
       LiveActivityService.stopActivity();
@@ -208,6 +181,11 @@ class TimerController extends GetxController {
       await _prefsService.setInt(_keyBreakSecondsRemaining, breakSecondsRemaining.value);
       await _prefsService.setBool(_keyIsOnBreak, isOnBreak.value);
       await _prefsService.setString(_keyCurrentTaskTitle, currentTaskTitle.value);
+      await _prefsService.setBool(_keyIsRunning, isRunning.value);
+      await _prefsService.setInt(
+        _keyLastTick,
+        _lastTick?.millisecondsSinceEpoch ?? 0,
+      );
     } catch (e) {
       debugPrint('Timer state save error: $e');
     }
@@ -222,6 +200,8 @@ class TimerController extends GetxController {
       final savedBreakSecondsRemaining = _prefsService.getInt(_keyBreakSecondsRemaining, 0);
       final savedIsOnBreak = _prefsService.getBool(_keyIsOnBreak, false);
       final savedTaskTitle = _prefsService.getString(_keyCurrentTaskTitle, '');
+      final savedIsRunning = _prefsService.getBool(_keyIsRunning, false);
+      final savedLastTickMillis = _prefsService.getInt(_keyLastTick, 0);
 
       if (savedTotalSeconds > 0 || savedTotalBreakSeconds > 0) {
         totalSeconds.value = savedTotalSeconds;
@@ -230,8 +210,40 @@ class TimerController extends GetxController {
         breakSecondsRemaining.value = savedBreakSecondsRemaining;
         isOnBreak.value = savedIsOnBreak;
         currentTaskTitle.value = savedTaskTitle;
-        
+
+        bool hasRemainingPhase = false;
+        if (savedIsRunning && savedLastTickMillis > 0) {
+          _lastTick = DateTime.fromMillisecondsSinceEpoch(savedLastTickMillis);
+          hasRemainingPhase = _applyElapsedSinceLastTick(
+            wasOnBreak: savedIsOnBreak,
+            wasRunning: savedIsRunning,
+          );
+        } else {
+          _lastTick = null;
+          if (savedIsRunning) {
+            hasRemainingPhase = savedIsOnBreak
+                ? breakSecondsRemaining.value > 0
+                : secondsRemaining.value > 0;
+          }
+        }
+
         _updateNotification();
+
+        if (savedIsRunning && hasRemainingPhase) {
+          Future.microtask(() {
+            if (isOnBreak.value) {
+              if (breakSecondsRemaining.value > 0) {
+                startBreakTimer();
+              }
+            } else {
+              if (secondsRemaining.value > 0) {
+                startTimer();
+              }
+            }
+          });
+        } else {
+          isRunning.value = false;
+        }
       }
     } catch (e) {
       debugPrint('Timer state restore error: $e');
@@ -248,12 +260,14 @@ class TimerController extends GetxController {
       await _prefsService.remove(_keyBreakSecondsRemaining);
       await _prefsService.remove(_keyIsOnBreak);
       await _prefsService.remove(_keyCurrentTaskTitle);
+      await _prefsService.remove(_keyIsRunning);
+      await _prefsService.remove(_keyLastTick);
     } catch (e) {
       debugPrint('Timer state clear error: $e');
     }
   }
 
-    void _updateNotification() {
+  void _updateNotification() {
     final timeText = formatTime(isOnBreak.value ? breakSecondsRemaining.value : secondsRemaining.value);
     final status = isOnBreak.value ? 'Break' : 'Work';
     final progressValue = isOnBreak.value ? breakProgress : progress;
@@ -314,6 +328,177 @@ class TimerController extends GetxController {
   @override
   void onClose() {
     timer?.cancel();
+    _lastTick = null;
+    AndroidTimerService.releaseWakeLock();
     super.onClose();
+  }
+
+  void _handleFocusTick() {
+    final now = DateTime.now();
+    final elapsed = _calculateElapsedSeconds(now);
+    if (elapsed <= 0) {
+      _lastTick = now;
+      return;
+    }
+
+    if (secondsRemaining.value > elapsed) {
+      secondsRemaining.value -= elapsed;
+      _lastTick = now;
+      _onTickCompleted(isBreak: false);
+    } else {
+      final remainingBefore = secondsRemaining.value;
+      final overflow = elapsed - remainingBefore;
+      secondsRemaining.value = 0;
+      _lastTick = now;
+      _completeFocusSession(
+        overflowSeconds: overflow > 0 ? overflow : 0,
+      );
+    }
+  }
+
+  void _handleBreakTick() {
+    final now = DateTime.now();
+    final elapsed = _calculateElapsedSeconds(now);
+    if (elapsed <= 0) {
+      _lastTick = now;
+      return;
+    }
+
+    if (breakSecondsRemaining.value > elapsed) {
+      breakSecondsRemaining.value -= elapsed;
+      _lastTick = now;
+      _onTickCompleted(isBreak: true);
+    } else {
+      breakSecondsRemaining.value = 0;
+      _lastTick = now;
+      _completeBreakSession();
+    }
+  }
+
+  int _calculateElapsedSeconds(DateTime now) {
+    if (_lastTick == null) {
+      return 1;
+    }
+    final diff = now.difference(_lastTick!).inSeconds;
+    return diff <= 0 ? 1 : diff;
+  }
+
+  void _onTickCompleted({required bool isBreak}) {
+    _updateNotification();
+    final remaining = isBreak ? breakSecondsRemaining.value : secondsRemaining.value;
+    if (remaining % 5 == 0) {
+      saveTimerState();
+    }
+  }
+
+  void _completeFocusSession({bool fromRestore = false, int overflowSeconds = 0}) {
+    _timer?.cancel();
+    isRunning.value = false;
+    secondsRemaining.value = totalSeconds.value;
+    isOnBreak.value = true;
+    _updateNotification();
+    saveTimerState();
+    if (onTimerComplete != null) {
+      onTimerComplete!();
+    }
+    if (!fromRestore) {
+      playerConfig.playCompletionSound();
+      NotificationService.showCompletionNotification(
+        title: 'home.focus_completed'.tr(),
+        body: 'home.break_time_now'.tr(),
+      );
+    }
+    if (totalBreakSeconds.value == 0) {
+      _lastTick = null;
+      AndroidTimerService.releaseWakeLock();
+      return;
+    }
+    if (overflowSeconds > 0) {
+      final updatedBreak = breakSecondsRemaining.value - overflowSeconds;
+      breakSecondsRemaining.value = updatedBreak > 0 ? updatedBreak : 0;
+    }
+    if (breakSecondsRemaining.value <= 0) {
+      _completeBreakSession(fromRestore: fromRestore);
+    } else {
+      if (fromRestore) {
+        _lastTick = DateTime.now();
+      } else {
+        startBreakTimer();
+      }
+    }
+  }
+
+  void _completeBreakSession({bool fromRestore = false}) {
+    _timer?.cancel();
+    isRunning.value = false;
+    breakSecondsRemaining.value = totalBreakSeconds.value;
+    isOnBreak.value = false;
+    _lastTick = null;
+    AndroidTimerService.releaseWakeLock();
+    _updateNotification();
+    saveTimerState();
+    if (!fromRestore) {
+      playerConfig.playCompletionSound();
+      NotificationService.showCompletionNotification(
+        title: 'home.break_over'.tr(),
+        body: 'home.break_time_message'.tr(),
+      );
+    }
+    if (onBreakComplete != null) {
+      onBreakComplete!();
+    }
+  }
+
+  bool _applyElapsedSinceLastTick({
+    required bool wasOnBreak,
+    required bool wasRunning,
+  }) {
+    if (!wasRunning) {
+      _lastTick = null;
+      return false;
+    }
+    if (_lastTick == null) {
+      return wasOnBreak
+          ? breakSecondsRemaining.value > 0
+          : secondsRemaining.value > 0;
+    }
+    final now = DateTime.now();
+    final diffSeconds = now.difference(_lastTick!).inSeconds;
+    if (diffSeconds <= 0) {
+      return wasOnBreak
+          ? breakSecondsRemaining.value > 0
+          : secondsRemaining.value > 0;
+    }
+
+    if (wasOnBreak) {
+      final updated = breakSecondsRemaining.value - diffSeconds;
+      if (updated > 0) {
+        breakSecondsRemaining.value = updated;
+        _lastTick = now;
+        return true;
+      } else {
+        breakSecondsRemaining.value = 0;
+        _completeBreakSession(fromRestore: true);
+        return false;
+      }
+    } else {
+      final updated = secondsRemaining.value - diffSeconds;
+      if (updated > 0) {
+        secondsRemaining.value = updated;
+        _lastTick = now;
+        return true;
+      } else {
+        secondsRemaining.value = 0;
+        final overflow = updated.abs();
+        _completeFocusSession(
+          fromRestore: true,
+          overflowSeconds: overflow,
+        );
+        if (isOnBreak.value && breakSecondsRemaining.value > 0) {
+          return true;
+        }
+        return false;
+      }
+    }
   }
 }

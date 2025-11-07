@@ -70,5 +70,26 @@ class AndroidTimerService {
       return false;
     }
   }
-}
 
+  static Future<void> acquireWakeLock() async {
+    if (!Platform.isAndroid) return;
+    
+    try {
+      final result = await _channel.invokeMethod<bool>('acquireWakeLock');
+      debugPrint('🔒 Wake lock acquired: $result');
+    } catch (e) {
+      debugPrint('❌ Wake lock acquire error: $e');
+    }
+  }
+
+  static Future<void> releaseWakeLock() async {
+    if (!Platform.isAndroid) return;
+    
+    try {
+      await _channel.invokeMethod('releaseWakeLock');
+      debugPrint('🔓 Wake lock released');
+    } catch (e) {
+      debugPrint('❌ Wake lock release error: $e');
+    }
+  }
+}

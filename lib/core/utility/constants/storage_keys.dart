@@ -7,6 +7,8 @@ class StorageKeys {
   static const String timerBreakSecondsRemaining = 'timer_break_seconds_remaining';
   static const String timerIsOnBreak = 'timer_is_on_break';
   static const String timerCurrentTaskTitle = 'timer_current_task_title';
+  static const String timerLastTick = 'timer_last_tick';
+  static const String timerIsRunning = 'timer_is_running';
 
   static const String taskIsUsingDefault = 'task_is_using_default';
   static const String taskDefaultCurrentSession = 'task_default_current_session';
@@ -20,4 +22,3 @@ class StorageKeys {
     return '${prefix}_$baseKey';
   }
 }
-

@@ -74,6 +74,8 @@
     "focus_completed": "🎉 Fokus abgeschlossen!",
     "break_over": "☕ Pause vorbei!",
     "break_time": "Pausenzeit",
+    "break_time_now": "Super gemacht! Jetzt ist Pause",
+    "break_time_message": "Hast du dich ausgeruht? Die neue Sitzung beginnt",
     "reset_timer_title": "Timer zurücksetzen",
     "reset_timer_content": "Möchten Sie den Timer wirklich zurücksetzen?",
     "end_session_title": "Sitzung beenden",
