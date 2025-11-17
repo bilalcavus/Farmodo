@@ -172,6 +172,7 @@
     "buy_first_animal": "Buy your first animal from the store!",
     "animals_in_farm": "animals in your farm",
     "buy_animals": "Buy animals",
+    "store_description": "Buy animals, coins and animations to improve your farm and earn rewards",
     "complete_focus_sessions": "Complete focus sessions and earn rewards",
     "loading_farm": "Loading your farm...",
     "farm_empty_title": "Your Farm is Empty",
@@ -211,7 +212,10 @@
     "go_to_login": "Log In",
     "go_to_store": "Go to Store",
     "no_items": "No items available",
-    "come_back_later": "Come back later for new items!"
+    "come_back_later": "Come back later for new items!",
+    "category_animals": "Animals",
+    "category_coins": "Coins",
+    "category_lotties": "Animations"
   },
   
   "gamification": {
@@ -425,6 +429,7 @@
     "forgot_password": "Forgot password?",
     "error_title": "Error",
     "success_title": "Success",
+    "info_title": "Info",
     "updated": "Updated!",
     "animal_status_updated": "Updated animal status!",
     "successful": "Successful!"

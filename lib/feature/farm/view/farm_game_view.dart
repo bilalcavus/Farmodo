@@ -231,7 +231,7 @@ class _ContentSections extends StatelessWidget {
             farmController: farmController,
             iconContainerColor: const Color(0xFFEF4444).withAlpha(25),
             iconColor: const Color(0xFFEF4444),
-            title: "farm.farm_store".tr(),
+            title: "store.store".tr(),
             icon: HugeIcons.strokeRoundedShoppingCart01,
             widget: Text('farm.buy_animals'.tr(), style: Theme.of(context).textTheme.labelSmall, softWrap: true,),
             onTap: (){

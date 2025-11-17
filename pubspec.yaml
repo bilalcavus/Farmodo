@@ -72,6 +72,9 @@ flutter:
     - assets/icons/achievements/
     - assets/sounds/
     - assets/translations/
+    - assets/purchase_items/coin/
+    - assets/purchase_items/lottie/
+
     
   fonts:
     - family: Inter

@@ -8,6 +8,9 @@ import 'package:farmodo/feature/auth/login/view/login_view.dart';
 import 'package:farmodo/feature/auth/login/viewmodel/login_controller.dart';
 import 'package:farmodo/feature/navigation/navigation_controller.dart';
 import 'package:farmodo/feature/store/viewmodel/reward_controller.dart';
+import 'package:farmodo/feature/store/widget/category_selector.dart';
+import 'package:farmodo/feature/store/widget/coin_card.dart';
+import 'package:farmodo/feature/store/widget/lottie_card.dart';
 import 'package:farmodo/feature/store/widget/store_card.dart';
 import 'package:farmodo/feature/store/widget/store_empty_state.dart';
 import 'package:farmodo/feature/home/widgets/user_xp.dart';
@@ -29,6 +32,7 @@ class _StoreViewState extends State<StoreView> {
   final authService = getIt<AuthService>();
   final navigationController = getIt<NavigationController>();
   final loginController = getIt<LoginController>();
+  StoreCategory _selectedCategory = StoreCategory.animals;
 
   Future<void> _handlePurchase({
     required String rewardId,
@@ -52,6 +56,30 @@ class _StoreViewState extends State<StoreView> {
       Get.closeAllSnackbars();
       SnackMessages().showErrorSnack(e.toString());
     }
+  }
+
+  Future<void> _handleCoinPurchase(String coinId, String name) async {
+    if(!authService.isLoggedIn){
+      _showLoginDialog();
+      return;
+    }
+
+    try {
+      await rewardController.buyStoreCoin(coinId);
+      if(rewardController.purchaseSucceeded.value){
+        SnackMessages().showSuccessSnack('Coin satın alma başarılı');
+        setState(() {});
+      } else {
+        SnackMessages().showErrorSnack(rewardController.errorMessage.value);
+      }
+    } catch (e) {
+      Get.closeAllSnackbars();
+      SnackMessages().showErrorSnack(e.toString());
+    }
+  }
+
+  Future<void> _handleLottiePurchase(String lottieId, String name) async {
+
   }
 
   void _showLoginDialog() {
@@ -81,8 +109,14 @@ class _StoreViewState extends State<StoreView> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await rewardController.getStoreItems();
+      await rewardController.loadAllStoreData();
       await rewardController.loadOwnedRewards();
+    });
+  }
+
+  void _onCategoryChanged(StoreCategory category) {
+    setState(() {
+      _selectedCategory = category;
     });
   }
 
@@ -116,44 +150,113 @@ class _StoreViewState extends State<StoreView> {
                   ],
                 ),
               ),
+              CategorySelector(
+                selectedCategory: _selectedCategory,
+                onCategoryChanged: _onCategoryChanged,
+              ),
+              SizedBox(height: context.dynamicHeight(0.02)),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: context.dynamicWidth(0.02)),
-                child: Obx(() {
-                  final allItems = rewardController.storeItems;
-                  
-                  if (rewardController.isLoading.value) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-                  if (allItems.isEmpty) return StoreEmptyState();
-                  return GridView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: context.dynamicWidth(0.024),
-                      mainAxisSpacing: context.dynamicWidth(0.024),
-                      childAspectRatio: 0.85,
-                    ),
-                    itemCount: allItems.length,
-                    itemBuilder: (context, index) {
-                      final reward = allItems[index];
-                      return StoreCard(
-                        reward: reward,
-                        cardRadius: context.dynamicHeight(0.02),
-                        isBuying: rewardController.purchasingRewardId.value == reward.id,
-                        onBuy: () => _handlePurchase(
-                          rewardId: reward.id,
-                          name: reward.name,
-                        ),
-                      );
-                    },
-                  );
-                }),
+                child: _buildCategoryGrid(context),
               ),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildCategoryGrid(BuildContext context) {
+    return Obx(() {
+      final isInitialLoading = rewardController.isLoading.value && 
+          !rewardController.animalsLoaded.value &&
+          !rewardController.coinsLoaded.value &&
+          !rewardController.lottiesLoaded.value;
+          
+      if (isInitialLoading) {
+        return const Center(child: CircularProgressIndicator());
+      }
+
+      switch (_selectedCategory) {
+        case StoreCategory.animals:
+          final allItems = rewardController.storeItems;
+          if (allItems.isEmpty) return const StoreEmptyState();
+          
+          return GridView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: context.dynamicWidth(0.024),
+              mainAxisSpacing: context.dynamicWidth(0.024),
+              childAspectRatio: 0.85,
+            ),
+            itemCount: allItems.length,
+            itemBuilder: (context, index) {
+              final reward = allItems[index];
+              return StoreCard(
+                reward: reward,
+                cardRadius: context.dynamicHeight(0.02),
+                isBuying: rewardController.purchasingRewardId.value == reward.id,
+                onBuy: () => _handlePurchase(
+                  rewardId: reward.id,
+                  name: reward.name,
+                ),
+              );
+            },
+          );
+
+        case StoreCategory.coins:
+          final coins = rewardController.purchasableCoins;
+          if (coins.isEmpty) return const StoreEmptyState();
+
+          return GridView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: context.dynamicWidth(0.024),
+              mainAxisSpacing: context.dynamicWidth(0.024),
+              childAspectRatio: 0.85,
+            ),
+            itemCount: coins.length,
+            itemBuilder: (context, index) {
+              final coin = coins[index];
+              return CoinCard(
+                coin: coin,
+                cardRadius: context.dynamicHeight(0.02),
+                isBuying: rewardController.purchasingCoinId.value == coin.id,
+                onBuy: () => _handleCoinPurchase(coin.id, coin.name),
+              );
+            },
+          );
+
+        case StoreCategory.lotties:
+          final lotties = rewardController.purchasableLotties;
+          if (lotties.isEmpty) return const StoreEmptyState();
+
+          return GridView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: context.dynamicWidth(0.024),
+              mainAxisSpacing: context.dynamicWidth(0.024),
+              childAspectRatio: 0.85,
+            ),
+            itemCount: lotties.length,
+            itemBuilder: (context, index) {
+              final lottie = lotties[index];
+              return LottieCard(
+                lottie: lottie,
+                cardRadius: context.dynamicHeight(0.02),
+                isBuying: false,
+                onBuy: () => _handleLottiePurchase(lottie.id, lottie.name),
+              );
+            },
+          );
+        }
+      }
     );
   }
 }

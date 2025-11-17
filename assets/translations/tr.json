@@ -211,7 +211,10 @@
     "go_to_login": "Giriş Yap",
     "go_to_store": "Mağazaya Git",
     "no_items": "Henüz ürün yok",
-    "come_back_later": "Yeni ürünler için daha sonra tekrar gel!"
+    "come_back_later": "Yeni ürünler için daha sonra tekrar gel!",
+    "category_animals": "Hayvanlar",
+    "category_coins": "Coinler",
+    "category_lotties": "Animasyonlar"
   },
   
   "gamification": {
@@ -419,6 +422,7 @@
     "update_available": "Güncelleme mevcut",
     "error_title": "Hata",
     "success_title": "Başarılı",
+    "info_title": "Bilgi",
     "updated": "Güncellendi!",
     "animal_status_updated": "Hayvan durumu güncellendi!",
     "successful": "Başarılı!"

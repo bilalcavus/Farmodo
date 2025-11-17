@@ -73,4 +73,16 @@ class SnackMessages {
         colorText: Colors.white
     );
   }
+
+  void showInfoSnack(String message) {
+    Get.closeAllSnackbars();
+    Get.snackbar(
+      'messages.info_title'.tr(),
+      message,
+      snackPosition: SnackPosition.TOP,
+      backgroundColor: Colors.blue.withAlpha(30),
+      colorText: Colors.blue,
+      duration: const Duration(seconds: 3),
+    );
+  }
 }
