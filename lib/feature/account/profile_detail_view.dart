@@ -478,7 +478,7 @@ class _ProfileDetailViewState extends State<ProfileDetailView> {
                   context.dynamicHeight(0.01).height,
                   ...unlockedAchievements.take(3).map((achievement) => 
                     _buildAchievementItem(context, achievement, true)
-                  ).toList(),
+                  ),
                   if (unlockedAchievements.length > 3) ...[
                     context.dynamicHeight(0.01).height,
                     Text(
@@ -506,7 +506,7 @@ class _ProfileDetailViewState extends State<ProfileDetailView> {
                   context.dynamicHeight(0.01).height,
                   ...lockedAchievements.take(2).map((achievement) => 
                     _buildAchievementItem(context, achievement, false)
-                  ).toList(),
+                  ),
                   if (lockedAchievements.length > 2) ...[
                     context.dynamicHeight(0.01).height,
                     Text(

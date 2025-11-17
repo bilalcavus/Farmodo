@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:easy_localization/easy_localization.dart';
 import 'package:farmodo/core/utility/constants/locales.dart';
 import 'package:farmodo/core/utility/constants/storage_keys.dart';

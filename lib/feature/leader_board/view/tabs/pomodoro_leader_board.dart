@@ -129,7 +129,7 @@ class _XpLeaderBoardState extends State<PomodoroLeaderBoard> with LoadingMixin {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             decoration: BoxDecoration(
-              color: const Color(0xFF10B981).withOpacity(0.1),
+              color: const Color(0xFF10B981).withAlpha(25),
               borderRadius: BorderRadius.circular(6),
             ),
             child: Text(

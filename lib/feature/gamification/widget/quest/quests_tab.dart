@@ -104,7 +104,7 @@ class QuestsTab extends StatelessWidget {
         width: context.dynamicWidth(0.12),
         height: context.dynamicHeight(0.08),
         decoration: BoxDecoration(
-          color: quest.typeColor.withOpacity(0.2),
+          color: quest.typeColor.withAlpha(50),
           shape: BoxShape.circle,
         ),
         child: Icon(
