@@ -25,6 +25,7 @@ dependencies:
   flame: ^1.32.0
   flutter_launcher_icons: ^0.14.4
   kartal: ^4.2.0
+  adapty_flutter: ^3.11.3
 
   #Local
   sqflite: ^2.4.2

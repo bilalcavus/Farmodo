@@ -1,3 +1,4 @@
+import 'package:farmodo/core/services/adapty_billing_service.dart';
 import 'package:farmodo/data/models/purchasable_coin.dart';
 import 'package:farmodo/data/models/purchasable_lottie.dart';
 import 'package:farmodo/data/models/reward_model.dart';
@@ -6,6 +7,7 @@ import 'package:farmodo/data/services/auth_service.dart';
 import 'package:farmodo/data/services/firestore_service.dart';
 import 'package:farmodo/data/services/lottie_service.dart';
 import 'package:farmodo/feature/auth/login/viewmodel/login_controller.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
@@ -17,6 +19,7 @@ class RewardController extends GetxController {
   final FirestoreService firestoreService;
   final LoginController loginController;
   final AuthService authService;
+  final AdaptyBillingService billingService;
   final AnimalService animalService = AnimalService();
   final LottieService lottieService = LottieService();
   TextEditingController rewardIdController = TextEditingController();
@@ -76,7 +79,12 @@ class RewardController extends GetxController {
   }
 
   
-  RewardController(this.firestoreService, this.loginController, this.authService);
+  RewardController(
+    this.firestoreService, 
+    this.loginController, 
+    this.authService,
+    this.billingService,
+  );
 
   void setLoading(bool value){
     _isLoading.value = value;
@@ -237,11 +245,37 @@ class RewardController extends GetxController {
     
     try {
       final coin = purchasableCoins.firstWhere((item) => item.id == coinId);
-      await firestoreService.buyCoin(coin);
-      _purchaseSucceeded.value = true;
-      await authService.fetchAndSetCurrentUser();
+      
+      if (billingService.isAvailable && coin.productId != null) {
+        debugPrint('Starting Adapty purchase for coin: ${coin.name} (${coin.value} coins)');
+        
+        final result = await billingService.purchaseCoins(coin.value);
+        
+        if (result['success'] == true) {
+          debugPrint('Adapty purchase successful, updating Firebase...');
+          await firestoreService.buyCoin(coin);
+          _purchaseSucceeded.value = true;
+          await authService.fetchAndSetCurrentUser();
+          debugPrint('Coin purchase completed successfully');
+        } else {
+          final error = result['error'] ?? 'Unknown error';
+          debugPrint('Adapty purchase failed: $error');
+          if (error.contains('Paywall not found') || error.contains('not_found')) {
+            errorMessage.value = 'Store setup incomplete. Please configure Adapty placement and products.';
+          } else {
+            errorMessage.value = error;
+          }
+        }
+      } else {
+        final errorMsg = !billingService.isAvailable 
+            ? 'In-app purchases not available on this platform'
+            : 'Product ID not configured for this coin';
+        debugPrint('Cannot purchase coin: $errorMsg');
+        errorMessage.value = errorMsg;
+      }
     } catch (e) {
-        errorMessage.value = e.toString();
+      debugPrint('Error in buyStoreCoin: $e');
+      errorMessage.value = e.toString();
     } finally {
       setLoading(false);
       purchasingCoinId.value = null;

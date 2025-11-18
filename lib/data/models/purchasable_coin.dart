@@ -9,6 +9,7 @@ class PurchasableCoin {
   final bool isAvailable;
   final DateTime createdAt;
   final int value;
+  final String? productId; // Adapty product ID (e.g., "pomodoro_100_coins")
 
   PurchasableCoin({
     required this.id,
@@ -19,6 +20,7 @@ class PurchasableCoin {
     required this.isAvailable,
     required this.createdAt,
     required this.value,
+    this.productId,
   });
 
   factory PurchasableCoin.fromJson(Map<String, dynamic> json){
@@ -31,6 +33,7 @@ class PurchasableCoin {
       isAvailable: json['isAvailable'] ?? true,
       createdAt: DateTime.parse(json['createdAt']),
       value: json['value'],
+      productId: json['productId'],
     );
   }
 
@@ -45,6 +48,7 @@ class PurchasableCoin {
       price: data['price'] ?? 0,
       createdAt: (data['createdAt'] as Timestamp).toDate(),
       value: data['value'] ?? 0,
+      productId: data['productId'],
     );
   }
 
@@ -58,6 +62,7 @@ class PurchasableCoin {
       'price': price,
       'createdAt': createdAt.toIso8601String(),
       'value': value,
+      'productId': productId,
     };
   }
   
@@ -71,6 +76,7 @@ class PurchasableCoin {
       'price': price,
       'createdAt': Timestamp.fromDate(createdAt),
       'value': value,
+      'productId': productId,
     };
   }
 
@@ -83,6 +89,7 @@ class PurchasableCoin {
     bool? isAvailable,
     DateTime? createdAt,
     int? value,
+    String? productId,
   }) {
     return PurchasableCoin(
       id: id ?? this.id,
@@ -93,6 +100,7 @@ class PurchasableCoin {
       isAvailable: isAvailable ?? this.isAvailable,
       createdAt: createdAt ?? this.createdAt,
       value: value ?? this.value,
+      productId: productId ?? this.productId,
     );
   }
 

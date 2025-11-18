@@ -1,7 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:farmodo/core/theme/app_colors.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
-import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
 import 'package:farmodo/data/models/purchasable_coin.dart';
 import 'package:flutter/material.dart';
 import 'package:kartal/kartal.dart';
@@ -80,13 +79,13 @@ class CoinCard extends StatelessWidget {
               Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    '\$${coin.price}',
-                    style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                  ),
-                  context.dynamicHeight(0.006).height,
+                  // Text(
+                  //   '\$${coin.price}',
+                  //   style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                  //         fontWeight: FontWeight.bold,
+                  //       ),
+                  // ),
+                  // context.dynamicHeight(0.006).height,
                   ElevatedButton(
                     onPressed: isBuying ? null : onBuy,
                     style: ElevatedButton.styleFrom(

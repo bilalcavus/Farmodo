@@ -11,6 +11,10 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.VIBRATE" />
     
+
+    <!-- BILLING -->
+    <uses-permission android:name="com.android.vending.BILLING" />
+    
     <!-- Battery optimization permission
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" /> -->
 
@@ -21,6 +25,15 @@
         android:icon="@mipmap/launcher_icon"
         android:usesCleartextTraffic="false"
         android:allowBackup="false">
+         <meta-data
+        android:name="AdaptyPublicSdkKey"
+        android:value="public_live_aHLMW1j7.5KtbUx0bKhDrbpVXljbd" />
+    <meta-data
+        android:name="AdaptyObserverMode"
+        android:value="false" />
+    <meta-data
+        android:name="AdaptyGoogleAdvertisingIdCollectionDisabled"
+        android:value="false" />
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/ic_notification" />
