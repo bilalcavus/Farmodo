@@ -3,7 +3,9 @@ import 'package:farmodo/core/di/injection.dart';
 import 'package:farmodo/core/theme/app_colors.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
+import 'package:farmodo/data/models/purchasable_lottie.dart';
 import 'package:farmodo/data/sample_data/default_task_data.dart';
+import 'package:farmodo/data/services/lottie_service.dart';
 import 'package:farmodo/feature/tasks/viewmodel/tasks_controller.dart';
 import 'package:farmodo/feature/tasks/viewmodel/timer_controller.dart';
 import 'package:flutter/material.dart';
@@ -25,16 +27,102 @@ class PomodoroTimer extends StatefulWidget {
 
 class _PomodoroTimerState extends State<PomodoroTimer> with SingleTickerProviderStateMixin {
   late final AnimationController _animationController;
+  final LottieService _lottieService = LottieService();
+  final PageController _pageController = PageController();
+  
+  List<PurchasableLottie> _userLotties = [];
+  String _selectedLottieAssetPath = '';
+  int _currentIndex = 0;
+  bool _isLoading = true;
   
   @override
   void initState() {
     super.initState();
     _animationController = AnimationController(vsync: this);
+    _loadUserLotties();
+  }
+
+  Future<void> _loadUserLotties() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final lotties = await _lottieService.getUserLotties();
+      final selectedId = await _lottieService.getSelectedLottieId();
+      
+      final allLotties = [
+        PurchasableLottie(
+          id: 'default',
+          name: 'Default Timer',
+          assetPath: _lottieService.defaultLottieAssetPath,
+          price: 0,
+          description: 'Default timer animation',
+          isAvailable: true,
+          createdAt: DateTime.now(),
+        ),
+        ...lotties,
+      ];
+      int selectedIndex = 0;
+      if (selectedId != null) {
+        final index = allLotties.indexWhere((l) => l.id == selectedId);
+        if (index != -1) {
+          selectedIndex = index;
+        }
+      }
+
+      if (mounted) {
+        setState(() {
+          _userLotties = allLotties;
+          _currentIndex = selectedIndex;
+          _selectedLottieAssetPath = allLotties[selectedIndex].assetPath;
+          _isLoading = false;
+        });
+        // PageController'ı doğru sayfaya ayarla
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (_pageController.hasClients && mounted) {
+            _pageController.jumpToPage(selectedIndex);
+          }
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+          _userLotties = [
+            PurchasableLottie(
+              id: 'default',
+              name: 'Default Timer',
+              assetPath: _lottieService.defaultLottieAssetPath,
+              price: 0,
+              description: 'Default timer animation',
+              isAvailable: true,
+              createdAt: DateTime.now(),
+            ),
+          ];
+          _currentIndex = 0;
+          _selectedLottieAssetPath = _lottieService.defaultLottieAssetPath;
+        });
+      }
+    }
+  }
+
+  Future<void> _onPageChanged(int index) async {
+    if (index == _currentIndex) return;
+    
+    setState(() {
+      _currentIndex = index;
+      _selectedLottieAssetPath = _userLotties[index].assetPath;
+    });
+
+    final lottie = _userLotties[index];
+    await _lottieService.selectLottie(lottie.id, lottie.assetPath);
   }
 
   @override
   void dispose() {
     _animationController.dispose();
+    _pageController.dispose();
     super.dispose();
   }
 
@@ -47,6 +135,17 @@ class _PomodoroTimerState extends State<PomodoroTimer> with SingleTickerProvider
       _animationController.stop();
     }
   }
+  bool _hasLoadedOnce = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Sadece ilk kez yükle, sürekli yeniden yükleme
+    if (!_hasLoadedOnce) {
+      _hasLoadedOnce = true;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final tasksController = getIt<TasksController>();
@@ -126,20 +225,91 @@ class _PomodoroTimerState extends State<PomodoroTimer> with SingleTickerProvider
                 ),
               ),
             ],
-            Lottie.asset(
-              'assets/lottie/timer_lottie.json',
-              width: context.dynamicWidth(0.55),
-              height: context.dynamicHeight(0.3),
-              controller: _animationController,
-              onLoaded: (composition) {
-                _animationController.duration = composition.duration;
-                if(widget.timerController.isRunning.value) {
-                  _animationController.repeat();
-                } else {
-                  _animationController.stop();
-                }
-              }
-            ),
+            if (_isLoading)
+              SizedBox(
+                width: context.dynamicWidth(0.55),
+                height: context.dynamicHeight(0.3),
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              )
+            else if (_userLotties.isNotEmpty)
+              SizedBox(
+                height: context.dynamicHeight(0.3),
+                child: PageView.builder(
+                  controller: _pageController,
+                  onPageChanged: _onPageChanged,
+                  itemCount: _userLotties.length,
+                  itemBuilder: (context, index) {
+                    final lottie = _userLotties[index];
+                    final isCurrent = index == _currentIndex;
+                    
+                    return AnimatedContainer(
+                      duration: Duration(milliseconds: 300),
+                      curve: Curves.easeInOut,
+                      margin: EdgeInsets.symmetric(
+                        horizontal: isCurrent ? 0 : context.dynamicWidth(0.05),
+                      ),
+                      child: Opacity(
+                        opacity: isCurrent ? 1.0 : 0.3,
+                        child: Transform.scale(
+                          scale: isCurrent ? 1.0 : 0.85,
+                          child: Column(
+                            children: [
+                              Expanded(
+                                child: Lottie.asset(
+                                  lottie.assetPath,
+                                  controller: isCurrent ? _animationController : null,
+                                  onLoaded: isCurrent ? (composition) {
+                                    _animationController.duration = composition.duration;
+                                    if(widget.timerController.isRunning.value) {
+                                      _animationController.repeat();
+                                    } else {
+                                      _animationController.stop();
+                                    }
+                                  } : null,
+                                ),
+                              ),
+                              if (_userLotties.length > 1)
+                                Padding(
+                                  padding: EdgeInsets.only(top: context.dynamicHeight(0.01)),
+                                  child: Text(
+                                    lottie.name,
+                                    style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                                      color: isCurrent ? AppColors.textPrimary : AppColors.textSecondary,
+                                      fontWeight: isCurrent ? FontWeight.w600 : FontWeight.normal,
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            // Sayfa göstergesi (indicator)
+            if (_userLotties.length > 1)
+              Padding(
+                padding: EdgeInsets.only(top: context.dynamicHeight(0.01)),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: List.generate(_userLotties.length, (index) {
+                    return Container(
+                      margin: EdgeInsets.symmetric(horizontal: 4),
+                      width: index == _currentIndex ? 24 : 8,
+                      height: 8,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(4),
+                        color: index == _currentIndex
+                            ? AppColors.danger
+                            : Colors.grey.shade400,
+                      ),
+                    );
+                  }),
+                ),
+              ),
           ],
         );
       }),

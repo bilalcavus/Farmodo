@@ -79,7 +79,24 @@ class _StoreViewState extends State<StoreView> {
   }
 
   Future<void> _handleLottiePurchase(String lottieId, String name) async {
+    if (!authService.isLoggedIn) {
+      _showLoginDialog();
+      return;
+    }
 
+    rewardController.resetPurchaseState();
+    try {
+      await rewardController.buyStoreLottie(lottieId);
+      if (rewardController.purchaseSucceeded.value) {
+        SnackMessages().showSuccessSnack('${'store.lottie_purchased'.tr()}: $name');
+        setState(() {});
+      } else {
+        SnackMessages().showErrorSnack(rewardController.errorMessage.value);
+      }
+    } catch (e) {
+      Get.closeAllSnackbars();
+      SnackMessages().showErrorSnack(e.toString());
+    }
   }
 
   void _showLoginDialog() {
@@ -250,14 +267,14 @@ class _StoreViewState extends State<StoreView> {
               return LottieCard(
                 lottie: lottie,
                 cardRadius: context.dynamicHeight(0.02),
-                isBuying: false,
+                isBuying: rewardController.purchasingLottieId.value == lottie.id,
+                isOwned: rewardController.isLottieOwned(lottie.id),
                 onBuy: () => _handleLottiePurchase(lottie.id, lottie.name),
               );
             },
           );
-        }
       }
-    );
+    });
   }
 }
 

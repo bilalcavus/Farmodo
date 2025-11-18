@@ -202,6 +202,7 @@
   "store": {
     "store": "Mağaza",
     "buy": "Satın Al",
+    "get": "Al",
     "owned": "Sahip Olunan",
     "coins": "Coinler",
     "animal_purchased": "Hayvan satın alındı ve çiftliğinize eklendi",
@@ -214,7 +215,8 @@
     "come_back_later": "Yeni ürünler için daha sonra tekrar gel!",
     "category_animals": "Hayvanlar",
     "category_coins": "Coinler",
-    "category_lotties": "Animasyonlar"
+    "category_lotties": "Animasyonlar",
+    "lottie_purchased": "Animasyon eklendi"
   },
   
   "gamification": {

@@ -203,6 +203,7 @@
   "store": {
     "store": "Store",
     "buy": "Buy",
+    "get": "Get",
     "owned": "Owned",
     "coins": "Coins",
     "animal_purchased": "Animal purchased and added to your farm",
@@ -215,7 +216,8 @@
     "come_back_later": "Come back later for new items!",
     "category_animals": "Animals",
     "category_coins": "Coins",
-    "category_lotties": "Animations"
+    "category_lotties": "Animations",
+    "lottie_purchased": "Animation added"
   },
   
   "gamification": {

@@ -12,6 +12,7 @@ class LottieCard extends StatelessWidget {
   final double cardRadius;
   final VoidCallback onBuy;
   final bool isBuying;
+  final bool isOwned;
 
   const LottieCard({
     super.key,
@@ -19,6 +20,7 @@ class LottieCard extends StatelessWidget {
     required this.cardRadius,
     required this.onBuy,
     this.isBuying = false,
+    this.isOwned = false,
   });
 
   @override
@@ -84,41 +86,52 @@ class LottieCard extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.attach_money, color: Colors.green),
+                      Icon(Icons.card_giftcard, color: Colors.green),
+                      SizedBox(width: context.dynamicWidth(0.01)),
                       Text(
-                        '\$${lottie.price}',
+                        'Free',
                         style: Theme.of(context).textTheme.labelLarge?.copyWith(
                               fontWeight: FontWeight.bold,
+                              color: Colors.green,
                             ),
                       ),
                     ],
                   ),
                   context.dynamicHeight(0.006).height,
-                  ElevatedButton(
-                    onPressed: isBuying ? null : onBuy,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.secondary,
-                      foregroundColor: isDark
-                          ? AppColors.lightTextPrimary
-                          : AppColors.darkTextPrimary,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: context.border.normalBorderRadius,
-                      ),
-                    ),
-                    child: isBuying
-                        ? SizedBox(
-                            height: context.dynamicHeight(0.02),
-                            width: context.dynamicHeight(0.02),
-                            child: const CircularProgressIndicator(
-                              strokeWidth: 2,
-                              color: Colors.white,
-                            ),
-                          )
-                        : Text(
-                            'store.buy'.tr(),
-                            style: TextStyle(fontSize: buttonFont),
+                  isOwned
+                      ? Text(
+                          'store.owned'.tr(),
+                          style: TextStyle(
+                            color: Colors.green,
+                            fontWeight: FontWeight.bold,
+                            fontSize: buttonFont,
                           ),
-                  ),
+                        )
+                      : ElevatedButton(
+                          onPressed: isBuying ? null : onBuy,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.secondary,
+                            foregroundColor: isDark
+                                ? AppColors.lightTextPrimary
+                                : AppColors.darkTextPrimary,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: context.border.normalBorderRadius,
+                            ),
+                          ),
+                          child: isBuying
+                              ? SizedBox(
+                                  height: context.dynamicHeight(0.02),
+                                  width: context.dynamicHeight(0.02),
+                                  child: const CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: Colors.white,
+                                  ),
+                                )
+                              : Text(
+                                  'store.get'.tr(),
+                                  style: TextStyle(fontSize: buttonFont),
+                                ),
+                        ),
                 ],
               ),
             ],

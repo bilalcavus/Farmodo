@@ -33,14 +33,24 @@ class PurchasableLottie {
 
   factory PurchasableLottie.fromFirestore(DocumentSnapshot doc){
     final data = doc.data() as Map<String, dynamic>;
+    
+    DateTime dateTime;
+    if (data['createdAt'] != null) {
+      dateTime = (data['createdAt'] as Timestamp).toDate();
+    } else if (data['purchasedAt'] != null) {
+      dateTime = (data['purchasedAt'] as Timestamp).toDate();
+    } else {
+      dateTime = DateTime.now();
+    }
+    
     return PurchasableLottie(
-      id: doc.id,
+      id: data['id'] ?? doc.id,
       name: data['name'] ?? '',
       description: data['description'] ?? '',
       assetPath: data['assetPath'] ?? '',
       isAvailable: data['isAvailable'] ?? true,
       price: data['price'] ?? 0,
-      createdAt: (data['createdAt'] as Timestamp).toDate(),
+      createdAt: dateTime,
     );
   }
 

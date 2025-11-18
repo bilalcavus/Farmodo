@@ -4,6 +4,7 @@ import 'package:farmodo/data/models/reward_model.dart';
 import 'package:farmodo/data/services/animal_service.dart';
 import 'package:farmodo/data/services/auth_service.dart';
 import 'package:farmodo/data/services/firestore_service.dart';
+import 'package:farmodo/data/services/lottie_service.dart';
 import 'package:farmodo/feature/auth/login/viewmodel/login_controller.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
@@ -17,6 +18,7 @@ class RewardController extends GetxController {
   final LoginController loginController;
   final AuthService authService;
   final AnimalService animalService = AnimalService();
+  final LottieService lottieService = LottieService();
   TextEditingController rewardIdController = TextEditingController();
   TextEditingController nameController = TextEditingController();
   TextEditingController imageUrlController = TextEditingController();
@@ -27,10 +29,12 @@ class RewardController extends GetxController {
   final _isPremium = false.obs;
   final _isLoading = false.obs;
   final _purchaseSucceeded = false.obs;
-  final _isOwnedAnimal = false.obs; // legacy single-flag (kept for compatibility)
+  final _isOwnedAnimal = false.obs;
   final RxSet<String> ownedRewardIds = <String>{}.obs;
+  final RxSet<String> ownedLottieIds = <String>{}.obs;
   final RxnString purchasingRewardId = RxnString();
   final RxnString purchasingCoinId = RxnString();
+  final RxnString purchasingLottieId = RxnString();
   RxBool get isPremium => _isPremium;
   RxBool get isLoading => _isLoading;
   RxBool get purchaseSucceeded => _purchaseSucceeded;
@@ -111,10 +115,17 @@ class RewardController extends GetxController {
 
   Future<void> loadOwnedRewards() async {
     try {
+      // Hayvanları yükle
       final animals = await animalService.getUserAnimals();
       ownedRewardIds
         ..clear()
         ..addAll(animals.map((a) => a.rewardId));
+      
+      // Lottie'leri yükle
+      final lotties = await lottieService.getUserLotties();
+      ownedLottieIds
+        ..clear()
+        ..addAll(lotties.map((l) => l.id));
     } catch (e) {
       errorMessage.value = e.toString();
     }
@@ -123,6 +134,10 @@ class RewardController extends GetxController {
   bool isRewardOwned(String rewardId) {
     final isOwned = ownedRewardIds.contains(rewardId);
     return isOwned;
+  }
+
+  bool isLottieOwned(String lottieId) {
+    return ownedLottieIds.contains(lottieId);
   }
 
   // Future<void> getStoreItems() async {
@@ -231,6 +246,29 @@ class RewardController extends GetxController {
       setLoading(false);
       purchasingCoinId.value = null;
     }
+  }
 
+  Future<void> buyStoreLottie(String lottieId) async {
+    setLoading(true);
+    resetPurchaseState();
+    purchasingLottieId.value = lottieId;
+    
+    try {
+      final lottie = purchasableLotties.firstWhere((item) => item.id == lottieId);
+      
+      await lottieService.purchaseLottie(lottie);
+      
+      _purchaseSucceeded.value = true;
+      ownedLottieIds.add(lottieId);
+      
+      await authService.fetchAndSetCurrentUser();
+      loginController.refreshUserXp();
+      await loadOwnedRewards();
+    } catch (e) {
+      errorMessage.value = e.toString();
+    } finally {
+      setLoading(false);
+      purchasingLottieId.value = null;
+    }
   }
 }
