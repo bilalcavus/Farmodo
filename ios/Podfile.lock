@@ -1188,6 +1188,17 @@ PODS:
     - abseil/meta/type_traits
     - abseil/xcprivacy
   - abseil/xcprivacy (1.20240722.0)
+  - Adapty (3.11.0)
+  - adapty_flutter (3.11.0):
+    - Adapty (= 3.11.0)
+    - AdaptyPlugin (= 3.11.0)
+    - AdaptyUI (= 3.11.0)
+    - Flutter
+  - AdaptyPlugin (3.11.0):
+    - Adapty (= 3.11.0)
+    - AdaptyUI (= 3.11.0)
+  - AdaptyUI (3.11.0):
+    - Adapty (= 3.11.0)
   - app_group_directory (1.0.0):
     - Flutter
   - AppAuth (1.7.6):
@@ -1443,6 +1454,7 @@ PODS:
     - Flutter
 
 DEPENDENCIES:
+  - adapty_flutter (from `.symlinks/plugins/adapty_flutter/ios`)
   - app_group_directory (from `.symlinks/plugins/app_group_directory/ios`)
   - audioplayers_darwin (from `.symlinks/plugins/audioplayers_darwin/darwin`)
   - cloud_firestore (from `.symlinks/plugins/cloud_firestore/ios`)
@@ -1467,6 +1479,9 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - abseil
+    - Adapty
+    - AdaptyPlugin
+    - AdaptyUI
     - AppAuth
     - AppCheckCore
     - BoringSSL-GRPC
@@ -1492,6 +1507,8 @@ SPEC REPOS:
     - RecaptchaInterop
 
 EXTERNAL SOURCES:
+  adapty_flutter:
+    :path: ".symlinks/plugins/adapty_flutter/ios"
   app_group_directory:
     :path: ".symlinks/plugins/app_group_directory/ios"
   audioplayers_darwin:
@@ -1535,6 +1552,10 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   abseil: a05cc83bf02079535e17169a73c5be5ba47f714b
+  Adapty: ad14ab563dd945a1b0f64e1c7cddf713969c39b5
+  adapty_flutter: 0b9ee1c0d7fe343a91ae209a36ee70796221e4d2
+  AdaptyPlugin: cf709bf358013e1390eabd91dae2ac99b7ee4825
+  AdaptyUI: 60f719fc79bc44dbdbe88974290669dc14dc89e0
   app_group_directory: a2613caae8f771366673bd6ec80412b76bbb4fb4
   AppAuth: d4f13a8fe0baf391b2108511793e4b479691fb73
   AppCheckCore: cc8fd0a3a230ddd401f326489c99990b013f0c4f

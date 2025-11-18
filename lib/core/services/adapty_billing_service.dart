@@ -12,7 +12,6 @@ class AdaptyBillingService {
   
   // Development mode: true iken gerçek satın alma yapmaz, sadece simüle eder
   // Store'lara ürünler eklendikten sonra false yapın
-  static const bool isDevelopmentMode = true;
 
   AdaptyProfile? _profile;
   bool _isAvailable = false;
@@ -95,22 +94,6 @@ class AdaptyBillingService {
 
   Future<Map<String, dynamic>> purchaseCoins(int coinAmount) async {
     try {
-      // Development mode: Gerçek satın alma yapmadan simüle et
-      if (isDevelopmentMode) {
-        debugPrint('⚠️ DEVELOPMENT MODE: Simulating purchase of $coinAmount coins');
-        debugPrint('⚠️ This is NOT a real purchase. Set isDevelopmentMode = false when ready.');
-        
-        // 2 saniye bekle (gerçekçi olsun)
-        await Future.delayed(const Duration(seconds: 2));
-        
-        // Başarılı satın alma simülasyonu
-        return {
-          'success': true, 
-          'profile': _profile, 
-          'coins': coinAmount,
-          'isDevelopment': true,
-        };
-      }
       
       if(!_isAvailable){
         debugPrint('Adapty not available. Aborting Coin purchase.');
