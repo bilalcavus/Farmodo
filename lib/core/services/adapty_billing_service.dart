@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:adapty_flutter/adapty_flutter.dart';
+import 'package:farmodo/data/models/purchasable_lottie.dart';
 import 'package:flutter/material.dart';
 
 class AdaptyBillingService {
@@ -9,6 +10,9 @@ class AdaptyBillingService {
   static const String _500_coin = "pomodoro_500_coins";
   static const String _2000_coin = "pomodoro_2000_coins";
   static const String _5000_coin = "pomodoro_5000_coins";
+  static const String _lottie_small_pack = "pomodoro_lottie_small_pack";
+  static const String _lottie_medium_pack = "pomodoro_lottie_medium_pack";
+  static const String _lottie_advanced_pack = "pomodoro_lottie_advanced_pack";
   
   // Development mode: true iken gerçek satın alma yapmaz, sadece simüle eder
   // Store'lara ürünler eklendikten sonra false yapın
@@ -100,7 +104,7 @@ class AdaptyBillingService {
         return {'success': false, 'error': 'Adapty not available'};
       }
 
-      final paywall = await getPaywall('consumable_coins');
+      final paywall = await getPaywall('consumable_coin');
       if(paywall == null){
         debugPrint('Coin paywall not found');
         return {'success': false, 'error': 'Paywall not found'};
@@ -149,6 +153,77 @@ class AdaptyBillingService {
       return {'success': true, 'profile': _profile, 'coins': coinProduct};
     } catch (e) {
       debugPrint('Error purchasing coin: $e');
+      return {'success': false, 'error': e.toString()};
+    }
+  }
+
+  String _resolveLottieProductId(
+    LottiePackType packType, {
+    String? productIdOverride,
+  }) {
+    if (productIdOverride != null && productIdOverride.isNotEmpty) {
+      return productIdOverride;
+    }
+
+    switch (packType) {
+      case LottiePackType.small:
+        return _lottie_small_pack;
+      case LottiePackType.medium:
+        return _lottie_medium_pack;
+      case LottiePackType.advanced:
+        return _lottie_advanced_pack;
+      case LottiePackType.unknown:
+        return _lottie_small_pack;
+    }
+  }
+
+  Future<Map<String, dynamic>> purchaseLottiePack(
+    LottiePackType packType, {
+    String? productIdOverride,
+  }) async {
+    try {
+      if (!_isAvailable) {
+        debugPrint('Adapty not available. Aborting lottie purchase.');
+        return {'success': false, 'error': 'Adapty not available'};
+      }
+
+      final paywall = await getPaywall('pro_animation');
+      if (paywall == null) {
+        return {'success': false, 'error': 'Paywall not found'};
+      }
+
+      final products = await Adapty().getPaywallProducts(paywall: paywall);
+      if (products.isEmpty) {
+        debugPrint('No products found in lottie paywall');
+        return {'success': false, 'error': 'No products in paywall'};
+      }
+
+      final desiredProductId = _resolveLottieProductId(
+        packType,
+        productIdOverride: productIdOverride,
+      );
+      AdaptyPaywallProduct? packProduct;
+      try {
+        packProduct =
+            products.firstWhere((p) => p.vendorProductId == desiredProductId);
+      } catch (_) {
+        debugPrint(
+            'Lottie product not found. Wanted: $desiredProductId, Available: ${products.map((p) => p.vendorProductId).join(", ")}');
+        return {
+          'success': false,
+          'error': 'Product not found: $desiredProductId'
+        };
+      }
+
+      debugPrint(
+          'Attempting to purchase lottie pack: ${packProduct.vendorProductId}');
+      await Adapty().makePurchase(product: packProduct);
+      await _loadProfile();
+      debugPrint('Lottie pack purchase completed: ${packType.readableName}');
+
+      return {'success': true, 'profile': _profile, 'product': packProduct};
+    } catch (e) {
+      debugPrint('Error purchasing lottie pack: $e');
       return {'success': false, 'error': e.toString()};
     }
   }

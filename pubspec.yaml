@@ -75,6 +75,7 @@ flutter:
     - assets/translations/
     - assets/purchase_items/coin/
     - assets/purchase_items/lottie/
+    - assets/purchase_items/lottie/pack_icon/
 
     
   fonts:

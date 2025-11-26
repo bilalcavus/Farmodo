@@ -1,5 +1,48 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+enum LottiePackType { small, medium, advanced, unknown }
+
+String lottiePackTypeToString(LottiePackType type) {
+  switch (type) {
+    case LottiePackType.small:
+      return 'small';
+    case LottiePackType.medium:
+      return 'medium';
+    case LottiePackType.advanced:
+      return 'advanced';
+    case LottiePackType.unknown:
+      return 'unknown';
+  }
+}
+
+LottiePackType lottiePackTypeFromString(String? value) {
+  switch (value?.toLowerCase()) {
+    case 'small':
+      return LottiePackType.small;
+    case 'medium':
+      return LottiePackType.medium;
+    case 'advanced':
+      return LottiePackType.advanced;
+    default:
+      return LottiePackType.unknown;
+  }
+}
+
+extension LottiePackTypeReadable on LottiePackType {
+  String get readableName {
+    switch (this) {
+      case LottiePackType.small:
+        return 'Small Pack';
+      case LottiePackType.medium:
+        return 'Medium Pack';
+      case LottiePackType.advanced:
+        return 'Advanced Pack';
+      case LottiePackType.unknown:
+        return 'Unknown Pack';
+    }
+  }
+}
+
 class PurchasableLottie {
   final String id;
   final String name;
@@ -7,7 +50,9 @@ class PurchasableLottie {
   final int price;
   final String description;
   final bool isAvailable;
+  final String type;
   final DateTime createdAt;
+  final String? productId;
 
   PurchasableLottie({
     required this.id,
@@ -16,7 +61,9 @@ class PurchasableLottie {
     required this.price,
     required this.description,
     required this.isAvailable,
+    required this.type,
     required this.createdAt,
+    this.productId,
   });
 
   factory PurchasableLottie.fromJson(Map<String, dynamic> json){
@@ -28,6 +75,8 @@ class PurchasableLottie {
       description: json['description'],
       isAvailable: json['isAvailable'] ?? true,
       createdAt: DateTime.parse(json['createdAt']),
+      type: json['type'] ?? '', 
+      productId: json['productId'],
     );
   }
 
@@ -51,6 +100,8 @@ class PurchasableLottie {
       isAvailable: data['isAvailable'] ?? true,
       price: data['price'] ?? 0,
       createdAt: dateTime,
+      type: data['type'] ?? '',
+      productId: data['productId'],
     );
   }
 
@@ -63,6 +114,8 @@ class PurchasableLottie {
       'isAvailable': isAvailable,
       'price': price,
       'createdAt': createdAt.toIso8601String(),
+      'type': type,
+      'productId': productId,
     };
   }
   
@@ -74,7 +127,9 @@ class PurchasableLottie {
       'assetPath': assetPath,
       'isAvailable': isAvailable,
       'price': price,
-      'createdAt': Timestamp.fromDate(createdAt)
+      'createdAt': Timestamp.fromDate(createdAt),
+      'type': type,
+      'productId': productId,
     };
   }
 
@@ -86,6 +141,8 @@ class PurchasableLottie {
     int? price,
     bool? isAvailable,
     DateTime? createdAt,
+    String? type,
+    String? productId,
   }) {
     return PurchasableLottie(
       id: id ?? this.id,
@@ -95,6 +152,8 @@ class PurchasableLottie {
       price: price ?? this.price,
       isAvailable: isAvailable ?? this.isAvailable,
       createdAt: createdAt ?? this.createdAt,
+      type: type ?? this.type,
+      productId: productId ?? this.productId,
     );
   }
 
@@ -106,4 +165,6 @@ class PurchasableLottie {
   
   @override
   int get hashCode => id.hashCode;
+
+  LottiePackType get packType => lottiePackTypeFromString(type);
 }

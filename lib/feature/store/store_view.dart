@@ -3,6 +3,8 @@ import 'package:farmodo/core/components/message/snack_messages.dart';
 import 'package:farmodo/core/di/injection.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/core/utility/extension/route_helper.dart';
+import 'package:farmodo/data/models/lottie_pack.dart';
+import 'package:farmodo/data/models/purchasable_lottie.dart';
 import 'package:farmodo/data/services/auth_service.dart';
 import 'package:farmodo/feature/auth/login/view/login_view.dart';
 import 'package:farmodo/feature/auth/login/viewmodel/login_controller.dart';
@@ -10,7 +12,8 @@ import 'package:farmodo/feature/navigation/navigation_controller.dart';
 import 'package:farmodo/feature/store/viewmodel/reward_controller.dart';
 import 'package:farmodo/feature/store/widget/category_selector.dart';
 import 'package:farmodo/feature/store/widget/coin_card.dart';
-import 'package:farmodo/feature/store/widget/lottie_card.dart';
+import 'package:farmodo/feature/store/widget/lottie_pack_card.dart';
+import 'package:farmodo/feature/store/view/lottie_pack_detail_view.dart';
 import 'package:farmodo/feature/store/widget/store_card.dart';
 import 'package:farmodo/feature/store/widget/store_empty_state.dart';
 import 'package:farmodo/feature/home/widgets/user_xp.dart';
@@ -78,7 +81,23 @@ class _StoreViewState extends State<StoreView> {
     }
   }
 
-  Future<void> _handleLottiePurchase(String lottieId, String name) async {
+  Future<void> _handleLottieActivation(LottiePackType type) async {
+    if (!authService.isLoggedIn) {
+      _showLoginDialog();
+      return;
+    }
+
+    try {
+      await rewardController.selectLottiePack(type);
+      SnackMessages().showSuccessSnack('Lottie pack activated');
+      setState(() {});
+    } catch (e) {
+      Get.closeAllSnackbars();
+      SnackMessages().showErrorSnack(e.toString());
+    }
+  }
+
+  Future<void> _handleLottiePackPurchase(LottiePack pack) async {
     if (!authService.isLoggedIn) {
       _showLoginDialog();
       return;
@@ -86,9 +105,9 @@ class _StoreViewState extends State<StoreView> {
 
     rewardController.resetPurchaseState();
     try {
-      await rewardController.buyStoreLottie(lottieId);
+      await rewardController.buyLottiePack(pack);
       if (rewardController.purchaseSucceeded.value) {
-        SnackMessages().showSuccessSnack('${'store.lottie_purchased'.tr()}: $name');
+        SnackMessages().showSuccessSnack('${'store.lottie_purchased'.tr()}: ${pack.name}');
         setState(() {});
       } else {
         SnackMessages().showErrorSnack(rewardController.errorMessage.value);
@@ -249,8 +268,8 @@ class _StoreViewState extends State<StoreView> {
           );
 
         case StoreCategory.lotties:
-          final lotties = rewardController.purchasableLotties;
-          if (lotties.isEmpty) return const StoreEmptyState();
+          final lottiePacks = rewardController.lottiePacks;
+          if (lottiePacks.isEmpty) return const StoreEmptyState();
 
           return GridView.builder(
             shrinkWrap: true,
@@ -261,15 +280,35 @@ class _StoreViewState extends State<StoreView> {
               mainAxisSpacing: context.dynamicWidth(0.024),
               childAspectRatio: 0.85,
             ),
-            itemCount: lotties.length,
+            itemCount: lottiePacks.length,
             itemBuilder: (context, index) {
-              final lottie = lotties[index];
-              return LottieCard(
-                lottie: lottie,
+              final pack = lottiePacks[index] as LottiePack;
+              final imagePath = switch (pack.type) {
+                LottiePackType.small => 'assets/purchase_items/lottie/pack_icon/small_pack.png',
+                LottiePackType.medium => 'assets/purchase_items/lottie/pack_icon/medium_pack.png',
+                LottiePackType.advanced => 'assets/purchase_items/lottie/pack_icon/advanced_pack.png',
+                LottiePackType.unknown => null,
+              };
+              return LottiePackCard(
+                pack: pack,
                 cardRadius: context.dynamicHeight(0.02),
-                isBuying: rewardController.purchasingLottieId.value == lottie.id,
-                isOwned: rewardController.isLottieOwned(lottie.id),
-                onBuy: () => _handleLottiePurchase(lottie.id, lottie.name),
+                isBuying: rewardController.purchasingLottiePackType.value == pack.type,
+                isOwned: rewardController.isPackOwned(pack.type),
+                isActive: rewardController.isPackActive(pack.type),
+                imageAssetPath: imagePath,
+                onBuy: () => _handleLottiePackPurchase(pack),
+                onActivate: () => _handleLottieActivation(pack.type),
+                onView: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => LottiePackDetailView(
+                        pack: pack,
+                        isOwned: rewardController.isPackOwned(pack.type),
+                        isActive: rewardController.isPackActive(pack.type),
+                      ),
+                    ),
+                  );
+                },
               );
             },
           );
@@ -277,4 +316,3 @@ class _StoreViewState extends State<StoreView> {
     });
   }
 }
-

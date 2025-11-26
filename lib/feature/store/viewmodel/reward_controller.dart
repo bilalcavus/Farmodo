@@ -1,4 +1,5 @@
 import 'package:farmodo/core/services/adapty_billing_service.dart';
+import 'package:farmodo/data/models/lottie_pack.dart';
 import 'package:farmodo/data/models/purchasable_coin.dart';
 import 'package:farmodo/data/models/purchasable_lottie.dart';
 import 'package:farmodo/data/models/reward_model.dart';
@@ -7,7 +8,6 @@ import 'package:farmodo/data/services/auth_service.dart';
 import 'package:farmodo/data/services/firestore_service.dart';
 import 'package:farmodo/data/services/lottie_service.dart';
 import 'package:farmodo/feature/auth/login/viewmodel/login_controller.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
@@ -35,15 +35,18 @@ class RewardController extends GetxController {
   final _isOwnedAnimal = false.obs;
   final RxSet<String> ownedRewardIds = <String>{}.obs;
   final RxSet<String> ownedLottieIds = <String>{}.obs;
+  final RxSet<LottiePackType> ownedLottiePackTypes = <LottiePackType>{}.obs;
   final RxnString purchasingRewardId = RxnString();
   final RxnString purchasingCoinId = RxnString();
-  final RxnString purchasingLottieId = RxnString();
+  final Rxn<LottiePackType> purchasingLottiePackType = Rxn<LottiePackType>();
+  final Rxn<LottiePackType> activeLottiePackType = Rxn<LottiePackType>();
   RxBool get isPremium => _isPremium;
   RxBool get isLoading => _isLoading;
   RxBool get purchaseSucceeded => _purchaseSucceeded;
   RxList storeItems = <Reward>[].obs;
   RxList purchasableCoins = <PurchasableCoin>[].obs;
   RxList purchasableLotties = <PurchasableLottie>[].obs;
+  RxList lottiePacks = <LottiePack>[].obs;
   RxList userPurchasedRewards = [].obs;
   RxBool get isOwnedAnimal => _isOwnedAnimal;
   
@@ -75,6 +78,7 @@ class RewardController extends GetxController {
     _animalsLoaded.value = false;
     _coinsLoaded.value = false;
     _lottiesLoaded.value = false;
+    lottiePacks.clear();
     await loadAllStoreData();
   }
 
@@ -134,6 +138,14 @@ class RewardController extends GetxController {
       ownedLottieIds
         ..clear()
         ..addAll(lotties.map((l) => l.id));
+
+      final ownedPacks = await lottieService.getOwnedPackTypes();
+      ownedLottiePackTypes
+        ..clear()
+        ..addAll(ownedPacks);
+
+      final selectedPack = await lottieService.getSelectedPackType();
+      activeLottiePackType.value = selectedPack ?? (ownedPacks.isNotEmpty ? ownedPacks.first : null);
     } catch (e) {
       errorMessage.value = e.toString();
     }
@@ -146,6 +158,14 @@ class RewardController extends GetxController {
 
   bool isLottieOwned(String lottieId) {
     return ownedLottieIds.contains(lottieId);
+  }
+
+  bool isPackOwned(LottiePackType type) {
+    return ownedLottiePackTypes.contains(type);
+  }
+
+  bool isPackActive(LottiePackType type) {
+    return activeLottiePackType.value == type;
   }
 
   // Future<void> getStoreItems() async {
@@ -185,6 +205,31 @@ class RewardController extends GetxController {
     }
   }
 
+  void _rebuildLottiePacks() {
+    final Map<LottiePackType, List<PurchasableLottie>> grouped = {};
+    for (final lottie in purchasableLotties.cast<PurchasableLottie>()) {
+      final type = lottie.packType;
+      if (type == LottiePackType.unknown) continue;
+      grouped.putIfAbsent(type, () => []).add(lottie);
+    }
+
+    final packs = grouped.entries.map((entry) {
+      final lotties = entry.value;
+      final preview = lotties.isNotEmpty ? lotties.first : null;
+      return LottiePack(
+        type: entry.key,
+        name: entry.key.readableName,
+        description: '${lotties.length} animation',
+        price: preview?.price ?? 0,
+        lotties: lotties,
+        productId: preview?.productId,
+      );
+    }).toList()
+      ..sort((a, b) => a.type.index.compareTo(b.type.index));
+
+    lottiePacks.assignAll(packs);
+  }
+
   Future<void> getPurchasableLotties() async {
     if (_lottiesLoaded.value) {
       return;
@@ -193,6 +238,7 @@ class RewardController extends GetxController {
       fetchFunction: () => firestoreService.fetchPurchasableLotties(),
       targetList: purchasableLotties
     );
+    _rebuildLottiePacks();
     _lottiesLoaded.value = true;
   }
 
@@ -282,27 +328,47 @@ class RewardController extends GetxController {
     }
   }
 
-  Future<void> buyStoreLottie(String lottieId) async {
+  Future<void> buyLottiePack(LottiePack pack) async {
     setLoading(true);
     resetPurchaseState();
-    purchasingLottieId.value = lottieId;
+    purchasingLottiePackType.value = pack.type;
     
     try {
-      final lottie = purchasableLotties.firstWhere((item) => item.id == lottieId);
-      
-      await lottieService.purchaseLottie(lottie);
-      
-      _purchaseSucceeded.value = true;
-      ownedLottieIds.add(lottieId);
-      
-      await authService.fetchAndSetCurrentUser();
-      loginController.refreshUserXp();
-      await loadOwnedRewards();
+      Map<String, dynamic>? purchaseResult;
+
+      if (billingService.isAvailable) {
+        purchaseResult = await billingService.purchaseLottiePack(
+          pack.type,
+          productIdOverride: pack.productId,
+        );
+      }
+
+      final success = purchaseResult == null || purchaseResult['success'] == true;
+      if (success) {
+        await lottieService.registerPackPurchase(
+          pack: pack,
+          purchaseMethod: billingService.isAvailable ? 'iap' : 'free',
+        );
+        _purchaseSucceeded.value = true;
+        ownedLottiePackTypes.add(pack.type);
+        activeLottiePackType.value = pack.type;
+
+        await authService.fetchAndSetCurrentUser();
+        loginController.refreshUserXp();
+        await loadOwnedRewards();
+      } else {
+        errorMessage.value = purchaseResult['error'] ?? 'Purchase failed';
+      }
     } catch (e) {
       errorMessage.value = e.toString();
     } finally {
       setLoading(false);
-      purchasingLottieId.value = null;
+      purchasingLottiePackType.value = null;
     }
+  }
+
+  Future<void> selectLottiePack(LottiePackType type) async {
+    await lottieService.selectPackType(type);
+    activeLottiePackType.value = type;
   }
 }
