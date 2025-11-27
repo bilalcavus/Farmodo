@@ -4,8 +4,6 @@ import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
 import 'package:farmodo/data/models/lottie_pack.dart';
 import 'package:flutter/material.dart';
-import 'package:hugeicons/hugeicons.dart';
-import 'package:iconsax/iconsax.dart';
 import 'package:kartal/kartal.dart';
 import 'package:lottie/lottie.dart';
 
@@ -36,10 +34,9 @@ class LottiePackCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final preview = pack.previewLottie;
-    final double padding = context.dynamicHeight(0.012);
     final double buttonFont = context.dynamicHeight(0.016);
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final priceLabel = pack.price > 0 ? '${pack.price}' : 'Free';
+    final priceLabel = pack.displayPrice ?? (pack.price > 0 ? '${pack.price} ₺' : 'Free');
 
     return Padding(
       padding: context.padding.horizontalLow,
@@ -120,7 +117,22 @@ class LottiePackCard extends StatelessWidget {
               Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                 
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: isOwned
+                        ? []
+                        : [
+                          // icon for price
+                            Text(
+                              priceLabel,
+                              style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.orange.shade800,
+                                  ),
+                            ),
+                          ],
+                  ),
+                  if (!isOwned) context.dynamicHeight(0.006).height,
                   if (isOwned)
                     Column(
                       children: [

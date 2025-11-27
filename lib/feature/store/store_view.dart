@@ -36,6 +36,23 @@ class _StoreViewState extends State<StoreView> {
   final navigationController = getIt<NavigationController>();
   final loginController = getIt<LoginController>();
   StoreCategory _selectedCategory = StoreCategory.animals;
+  bool _bootstrapped = false;
+
+  Future<void> _bootstrapStoreData() async {
+    if (_bootstrapped) return;
+    _bootstrapped = true;
+    if (!authService.isLoggedIn) return;
+
+    // Ensure ownership state is up to date on every app launch/entering store
+    await rewardController.loadOwnedRewards();
+
+    // If Adapty profile is already available, sync lottie purchases once more
+    final profile = rewardController.billingService.profile;
+    if (profile != null) {
+      await rewardController.lottieService.syncWithAdapty(profile);
+      await rewardController.loadOwnedRewards();
+    }
+  }
 
   Future<void> _handlePurchase({
     required String rewardId,
@@ -144,6 +161,7 @@ class _StoreViewState extends State<StoreView> {
   @override
   void initState() {
     super.initState();
+    _bootstrapStoreData();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await rewardController.loadAllStoreData();
       await rewardController.loadOwnedRewards();

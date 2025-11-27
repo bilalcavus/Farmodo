@@ -5,6 +5,7 @@ class LottiePack {
   final String name;
   final String description;
   final int price;
+  final String? displayPrice;
   final List<PurchasableLottie> lotties;
   final String? productId;
 
@@ -13,6 +14,7 @@ class LottiePack {
     required this.name,
     required this.description,
     required this.price,
+    this.displayPrice,
     required this.lotties,
     this.productId,
   });
@@ -24,6 +26,7 @@ class LottiePack {
     String? name,
     String? description,
     int? price,
+    String? displayPrice,
     List<PurchasableLottie>? lotties,
     String? productId,
   }) {
@@ -32,6 +35,7 @@ class LottiePack {
       name: name ?? this.name,
       description: description ?? this.description,
       price: price ?? this.price,
+      displayPrice: displayPrice ?? this.displayPrice,
       lotties: lotties ?? this.lotties,
       productId: productId ?? this.productId,
     );

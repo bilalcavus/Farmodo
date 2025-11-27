@@ -1,3 +1,4 @@
+import 'package:adapty_flutter/adapty_flutter.dart';
 import 'package:farmodo/core/services/adapty_billing_service.dart';
 import 'package:farmodo/data/models/lottie_pack.dart';
 import 'package:farmodo/data/models/purchasable_coin.dart';
@@ -64,6 +65,18 @@ class RewardController extends GetxController {
     super.onReady();
     loadAllStoreData();
     loadOwnedRewards();
+    
+    // Listen for Adapty profile updates (e.g. restore purchases)
+    billingService.onProfileUpdate = (profile) {
+      lottieService.syncWithAdapty(profile).then((_) {
+        loadOwnedRewards(); // Refresh UI after sync
+      });
+    };
+    
+    // Initial sync if profile is already loaded
+    if (billingService.profile != null) {
+      lottieService.syncWithAdapty(billingService.profile!);
+    }
   }
   
   Future<void> loadAllStoreData() async {
@@ -205,7 +218,7 @@ class RewardController extends GetxController {
     }
   }
 
-  void _rebuildLottiePacks() {
+  void _rebuildLottiePacks({List<AdaptyPaywallProduct>? paywallProducts}) {
     final Map<LottiePackType, List<PurchasableLottie>> grouped = {};
     for (final lottie in purchasableLotties.cast<PurchasableLottie>()) {
       final type = lottie.packType;
@@ -216,13 +229,24 @@ class RewardController extends GetxController {
     final packs = grouped.entries.map((entry) {
       final lotties = entry.value;
       final preview = lotties.isNotEmpty ? lotties.first : null;
+      final productId = preview?.productId?.isNotEmpty == true
+          ? preview?.productId
+          : billingService.lottieDefaultProductId(entry.key);
+      String? localizedPrice;
+      if (paywallProducts != null && productId != null) {
+        localizedPrice = billingService.getLocalizedPriceForProduct(
+          products: paywallProducts,
+          productId: productId,
+        );
+      }
       return LottiePack(
         type: entry.key,
         name: entry.key.readableName,
         description: '${lotties.length} animation',
         price: preview?.price ?? 0,
+        displayPrice: localizedPrice,
         lotties: lotties,
-        productId: preview?.productId,
+        productId: productId,
       );
     }).toList()
       ..sort((a, b) => a.type.index.compareTo(b.type.index));
@@ -234,11 +258,24 @@ class RewardController extends GetxController {
     if (_lottiesLoaded.value) {
       return;
     }
+    List<AdaptyPaywallProduct>? products;
+    if (billingService.isAvailable) {
+      final paywall = await billingService.getPaywallWithProducts(
+        AdaptyBillingService.lottiePackPlacementId,
+      );
+      final rawProducts = paywall?['products'];
+      if (rawProducts is List<AdaptyPaywallProduct>) {
+        products = rawProducts;
+      } else if (rawProducts is List) {
+        products = rawProducts.cast<AdaptyPaywallProduct>();
+      }
+    }
+
     await fetchingStoreItems(
       fetchFunction: () => firestoreService.fetchPurchasableLotties(),
       targetList: purchasableLotties
     );
-    _rebuildLottiePacks();
+    _rebuildLottiePacks(paywallProducts: products);
     _lottiesLoaded.value = true;
   }
 
@@ -246,10 +283,48 @@ class RewardController extends GetxController {
     if (_coinsLoaded.value) {
       return;
     }
+    List<AdaptyPaywallProduct>? products;
+    if (billingService.isAvailable) {
+      final paywall = await billingService.getCoinPaywallWithProducts();
+      final rawProducts = paywall?['products'];
+      if (rawProducts is List<AdaptyPaywallProduct>) {
+        products = rawProducts;
+      } else if (rawProducts is List) {
+        products = rawProducts.cast<AdaptyPaywallProduct>();
+      }
+    }
+
     await fetchingStoreItems(
       fetchFunction: () => firestoreService.fetchPurchasableCoins(),
-      targetList: purchasableCoins
+      targetList: purchasableCoins,
     );
+
+    if (products != null && products.isNotEmpty) {
+      // Enrich coins with localized price from Adapty
+      final updated = purchasableCoins
+          .cast<PurchasableCoin>()
+          .map((coin) {
+            final id = coin.productId;
+            if (id == null) return coin;
+            final localizedPrice = billingService.getLocalizedPriceForProduct(
+              products: products!,
+              productId: id,
+            );
+            final adaptyAmount = products!
+                .firstWhereOrNull((p) => p.vendorProductId == id)
+                ?.price
+                ?.amount;
+
+            // Override UI prices with Adapty values (ignore Firestore price)
+            return coin.copyWith(
+              displayPrice: localizedPrice,
+              adaptyAmount: adaptyAmount,
+              price: adaptyAmount != null ? adaptyAmount.round() : coin.price,
+            );
+          })
+          .toList();
+      purchasableCoins.assignAll(updated);
+    }
     _coinsLoaded.value = true;
   }
 
@@ -295,7 +370,10 @@ class RewardController extends GetxController {
       if (billingService.isAvailable && coin.productId != null) {
         debugPrint('Starting Adapty purchase for coin: ${coin.name} (${coin.value} coins)');
         
-        final result = await billingService.purchaseCoins(coin.value);
+        final result = await billingService.purchaseCoins(
+          coin.value,
+          productIdOverride: coin.productId,
+        );
         
         if (result['success'] == true) {
           debugPrint('Adapty purchase successful, updating Firebase...');
@@ -341,24 +419,31 @@ class RewardController extends GetxController {
           pack.type,
           productIdOverride: pack.productId,
         );
-      }
-
-      final success = purchaseResult == null || purchaseResult['success'] == true;
-      if (success) {
-        await lottieService.registerPackPurchase(
-          pack: pack,
-          purchaseMethod: billingService.isAvailable ? 'iap' : 'free',
-        );
-        _purchaseSucceeded.value = true;
-        ownedLottiePackTypes.add(pack.type);
-        activeLottiePackType.value = pack.type;
-
-        await authService.fetchAndSetCurrentUser();
-        loginController.refreshUserXp();
-        await loadOwnedRewards();
       } else {
-        errorMessage.value = purchaseResult['error'] ?? 'Purchase failed';
+        // Billing service not available (e.g. simulator or error)
+        // DO NOT give for free unless explicitly intended for debug
+        errorMessage.value = 'Store not available';
+        return;
       }
+
+      final success = purchaseResult != null && purchaseResult['success'] == true;
+      if (!success) {
+        errorMessage.value = purchaseResult?['error'] ?? 'Purchase failed';
+        return;
+      }
+
+      await lottieService.registerPackPurchase(
+        pack: pack,
+        purchaseMethod: 'iap',
+      );
+      _purchaseSucceeded.value = true;
+      ownedLottiePackTypes.add(pack.type);
+      activeLottiePackType.value = pack.type;
+
+      await authService.fetchAndSetCurrentUser();
+      loginController.refreshUserXp();
+      await loadOwnedRewards();
+      await getPurchasableLotties(); // refresh localized prices if needed
     } catch (e) {
       errorMessage.value = e.toString();
     } finally {

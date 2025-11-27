@@ -10,6 +10,8 @@ class PurchasableCoin {
   final DateTime createdAt;
   final int value;
   final String? productId; // Adapty product ID (e.g., "pomodoro_100_coins")
+  final String? displayPrice; // Localized price from Adapty
+  final double? adaptyAmount; // Numeric amount from Adapty
 
   PurchasableCoin({
     required this.id,
@@ -21,6 +23,8 @@ class PurchasableCoin {
     required this.createdAt,
     required this.value,
     this.productId,
+    this.displayPrice,
+    this.adaptyAmount,
   });
 
   factory PurchasableCoin.fromJson(Map<String, dynamic> json){
@@ -34,6 +38,8 @@ class PurchasableCoin {
       createdAt: DateTime.parse(json['createdAt']),
       value: json['value'],
       productId: json['productId'],
+      displayPrice: json['displayPrice'],
+      adaptyAmount: (json['adaptyAmount'] as num?)?.toDouble(),
     );
   }
 
@@ -49,6 +55,8 @@ class PurchasableCoin {
       createdAt: (data['createdAt'] as Timestamp).toDate(),
       value: data['value'] ?? 0,
       productId: data['productId'],
+      displayPrice: data['displayPrice'],
+      adaptyAmount: (data['adaptyAmount'] as num?)?.toDouble(),
     );
   }
 
@@ -63,6 +71,8 @@ class PurchasableCoin {
       'createdAt': createdAt.toIso8601String(),
       'value': value,
       'productId': productId,
+      'displayPrice': displayPrice,
+      'adaptyAmount': adaptyAmount,
     };
   }
   
@@ -77,6 +87,8 @@ class PurchasableCoin {
       'createdAt': Timestamp.fromDate(createdAt),
       'value': value,
       'productId': productId,
+      'displayPrice': displayPrice,
+      'adaptyAmount': adaptyAmount,
     };
   }
 
@@ -90,6 +102,8 @@ class PurchasableCoin {
     DateTime? createdAt,
     int? value,
     String? productId,
+    String? displayPrice,
+    double? adaptyAmount,
   }) {
     return PurchasableCoin(
       id: id ?? this.id,
@@ -101,6 +115,8 @@ class PurchasableCoin {
       createdAt: createdAt ?? this.createdAt,
       value: value ?? this.value,
       productId: productId ?? this.productId,
+      displayPrice: displayPrice ?? this.displayPrice,
+      adaptyAmount: adaptyAmount ?? this.adaptyAmount,
     );
   }
 

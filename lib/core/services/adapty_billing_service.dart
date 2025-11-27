@@ -2,7 +2,9 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:adapty_flutter/adapty_flutter.dart';
+import 'package:collection/collection.dart';
 import 'package:farmodo/data/models/purchasable_lottie.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class AdaptyBillingService {
@@ -13,6 +15,8 @@ class AdaptyBillingService {
   static const String _lottie_small_pack = "pomodoro_lottie_small_pack";
   static const String _lottie_medium_pack = "pomodoro_lottie_medium_pack";
   static const String _lottie_advanced_pack = "pomodoro_lottie_advanced_pack";
+  static const String coinPlacementId = 'consumable_coins';
+  static const String lottiePackPlacementId = 'pro_animation';
   
   // Development mode: true iken gerçek satın alma yapmaz, sadece simüle eder
   // Store'lara ürünler eklendikten sonra false yapın
@@ -20,6 +24,8 @@ class AdaptyBillingService {
   AdaptyProfile? _profile;
   bool _isAvailable = false;
   StreamSubscription<AdaptyProfile>? _profileSubscription;
+  StreamSubscription<User?>? _authSubscription;
+  String? _currentAdaptyUserId;
 
   bool get isAvailable => _isAvailable;
   AdaptyProfile? get profile => _profile;
@@ -32,10 +38,20 @@ class AdaptyBillingService {
       debugPrint('Platform: ${Platform.operatingSystem}');
 
       if(Platform.isAndroid || Platform.isIOS){
+        _isAvailable = true;
+
+        // Sync Adapty profile with the current Firebase user so purchases are not shared across accounts
+        _authSubscription = FirebaseAuth.instance.authStateChanges().listen(
+          (user) => _syncAdaptyUser(user),
+        );
+        await _syncAdaptyUser(FirebaseAuth.instance.currentUser);
+
         debugPrint('Loading Adapty profile...');
         
         try {
-          await _loadProfile();
+          if (_profile == null) {
+            await _loadProfile();
+          }
           if (_profile != null) {
             debugPrint('Profile loaded successfully: ${_profile!.profileId}');
           } else {
@@ -59,6 +75,34 @@ class AdaptyBillingService {
        debugPrint('Error initializing Adapty Billing: $e');
       debugPrint('Stack trace: $stackTrace');
       _isAvailable = false;
+    }
+  }
+
+  Future<void> _syncAdaptyUser(User? user) async {
+    if (!_isAvailable) return;
+
+    final newUserId = user?.uid;
+    if (newUserId == _currentAdaptyUserId && _profile != null) {
+      return;
+    }
+
+    try {
+      if (newUserId != null) {
+        await Adapty().identify(newUserId);
+        debugPrint('Adapty identify called with Firebase uid: $newUserId');
+      } else {
+        await Adapty().logout();
+        debugPrint('Adapty profile logged out (no Firebase user)');
+      }
+
+      await _loadProfile();
+      _currentAdaptyUserId = newUserId;
+
+      if (_profile != null && onProfileUpdate != null) {
+        onProfileUpdate!(_profile!);
+      }
+    } catch (e) {
+      debugPrint('Error syncing Adapty user: $e');
     }
   }
 
@@ -96,7 +140,10 @@ class AdaptyBillingService {
     }
   }
 
-  Future<Map<String, dynamic>> purchaseCoins(int coinAmount) async {
+  Future<Map<String, dynamic>> purchaseCoins(
+    int coinAmount, {
+    String? productIdOverride,
+  }) async {
     try {
       
       if(!_isAvailable){
@@ -104,22 +151,26 @@ class AdaptyBillingService {
         return {'success': false, 'error': 'Adapty not available'};
       }
 
-      final paywall = await getPaywall('consumable_coin');
+      final paywall = await _getCoinPaywallWithFallback();
       if(paywall == null){
-        debugPrint('Coin paywall not found');
+        debugPrint('Coin paywall not found (tried: consumable_coin, credits, coins)');
         return {'success': false, 'error': 'Paywall not found'};
       }
 
       String productId;
       
-      switch(coinAmount){
-        case 100: productId = _100_coin; break;
-        case 500: productId = _500_coin; break;
-        case 2000: productId = _2000_coin; break;
-        case 5000: productId = _5000_coin; break;
-        default:
-        debugPrint('Invalid Coin amount: $coinAmount');
-          return {'success': false, 'error': 'Invalid Coin amount'};
+      if (productIdOverride != null && productIdOverride.isNotEmpty) {
+        productId = productIdOverride;
+      } else {
+        switch(coinAmount){
+          case 100: productId = _100_coin; break;
+          case 500: productId = _500_coin; break;
+          case 2000: productId = _2000_coin; break;
+          case 5000: productId = _5000_coin; break;
+          default:
+          debugPrint('Invalid Coin amount: $coinAmount');
+            return {'success': false, 'error': 'Invalid Coin amount'};
+        }
       }
 
       // Paywall için ürünleri al
@@ -177,6 +228,10 @@ class AdaptyBillingService {
     }
   }
 
+  String lottieDefaultProductId(LottiePackType packType) {
+    return _resolveLottieProductId(packType);
+  }
+
   Future<Map<String, dynamic>> purchaseLottiePack(
     LottiePackType packType, {
     String? productIdOverride,
@@ -187,7 +242,7 @@ class AdaptyBillingService {
         return {'success': false, 'error': 'Adapty not available'};
       }
 
-      final paywall = await getPaywall('pro_animation');
+      final paywall = await getPaywall(lottiePackPlacementId);
       if (paywall == null) {
         return {'success': false, 'error': 'Paywall not found'};
       }
@@ -219,6 +274,27 @@ class AdaptyBillingService {
           'Attempting to purchase lottie pack: ${packProduct.vendorProductId}');
       await Adapty().makePurchase(product: packProduct);
       await _loadProfile();
+
+      final isRecordedInProfile = _profile?.nonSubscriptions.entries
+              .firstWhereOrNull(
+                  (entry) => entry.key == packProduct?.vendorProductId)
+              ?.value
+              .firstWhereOrNull(
+                (purchase) =>
+                    purchase.vendorProductId == packProduct?.vendorProductId &&
+                    purchase.isRefund != true,
+              ) !=
+          null;
+
+      if (!isRecordedInProfile) {
+        debugPrint(
+            'Adapty profile does not contain purchase for ${packProduct.vendorProductId}');
+        return {
+          'success': false,
+          'error': 'Purchase not confirmed by App Store/Play Store',
+        };
+      }
+
       debugPrint('Lottie pack purchase completed: ${packType.readableName}');
 
       return {'success': true, 'profile': _profile, 'product': packProduct};
@@ -304,9 +380,53 @@ class AdaptyBillingService {
     }
   }
 
+  Future<AdaptyPaywall?> _getCoinPaywallWithFallback() async {
+    const fallbacks = [
+      coinPlacementId,
+      'credits', // legacy
+      'coins',   // alternative naming
+    ];
+    for (final id in fallbacks) {
+      final paywall = await getPaywall(id);
+      if (paywall != null) {
+        return paywall;
+      }
+    }
+    return null;
+  }
+
+  Future<Map<String, dynamic>?> getCoinPaywallWithProducts() async {
+    const fallbacks = [
+      coinPlacementId,
+      'credits',
+      'coins',
+    ];
+    for (final id in fallbacks) {
+      final data = await getPaywallWithProducts(id);
+      if (data != null) return data;
+    }
+    return null;
+  }
+
+  String? getLocalizedPriceForProduct({
+    required List<AdaptyPaywallProduct> products,
+    required String productId,
+  }) {
+    try {
+      final product = products.firstWhere((p) => p.vendorProductId == productId);
+      return product.price?.localizedString;
+    } catch (_) {
+      return null;
+    }
+  }
+
   /// Kredi paywall'ını göster
   Future<void> showCreditsPaywall() async {
     await showPaywall('credits');
   }
 
+  void dispose() {
+    _profileSubscription?.cancel();
+    _authSubscription?.cancel();
+  }
 }

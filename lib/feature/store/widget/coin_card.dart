@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:farmodo/core/theme/app_colors.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
+import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
 import 'package:farmodo/data/models/purchasable_coin.dart';
 import 'package:flutter/material.dart';
 import 'package:kartal/kartal.dart';
@@ -24,6 +25,10 @@ class CoinCard extends StatelessWidget {
     final double padding = context.dynamicHeight(0.01);
     final double buttonFont = context.dynamicHeight(0.016);
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final priceLabel = coin.displayPrice ??
+        (coin.adaptyAmount != null
+            ? coin.adaptyAmount!.toStringAsFixed(2)
+            : (coin.price > 0 ? '${coin.price} ₺' : 'Free'));
 
     return Padding(
       padding: EdgeInsets.symmetric(
@@ -79,13 +84,14 @@ class CoinCard extends StatelessWidget {
               Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  // Text(
-                  //   '\$${coin.price}',
-                  //   style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                  //         fontWeight: FontWeight.bold,
-                  //       ),
-                  // ),
-                  // context.dynamicHeight(0.006).height,
+                  Text(
+                    priceLabel,
+                    style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.orange.shade800,
+                        ),
+                  ),
+                  context.dynamicHeight(0.006).height,
                   ElevatedButton(
                     onPressed: isBuying ? null : onBuy,
                     style: ElevatedButton.styleFrom(
@@ -120,4 +126,3 @@ class CoinCard extends StatelessWidget {
     );
   }
 }
-

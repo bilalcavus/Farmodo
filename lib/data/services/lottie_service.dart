@@ -1,3 +1,5 @@
+import 'package:adapty_flutter/adapty_flutter.dart';
+import 'package:collection/collection.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:farmodo/data/models/lottie_pack.dart';
 import 'package:farmodo/data/models/purchasable_lottie.dart';
@@ -290,5 +292,63 @@ class LottieService {
     await prefs.remove(key);
     await prefs.remove('${key}_path');
     await prefs.remove('${uid}_$_selectedPackKey');
+  }
+  Future<void> syncWithAdapty(AdaptyProfile profile) async {
+    final uid = _auth.currentUser?.uid;
+    if (uid == null) return;
+
+    final profileUserId = profile.customerUserId;
+    if (profileUserId != null && profileUserId != uid) {
+      print(
+        'Skipping Adapty sync: profile belongs to $profileUserId but current user is $uid',
+      );
+      return;
+    }
+
+    try {
+      // Non-subscription purchases (Lottie packs)
+      final nonSubscriptions = profile.nonSubscriptions;
+      if (nonSubscriptions.isEmpty) return;
+
+      final ownedPacks = await getOwnedPackTypes();
+      
+      for (final entry in nonSubscriptions.entries) {
+        final productId = entry.key;
+        final purchaseList = entry.value;
+        
+        // Check if purchase is active/valid
+        // Filter out refunds if the property exists (assuming isRefund is available)
+        final validPurchase = purchaseList.firstWhereOrNull((p) => 
+          p.vendorProductId == productId && (p.isRefund == false)
+        );
+        
+        if (validPurchase != null) {
+           // Map productId to LottiePackType with STRICT matching
+           LottiePackType? type;
+           
+           // Use exact IDs from AdaptyBillingService (hardcoded here to avoid circular dependency or extra lookup)
+           if (productId == 'pomodoro_lottie_small_pack') type = LottiePackType.small;
+           else if (productId == 'pomodoro_lottie_medium_pack') type = LottiePackType.medium;
+           else if (productId == 'pomodoro_lottie_advanced_pack') type = LottiePackType.advanced;
+           
+           if (type != null && !ownedPacks.contains(type)) {
+             // User has it in Adapty but not in Firestore -> Sync it
+             print('Syncing Lottie pack from Adapty: $type');
+             
+             final availablePacks = await fetchAvailablePacks();
+             final packToSync = availablePacks.firstWhereOrNull((p) => p.type == type);
+             
+             if (packToSync != null) {
+               await registerPackPurchase(
+                 pack: packToSync,
+                 purchaseMethod: 'iap_sync',
+               );
+             }
+           }
+        }
+      }
+    } catch (e) {
+      print('Sync error: $e');
+    }
   }
 }
