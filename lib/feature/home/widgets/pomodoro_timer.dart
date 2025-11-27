@@ -29,7 +29,6 @@ class PomodoroTimer extends StatefulWidget {
 }
 
 class _PomodoroTimerState extends State<PomodoroTimer> with SingleTickerProviderStateMixin {
-  static const double _lottieSlowdown = 0.9; // Slow animations down to a more relaxed pace
   late final AnimationController _animationController;
   final LottieService _lottieService = LottieService();
   final PageController _pageController = PageController();
@@ -285,9 +284,10 @@ class _PomodoroTimerState extends State<PomodoroTimer> with SingleTickerProvider
                                   Expanded(
                                     child: Lottie.asset(
                                       lottie.assetPath,
+                                      animate: isCurrent && widget.timerController.isRunning.value,
                                       controller: isCurrent ? _animationController : null,
                                       onLoaded: isCurrent ? (composition) {
-                                        _animationController.duration = composition.duration * _lottieSlowdown;
+                                        _animationController.duration = composition.duration;
                                         if(widget.timerController.isRunning.value) {
                                           _animationController.repeat();
                                         } else {
@@ -302,7 +302,6 @@ class _PomodoroTimerState extends State<PomodoroTimer> with SingleTickerProvider
                                       child: Text(
                                         lottie.name.tr(),
                                         style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                                          color: isCurrent ? AppColors.textPrimary : AppColors.textSecondary,
                                           fontWeight: isCurrent ? FontWeight.w600 : FontWeight.normal,
                                         ),
                                       ),

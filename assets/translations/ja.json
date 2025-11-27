@@ -222,6 +222,7 @@
     "coin_purchased": "コインが追加されました",
     "purchase_cancelled": "購入がキャンセルされました",
     "purchase_grant_failed": "購入は完了しましたがアイテムを付与できませんでした。購入の復元をお試しください。",
+    "price_unavailable": "価格情報なし",
     "free": "無料",
     "view_pack": "パックを表示",
     "active": "アクティブ",

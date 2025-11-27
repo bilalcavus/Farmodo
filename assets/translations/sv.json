@@ -222,6 +222,7 @@
     "coin_purchased": "Mynt tillagda",
     "purchase_cancelled": "Köp avbruten",
     "purchase_grant_failed": "Köpet slutfördes men varan kunde inte levereras. Försök återställa köpen.",
+    "price_unavailable": "Pris ej tillgängligt",
     "free": "Gratis",
     "view_pack": "Visa paket",
     "active": "Aktiv",

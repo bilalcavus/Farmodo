@@ -222,6 +222,7 @@
     "coin_purchased": "เพิ่มเหรียญแล้ว",
     "purchase_cancelled": "การซื้อถูกยกเลิก",
     "purchase_grant_failed": "ซื้อสำเร็จแต่ส่งมอบไอเท็มไม่ได้ กรุณาลองกู้คืนการซื้อ",
+    "price_unavailable": "ราคาไม่พร้อมใช้งาน",
     "free": "ฟรี",
     "view_pack": "ดูแพ็ค",
     "active": "ใช้งาน",

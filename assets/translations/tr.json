@@ -223,6 +223,7 @@
     "coin_purchased": "Coin satın alındı",
     "purchase_cancelled": "Satın alma iptal edildi",
     "purchase_grant_failed": "Satın alma tamamlandı ancak ürün teslim edilemedi. Lütfen satın almaları geri yüklemeyi deneyin.",
+    "price_unavailable": "Fiyat bilgisi yok",
     "free": "Ücretsiz",
     "view_pack": "Paketi görüntüle",
     "active": "Aktif",

@@ -222,6 +222,7 @@
     "coin_purchased": "Mynter lagt til",
     "purchase_cancelled": "Kjøp kansellert",
     "purchase_grant_failed": "Kjøpet ble fullført, men varen kunne ikke leveres. Prøv å gjenopprette kjøpene.",
+    "price_unavailable": "Pris ikke tilgjengelig",
     "free": "Gratis",
     "view_pack": "Se pakke",
     "active": "Aktiv",

@@ -222,6 +222,7 @@
     "coin_purchased": "تمت إضافة العملات",
     "purchase_cancelled": "تم إلغاء الشراء",
     "purchase_grant_failed": "اكتمل الشراء لكن لم يتم تسليم العنصر. يرجى محاولة استعادة المشتريات.",
+    "price_unavailable": "السعر غير متاح",
     "free": "مجاني",
     "view_pack": "عرض الحزمة",
     "active": "نشط",

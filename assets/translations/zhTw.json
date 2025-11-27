@@ -222,6 +222,7 @@
     "coin_purchased": "已新增金幣",
     "purchase_cancelled": "購買已取消",
     "purchase_grant_failed": "購買已完成但無法交付物品。請嘗試恢復購買。",
+    "price_unavailable": "價格不可用",
     "free": "免費",
     "view_pack": "查看套組",
     "active": "啟用中",

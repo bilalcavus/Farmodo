@@ -222,6 +222,7 @@
     "coin_purchased": "Kovanci dodani",
     "purchase_cancelled": "Nakup preklican",
     "purchase_grant_failed": "Nakup je bil dokončan, vendar izdelka ni bilo mogoče dostaviti. Poskusite obnoviti nakupe.",
+    "price_unavailable": "Cena ni na voljo",
     "free": "Brezplačno",
     "view_pack": "Poglej paket",
     "active": "Aktivno",

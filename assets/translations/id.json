@@ -222,6 +222,7 @@
     "coin_purchased": "Koin ditambahkan",
     "purchase_cancelled": "Pembelian dibatalkan",
     "purchase_grant_failed": "Pembelian selesai tetapi item tidak dapat dikirim. Coba pulihkan pembelian.",
+    "price_unavailable": "Harga tidak tersedia",
     "free": "Gratis",
     "view_pack": "Lihat paket",
     "active": "Aktif",

@@ -36,7 +36,8 @@ class LottiePackCard extends StatelessWidget {
     final preview = pack.previewLottie;
     final double buttonFont = context.dynamicHeight(0.016);
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final priceLabel = pack.displayPrice ?? (pack.price > 0 ? '${pack.price}' : 'store.free'.tr());
+    final priceLabel = pack.displayPrice ??
+        (pack.price > 0 ? '${pack.price}' : 'store.price_unavailable'.tr());
 
     return Padding(
       padding: context.padding.horizontalLow,

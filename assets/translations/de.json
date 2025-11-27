@@ -215,6 +215,7 @@
   "coin_purchased": "Münzen hinzugefügt",
   "purchase_cancelled": "Kauf abgebrochen",
   "purchase_grant_failed": "Kauf abgeschlossen, aber der Artikel konnte nicht geliefert werden. Bitte versuche Käufe wiederherzustellen.",
+  "price_unavailable": "Preis nicht verfügbar",
   "free": "Kostenlos",
   "view_pack": "Paket ansehen",
   "active": "Aktiv",

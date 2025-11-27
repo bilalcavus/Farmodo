@@ -222,6 +222,7 @@
     "coin_purchased": "Pièces ajoutées",
     "purchase_cancelled": "Achat annulé",
     "purchase_grant_failed": "Achat terminé mais l'article n'a pas pu être livré. Essayez de restaurer les achats.",
+    "price_unavailable": "Prix indisponible",
     "free": "Gratuit",
     "view_pack": "Voir le pack",
     "active": "Actif",

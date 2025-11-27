@@ -126,6 +126,8 @@ class _LanguageSelectorWidgetState extends State<LanguageSelectorWidget> {
         return '🇹🇼';
       case Locales.no:
         return '🇳🇴';
+      case Locales.ptBR:
+        return '🇧🇷';
       case Locales.sk:
         return '🇸🇰';
       case Locales.es:
@@ -135,4 +137,3 @@ class _LanguageSelectorWidgetState extends State<LanguageSelectorWidget> {
     }
   }
 }
-

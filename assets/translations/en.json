@@ -224,6 +224,7 @@
     "coin_purchased": "Coins added",
     "purchase_cancelled": "Purchase cancelled",
     "purchase_grant_failed": "Purchase completed but the item could not be delivered. Please try restoring purchases.",
+    "price_unavailable": "Price unavailable",
     "free": "Free",
     "view_pack": "View pack",
     "active": "Active",

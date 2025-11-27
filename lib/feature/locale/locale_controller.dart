@@ -80,6 +80,8 @@ class LocaleController extends GetxController {
         return '繁體中文';
       case Locales.no:
         return 'Norsk';
+      case Locales.ptBR:
+        return 'Português (Brasil)';
       case Locales.sk:
         return 'Slovenčina';
       case Locales.es:

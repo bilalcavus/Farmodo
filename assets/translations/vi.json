@@ -222,6 +222,7 @@
     "coin_purchased": "Đã thêm xu",
     "purchase_cancelled": "Kết thúc mua hàng",
     "purchase_grant_failed": "Mua hàng đã hoàn tất nhưng không thể giao vật phẩm. Vui lòng thử khôi phục mua hàng.",
+    "price_unavailable": "Giá không khả dụng",
     "free": "Miễn phí",
     "view_pack": "Xem gói",
     "active": "Đang hoạt động",

@@ -223,6 +223,7 @@
     "coin_purchased": "Monedas añadidas",
     "purchase_cancelled": "Compra cancelada",
     "purchase_grant_failed": "La compra se completó pero el artículo no se pudo entregar. Intenta restaurar las compras.",
+    "price_unavailable": "Precio no disponible",
     "free": "Gratis",
     "view_pack": "Ver paquete",
     "active": "Activo",

@@ -222,6 +222,7 @@
     "coin_purchased": "Syiling ditambah",
     "purchase_cancelled": "Pembelian dibatalkan",
     "purchase_grant_failed": "Pembelian selesai tetapi item tidak dapat dihantar. Sila cuba pulihkan pembelian.",
+    "price_unavailable": "Harga tidak tersedia",
     "free": "Percuma",
     "view_pack": "Lihat pek",
     "active": "Aktif",
