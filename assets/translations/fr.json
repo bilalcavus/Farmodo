@@ -211,7 +211,15 @@
     "go_to_login": "Se Connecter",
     "go_to_store": "Aller au Magasin",
     "no_items": "Aucun article disponible",
-    "come_back_later": "Revenez plus tard pour de nouveaux articles !"
+    "come_back_later": "Revenez plus tard pour de nouveaux articles !",
+    "category_animals": "Animaux",
+    "category_coins": "Coins",
+    "category_lotties": "Animations",
+    "small_pack": "Petit Pack",
+    "medium_pack": "Moyen Pack",
+    "advanced_pack": "Pack Avancé",
+    "lottie_purchased": "Animation ajoutée",
+    "purchase_cancelled": "Achat annulé"
   },
   
   "gamification": {

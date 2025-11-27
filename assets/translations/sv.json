@@ -211,7 +211,15 @@
     "go_to_login": "Logga In",
     "go_to_store": "Gå till Butik",
     "no_items": "Inga tillgängliga föremål",
-    "come_back_later": "Kom tillbaka senare för nya föremål!"
+    "come_back_later": "Kom tillbaka senare för nya föremål!",
+    "category_animals": "Djur",
+    "category_coins": "Mynt",
+    "category_lotties": "Animationer",
+    "small_pack": "Liten Pack",
+    "medium_pack": "Medel Pack",
+    "advanced_pack": "Avancerad Pack",
+    "lottie_purchased": "Animation tillagd",
+    "purchase_cancelled": "Köp avbruten"
   },
   
   "gamification": {

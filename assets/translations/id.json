@@ -211,7 +211,15 @@
     "go_to_login": "Masuk",
     "go_to_store": "Pergi ke Toko",
     "no_items": "Tidak ada item tersedia",
-    "come_back_later": "Kembali nanti untuk item baru!"
+    "come_back_later": "Kembali nanti untuk item baru!",
+    "category_animals": "Hewan",
+    "category_coins": "Koin",
+    "category_lotties": "Animasi",
+    "small_pack": "Paket Kecil",
+    "medium_pack": "Paket Sedang",
+    "advanced_pack": "Paket Lanjutan",
+    "lottie_purchased": "Animasi ditambahkan",
+    "purchase_cancelled": "Pembelian dibatalkan"
   },
   
   "gamification": {

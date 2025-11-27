@@ -211,7 +211,15 @@
     "go_to_login": "Đăng Nhập",
     "go_to_store": "Đến Cửa Hàng",
     "no_items": "Không có vật phẩm khả dụng",
-    "come_back_later": "Quay lại sau để xem vật phẩm mới!"
+    "come_back_later": "Quay lại sau để xem vật phẩm mới!",
+    "category_animals": "Động Vật",
+    "category_coins": "Xu",
+    "category_lotties": "Hoạt Hình",
+    "small_pack": "Gói Nhỏ",
+    "medium_pack": "Gói Vừa",
+    "advanced_pack": "Gói Nâng Cao",
+    "lottie_purchased": "Hoạt hình đã được thêm",
+    "purchase_cancelled": "Kết thúc mua hàng"
   },
   
   "gamification": {

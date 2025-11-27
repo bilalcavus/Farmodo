@@ -140,6 +140,21 @@ class AdaptyBillingService {
     }
   }
 
+  bool _isCancelledError(Object e) {
+    final text = e.toString().toLowerCase();
+    return text.contains('user canceled') ||
+        text.contains('user cancelled') ||
+        text.contains('purchase cancelled') ||
+        text.contains('purchase canceled') ||
+        text.contains('cancelled') ||
+        text.contains('canceled') ||
+        // Play Store billing response codes for cancellation often surface as strings
+        text.contains('responsecode=1') || // BillingResponseCode.USER_CANCELED
+        text.contains('responsecode=5') || // Developer error often emitted when user closes dialog without a signature in tests
+        text.contains('response code 1') ||
+        text.contains('response code 5');
+  }
+
   Future<Map<String, dynamic>> purchaseCoins(
     int coinAmount, {
     String? productIdOverride,
@@ -203,6 +218,9 @@ class AdaptyBillingService {
 
       return {'success': true, 'profile': _profile, 'coins': coinProduct};
     } catch (e) {
+      if (_isCancelledError(e)) {
+        return {'success': false, 'error': 'purchase_cancelled'};
+      }
       debugPrint('Error purchasing coin: $e');
       return {'success': false, 'error': e.toString()};
     }
@@ -299,6 +317,9 @@ class AdaptyBillingService {
 
       return {'success': true, 'profile': _profile, 'product': packProduct};
     } catch (e) {
+      if (_isCancelledError(e)) {
+        return {'success': false, 'error': 'purchase_cancelled'};
+      }
       debugPrint('Error purchasing lottie pack: $e');
       return {'success': false, 'error': e.toString()};
     }
@@ -414,7 +435,7 @@ class AdaptyBillingService {
   }) {
     try {
       final product = products.firstWhere((p) => p.vendorProductId == productId);
-      return product.price?.localizedString;
+      return product.price.localizedString;
     } catch (_) {
       return null;
     }

@@ -204,7 +204,15 @@
   "go_to_login": "Einloggen",
   "go_to_store": "Zum Shop",
   "no_items": "Keine Artikel verfügbar",
-  "come_back_later": "Komm später wieder für neue Artikel!"
+  "come_back_later": "Komm später wieder für neue Artikel!",
+  "category_animals": "Tiere",
+  "category_coins": "Münzen",
+  "category_lotties": "Animationen",
+  "small_pack": "Kleines Paket",
+  "medium_pack": "Mittleres Paket",
+  "advanced_pack": "Fortgeschrittenes Paket",
+  "lottie_purchased": "Animation hinzugefügt",
+  "purchase_cancelled": "Kauf abgebrochen"
 },
 "gamification": {
   "achievements_and_quests": "Erfolge & Quests",

@@ -1,4 +1,5 @@
 import 'package:adapty_flutter/adapty_flutter.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:farmodo/core/services/adapty_billing_service.dart';
 import 'package:farmodo/data/models/lottie_pack.dart';
 import 'package:farmodo/data/models/purchasable_coin.dart';
@@ -10,7 +11,7 @@ import 'package:farmodo/data/services/firestore_service.dart';
 import 'package:farmodo/data/services/lottie_service.dart';
 import 'package:farmodo/feature/auth/login/viewmodel/login_controller.dart';
 import 'package:flutter/widgets.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' hide Trans;
 
 enum StoreCategory { animals, coins, lotties }
 
@@ -310,10 +311,10 @@ class RewardController extends GetxController {
               products: products!,
               productId: id,
             );
-            final adaptyAmount = products!
+            final adaptyAmount = products
                 .firstWhereOrNull((p) => p.vendorProductId == id)
                 ?.price
-                ?.amount;
+                .amount;
 
             // Override UI prices with Adapty values (ignore Firestore price)
             return coin.copyWith(
@@ -384,6 +385,10 @@ class RewardController extends GetxController {
         } else {
           final error = result['error'] ?? 'Unknown error';
           debugPrint('Adapty purchase failed: $error');
+          if (error == 'purchase_cancelled') {
+            errorMessage.value = 'store.purchase_cancelled'.tr();
+            return;
+          }
           if (error.contains('Paywall not found') || error.contains('not_found')) {
             errorMessage.value = 'Store setup incomplete. Please configure Adapty placement and products.';
           } else {
@@ -428,7 +433,12 @@ class RewardController extends GetxController {
 
       final success = purchaseResult != null && purchaseResult['success'] == true;
       if (!success) {
-        errorMessage.value = purchaseResult?['error'] ?? 'Purchase failed';
+        final error = purchaseResult['error'];
+        if (error == 'purchase_cancelled') {
+          errorMessage.value = 'store.purchase_cancelled'.tr();
+        } else {
+          errorMessage.value = error ?? 'Purchase failed';
+        }
         return;
       }
 

@@ -211,7 +211,15 @@
     "go_to_login": "Logg inn",
     "go_to_store": "Gå til butikk",
     "no_items": "Ingen tilgjengelige elementer",
-    "come_back_later": "Kom tilbake senere for nye elementer!"
+    "come_back_later": "Kom tilbake senere for nye elementer!",
+    "category_animals": "Dyr",
+    "category_coins": "Mynter",
+    "category_lotties": "Animasjoner",
+    "small_pack": "Liten pakke",
+    "medium_pack": "Moderat pakke",
+    "advanced_pack": "Avansert pakke",
+    "lottie_purchased": "Animasjon lagt til",
+    "purchase_cancelled": "Kjøp kansellert"
   },
   
   "gamification": {

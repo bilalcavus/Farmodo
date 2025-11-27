@@ -211,7 +211,15 @@
     "go_to_login": "เข้าสู่ระบบ",
     "go_to_store": "ไปที่ร้าน",
     "no_items": "ไม่มีสินค้าที่ใช้ได้",
-    "come_back_later": "กลับมาทีหลังเพื่อดูสินค้าใหม่!"
+    "come_back_later": "กลับมาทีหลังเพื่อดูสินค้าใหม่!",
+    "category_animals": "สัตว์",
+    "category_coins": "เหรียญ",
+    "category_lotties": "อนิเมชัน",
+    "small_pack": "แพ็คเล็ก",
+    "medium_pack": "แพ็คกลาง",
+    "advanced_pack": "แพ็คขั้นสูง",
+    "lottie_purchased": "อนิเมชันถูกเพิ่มแล้ว",
+    "purchase_cancelled": "การซื้อถูกยกเลิก"
   },
   
   "gamification": {

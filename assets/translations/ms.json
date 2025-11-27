@@ -211,7 +211,15 @@
     "go_to_login": "Log Masuk",
     "go_to_store": "Pergi ke Kedai",
     "no_items": "Tiada item tersedia",
-    "come_back_later": "Kembali nanti untuk item baru!"
+    "come_back_later": "Kembali nanti untuk item baru!",
+    "category_animals": "Haiwan",
+    "category_coins": "Syiling",
+    "category_lotties": "Animasi",
+    "small_pack": "Pek Kecil",
+    "medium_pack": "Pek Sederhana",
+    "advanced_pack": "Pek Lanjutan",
+    "lottie_purchased": "Animasi ditambahkan",
+    "purchase_cancelled": "Pembelian dibatalkan"
   },
   
   "gamification": {

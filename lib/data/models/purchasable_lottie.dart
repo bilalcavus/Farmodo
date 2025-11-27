@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 enum LottiePackType { small, medium, advanced, unknown }
 
@@ -32,11 +33,11 @@ extension LottiePackTypeReadable on LottiePackType {
   String get readableName {
     switch (this) {
       case LottiePackType.small:
-        return 'Small Pack';
+        return 'store.small_pack'.tr();
       case LottiePackType.medium:
-        return 'Medium Pack';
+        return 'store.medium_pack'.tr();
       case LottiePackType.advanced:
-        return 'Advanced Pack';
+        return 'store.advanced_pack'.tr();
       case LottiePackType.unknown:
         return 'Unknown Pack';
     }

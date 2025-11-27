@@ -211,7 +211,15 @@
     "go_to_login": "로그인",
     "go_to_store": "상점으로 이동",
     "no_items": "사용 가능한 아이템 없음",
-    "come_back_later": "새로운 아이템을 위해 나중에 다시 오세요!"
+    "come_back_later": "새로운 아이템을 위해 나중에 다시 오세요!",
+    "category_animals": "동물",
+    "category_coins": "코인",
+    "category_lotties": "애니메이션",
+    "small_pack": "소형 팩",
+    "medium_pack": "중형 팩",
+    "advanced_pack": "고급 팩",
+    "lottie_purchased": "애니메이션이 추가되었습니다",
+    "purchase_cancelled": "구매가 취소되었습니다"
   },
   
   "gamification": {

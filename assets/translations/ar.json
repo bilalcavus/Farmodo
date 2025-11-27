@@ -211,7 +211,15 @@
     "go_to_login": "تسجيل الدخول",
     "go_to_store": "اذهب للمتجر",
     "no_items": "لا توجد عناصر متاحة",
-    "come_back_later": "عد لاحقاً للحصول على عناصر جديدة!"
+    "come_back_later": "عد لاحقاً للحصول على عناصر جديدة!",
+    "category_animals": "الحيوانات",
+    "category_coins": "العملات",
+    "category_lotties": "الرسوم المتحركة",
+    "small_pack": "حزمة صغيرة",
+    "medium_pack": "حزمة متوسطة",
+    "advanced_pack": "حزمة متقدمة",
+    "lottie_purchased": "تمت إضافة الرسوم المتحركة",
+    "purchase_cancelled": "تم إلغاء الشراء"
   },
   
   "gamification": {

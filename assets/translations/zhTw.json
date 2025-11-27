@@ -211,7 +211,15 @@
     "go_to_login": "登入",
     "go_to_store": "前往商店",
     "no_items": "無可用物品",
-    "come_back_later": "稍後回來查看新物品！"
+    "come_back_later": "稍後回來查看新物品！",
+    "category_animals": "動物",
+    "category_coins": "金幣",
+    "category_lotties": "動畫",
+    "small_pack": "小包",
+    "medium_pack": "中包",
+    "advanced_pack": "高級包",
+    "lottie_purchased": "動畫已添加",
+    "purchase_cancelled": "購買已取消"
   },
   
   "gamification": {

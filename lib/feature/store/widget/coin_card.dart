@@ -23,12 +23,11 @@ class CoinCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final double padding = context.dynamicHeight(0.01);
-    final double buttonFont = context.dynamicHeight(0.016);
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final priceLabel = coin.displayPrice ??
         (coin.adaptyAmount != null
             ? coin.adaptyAmount!.toStringAsFixed(2)
-            : (coin.price > 0 ? '${coin.price} ₺' : 'Free'));
+            : (coin.price > 0 ? '${coin.price}' : 'Free'));
 
     return Padding(
       padding: EdgeInsets.symmetric(
@@ -92,17 +91,9 @@ class CoinCard extends StatelessWidget {
                         ),
                   ),
                   context.dynamicHeight(0.006).height,
-                  ElevatedButton(
+                  TextButton(
                     onPressed: isBuying ? null : onBuy,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.secondary,
-                      foregroundColor: isDark
-                          ? AppColors.lightTextPrimary
-                          : AppColors.darkTextPrimary,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: context.border.normalBorderRadius,
-                      ),
-                    ),
+                    
                     child: isBuying
                         ? SizedBox(
                             height: context.dynamicHeight(0.02),
@@ -112,10 +103,23 @@ class CoinCard extends StatelessWidget {
                               color: Colors.white,
                             ),
                           )
-                        : Text(
-                            'store.buy'.tr(),
-                            style: TextStyle(fontSize: buttonFont),
-                          ),
+                        : Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                                'store.buy'.tr(),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium
+                                    ?.copyWith(
+                                      color: Colors.green,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                              ),
+                              context.dynamicWidth(0.01).width,
+                              Icon(Icons.shopping_cart, color: Colors.green,)
+                          ],
+                        ),
                   ),
                 ],
               ),

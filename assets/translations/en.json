@@ -217,7 +217,29 @@
     "category_animals": "Animals",
     "category_coins": "Coins",
     "category_lotties": "Animations",
-    "lottie_purchased": "Animation added"
+    "small_pack": "Small Pack",
+    "medium_pack": "Medium Pack",
+    "advanced_pack": "Advanced Pack",
+    "lottie_purchased": "Animation added",
+    "purchase_cancelled": "Purchase cancelled",
+    "bookworm_doggo": "Bookworm Doggo",
+    "color_changing_chameleon": "Color Changing Chameleon",
+    "crocodile_on_scooter": "Crocodile on Scooter",
+    "cute_animal_play_games": "Cute Animal Playing Games",
+    "cute_fox": "Cute Fox",
+    "cute_shark_tapping": "Cute Shark Tapping",
+    "cute_tiger": "Cute Tiger",
+    "dance_cat": "Dance Cat",
+    "dancing_dino": "Dancing Dino",
+    "dino": "Dino",
+    "flirting_dog": "Flirting Dog",
+    "happy_dog": "Happy Dog",
+    "happy_fox": "Happy Fox",
+    "jellyfish_greeting": "Jellyfish Greeting",
+    "meditating_fox": "Meditating Fox",
+    "panda_eats_popcorn": "Panda Eating Popcorn",
+    "sleeping_cat": "Sleeping Cat",
+    "woodpecker": "Woodpecker"
   },
   
   "gamification": {
@@ -437,4 +459,3 @@
     "successful": "Successful!"
   }
 }
-

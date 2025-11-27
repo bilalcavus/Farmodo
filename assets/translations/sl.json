@@ -211,7 +211,15 @@
     "go_to_login": "Prijava",
     "go_to_store": "Pojdi v trgovino",
     "no_items": "Nobene dostopne predmete",
-    "come_back_later": "Pridite pozneje za nove predmete!"
+    "come_back_later": "Pridite pozneje za nove predmete!",
+    "category_animals": "Živali",
+    "category_coins": "Kovanci",
+    "category_lotties": "Animacije",
+    "small_pack": "Mali paket",
+    "medium_pack": "Srednji paket",
+    "advanced_pack": "Napreden paket",
+    "lottie_purchased": "Animacija dodana",
+    "purchase_cancelled": "Nakup preklican"
   },
   
   "gamification": {

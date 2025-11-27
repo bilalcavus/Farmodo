@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:farmodo/core/theme/app_colors.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/data/models/lottie_pack.dart';
@@ -65,7 +66,7 @@ class LottiePackDetailView extends StatelessWidget {
                         ),
                         SizedBox(height: context.dynamicHeight(0.008)),
                         Text(
-                          lottie.name,
+                          lottie.name.tr(),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: Theme.of(context).textTheme.labelLarge,

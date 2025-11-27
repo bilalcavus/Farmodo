@@ -211,7 +211,15 @@
     "go_to_login": "ログイン",
     "go_to_store": "ストアへ行く",
     "no_items": "利用可能なアイテムがありません",
-    "come_back_later": "新しいアイテムのために後でまた来てください！"
+    "come_back_later": "新しいアイテムのために後でまた来てください！",
+    "category_animals": "動物",
+    "category_coins": "コイン",
+    "category_lotties": "アニメーション",
+    "small_pack": "小パック",
+    "medium_pack": "中パック",
+    "advanced_pack": "上級パック",
+    "lottie_purchased": "アニメーションが追加されました",
+    "purchase_cancelled": "購入がキャンセルされました"
   },
   
   "gamification": {
