@@ -238,6 +238,39 @@ class LottieService {
     }
   }
 
+  Future<bool> ensurePackGranted({
+    required LottiePack pack,
+    String purchaseMethod = 'iap',
+  }) async {
+    final uid = _auth.currentUser?.uid;
+    if (uid == null) return false;
+
+    final userRef = _firestore.collection('users').doc(uid);
+    final packRef = userRef
+        .collection('purchased_lottie_packs')
+        .doc(lottiePackTypeToString(pack.type));
+    final packDoc = await packRef.get();
+
+    final purchasedLottiesRef = userRef.collection('purchased_lotties');
+    final missingLotties = <PurchasableLottie>[];
+    for (final lottie in pack.lotties) {
+      final docRef = purchasedLottiesRef.doc(lottie.id);
+      final doc = await docRef.get();
+      if (!doc.exists) {
+        missingLotties.add(lottie);
+      }
+    }
+
+    final alreadyGranted = packDoc.exists && missingLotties.isEmpty;
+    if (alreadyGranted) return true;
+
+    await registerPackPurchase(
+      pack: pack,
+      purchaseMethod: purchaseMethod,
+    );
+    return true;
+  }
+
   Future<void> selectPackType(LottiePackType type) async {
     final prefs = await SharedPreferences.getInstance();
     final uid = _auth.currentUser?.uid ?? 'guest';

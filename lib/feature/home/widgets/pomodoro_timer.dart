@@ -29,6 +29,7 @@ class PomodoroTimer extends StatefulWidget {
 }
 
 class _PomodoroTimerState extends State<PomodoroTimer> with SingleTickerProviderStateMixin {
+  static const double _lottieSlowdown = 0.9; // Slow animations down to a more relaxed pace
   late final AnimationController _animationController;
   final LottieService _lottieService = LottieService();
   final PageController _pageController = PageController();
@@ -70,7 +71,7 @@ class _PomodoroTimerState extends State<PomodoroTimer> with SingleTickerProvider
       final allLotties = [
         PurchasableLottie(
           id: 'default',
-          name: 'Default Timer',
+          name: '',
           assetPath: _lottieService.defaultLottieAssetPath,
           price: 0,
           description: 'Default timer animation',
@@ -110,7 +111,7 @@ class _PomodoroTimerState extends State<PomodoroTimer> with SingleTickerProvider
           _userLotties = [
             PurchasableLottie(
               id: 'default',
-              name: 'Default Timer',
+              name: '',
               assetPath: _lottieService.defaultLottieAssetPath,
               price: 0,
               description: 'Default timer animation',
@@ -164,7 +165,6 @@ class _PomodoroTimerState extends State<PomodoroTimer> with SingleTickerProvider
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // Sadece ilk kez yükle, sürekli yeniden yükleme
     if (!_hasLoadedOnce) {
       _hasLoadedOnce = true;
     }
@@ -260,17 +260,6 @@ class _PomodoroTimerState extends State<PomodoroTimer> with SingleTickerProvider
             else if (_userLotties.isNotEmpty)
               Column(
                 children: [
-                  if (_activePackType != null)
-                    Padding(
-                      padding: EdgeInsets.only(bottom: context.dynamicHeight(0.008)),
-                      child: Text(
-                        'Active Pack: ${_activePackType!.readableName}',
-                        style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                              color: AppColors.textSecondary,
-                              fontWeight: FontWeight.w600,
-                            ),
-                      ),
-                    ),
                   SizedBox(
                     height: context.dynamicHeight(0.3),
                     child: PageView.builder(
@@ -298,7 +287,7 @@ class _PomodoroTimerState extends State<PomodoroTimer> with SingleTickerProvider
                                       lottie.assetPath,
                                       controller: isCurrent ? _animationController : null,
                                       onLoaded: isCurrent ? (composition) {
-                                        _animationController.duration = composition.duration;
+                                        _animationController.duration = composition.duration * _lottieSlowdown;
                                         if(widget.timerController.isRunning.value) {
                                           _animationController.repeat();
                                         } else {
@@ -311,7 +300,7 @@ class _PomodoroTimerState extends State<PomodoroTimer> with SingleTickerProvider
                                     Padding(
                                       padding: EdgeInsets.only(top: context.dynamicHeight(0.01)),
                                       child: Text(
-                                        lottie.name,
+                                        lottie.name.tr(),
                                         style: Theme.of(context).textTheme.labelMedium?.copyWith(
                                           color: isCurrent ? AppColors.textPrimary : AppColors.textSecondary,
                                           fontWeight: isCurrent ? FontWeight.w600 : FontWeight.normal,

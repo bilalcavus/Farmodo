@@ -87,7 +87,7 @@ class _StoreViewState extends State<StoreView> {
     try {
       await rewardController.buyStoreCoin(coinId);
       if(rewardController.purchaseSucceeded.value){
-        SnackMessages().showSuccessSnack('Coin satın alma başarılı');
+        SnackMessages().showSuccessSnack('store.coin_purchased'.tr());
         setState(() {});
       } else {
         SnackMessages().showErrorSnack(rewardController.errorMessage.value);

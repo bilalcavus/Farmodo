@@ -10,6 +10,7 @@ import 'package:farmodo/data/services/auth_service.dart';
 import 'package:farmodo/data/services/firestore_service.dart';
 import 'package:farmodo/data/services/lottie_service.dart';
 import 'package:farmodo/feature/auth/login/viewmodel/login_controller.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart' hide Trans;
 
@@ -60,6 +61,7 @@ class RewardController extends GetxController {
   RxBool get animalsLoaded => _animalsLoaded;
   RxBool get coinsLoaded => _coinsLoaded;
   RxBool get lottiesLoaded => _lottiesLoaded;
+  bool get _debugFreePurchase => kDebugMode;
 
   @override
   void onReady() {
@@ -368,6 +370,14 @@ class RewardController extends GetxController {
     try {
       final coin = purchasableCoins.firstWhere((item) => item.id == coinId);
       
+      if (_debugFreePurchase) {
+        await firestoreService.buyCoin(coin);
+        _purchaseSucceeded.value = true;
+        await authService.fetchAndSetCurrentUser();
+        debugPrint('Debug mode: coin granted without billing (${coin.name})');
+        return;
+      }
+      
       if (billingService.isAvailable && coin.productId != null) {
         debugPrint('Starting Adapty purchase for coin: ${coin.name} (${coin.value} coins)');
         
@@ -419,6 +429,30 @@ class RewardController extends GetxController {
     try {
       Map<String, dynamic>? purchaseResult;
 
+      if (_debugFreePurchase) {
+        await lottieService.registerPackPurchase(
+          pack: pack,
+          purchaseMethod: 'debug',
+        );
+        final granted = await lottieService.ensurePackGranted(
+          pack: pack,
+          purchaseMethod: 'debug',
+        );
+        if (!granted) {
+          errorMessage.value = 'store.purchase_grant_failed'.tr();
+          return;
+        }
+        _purchaseSucceeded.value = true;
+        ownedLottiePackTypes.add(pack.type);
+        activeLottiePackType.value = pack.type;
+        await authService.fetchAndSetCurrentUser();
+        loginController.refreshUserXp();
+        await loadOwnedRewards();
+        await getPurchasableLotties();
+        debugPrint('Debug mode: lottie pack granted without billing (${pack.type})');
+        return;
+      }
+
       if (billingService.isAvailable) {
         purchaseResult = await billingService.purchaseLottiePack(
           pack.type,
@@ -446,6 +480,15 @@ class RewardController extends GetxController {
         pack: pack,
         purchaseMethod: 'iap',
       );
+
+      final granted = await lottieService.ensurePackGranted(
+        pack: pack,
+        purchaseMethod: 'iap',
+      );
+      if (!granted) {
+        errorMessage.value = 'store.purchase_grant_failed'.tr();
+        return;
+      }
       _purchaseSucceeded.value = true;
       ownedLottiePackTypes.add(pack.type);
       activeLottiePackType.value = pack.type;

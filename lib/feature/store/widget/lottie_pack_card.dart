@@ -36,7 +36,7 @@ class LottiePackCard extends StatelessWidget {
     final preview = pack.previewLottie;
     final double buttonFont = context.dynamicHeight(0.016);
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final priceLabel = pack.displayPrice ?? (pack.price > 0 ? '${pack.price} ₺' : 'Free');
+    final priceLabel = pack.displayPrice ?? (pack.price > 0 ? '${pack.price}' : 'store.free'.tr());
 
     return Padding(
       padding: context.padding.horizontalLow,
@@ -47,7 +47,7 @@ class LottiePackCard extends StatelessWidget {
             color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
             borderRadius: BorderRadius.circular(cardRadius),
             border: Border.all(
-              color: isActive ? AppColors.danger : Colors.transparent,
+              color: isActive ? AppColors.success : Colors.transparent,
               width: isActive ? 2 : 0,
             ),
           ),
@@ -59,7 +59,7 @@ class LottiePackCard extends StatelessWidget {
                 child: IconButton(
                   icon: const Icon(Icons.visibility),
                   onPressed: onView,
-                  tooltip: 'View pack',
+                  tooltip: 'store.view_pack'.tr(),
                   visualDensity: VisualDensity.compact,
                 ),
               ),
@@ -106,7 +106,7 @@ class LottiePackCard extends StatelessWidget {
                     ),
                     context.dynamicHeight(0.004).height,
                     Text(
-                      '${pack.lotties.length} animation',
+                      '${pack.lotties.length} ${'store.category_lotties'.tr()}',
                       style: Theme.of(context).textTheme.labelMedium?.copyWith(
                             color: AppColors.textSecondary,
                           ),
@@ -137,7 +137,7 @@ class LottiePackCard extends StatelessWidget {
                     Column(
                       children: [
                         Text(
-                          isActive ? 'Active' : 'store.owned'.tr(),
+                          isActive ? 'store.active'.tr() : 'store.owned'.tr(),
                           style: TextStyle(
                             color: isActive ? AppColors.danger : Colors.green,
                             fontWeight: FontWeight.bold,
@@ -160,13 +160,13 @@ class LottiePackCard extends StatelessWidget {
                               shape: RoundedRectangleBorder(
                                 borderRadius:
                                     BorderRadius.circular(cardRadius * 0.5),
-                              ),
-                            ),
-                            child: Text(
-                              'Activate',
-                              style: Theme.of(context).textTheme.bodyMedium
                             ),
                           ),
+                          child: Text(
+                            'store.activate'.tr(),
+                            style: Theme.of(context).textTheme.bodyMedium
+                          ),
+                        ),
                       ],
                     )
                   else
