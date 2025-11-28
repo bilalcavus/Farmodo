@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:farmodo/core/components/message/snack_messages.dart';
 import 'package:farmodo/core/di/injection.dart';
@@ -20,6 +22,7 @@ import 'package:farmodo/feature/home/widgets/user_xp.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart' hide Trans;
+import 'package:url_launcher/url_launcher.dart';
 
 
 
@@ -264,73 +267,154 @@ class _StoreViewState extends State<StoreView> {
           final coins = rewardController.purchasableCoins;
           if (coins.isEmpty) return const StoreEmptyState();
 
-          return GridView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              crossAxisSpacing: context.dynamicWidth(0.024),
-              mainAxisSpacing: context.dynamicWidth(0.024),
-              childAspectRatio: 0.85,
-            ),
-            itemCount: coins.length,
-            itemBuilder: (context, index) {
-              final coin = coins[index];
-              return CoinCard(
-                coin: coin,
-                cardRadius: context.dynamicHeight(0.02),
-                isBuying: rewardController.purchasingCoinId.value == coin.id,
-                onBuy: () => _handleCoinPurchase(coin.id, coin.name),
-              );
-            },
+          return Column(
+            children: [
+              GridView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: context.dynamicWidth(0.024),
+                  mainAxisSpacing: context.dynamicWidth(0.024),
+                  childAspectRatio: 0.85,
+                ),
+                itemCount: coins.length,
+                itemBuilder: (context, index) {
+                  final coin = coins[index];
+                  return CoinCard(
+                    coin: coin,
+                    cardRadius: context.dynamicHeight(0.02),
+                    isBuying: rewardController.purchasingCoinId.value == coin.id,
+                    onBuy: () => _handleCoinPurchase(coin.id, coin.name),
+                  );
+                },
+              ),
+              SizedBox(height: context.dynamicHeight(0.05)),
+              _buildLegalButtons(context),
+            ],
           );
 
         case StoreCategory.lotties:
           final lottiePacks = rewardController.lottiePacks;
           if (lottiePacks.isEmpty) return const StoreEmptyState();
 
-          return GridView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              crossAxisSpacing: context.dynamicWidth(0.024),
-              mainAxisSpacing: context.dynamicWidth(0.024),
-              childAspectRatio: 0.85,
-            ),
-            itemCount: lottiePacks.length,
-            itemBuilder: (context, index) {
-              final pack = lottiePacks[index] as LottiePack;
-              final imagePath = switch (pack.type) {
-                LottiePackType.small => 'assets/purchase_items/lottie/pack_icon/small_pack.png',
-                LottiePackType.medium => 'assets/purchase_items/lottie/pack_icon/medium_pack.png',
-                LottiePackType.advanced => 'assets/purchase_items/lottie/pack_icon/advanced_pack.png',
-                LottiePackType.unknown => null,
-              };
-              return LottiePackCard(
-                pack: pack,
-                cardRadius: context.dynamicHeight(0.02),
-                isBuying: rewardController.purchasingLottiePackType.value == pack.type,
-                isOwned: rewardController.isPackOwned(pack.type),
-                isActive: rewardController.isPackActive(pack.type),
-                imageAssetPath: imagePath,
-                onBuy: () => _handleLottiePackPurchase(pack),
-                onActivate: () => _handleLottieActivation(pack.type),
-                onView: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) => LottiePackDetailView(
-                        pack: pack,
-                        isOwned: rewardController.isPackOwned(pack.type),
-                        isActive: rewardController.isPackActive(pack.type),
-                      ),
-                    ),
+          return Column(
+            children: [
+              GridView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: context.dynamicWidth(0.024),
+                  mainAxisSpacing: context.dynamicWidth(0.024),
+                  childAspectRatio: 0.85,
+                ),
+                itemCount: lottiePacks.length,
+                itemBuilder: (context, index) {
+                  final pack = lottiePacks[index] as LottiePack;
+                  final imagePath = switch (pack.type) {
+                    LottiePackType.small => 'assets/purchase_items/lottie/pack_icon/small_pack.png',
+                    LottiePackType.medium => 'assets/purchase_items/lottie/pack_icon/medium_pack.png',
+                    LottiePackType.advanced => 'assets/purchase_items/lottie/pack_icon/advanced_pack.png',
+                    LottiePackType.unknown => null,
+                  };
+                  return LottiePackCard(
+                    pack: pack,
+                    cardRadius: context.dynamicHeight(0.02),
+                    isBuying: rewardController.purchasingLottiePackType.value == pack.type,
+                    isOwned: rewardController.isPackOwned(pack.type),
+                    isActive: rewardController.isPackActive(pack.type),
+                    imageAssetPath: imagePath,
+                    onBuy: () => _handleLottiePackPurchase(pack),
+                    onActivate: () => _handleLottieActivation(pack.type),
+                    onView: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => LottiePackDetailView(
+                            pack: pack,
+                            isOwned: rewardController.isPackOwned(pack.type),
+                            isActive: rewardController.isPackActive(pack.type),
+                          ),
+                        ),
+                      );
+                    },
                   );
                 },
-              );
-            },
+              ),
+              SizedBox(height: context.dynamicHeight(0.05)),
+              _buildLegalButtons(context),
+            ],
           );
       }
     });
+  }
+
+  Widget _buildLegalButtons(BuildContext context) {
+    final isIOS = Platform.isIOS;
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        TextButton(
+          onPressed: () => _showPrivacyPolicy(context),
+          child: Text('auth.privacy_policy_title'.tr(), style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            color: Colors.pink,
+            fontWeight: FontWeight.w500
+          )),
+        ),
+        TextButton(
+          onPressed: () => isIOS ? launchUrl(Uri.parse('https://www.apple.com/legal/internet-services/itunes/dev/stdeula/')) : _showTermsOfService(context),
+          child: Text('auth.terms_of_service_title'.tr(), style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            color: Colors.pink,
+            fontWeight: FontWeight.w500
+          )),
+        ),
+      ],
+    );
+  }
+
+  void _showPrivacyPolicy(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('auth.privacy_policy_title'.tr()),
+          content: SingleChildScrollView(
+            child: Text(
+              'privacy.privacy_policy_text'.tr(),
+              style: const TextStyle(fontSize: 14),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text('common.done'.tr(), style: const TextStyle(color: Colors.pink)),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showTermsOfService(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('auth.terms_of_service_title'.tr()),
+          content: SingleChildScrollView(
+            child: Text(
+              'terms.terms_and_conditions_text'.tr(),
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text('common.done'.tr(), style:Theme.of(context).textTheme.bodyMedium),
+            ),
+          ],
+        );
+      },
+    );
   }
 }

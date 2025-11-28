@@ -52,7 +52,7 @@ class LottiePackDetailView extends StatelessWidget {
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
                         color: isActive ? AppColors.danger : Colors.transparent,
-                        width: isActive ? 1.2 : 0.5,
+                        width: 0.5
                       ),
                     ),
                     padding: EdgeInsets.all(context.dynamicWidth(0.03)),

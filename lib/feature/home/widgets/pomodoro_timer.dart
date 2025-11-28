@@ -1,3 +1,5 @@
+// ignore_for_file: unused_field
+
 import 'dart:async';
 
 import 'package:easy_localization/easy_localization.dart';
@@ -34,6 +36,7 @@ class _PomodoroTimerState extends State<PomodoroTimer> with SingleTickerProvider
   final PageController _pageController = PageController();
   final RewardController _rewardController = getIt<RewardController>();
   late final StreamSubscription<LottiePackType?> _packSubscription;
+  final Map<String, Duration> _compositionDurations = {};
   
   List<PurchasableLottie> _userLotties = [];
   int _currentIndex = 0;
@@ -90,13 +93,14 @@ class _PomodoroTimerState extends State<PomodoroTimer> with SingleTickerProvider
       }
 
       if (mounted) {
+        _resetAnimationController();
+
         setState(() {
           _userLotties = allLotties;
           _currentIndex = selectedIndex;
           _activePackType = chosenPack;
           _isLoading = false;
         });
-        // PageController'ı doğru sayfaya ayarla
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (_pageController.hasClients && mounted) {
             _pageController.jumpToPage(selectedIndex);
@@ -129,11 +133,13 @@ class _PomodoroTimerState extends State<PomodoroTimer> with SingleTickerProvider
   Future<void> _onPageChanged(int index) async {
     if (index == _currentIndex) return;
     
+    final lottie = _userLotties[index];
+    _resetAnimationController();
+    _applyCachedAnimationDuration(lottie.assetPath);
+    
     setState(() {
       _currentIndex = index;
     });
-
-    final lottie = _userLotties[index];
     final newPackType = lottie.packType;
     if (newPackType != LottiePackType.unknown) {
       _activePackType = newPackType;
@@ -151,15 +157,51 @@ class _PomodoroTimerState extends State<PomodoroTimer> with SingleTickerProvider
   }
 
   void _updateAnimation(bool isRunning) {
+    final duration = _animationController.duration;
     if (isRunning) {
-      if (!_animationController.isAnimating && _animationController.duration != null) {
-        _animationController.repeat();
+      if (!_animationController.isAnimating && duration != null) {
+        _animationController.repeat(period: duration);
       }
-    } else {
+    } else if (_animationController.isAnimating) {
       _animationController.stop();
     }
   }
+
   bool _hasLoadedOnce = false;
+
+  void _resetAnimationController({bool clearDuration = true}) {
+    // Clear any leftover state so each lottie starts from its own timing.
+    _animationController
+      ..stop()
+      ..reset();
+    if (clearDuration) {
+      _animationController.duration = null;
+    }
+  }
+
+  void _configureAnimation(
+    Duration duration,
+    String assetKey, {
+    bool startAnimation = true,
+  }) {
+    // Always start from zero to prevent speed drift between different lotties.
+    _animationController
+      ..stop()
+      ..reset();
+    _animationController.duration = duration;
+    _compositionDurations[assetKey] = duration;
+
+    if (startAnimation && widget.timerController.isRunning.value) {
+      _animationController.repeat(period: duration);
+    }
+  }
+
+  void _applyCachedAnimationDuration(String assetPath) {
+    final cachedDuration = _compositionDurations[assetPath];
+    if (cachedDuration != null) {
+      _configureAnimation(cachedDuration, assetPath);
+    }
+  }
 
   @override
   void didChangeDependencies() {
@@ -283,17 +325,19 @@ class _PomodoroTimerState extends State<PomodoroTimer> with SingleTickerProvider
                                 children: [
                                   Expanded(
                                     child: Lottie.asset(
+                                      key: ValueKey(lottie.assetPath),
                                       lottie.assetPath,
                                       animate: isCurrent && widget.timerController.isRunning.value,
                                       controller: isCurrent ? _animationController : null,
-                                      onLoaded: isCurrent ? (composition) {
-                                        _animationController.duration = composition.duration;
-                                        if(widget.timerController.isRunning.value) {
-                                          _animationController.repeat();
-                                        } else {
-                                          _animationController.stop();
+                                      onLoaded: (composition) {
+                                        _compositionDurations[lottie.assetPath] = composition.duration;
+                                        if (isCurrent) {
+                                          _configureAnimation(
+                                            composition.duration,
+                                            lottie.assetPath,
+                                          );
                                         }
-                                      } : null,
+                                      },
                                     ),
                                   ),
                                   if (_userLotties.length > 1)
@@ -325,13 +369,13 @@ class _PomodoroTimerState extends State<PomodoroTimer> with SingleTickerProvider
                   children: List.generate(_userLotties.length, (index) {
                     return Container(
                       margin: EdgeInsets.symmetric(horizontal: 4),
-                      width: index == _currentIndex ? 24 : 8,
-                      height: 8,
+                      width: index == _currentIndex ? 16 : 5,
+                      height: 5,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(4),
                         color: index == _currentIndex
-                            ? AppColors.danger
-                            : Colors.grey.shade400,
+                            ? AppColors.danger.withAlpha(160)
+                            : Colors.grey.shade300,
                       ),
                     );
                   }),

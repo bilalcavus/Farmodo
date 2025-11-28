@@ -45,7 +45,7 @@ android {
         applicationId = "com.bilalcavus.farmodo"
         minSdk = flutter.minSdkVersion
         targetSdk = 35
-        versionCode = 32
+        versionCode = 35
         versionName = "1.5.7"
     }
 

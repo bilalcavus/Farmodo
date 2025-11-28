@@ -1,4 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.bilalcavus.farmodo">
     <!-- Internet permission for Firebase and Google Sign-In -->
     <uses-permission android:name="android.permission.INTERNET" />
@@ -10,6 +11,8 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="com.google.android.gms.permission.AD_ID" tools:node="replace"/>
+
     
 
     <!-- BILLING -->
