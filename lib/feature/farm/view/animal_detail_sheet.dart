@@ -81,8 +81,8 @@ class _AnimalDetailSheetState extends State<AnimalDetailSheet> {
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           crossAxisCount: 2,
-          crossAxisSpacing: context.dynamicWidth(0.03),
-          mainAxisSpacing: context.dynamicHeight(0.015),
+          crossAxisSpacing: context.dynamicWidth(0.0),
+          mainAxisSpacing: context.dynamicHeight(0.01),
           childAspectRatio: 1.9,
           children: [
             _buildActionButton(
@@ -91,7 +91,7 @@ class _AnimalDetailSheetState extends State<AnimalDetailSheet> {
               gainAnimalXp: '+4',
               color: Colors.orange,
               imagePath: 'assets/images/actions/feed.png',
-              imageHeight: 50,
+              imageHeight: context.dynamicHeight(0.045),
               isLoading:  _farmController.feedingAnimalId.value == widget.animal.id,
               onTap: () => _farmController.feedAnimal(widget.animal.id)
             
@@ -101,7 +101,7 @@ class _AnimalDetailSheetState extends State<AnimalDetailSheet> {
               userXpCost: '-10',
               gainAnimalXp: '+4',
               imagePath: 'assets/images/actions/love.png',
-              imageHeight: 50,
+              imageHeight: context.dynamicHeight(0.045),
               color: Colors.pink,
               isLoading: _farmController.lovingAnimalId.value == widget.animal.id,
               onTap: () => _farmController.loveAnimal(widget.animal.id)
@@ -111,7 +111,7 @@ class _AnimalDetailSheetState extends State<AnimalDetailSheet> {
               userXpCost: '-30',
               gainAnimalXp: '+4',
               imagePath: 'assets/images/actions/gaming2.png',
-              imageHeight: 50,
+              imageHeight: context.dynamicHeight(0.045),
               color: Colors.blue,
               isLoading: _farmController.playingAnimalId.value == widget.animal.id,
               onTap: () => _farmController.playWithAnimal(widget.animal.id)
@@ -121,7 +121,7 @@ class _AnimalDetailSheetState extends State<AnimalDetailSheet> {
               userXpCost: '-50',
               gainAnimalXp: '+4',
               imagePath: 'assets/images/actions/heal.png',
-              imageHeight: 50,
+              imageHeight: context.dynamicHeight(0.045),
               color: Colors.green,
               isLoading: _farmController.healingAnimalId.value == widget.animal.id,
               onTap: () => _farmController.healAnimal(widget.animal.id)
