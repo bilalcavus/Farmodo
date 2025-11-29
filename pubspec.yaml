@@ -1,7 +1,7 @@
 name: farmodo
 description: "Pomodoro Timer : Focus & Farm"
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
-version: 1.4.9+1
+version: 1.5.1+4
 
 environment:
   sdk: ^3.8.1
@@ -25,6 +25,7 @@ dependencies:
   flame: ^1.32.0
   flutter_launcher_icons: ^0.14.4
   kartal: ^4.2.0
+  adapty_flutter: ^3.11.3
 
   #Local
   sqflite: ^2.4.2
@@ -41,6 +42,7 @@ dependencies:
   permission_handler: ^11.3.1
   audioplayers: ^6.5.1
   easy_localization: ^3.0.8
+  url_launcher: ^6.3.2
 
 dev_dependencies:
   flutter_test:
@@ -72,6 +74,10 @@ flutter:
     - assets/icons/achievements/
     - assets/sounds/
     - assets/translations/
+    - assets/purchase_items/coin/
+    - assets/purchase_items/lottie/
+    - assets/purchase_items/lottie/pack_icon/
+
     
   fonts:
     - family: Inter

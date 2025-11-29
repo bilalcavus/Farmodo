@@ -171,8 +171,6 @@ class FarmGame extends FlameGame {
         Sprite? animalSprite;
         if (animalSprites.containsKey(animal.id)) {
           animalSprite = animalSprites[animal.id];
-        } else {
-          developer.log('No sprite found for ${animal.name} (ID: ${animal.id})', name: 'FarmGame');
         }
         
         final sprite = FarmAnimalSprite(

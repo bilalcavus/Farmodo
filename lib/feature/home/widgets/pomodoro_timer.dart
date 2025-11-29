@@ -1,9 +1,16 @@
+// ignore_for_file: unused_field
+
+import 'dart:async';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:farmodo/core/di/injection.dart';
 import 'package:farmodo/core/theme/app_colors.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
 import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
+import 'package:farmodo/data/models/purchasable_lottie.dart';
 import 'package:farmodo/data/sample_data/default_task_data.dart';
+import 'package:farmodo/data/services/lottie_service.dart';
+import 'package:farmodo/feature/store/viewmodel/reward_controller.dart';
 import 'package:farmodo/feature/tasks/viewmodel/tasks_controller.dart';
 import 'package:farmodo/feature/tasks/viewmodel/timer_controller.dart';
 import 'package:flutter/material.dart';
@@ -25,28 +32,185 @@ class PomodoroTimer extends StatefulWidget {
 
 class _PomodoroTimerState extends State<PomodoroTimer> with SingleTickerProviderStateMixin {
   late final AnimationController _animationController;
+  final LottieService _lottieService = LottieService();
+  final PageController _pageController = PageController();
+  final RewardController _rewardController = getIt<RewardController>();
+  late final StreamSubscription<LottiePackType?> _packSubscription;
+  final Map<String, Duration> _compositionDurations = {};
+  
+  List<PurchasableLottie> _userLotties = [];
+  int _currentIndex = 0;
+  bool _isLoading = true;
+  LottiePackType? _activePackType;
   
   @override
   void initState() {
     super.initState();
     _animationController = AnimationController(vsync: this);
+    _loadUserLotties();
+    _packSubscription = _rewardController.activeLottiePackType.listen((type) {
+      _loadUserLotties(forcePack: type);
+    });
+  }
+
+  Future<void> _loadUserLotties({LottiePackType? forcePack}) async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final ownedPackTypes = await _lottieService.getOwnedPackTypes();
+      final selectedPackType = forcePack ?? await _lottieService.getSelectedPackType();
+      final selectedId = await _lottieService.getSelectedLottieId();
+
+      final chosenPack =
+          selectedPackType ?? (ownedPackTypes.isNotEmpty ? ownedPackTypes.first : null);
+      List<PurchasableLottie> packLotties = [];
+      if (chosenPack != null) {
+        packLotties = await _lottieService.getLottiesForPack(chosenPack);
+      }
+
+      final allLotties = [
+        PurchasableLottie(
+          id: 'default',
+          name: '',
+          assetPath: _lottieService.defaultLottieAssetPath,
+          price: 0,
+          description: 'Default timer animation',
+          isAvailable: true,
+          createdAt: DateTime.now(),
+          type: 'Default',
+        ),
+        ...packLotties,
+      ];
+
+      int selectedIndex = 0;
+      if (selectedId != null) {
+        final index = allLotties.indexWhere((l) => l.id == selectedId);
+        if (index != -1) {
+          selectedIndex = index;
+        }
+      }
+
+      if (mounted) {
+        _resetAnimationController();
+
+        setState(() {
+          _userLotties = allLotties;
+          _currentIndex = selectedIndex;
+          _activePackType = chosenPack;
+          _isLoading = false;
+        });
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (_pageController.hasClients && mounted) {
+            _pageController.jumpToPage(selectedIndex);
+          }
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+          _userLotties = [
+            PurchasableLottie(
+              id: 'default',
+              name: '',
+              assetPath: _lottieService.defaultLottieAssetPath,
+              price: 0,
+              description: 'Default timer animation',
+              isAvailable: true,
+              createdAt: DateTime.now(),
+              type: 'Default',
+            ),
+          ];
+          _currentIndex = 0;
+          _activePackType = null;
+        });
+      }
+    }
+  }
+
+  Future<void> _onPageChanged(int index) async {
+    if (index == _currentIndex) return;
+    
+    final lottie = _userLotties[index];
+    _resetAnimationController();
+    _applyCachedAnimationDuration(lottie.assetPath);
+    
+    setState(() {
+      _currentIndex = index;
+    });
+    final newPackType = lottie.packType;
+    if (newPackType != LottiePackType.unknown) {
+      _activePackType = newPackType;
+      await _lottieService.selectPackType(newPackType);
+    }
+    await _lottieService.selectLottie(lottie.id, lottie.assetPath);
   }
 
   @override
   void dispose() {
     _animationController.dispose();
+    _pageController.dispose();
+    _packSubscription.cancel();
     super.dispose();
   }
 
   void _updateAnimation(bool isRunning) {
+    final duration = _animationController.duration;
     if (isRunning) {
-      if (!_animationController.isAnimating && _animationController.duration != null) {
-        _animationController.repeat();
+      if (!_animationController.isAnimating && duration != null) {
+        _animationController.repeat(period: duration);
       }
-    } else {
+    } else if (_animationController.isAnimating) {
       _animationController.stop();
     }
   }
+
+  bool _hasLoadedOnce = false;
+
+  void _resetAnimationController({bool clearDuration = true}) {
+    // Clear any leftover state so each lottie starts from its own timing.
+    _animationController
+      ..stop()
+      ..reset();
+    if (clearDuration) {
+      _animationController.duration = null;
+    }
+  }
+
+  void _configureAnimation(
+    Duration duration,
+    String assetKey, {
+    bool startAnimation = true,
+  }) {
+    // Always start from zero to prevent speed drift between different lotties.
+    _animationController
+      ..stop()
+      ..reset();
+    _animationController.duration = duration;
+    _compositionDurations[assetKey] = duration;
+
+    if (startAnimation && widget.timerController.isRunning.value) {
+      _animationController.repeat(period: duration);
+    }
+  }
+
+  void _applyCachedAnimationDuration(String assetPath) {
+    final cachedDuration = _compositionDurations[assetPath];
+    if (cachedDuration != null) {
+      _configureAnimation(cachedDuration, assetPath);
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_hasLoadedOnce) {
+      _hasLoadedOnce = true;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final tasksController = getIt<TasksController>();
@@ -126,20 +290,97 @@ class _PomodoroTimerState extends State<PomodoroTimer> with SingleTickerProvider
                 ),
               ),
             ],
-            Lottie.asset(
-              'assets/lottie/timer_lottie.json',
-              width: context.dynamicWidth(0.55),
-              height: context.dynamicHeight(0.3),
-              controller: _animationController,
-              onLoaded: (composition) {
-                _animationController.duration = composition.duration;
-                if(widget.timerController.isRunning.value) {
-                  _animationController.repeat();
-                } else {
-                  _animationController.stop();
-                }
-              }
-            ),
+            if (_isLoading)
+              SizedBox(
+                width: context.dynamicWidth(0.55),
+                height: context.dynamicHeight(0.3),
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              )
+            else if (_userLotties.isNotEmpty)
+              Column(
+                children: [
+                  SizedBox(
+                    height: context.dynamicHeight(0.3),
+                    child: PageView.builder(
+                      controller: _pageController,
+                      onPageChanged: _onPageChanged,
+                      itemCount: _userLotties.length,
+                      itemBuilder: (context, index) {
+                        final lottie = _userLotties[index];
+                        final isCurrent = index == _currentIndex;
+                        
+                        return AnimatedContainer(
+                          duration: Duration(milliseconds: 300),
+                          curve: Curves.easeInOut,
+                          margin: EdgeInsets.symmetric(
+                            horizontal: isCurrent ? 0 : context.dynamicWidth(0.05),
+                          ),
+                          child: Opacity(
+                            opacity: isCurrent ? 1.0 : 0.3,
+                            child: Transform.scale(
+                              scale: isCurrent ? 1.0 : 0.85,
+                              child: Column(
+                                children: [
+                                  Expanded(
+                                    child: Lottie.asset(
+                                      key: ValueKey(lottie.assetPath),
+                                      lottie.assetPath,
+                                      animate: isCurrent && widget.timerController.isRunning.value,
+                                      controller: isCurrent ? _animationController : null,
+                                      onLoaded: (composition) {
+                                        _compositionDurations[lottie.assetPath] = composition.duration;
+                                        if (isCurrent) {
+                                          _configureAnimation(
+                                            composition.duration,
+                                            lottie.assetPath,
+                                          );
+                                        }
+                                      },
+                                    ),
+                                  ),
+                                  if (_userLotties.length > 1)
+                                    Padding(
+                                      padding: EdgeInsets.only(top: context.dynamicHeight(0.01)),
+                                      child: Text(
+                                        lottie.name.tr(),
+                                        style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                                          fontWeight: isCurrent ? FontWeight.w600 : FontWeight.normal,
+                                        ),
+                                      ),
+                                    ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            // Sayfa göstergesi (indicator)
+            if (_userLotties.length > 1)
+              Padding(
+                padding: EdgeInsets.only(top: context.dynamicHeight(0.01)),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: List.generate(_userLotties.length, (index) {
+                    return Container(
+                      margin: EdgeInsets.symmetric(horizontal: 4),
+                      width: index == _currentIndex ? 16 : 5,
+                      height: 5,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(4),
+                        color: index == _currentIndex
+                            ? AppColors.danger.withAlpha(160)
+                            : Colors.grey.shade300,
+                      ),
+                    );
+                  }),
+                ),
+              ),
           ],
         );
       }),

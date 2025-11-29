@@ -17,7 +17,6 @@ import 'package:farmodo/feature/navigation/navigation_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart' hide Trans;
-import 'package:get/get_core/src/get_main.dart';
 
 class AccountView extends StatefulWidget {
   const AccountView({super.key});

@@ -1,3 +1,4 @@
+import 'package:farmodo/core/services/adapty_billing_service.dart';
 import 'package:farmodo/core/services/preferences_service.dart';
 import 'package:farmodo/core/theme/theme_controller.dart';
 import 'package:farmodo/data/services/animal_service.dart';
@@ -24,6 +25,7 @@ Future<void> setupDependencies() async {
 
   //Core Services
   getIt.registerLazySingleton(() => PreferencesService.instance);
+  getIt.registerLazySingleton(() => AdaptyBillingService());
 
   //Data Services
   getIt.registerLazySingleton(() => AuthService());
@@ -37,7 +39,7 @@ Future<void> setupDependencies() async {
   getIt.registerLazySingleton(() => LoginController(getIt()));
   getIt.registerLazySingleton(() => RegisterController(getIt()));
   getIt.registerLazySingleton(() => TasksController(getIt(), getIt(), getIt(), getIt()));
-  getIt.registerLazySingleton(() => RewardController(getIt(), getIt(), getIt()));
+  getIt.registerLazySingleton(() => RewardController(getIt(), getIt(), getIt(), getIt()));
   getIt.registerLazySingleton(() => GamificationController());
   getIt.registerLazySingleton(() => FarmController(getIt(), getIt()));
   getIt.registerLazySingleton(() => NavigationController());

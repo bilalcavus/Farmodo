@@ -16,6 +16,7 @@ enum Locales {
   vi (Locale('vi')),
   zhTw (Locale('zh', 'TW')),
   no (Locale('no')),
+  ptBR (Locale('pt', 'BR')),
   sk (Locale('sk')),
   es (Locale('es')),
   sv (Locale('sv'));
@@ -38,6 +39,7 @@ enum Locales {
     Locales.vi.locale,
     Locales.zhTw.locale,
     Locales.no.locale,
+    Locales.ptBR.locale,
     Locales.sk.locale,
     Locales.es.locale,
     Locales.sv.locale,

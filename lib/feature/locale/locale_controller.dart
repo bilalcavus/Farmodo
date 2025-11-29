@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:easy_localization/easy_localization.dart';
 import 'package:farmodo/core/utility/constants/locales.dart';
 import 'package:farmodo/core/utility/constants/storage_keys.dart';
@@ -82,6 +80,8 @@ class LocaleController extends GetxController {
         return '繁體中文';
       case Locales.no:
         return 'Norsk';
+      case Locales.ptBR:
+        return 'Português (Brasil)';
       case Locales.sk:
         return 'Slovenčina';
       case Locales.es:

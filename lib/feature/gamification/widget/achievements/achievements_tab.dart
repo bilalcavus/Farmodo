@@ -194,7 +194,7 @@ class RewardContainer extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(context.dynamicWidth(0.04)),
       decoration: BoxDecoration(
-        color: achievement.rarityColor.withOpacity(0.1),
+        color: achievement.rarityColor.withAlpha(25),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Row(

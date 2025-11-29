@@ -202,6 +202,7 @@
   "store": {
     "store": "Mağaza",
     "buy": "Satın Al",
+    "get": "Al",
     "owned": "Sahip Olunan",
     "coins": "Coinler",
     "animal_purchased": "Hayvan satın alındı ve çiftliğinize eklendi",
@@ -211,7 +212,40 @@
     "go_to_login": "Giriş Yap",
     "go_to_store": "Mağazaya Git",
     "no_items": "Henüz ürün yok",
-    "come_back_later": "Yeni ürünler için daha sonra tekrar gel!"
+    "come_back_later": "Yeni ürünler için daha sonra tekrar gel!",
+    "category_animals": "Hayvanlar",
+    "category_coins": "Coinler",
+    "category_lotties": "Animasyonlar",
+    "small_pack": "Küçük Paket",
+    "medium_pack": "Orta Paket",
+    "advanced_pack": "Gelişmiş Paket",
+    "lottie_purchased": "Animasyon eklendi",
+    "coin_purchased": "Coin satın alındı",
+    "purchase_cancelled": "Satın alma iptal edildi",
+    "purchase_grant_failed": "Satın alma tamamlandı ancak ürün teslim edilemedi. Lütfen satın almaları geri yüklemeyi deneyin.",
+    "price_unavailable": "Fiyat bilgisi yok",
+    "free": "Ücretsiz",
+    "view_pack": "Paketi görüntüle",
+    "active": "Aktif",
+    "activate": "Aktifleştir",
+    "bookworm_doggo": "Kitap Kurdu Köpek",
+    "color_changing_chameleon": "Renk Değiştiren Bukalemun",
+    "crocodile_on_scooter": "Scooterlı Timsah",
+    "cute_animal_play_games": "Oyun Oynayan Sevimli Hayvan",
+    "cute_fox": "Sevimli Tilki",
+    "cute_shark_tapping": "Sevimli Tıklayan Köpekbalığı",
+    "cute_tiger": "Sevimli Kaplan",
+    "dance_cat": "Dans Eden Kedi",
+    "dancing_dino": "Dans Eden Dino",
+    "dino": "Dino",
+    "flirting_dog": "Flört Eden Köpek",
+    "happy_dog": "Mutlu Köpek",
+    "happy_fox": "Mutlu Tilki",
+    "jellyfish_greeting": "Selam Veren Denizanası",
+    "meditating_fox": "Meditasyon Yapan Tilki",
+    "panda_eats_popcorn": "Patlamış Mısır Yiyen Panda",
+    "sleeping_cat": "Uyuyan Kedi",
+    "woodpecker": "Ağaçkakan"
   },
   
   "gamification": {
@@ -419,9 +453,9 @@
     "update_available": "Güncelleme mevcut",
     "error_title": "Hata",
     "success_title": "Başarılı",
+    "info_title": "Bilgi",
     "updated": "Güncellendi!",
     "animal_status_updated": "Hayvan durumu güncellendi!",
     "successful": "Başarılı!"
   }
 }
-

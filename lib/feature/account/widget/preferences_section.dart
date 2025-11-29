@@ -9,6 +9,7 @@ import 'package:farmodo/data/services/auth_service.dart';
 import 'package:farmodo/feature/account/widget/settings_item_widget.dart';
 import 'package:farmodo/feature/auth/login/viewmodel/login_controller.dart';
 import 'package:farmodo/feature/home/widgets/widget_guide_view.dart';
+import 'package:farmodo/feature/locale/locale_controller.dart';
 import 'package:farmodo/feature/locale/locale_select_view.dart';
 import 'package:farmodo/feature/navigation/app_navigation.dart';
 import 'package:farmodo/feature/tasks/viewmodel/tasks_controller.dart';
@@ -34,6 +35,7 @@ class _PreferencesSectionState extends State<PreferencesSection> {
   @override
   Widget build(BuildContext context) {
     final themeController = getIt<ThemeController>();
+    final localeController = getIt<LocaleController>();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -51,10 +53,27 @@ class _PreferencesSectionState extends State<PreferencesSection> {
               context: context,
               icon: HugeIcons.strokeRoundedTranslate,
               title: "account.language".tr(),
-              trailing: SizedBox(
-                width: context.dynamicWidth(0.4),
-                child: const LanguageSelectorWidget(),
-              ),
+              onTap: () => RouteHelper.push(context, const LocaleSelectView()),
+              trailing: Obx(() {
+                final currentLocale = localeController.getCurrentLocaleEnum();
+                return Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      localeController.getLocaleName(currentLocale),
+                      style: TextStyle(
+                        fontSize: context.dynamicHeight(0.016),
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    SizedBox(width: context.dynamicWidth(0.02)),
+                    Icon(
+                      Icons.chevron_right,
+                      size: context.dynamicHeight(0.02),
+                    ),
+                  ],
+                );
+              }),
             ),
             SettingsItemWidget(
               context: context,
@@ -107,6 +126,5 @@ class _PreferencesSectionState extends State<PreferencesSection> {
     );
   }
 }
-
 
 

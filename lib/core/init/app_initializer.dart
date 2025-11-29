@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:farmodo/core/di/injection.dart';
+import 'package:farmodo/core/init/init_billing.dart';
 import 'package:farmodo/core/services/live_activity_service.dart';
 import 'package:farmodo/core/services/notification_service.dart';
 import 'package:farmodo/core/utility/constants/locales.dart';
@@ -39,6 +40,7 @@ final class AppInitializer {
     try {
       await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
       await setupDependencies();
+      await InitBilling().initializeBilling();
       
       await NotificationService.initialize();
       Logger().i('Notification service initialized successfully');

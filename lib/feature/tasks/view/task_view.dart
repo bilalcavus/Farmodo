@@ -45,7 +45,7 @@ class _TaskViewState extends State<TaskView> with TaskViewMixin {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: AppColors.danger.withOpacity(0.3),
+            color: AppColors.danger.withAlpha(75),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),

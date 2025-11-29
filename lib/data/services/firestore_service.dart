@@ -1,4 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:farmodo/data/models/purchasable_coin.dart';
+import 'package:farmodo/data/models/purchasable_lottie.dart';
 import 'package:farmodo/data/models/reward_model.dart';
 import 'package:farmodo/data/models/user_model.dart';
 import 'package:farmodo/data/models/user_task_model.dart';
@@ -186,6 +188,42 @@ Future<List<Reward>> getStoreItems() async {
       'isPremium': isPremium,
       'metadata' : metadata,
       'createdAt': FieldValue.serverTimestamp(),
+    });
+  }
+
+  Future<List<PurchasableCoin>> fetchPurchasableCoins() async {
+    final query = _firestore
+          .collection("purchasable_coins")
+          .orderBy("createdAt", descending: true)
+          .where("isAvailable", isEqualTo: true);
+    final snapshot = await query.get();
+    return snapshot.docs.map((doc) => PurchasableCoin.fromFirestore(doc)).toList();
+  }
+
+  Future<List<PurchasableLottie>> fetchPurchasableLotties() async {
+    final query = _firestore
+          .collection("purchasable_lotties")
+          .orderBy("createdAt", descending: true)
+          .where("isAvailable", isEqualTo: true);
+    final snapshot = await query.get();
+    return snapshot.docs.map((doc) => PurchasableLottie.fromFirestore(doc)).toList();
+  }
+
+  Future<void> buyCoin(PurchasableCoin coin) async {
+    final String uid = _auth.currentUser!.uid;
+    final userRef = _firestore.collection("users").doc(uid);
+    
+    await _firestore.runTransaction((transaction) async {
+      final snapshot = await transaction.get(userRef);
+      if(!snapshot.exists){
+        throw Exception("User not found");
+      }
+      
+      final currentCoin = (snapshot.data()?['coins'] as int?) ?? 0;
+      
+      transaction.update(userRef, {
+        'coins': currentCoin + coin.value,
+      });
     });
   }
 }

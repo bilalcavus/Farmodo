@@ -172,6 +172,7 @@
     "buy_first_animal": "Buy your first animal from the store!",
     "animals_in_farm": "animals in your farm",
     "buy_animals": "Buy animals",
+    "store_description": "Buy animals, coins and animations to improve your farm and earn rewards",
     "complete_focus_sessions": "Complete focus sessions and earn rewards",
     "loading_farm": "Loading your farm...",
     "farm_empty_title": "Your Farm is Empty",
@@ -202,6 +203,7 @@
   "store": {
     "store": "Store",
     "buy": "Buy",
+    "get": "Get",
     "owned": "Owned",
     "coins": "Coins",
     "animal_purchased": "Animal purchased and added to your farm",
@@ -211,7 +213,40 @@
     "go_to_login": "Log In",
     "go_to_store": "Go to Store",
     "no_items": "No items available",
-    "come_back_later": "Come back later for new items!"
+    "come_back_later": "Come back later for new items!",
+    "category_animals": "Animals",
+    "category_coins": "Coins",
+    "category_lotties": "Animations",
+    "small_pack": "Small Pack",
+    "medium_pack": "Medium Pack",
+    "advanced_pack": "Advanced Pack",
+    "lottie_purchased": "Animation added",
+    "coin_purchased": "Coins added",
+    "purchase_cancelled": "Purchase cancelled",
+    "purchase_grant_failed": "Purchase completed but the item could not be delivered. Please try restoring purchases.",
+    "price_unavailable": "Price unavailable",
+    "free": "Free",
+    "view_pack": "View pack",
+    "active": "Active",
+    "activate": "Activate",
+    "bookworm_doggo": "Bookworm Doggo",
+    "color_changing_chameleon": "Color Changing Chameleon",
+    "crocodile_on_scooter": "Crocodile on Scooter",
+    "cute_animal_play_games": "Cute Animal Playing Games",
+    "cute_fox": "Cute Fox",
+    "cute_shark_tapping": "Cute Shark Tapping",
+    "cute_tiger": "Cute Tiger",
+    "dance_cat": "Dance Cat",
+    "dancing_dino": "Dancing Dino",
+    "dino": "Dino",
+    "flirting_dog": "Flirting Dog",
+    "happy_dog": "Happy Dog",
+    "happy_fox": "Happy Fox",
+    "jellyfish_greeting": "Jellyfish Greeting",
+    "meditating_fox": "Meditating Fox",
+    "panda_eats_popcorn": "Panda Eating Popcorn",
+    "sleeping_cat": "Sleeping Cat",
+    "woodpecker": "Woodpecker"
   },
   
   "gamification": {
@@ -425,9 +460,9 @@
     "forgot_password": "Forgot password?",
     "error_title": "Error",
     "success_title": "Success",
+    "info_title": "Info",
     "updated": "Updated!",
     "animal_status_updated": "Updated animal status!",
     "successful": "Successful!"
   }
 }
-

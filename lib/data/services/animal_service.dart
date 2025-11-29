@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:farmodo/data/models/animal_model.dart';
 import 'package:farmodo/data/models/reward_model.dart';
 import 'package:farmodo/data/services/auth_service.dart';
@@ -59,7 +60,7 @@ class AnimalService {
       
       final currentCoin = (userDoc.data()?['coins'] as int?) ?? 0;
       if (currentCoin < reward.xpCost) {
-        throw Exception('Yetersiz Coin. Gerekli: ${reward.xpCost}, Mevcut: $currentCoin');
+        throw Exception("store.insufficient_coins".tr());
       }
 
       await _firestore.runTransaction((transaction) async {
