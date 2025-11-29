@@ -126,7 +126,7 @@ class LottiePackCard extends StatelessWidget {
                           // icon for price
                             Text(
                               priceLabel,
-                              style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                                     fontWeight: FontWeight.bold,
                                     color: Colors.orange.shade800,
                                   ),

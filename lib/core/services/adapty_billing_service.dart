@@ -209,9 +209,51 @@ class AdaptyBillingService {
       debugPrint('Attempting to purchase $coinAmount Coin via Adapty...');
       debugPrint('Product: ${coinProduct.vendorProductId}');
       
-      await Adapty().makePurchase(product: coinProduct);
+      final purchaseResult = await Adapty().makePurchase(product: coinProduct);
 
+      if (purchaseResult is AdaptyPurchaseResultUserCancelled) {
+        debugPrint('Coin purchase cancelled by user');
+        return {'success': false, 'error': 'purchase_cancelled'};
+      }
+
+      if (purchaseResult is AdaptyPurchaseResultPending) {
+        debugPrint('Coin purchase is pending, not granting yet');
+        return {'success': false, 'error': 'purchase_pending'};
+      }
+
+      if (purchaseResult is! AdaptyPurchaseResultSuccess) {
+        debugPrint(
+            'Unexpected Adapty purchase result: ${purchaseResult.runtimeType}');
+        return {'success': false, 'error': 'Unexpected purchase result'};
+      }
+
+      _profile = purchaseResult.profile;
+
+      // Refresh profile from backend to be sure purchase is recorded
       await _loadProfile();
+
+      final activeProfile = _profile ?? purchaseResult.profile;
+
+      final isRecordedInProfile = activeProfile?.nonSubscriptions.entries
+              .firstWhereOrNull(
+                  (entry) => entry.key == coinProduct?.vendorProductId)
+              ?.value
+              .firstWhereOrNull(
+                (purchase) =>
+                    purchase.vendorProductId ==
+                        coinProduct?.vendorProductId &&
+                    purchase.isRefund != true,
+              ) !=
+          null;
+
+      if (!isRecordedInProfile) {
+        debugPrint(
+            'Adapty profile does not contain purchase for ${coinProduct.vendorProductId} (possible cancellation)');
+        return {
+          'success': false,
+          'error': 'purchase_not_confirmed',
+        };
+      }
 
       debugPrint('Coin purchase completed');
       debugPrint('Profile ID: ${_profile?.profileId}');

@@ -85,7 +85,7 @@ class CoinCard extends StatelessWidget {
                 children: [
                   Text(
                     priceLabel,
-                    style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                           fontWeight: FontWeight.bold,
                           color: Colors.orange.shade800,
                         ),

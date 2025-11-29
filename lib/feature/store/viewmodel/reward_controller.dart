@@ -399,6 +399,14 @@ class RewardController extends GetxController {
             errorMessage.value = 'store.purchase_cancelled'.tr();
             return;
           }
+          if (error == 'purchase_not_confirmed') {
+            errorMessage.value = 'store.purchase_cancelled'.tr();
+            return;
+          }
+          if (error == 'purchase_pending') {
+            errorMessage.value = 'store.purchase_cancelled'.tr();
+            return;
+          }
           if (error.contains('Paywall not found') || error.contains('not_found')) {
             errorMessage.value = 'Store setup incomplete. Please configure Adapty placement and products.';
           } else {
