@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:farmodo/core/components/message/snack_messages.dart';
 import 'package:farmodo/core/utility/extension/route_helper.dart';
 import 'package:farmodo/data/services/auth_service.dart';
@@ -5,7 +6,7 @@ import 'package:farmodo/data/services/sample_data_service.dart';
 import 'package:farmodo/feature/navigation/app_navigation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' hide Trans;
 
 class LoginController extends GetxController {
   final emailController = TextEditingController();
@@ -19,6 +20,7 @@ class LoginController extends GetxController {
   final _isLoading = false.obs;
   final _googleLoading = false.obs;
   final _appleLoading = false.obs;
+  final _deleteGoogleAccountLoading = false.obs;
   final _rememberMeCheckbox = false.obs;
   final _deletionObscurePassword = true.obs;
   final _agreeToTerms = false.obs;
@@ -27,6 +29,7 @@ class LoginController extends GetxController {
   RxBool get isLoading => _isLoading;
   RxBool get googleLoading => _googleLoading;
   RxBool get appleLoading => _appleLoading;
+  RxBool get deleteGoogleAccountLoading => _deleteGoogleAccountLoading;
   RxBool get rememberMeCheckBox => _rememberMeCheckbox;
   RxBool get deletionObscurePassword => _deletionObscurePassword;
   RxBool get agreeToTerms => _agreeToTerms;
@@ -64,6 +67,10 @@ class LoginController extends GetxController {
 
   void setLoading(RxBool value){
     isLoading.value = value.value;
+  }
+
+  void setDeleteGoogleAccountLoading(RxBool value){
+    deleteGoogleAccountLoading.value = value.value;
   }
 
   void setGoogleLoading(RxBool value){
@@ -151,6 +158,27 @@ class LoginController extends GetxController {
       rethrow;
     } finally{
       setLoading(false.obs);
+    }
+  }
+
+  Future<void> handleDeleteGoogleAccount(BuildContext context) async {
+    setDeleteGoogleAccountLoading(true.obs);
+    errorMessage.value = "";
+    try {
+      await authService.deleteGoogleAccount();
+      if (context.mounted) {
+        SnackMessages().showSuccessSnack("messages.successful".tr());
+      }
+    } on FirebaseAuthException catch  (e) {
+      if (context.mounted) {
+        errorMessage.value = e.toString();
+         if(e.code == "requires-recent-login"){
+          errorMessage.value = "requires_login_again".tr();
+        }
+      }
+      rethrow;
+    } finally{
+      setDeleteGoogleAccountLoading(false.obs);
     }
   }
 

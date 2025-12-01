@@ -58,6 +58,29 @@
     "terms_of_service_title": "서비스 약관"
   },
   
+  "auth_errors": {
+    "invalid_email": "유효하지 않은 이메일 주소입니다",
+    "email_not_verified": "이메일을 확인해 주세요",
+    "user_not_found": "사용자를 찾을 수 없습니다",
+    "wrong_password": "잘못된 비밀번호",
+    "login_failed": "로그인 실패",
+    "apple_no_identity_token": "Apple 로그인 실패: 식별 토큰이 없습니다",
+    "apple_auth_failed": "Apple 인증 실패",
+    "google_sign_in_cancelled": "Google 로그인이 취소되었습니다",
+    "google_auth_token_error": "Google 인증 토큰을 가져올 수 없습니다",
+    "google_firebase_auth_failed": "Firebase 인증 실패",
+    "google_sign_in_error": "Google 로그인 오류",
+    "google_account_exists_with_different_credential": "이 이메일은 다른 로그인 방법으로 등록되어 있습니다",
+    "google_invalid_credential": "유효하지 않은 자격 증명",
+    "google_operation_not_allowed": "Google 로그인이 활성화되어 있지 않습니다",
+    "google_user_disabled": "사용자 계정이 비활성화되었습니다",
+    "google_user_not_found": "사용자를 찾을 수 없습니다",
+    "google_network_request_failed": "네트워크 연결 오류",
+    "google_sign_in_error_with_message": "Google 로그인 오류: {message}",
+    "google_no_internet": "인터넷 연결 오류입니다. 연결을 확인하세요.",
+    "google_config_error": "Google 로그인 설정 오류. SHA-1 인증서 지문을 확인하세요."
+  },
+  
   "onboard": {
     "stay_focus_title": "집중 유지",
     "stay_focus_desc": "포모도로 기법으로 집중을 유지하고 일일 작업을 완료하여 보상을 받으세요!",
@@ -384,7 +407,8 @@
     "cannot_be_undone": "이 작업은 되돌릴 수 없습니다",
     "warning": "경고",
     "agree_to_deletion": "삭제에 동의",
-    "warning_message": "이 작업은 되돌릴 수 없습니다. 계정 및 관련된 모든 데이터가 영구적으로 삭제됩니다."
+    "warning_message": "이 작업은 되돌릴 수 없습니다. 계정 및 관련된 모든 데이터가 영구적으로 삭제됩니다.",
+    "delete_google_account": "Google 계정 삭제"
   },
   
   "widget": {

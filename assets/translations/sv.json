@@ -58,6 +58,29 @@
     "terms_of_service_title": "Användarvillkor"
   },
   
+  "auth_errors": {
+    "invalid_email": "Ogiltig e-postadress",
+    "email_not_verified": "Bekräfta din e-post",
+    "user_not_found": "Användare hittades inte",
+    "wrong_password": "Fel lösenord",
+    "login_failed": "Inloggning misslyckades",
+    "apple_no_identity_token": "Apple-inloggning misslyckades: inget identitetstoken",
+    "apple_auth_failed": "Apple-autentisering misslyckades",
+    "google_sign_in_cancelled": "Google-inloggning avbröts",
+    "google_auth_token_error": "Kunde inte hämta Google-autentiseringstoken",
+    "google_firebase_auth_failed": "Firebase-autentisering misslyckades",
+    "google_sign_in_error": "Fel vid Google-inloggning",
+    "google_account_exists_with_different_credential": "Denna e-post är registrerad med en annan metod",
+    "google_invalid_credential": "Ogiltiga inloggningsuppgifter",
+    "google_operation_not_allowed": "Google-inloggning är inte aktiverad",
+    "google_user_disabled": "Användarkontot är inaktiverat",
+    "google_user_not_found": "Användare hittades inte",
+    "google_network_request_failed": "Nätverksanslutningsfel",
+    "google_sign_in_error_with_message": "Fel vid Google-inloggning: {message}",
+    "google_no_internet": "Internetanslutningsfel. Kontrollera din anslutning.",
+    "google_config_error": "Konfigurationsfel för Google-inloggning. Kontrollera SHA-1-certifikatets fingeravtryck."
+  },
+  
   "onboard": {
     "stay_focus_title": "Behåll Fokus",
     "stay_focus_desc": "Behåll fokus med Pomodoro-tekniken och slutför dagliga uppgifter för att tjäna belöningar!",
@@ -384,7 +407,8 @@
     "cannot_be_undone": "Denna åtgärd kan inte ångras",
     "warning": "Varning",
     "agree_to_deletion": "Acceptera borttagning",
-    "warning_message": "Denna åtgärd kan inte ångras. Ditt konto och all associerad data kommer att tas bort permanent."
+    "warning_message": "Denna åtgärd kan inte ångras. Ditt konto och all associerad data kommer att tas bort permanent.",
+    "delete_google_account": "Ta bort Google-konto"
   },
   
   "widget": {

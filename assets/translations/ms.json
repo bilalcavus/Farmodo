@@ -58,6 +58,29 @@
     "terms_of_service_title": "Syarat Perkhidmatan"
   },
   
+  "auth_errors": {
+    "invalid_email": "Alamat emel tidak sah",
+    "email_not_verified": "Sila sahkan emel anda",
+    "user_not_found": "Pengguna tidak ditemui",
+    "wrong_password": "Kata laluan salah",
+    "login_failed": "Log masuk gagal",
+    "apple_no_identity_token": "Daftar masuk Apple gagal: Tiada token identiti",
+    "apple_auth_failed": "Pengesahan Apple gagal",
+    "google_sign_in_cancelled": "Daftar masuk Google dibatalkan",
+    "google_auth_token_error": "Token pengesahan Google tidak dapat diambil",
+    "google_firebase_auth_failed": "Pengesahan Firebase gagal",
+    "google_sign_in_error": "Ralat daftar masuk Google",
+    "google_account_exists_with_different_credential": "Emel ini didaftarkan dengan kaedah lain",
+    "google_invalid_credential": "Kelayakan tidak sah",
+    "google_operation_not_allowed": "Daftar masuk Google belum diaktifkan",
+    "google_user_disabled": "Akaun pengguna dinyahaktifkan",
+    "google_user_not_found": "Pengguna tidak ditemui",
+    "google_network_request_failed": "Ralat sambungan rangkaian",
+    "google_sign_in_error_with_message": "Ralat daftar masuk Google: {message}",
+    "google_no_internet": "Ralat sambungan internet. Sila periksa sambungan anda.",
+    "google_config_error": "Ralat konfigurasi Google Sign-In. Sila semak cap jari sijil SHA-1."
+  },
+  
   "onboard": {
     "stay_focus_title": "Kekal Fokus",
     "stay_focus_desc": "Kekal fokus dengan teknik Pomodoro dan selesaikan tugas harian anda untuk mendapat ganjaran!",
@@ -384,7 +407,8 @@
     "cannot_be_undone": "Tindakan ini tidak boleh dibatalkan",
     "warning": "Amaran",
     "agree_to_deletion": "Bersetuju dengan pemadaman",
-    "warning_message": "Tindakan ini tidak boleh dibatalkan. Akaun anda dan semua data berkaitan akan dipadam secara kekal."
+    "warning_message": "Tindakan ini tidak boleh dibatalkan. Akaun anda dan semua data berkaitan akan dipadam secara kekal.",
+    "delete_google_account": "Padam Akaun Google"
   },
   
   "widget": {

@@ -57,6 +57,29 @@
     "privacy_policy_title": "Política de Privacidad",
     "terms_of_service_title": "Términos de Servicio"
   },
+
+  "auth_errors": {
+    "invalid_email": "Dirección de correo electrónico no válida",
+    "email_not_verified": "Por favor confirma tu correo electrónico",
+    "user_not_found": "Usuario no encontrado",
+    "wrong_password": "Contraseña incorrecta",
+    "login_failed": "Error al iniciar sesión",
+    "apple_no_identity_token": "Inicio de sesión con Apple falló: sin token de identidad",
+    "apple_auth_failed": "Autenticación de Apple fallida",
+    "google_sign_in_cancelled": "Inicio de sesión con Google cancelado",
+    "google_auth_token_error": "No se pudo obtener el token de autenticación de Google",
+    "google_firebase_auth_failed": "Autenticación de Firebase fallida",
+    "google_sign_in_error": "Error al iniciar sesión con Google",
+    "google_account_exists_with_different_credential": "Este correo está registrado con otro método",
+    "google_invalid_credential": "Credenciales inválidas",
+    "google_operation_not_allowed": "El inicio de sesión con Google no está habilitado",
+    "google_user_disabled": "La cuenta de usuario está deshabilitada",
+    "google_user_not_found": "Usuario no encontrado",
+    "google_network_request_failed": "Error de conexión de red",
+    "google_sign_in_error_with_message": "Error de inicio de sesión con Google: {message}",
+    "google_no_internet": "Error de conexión a Internet. Por favor verifica tu conexión.",
+    "google_config_error": "Error de configuración de Google Sign-In. Por favor verifica la huella digital SHA-1."
+  },
   
   "onboard": {
     "stay_focus_title": "Mantén el Enfoque",
@@ -385,7 +408,8 @@
     "cannot_be_undone": "Esta acción no se puede deshacer",
     "warning": "Advertencia",
     "agree_to_deletion": "Acepto la eliminación",
-    "warning_message": "Esta acción no se puede deshacer. Tu cuenta y todos los datos asociados serán eliminados permanentemente."
+    "warning_message": "Esta acción no se puede deshacer. Tu cuenta y todos los datos asociados serán eliminados permanentemente.",
+    "delete_google_account": "Eliminar cuenta de Google"
   },
   
   "widget": {

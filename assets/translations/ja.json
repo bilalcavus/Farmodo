@@ -58,6 +58,29 @@
     "terms_of_service_title": "利用規約"
   },
   
+  "auth_errors": {
+    "invalid_email": "無効なメールアドレスです",
+    "email_not_verified": "メールを確認してください",
+    "user_not_found": "ユーザーが見つかりません",
+    "wrong_password": "パスワードが正しくありません",
+    "login_failed": "ログインに失敗しました",
+    "apple_no_identity_token": "Appleサインインに失敗しました: IDトークンがありません",
+    "apple_auth_failed": "Apple認証に失敗しました",
+    "google_sign_in_cancelled": "Googleサインインがキャンセルされました",
+    "google_auth_token_error": "Google認証トークンを取得できませんでした",
+    "google_firebase_auth_failed": "Firebase認証に失敗しました",
+    "google_sign_in_error": "Googleサインインエラー",
+    "google_account_exists_with_different_credential": "このメールは別の方法で登録されています",
+    "google_invalid_credential": "無効な認証情報です",
+    "google_operation_not_allowed": "Googleサインインは有効になっていません",
+    "google_user_disabled": "ユーザーアカウントが無効です",
+    "google_user_not_found": "ユーザーが見つかりません",
+    "google_network_request_failed": "ネットワーク接続エラー",
+    "google_sign_in_error_with_message": "Googleサインインエラー: {message}",
+    "google_no_internet": "インターネット接続エラー。接続を確認してください。",
+    "google_config_error": "Googleサインインの設定エラーです。SHA-1フィンガープリントを確認してください."
+  },
+  
   "onboard": {
     "stay_focus_title": "集中を維持",
     "stay_focus_desc": "ポモドーロテクニックで集中を維持し、日々のタスクを完了して報酬を獲得しましょう！",
@@ -384,7 +407,8 @@
     "cannot_be_undone": "この操作は元に戻せません",
     "warning": "警告",
     "agree_to_deletion": "削除に同意する",
-    "warning_message": "この操作は元に戻せません。アカウントと関連するすべてのデータが完全に削除されます。"
+    "warning_message": "この操作は元に戻せません。アカウントと関連するすべてのデータが完全に削除されます。",
+    "delete_google_account": "Googleアカウントを削除"
   },
   
   "widget": {

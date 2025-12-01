@@ -65,6 +65,16 @@ class FirestoreService {
         });
   }
 
+  Future<void> deleteTask(String taskId) async {
+    final String uid = _auth.currentUser!.uid;
+    await _firestore
+        .collection('users')
+        .doc(uid)
+        .collection('tasks')
+        .doc(taskId)
+        .delete();
+  }
+
   Future<List<UserTaskModel>> _getTasks({required isCompleted, bool loadMore = false} ) async {
   final uid = _auth.currentUser?.uid;
   if (uid == null) return [];

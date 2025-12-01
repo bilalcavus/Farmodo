@@ -57,6 +57,29 @@
     "privacy_policy_title": "سياسة الخصوصية",
     "terms_of_service_title": "شروط الخدمة"
   },
+
+  "auth_errors": {
+    "invalid_email": "بريد إلكتروني غير صالح",
+    "email_not_verified": "يرجى تأكيد بريدك الإلكتروني",
+    "user_not_found": "المستخدم غير موجود",
+    "wrong_password": "كلمة مرور خاطئة",
+    "login_failed": "فشل تسجيل الدخول",
+    "apple_no_identity_token": "فشل تسجيل الدخول عبر Apple: لا توجد رمز هوية",
+    "apple_auth_failed": "فشل مصادقة Apple",
+    "google_sign_in_cancelled": "تم إلغاء تسجيل الدخول عبر Google",
+    "google_auth_token_error": "تعذر الحصول على رمز مصادقة Google",
+    "google_firebase_auth_failed": "فشلت مصادقة Firebase",
+    "google_sign_in_error": "خطأ في تسجيل الدخول عبر Google",
+    "google_account_exists_with_different_credential": "هذا البريد مسجل بطريقة مختلفة",
+    "google_invalid_credential": "بيانات اعتماد غير صالحة",
+    "google_operation_not_allowed": "تسجيل الدخول عبر Google غير مفعّل",
+    "google_user_disabled": "حساب المستخدم معطل",
+    "google_user_not_found": "المستخدم غير موجود",
+    "google_network_request_failed": "خطأ في اتصال الشبكة",
+    "google_sign_in_error_with_message": "خطأ في تسجيل الدخول عبر Google: {message}",
+    "google_no_internet": "خطأ في اتصال الإنترنت. يرجى التحقق من اتصالك.",
+    "google_config_error": "خطأ في إعداد تسجيل الدخول عبر Google. يرجى التحقق من بصمة شهادة SHA-1."
+  },
   
   "onboard": {
     "stay_focus_title": "ابق مركزاً",
@@ -384,7 +407,8 @@
     "cannot_be_undone": "لا يمكن التراجع عن هذا الإجراء",
     "warning": "تحذير",
     "agree_to_deletion": "الموافقة على الحذف",
-    "warning_message": "لا يمكن التراجع عن هذا الإجراء. سيتم حذف حسابك وجميع البيانات المرتبطة به نهائياً."
+    "warning_message": "لا يمكن التراجع عن هذا الإجراء. سيتم حذف حسابك وجميع البيانات المرتبطة به نهائياً.",
+    "delete_google_account": "حذف حساب جوجل"
   },
   
   "widget": {

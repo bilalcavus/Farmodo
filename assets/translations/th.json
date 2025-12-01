@@ -58,6 +58,29 @@
     "terms_of_service_title": "เงื่อนไขการใช้งาน"
   },
   
+  "auth_errors": {
+    "invalid_email": "อีเมลไม่ถูกต้อง",
+    "email_not_verified": "โปรดยืนยันอีเมลของคุณ",
+    "user_not_found": "ไม่พบผู้ใช้",
+    "wrong_password": "รหัสผ่านไม่ถูกต้อง",
+    "login_failed": "เข้าสู่ระบบล้มเหลว",
+    "apple_no_identity_token": "ลงชื่อเข้าใช้ Apple ล้มเหลว: ไม่มีโทเค็นยืนยันตัวตน",
+    "apple_auth_failed": "การยืนยันตัวตน Apple ล้มเหลว",
+    "google_sign_in_cancelled": "ยกเลิกการลงชื่อเข้าใช้ Google",
+    "google_auth_token_error": "ไม่สามารถดึงโทเค็นยืนยันตัวตนของ Google ได้",
+    "google_firebase_auth_failed": "การยืนยันตัวตน Firebase ล้มเหลว",
+    "google_sign_in_error": "ข้อผิดพลาดการลงชื่อเข้าใช้ Google",
+    "google_account_exists_with_different_credential": "อีเมลนี้ลงทะเบียนด้วยวิธีอื่นแล้ว",
+    "google_invalid_credential": "ข้อมูลรับรองไม่ถูกต้อง",
+    "google_operation_not_allowed": "ยังไม่เปิดใช้งานการลงชื่อเข้าใช้ Google",
+    "google_user_disabled": "บัญชีผู้ใช้ถูกปิดการใช้งาน",
+    "google_user_not_found": "ไม่พบผู้ใช้",
+    "google_network_request_failed": "ข้อผิดพลาดการเชื่อมต่อเครือข่าย",
+    "google_sign_in_error_with_message": "ข้อผิดพลาดการลงชื่อเข้าใช้ Google: {message}",
+    "google_no_internet": "ข้อผิดพลาดการเชื่อมต่ออินเทอร์เน็ต โปรดตรวจสอบการเชื่อมต่อ",
+    "google_config_error": "ข้อผิดพลาดการตั้งค่า Google Sign-In โปรดตรวจสอบลายนิ้วมือใบรับรอง SHA-1."
+  },
+  
   "onboard": {
     "stay_focus_title": "รักษาโฟกัส",
     "stay_focus_desc": "รักษาโฟกัสด้วยเทคนิค Pomodoro และทำงานประจำวันให้เสร็จเพื่อรับรางวัล!",
@@ -384,7 +407,8 @@
     "cannot_be_undone": "การดำเนินการนี้ไม่สามารถยกเลิกได้",
     "warning": "คำเตือน",
     "agree_to_deletion": "ยอมรับการลบ",
-    "warning_message": "การดำเนินการนี้ไม่สามารถยกเลิกได้ บัญชีของคุณและข้อมูลที่เกี่ยวข้องทั้งหมดจะถูกลบอย่างถาวร"
+    "warning_message": "การดำเนินการนี้ไม่สามารถยกเลิกได้ บัญชีของคุณและข้อมูลที่เกี่ยวข้องทั้งหมดจะถูกลบอย่างถาวร",
+    "delete_google_account": "ลบบัญชี Google"
   },
   
   "widget": {

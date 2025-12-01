@@ -146,16 +146,23 @@ class CustomTaskList extends StatelessWidget {
                 _buildTaskMetaInfo(context, task),
                   ],
                 ),
-                
               ],
             ),
           ),
           task.isCompleted
           ? Padding(
             padding: context.padding.low,
-            child: Icon(HugeIcons.strokeRoundedCheckmarkBadge01, size: context.dynamicHeight(0.03), color: AppColors.textSecondary,)) 
+            child: Row(
+              children: [
+                Icon(HugeIcons.strokeRoundedCheckmarkBadge01, size: context.dynamicHeight(0.03), color: AppColors.success),
+                context.dynamicWidth(0.01).width,
+                IconButton(onPressed: () async {
+                  await taskController.deleteUserTask(task.id);
+                }, icon: Icon(HugeIcons.strokeRoundedDelete01, color: AppColors.danger, size: context.dynamicHeight(0.025)))
+              ],
+            )) 
           : SizedBox.shrink(),
-          if (!task.isCompleted) _buildActionButtons(context, task, index),
+          if (!task.isCompleted) _buildActionButton(context, task, index),
         ],
       ),
     );
@@ -194,33 +201,40 @@ class CustomTaskList extends StatelessWidget {
     );
   }
 
-  Widget _buildActionButtons(BuildContext context, UserTaskModel task, int index) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          _buildActionButton(context, task, index),
-          context.dynamicWidth(0.01).width,
-        ],
-      ),
-    );
-  }
-
   Widget _buildActionButton(BuildContext context, UserTaskModel task, int index) {
     return Obx(() {
       final bool isSelected = taskController.selctedTaskIndex.value == index;
       final bool isRunning = timerController.isRunning.value;
 
-      return Icon(
-         (isRunning && isSelected) 
-            ? HugeIcons.strokeRoundedPause
-            : HugeIcons.strokeRoundedPlay,
-        color: (isRunning && isSelected) 
-            ? AppColors.danger
-            : AppColors.primary,
-        size: context.dynamicHeight(0.025),
-      ).onTap(() => _handleTaskAction(task, index, isSelected, isRunning));
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Icon(
+             (isRunning && isSelected) 
+                ? HugeIcons.strokeRoundedPause
+                : HugeIcons.strokeRoundedPlay,
+            color: (isRunning && isSelected) 
+                ? AppColors.danger
+                : AppColors.primary,
+            size: context.dynamicHeight(0.025),
+          ).onTap(() => _handleTaskAction(task, index, isSelected, isRunning)),
+          IconButton(
+            onPressed: () async {
+            if (taskController.selctedTaskIndex.value == index) {
+              timerController.resetTimer();
+            } else if (taskController.errorMessage.value.isNotEmpty) {
+              ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(taskController.errorMessage.value))
+              );
+            }
+            await taskController.deleteUserTask(task.id);
+            taskController.selctedTaskIndex.value = -1;
+            taskController.isUsingDefaultTask.value = true;
+            taskController.selectDefaultTask();
+          },  
+            icon: Icon(HugeIcons.strokeRoundedDelete01, color: AppColors.danger, size: context.dynamicHeight(0.025)))
+        ],
+      );
     });
   }
 

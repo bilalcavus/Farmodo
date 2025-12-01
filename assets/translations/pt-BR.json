@@ -58,6 +58,29 @@
     "terms_of_service_title": "Termos de Serviço"
   },
   
+  "auth_errors": {
+    "invalid_email": "Endereço de e-mail inválido",
+    "email_not_verified": "Por favor confirme seu e-mail",
+    "user_not_found": "Usuário não encontrado",
+    "wrong_password": "Senha incorreta",
+    "login_failed": "Falha ao entrar",
+    "apple_no_identity_token": "Login com Apple falhou: sem token de identidade",
+    "apple_auth_failed": "Autenticação da Apple falhou",
+    "google_sign_in_cancelled": "Login com Google cancelado",
+    "google_auth_token_error": "Não foi possível obter o token de autenticação do Google",
+    "google_firebase_auth_failed": "Autenticação do Firebase falhou",
+    "google_sign_in_error": "Erro no login do Google",
+    "google_account_exists_with_different_credential": "Este e-mail está registrado com outro método",
+    "google_invalid_credential": "Credenciais inválidas",
+    "google_operation_not_allowed": "Login com Google não está habilitado",
+    "google_user_disabled": "Conta do usuário desativada",
+    "google_user_not_found": "Usuário não encontrado",
+    "google_network_request_failed": "Erro de conexão de rede",
+    "google_sign_in_error_with_message": "Erro no login do Google: {message}",
+    "google_no_internet": "Erro de conexão com a internet. Verifique sua conexão.",
+    "google_config_error": "Erro de configuração do Google Sign-In. Verifique a impressão digital SHA-1."
+  },
+  
   "onboard": {
     "stay_focus_title": "Mantenha o Foco",
     "stay_focus_desc": "Mantenha-se focado com a técnica Pomodoro e complete tarefas diárias para ganhar recompensas!",
@@ -385,7 +408,8 @@
     "cannot_be_undone": "Essa ação não pode ser desfeita",
     "warning": "Aviso",
     "agree_to_deletion": "Eu concordo com a exclusão",
-    "warning_message": "Essa ação não pode ser desfeita. Sua conta e todos os dados serão removidos permanentemente."
+    "warning_message": "Essa ação não pode ser desfeita. Sua conta e todos os dados serão removidos permanentemente.",
+    "delete_google_account": "Excluir conta do Google"
   },
   
   "widget": {

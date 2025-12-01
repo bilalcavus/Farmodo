@@ -57,6 +57,29 @@
     "privacy_policy_title": "Privacy Policy",
     "terms_of_service_title": "Terms of Service"
   },
+
+  "auth_errors": {
+    "invalid_email": "Invalid email address",
+    "email_not_verified": "Please confirm your email",
+    "user_not_found": "User not found",
+    "wrong_password": "Wrong password",
+    "login_failed": "Login failed",
+    "apple_no_identity_token": "Apple Sign-In failed: No identity token",
+    "apple_auth_failed": "Apple authentication failed",
+    "google_sign_in_cancelled": "Google Sign-In was cancelled",
+    "google_auth_token_error": "Could not retrieve Google authentication token",
+    "google_firebase_auth_failed": "Firebase authentication failed",
+    "google_sign_in_error": "Google Sign-In error",
+    "google_account_exists_with_different_credential": "This email is registered with a different sign-in method",
+    "google_invalid_credential": "Invalid credentials",
+    "google_operation_not_allowed": "Google Sign-In is not enabled",
+    "google_user_disabled": "User account is disabled",
+    "google_user_not_found": "User not found",
+    "google_network_request_failed": "Network connection error",
+    "google_sign_in_error_with_message": "Google Sign-In error: {message}",
+    "google_no_internet": "Internet connection error. Please check your connection.",
+    "google_config_error": "Google Sign-In configuration error. Please check the SHA-1 certificate fingerprint."
+  },
   
   "onboard": {
     "stay_focus_title": "Stay Focus",
@@ -386,7 +409,8 @@
     "cannot_be_undone": "This action cannot be undone",
     "warning": "Warning",
     "agree_to_deletion": "Agree to deletion",
-    "warning_message": "This action cannot be undone. Your account and all associated data will be permanently deleted."
+    "warning_message": "This action cannot be undone. Your account and all associated data will be permanently deleted.",
+    "delete_google_account": "Delete Google Account"
   },
   
   "widget": {

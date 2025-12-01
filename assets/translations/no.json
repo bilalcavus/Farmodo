@@ -58,6 +58,29 @@
     "terms_of_service_title": "Tjenestevilkår"
   },
   
+  "auth_errors": {
+    "invalid_email": "Ugyldig e-postadresse",
+    "email_not_verified": "Bekreft e-posten din",
+    "user_not_found": "Bruker ikke funnet",
+    "wrong_password": "Feil passord",
+    "login_failed": "Innlogging feilet",
+    "apple_no_identity_token": "Apple-innlogging mislyktes: ingen identitetstoken",
+    "apple_auth_failed": "Apple-autentisering mislyktes",
+    "google_sign_in_cancelled": "Google-innlogging ble avbrutt",
+    "google_auth_token_error": "Kunne ikke hente Google-autentiseringstoken",
+    "google_firebase_auth_failed": "Firebase-autentisering mislyktes",
+    "google_sign_in_error": "Google-innloggingsfeil",
+    "google_account_exists_with_different_credential": "Denne e-posten er registrert med en annen metode",
+    "google_invalid_credential": "Ugyldige legitimasjoner",
+    "google_operation_not_allowed": "Google-innlogging er ikke aktivert",
+    "google_user_disabled": "Brukerkontoen er deaktivert",
+    "google_user_not_found": "Bruker ikke funnet",
+    "google_network_request_failed": "Nettverkstilkoblingsfeil",
+    "google_sign_in_error_with_message": "Google-innloggingsfeil: {message}",
+    "google_no_internet": "Feil med internettforbindelsen. Sjekk tilkoblingen.",
+    "google_config_error": "Feil i konfigurasjon av Google-innlogging. Sjekk SHA-1-sertifikatets fingeravtrykk."
+  },
+  
   "onboard": {
     "stay_focus_title": "Hold Fokuset",
     "stay_focus_desc": "Hold fokuset med Pomodoro-teknikken og fullfør daglige oppgaver for å tjene belønninger!",
@@ -384,7 +407,8 @@
     "cannot_be_undone": "Denne handlingen kan ikke angres",
     "warning": "Advarsel",
     "agree_to_deletion": "Godta sletting",
-    "warning_message": "Denne handlingen kan ikke angres. Kontoen din og all tilknyttet data vil bli permanent slettet."
+    "warning_message": "Denne handlingen kan ikke angres. Kontoen din og all tilknyttet data vil bli permanent slettet.",
+    "delete_google_account": "Slett Google-konto"
   },
   
   "widget": {

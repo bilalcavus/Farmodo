@@ -58,6 +58,29 @@
     "terms_of_service_title": "Điều Khoản Dịch Vụ"
   },
   
+  "auth_errors": {
+    "invalid_email": "Địa chỉ email không hợp lệ",
+    "email_not_verified": "Vui lòng xác nhận email của bạn",
+    "user_not_found": "Không tìm thấy người dùng",
+    "wrong_password": "Sai mật khẩu",
+    "login_failed": "Đăng nhập thất bại",
+    "apple_no_identity_token": "Đăng nhập Apple thất bại: không có token định danh",
+    "apple_auth_failed": "Xác thực Apple thất bại",
+    "google_sign_in_cancelled": "Đăng nhập Google đã bị hủy",
+    "google_auth_token_error": "Không thể lấy token xác thực Google",
+    "google_firebase_auth_failed": "Xác thực Firebase thất bại",
+    "google_sign_in_error": "Lỗi đăng nhập Google",
+    "google_account_exists_with_different_credential": "Email này đã được đăng ký bằng phương thức khác",
+    "google_invalid_credential": "Thông tin xác thực không hợp lệ",
+    "google_operation_not_allowed": "Đăng nhập Google chưa được bật",
+    "google_user_disabled": "Tài khoản người dùng bị vô hiệu hóa",
+    "google_user_not_found": "Không tìm thấy người dùng",
+    "google_network_request_failed": "Lỗi kết nối mạng",
+    "google_sign_in_error_with_message": "Lỗi đăng nhập Google: {message}",
+    "google_no_internet": "Lỗi kết nối internet. Vui lòng kiểm tra kết nối.",
+    "google_config_error": "Lỗi cấu hình Google Sign-In. Vui lòng kiểm tra dấu vân tay chứng chỉ SHA-1."
+  },
+  
   "onboard": {
     "stay_focus_title": "Giữ Tập Trung",
     "stay_focus_desc": "Giữ tập trung với kỹ thuật Pomodoro và hoàn thành các nhiệm vụ hàng ngày để nhận phần thưởng!",
@@ -384,7 +407,8 @@
     "cannot_be_undone": "Hành động này không thể hoàn tác",
     "warning": "Cảnh báo",
     "agree_to_deletion": "Đồng ý xóa",
-    "warning_message": "Hành động này không thể hoàn tác. Tài khoản của bạn và tất cả dữ liệu liên quan sẽ bị xóa vĩnh viễn."
+    "warning_message": "Hành động này không thể hoàn tác. Tài khoản của bạn và tất cả dữ liệu liên quan sẽ bị xóa vĩnh viễn.",
+    "delete_google_account": "Xóa tài khoản Google"
   },
   
   "widget": {

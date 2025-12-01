@@ -3,11 +3,15 @@ import 'package:farmodo/core/components/loading_icon.dart';
 import 'package:farmodo/core/components/message/snack_messages.dart';
 import 'package:farmodo/core/di/injection.dart';
 import 'package:farmodo/core/theme/app_colors.dart';
+import 'package:farmodo/core/theme/app_container_styles.dart';
 import 'package:farmodo/core/utility/extension/dynamic_size_extension.dart';
+import 'package:farmodo/core/utility/extension/route_helper.dart';
 import 'package:farmodo/core/utility/extension/sized_box_extension.dart';
 import 'package:farmodo/feature/auth/login/viewmodel/login_controller.dart';
+import 'package:farmodo/feature/start/splash/splash_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart' hide Trans;
+import 'package:hugeicons/hugeicons.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:kartal/kartal.dart';
 
@@ -44,12 +48,82 @@ class _AccountDeletionViewState extends State<AccountDeletionView> {
           children: [
             WarningBox(context: context),
             context.dynamicHeight(0.05).height,
+            Obx((){
+              if (_loginController.errorMessage.value.isNotEmpty) {
+                SnackMessages().showErrorSnack(_loginController.errorMessage.value);
+              }
+              return Container(
+                width: double.infinity,
+                decoration: AppContainerStyles.primaryContainer(context),
+                padding: context.padding.normal,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Image.asset('assets/logo/google-icon.png', width: context.dynamicHeight(0.03), height: context.dynamicHeight(0.03)),
+                    context.dynamicWidth(0.02).width,
+                    Text('account_deletion.delete_google_account'.tr(), style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                      fontWeight: FontWeight.w400
+                    )),
+                    const Spacer(),
+                    IconButton(
+                      onPressed: () => showDialog(
+                        context: context, 
+                        builder: (context) => AlertDialog.adaptive(
+                          title: Text('account_deletion.are_you_sure'.tr()),
+                          actions: [
+                            TextButton(
+                              style: TextButton.styleFrom(
+                                foregroundColor: Colors.red
+                              ),
+                              onPressed: () async {
+                                await _loginController.handleDeleteGoogleAccount(context);
+                                RouteHelper.pushAndCloseOther(context, const SplashView());
+                              }, 
+                              child: _loginController.deleteGoogleAccountLoading.value 
+                                ? LoadingIcon(iconColor: Colors.white)
+                                : Text('account_deletion.delete_account_permanently'.tr())
+                              ),
+                              TextButton(
+                              onPressed: () => RouteHelper.pop(context), 
+                              child: Text('common.cancel'.tr())),
+                          ],
+                        )
+                      ),
+                      icon: Icon(HugeIcons.strokeRoundedDelete01))
+                  ],
+                ));
+            }),
+            context.dynamicHeight(0.035).height,
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  width: context.dynamicWidth(0.2),
+                  height: 2,
+                  color: theme.dividerColor,
+                ),
+                context.dynamicWidth(0.02).width,
+                Text('common.or_continue_with'.tr(), style: theme.textTheme.bodyMedium?.copyWith(
+                  color: Colors.pink,
+                  fontWeight: FontWeight.w500
+                )),
+                context.dynamicWidth(0.02).width,
+                Container(
+                  width: context.dynamicWidth(0.2),
+                  height: 2,
+                  color: theme.dividerColor,
+                ),
+              ],
+            ),
+            context.dynamicHeight(0.035).height,
             Obx(() {
               if (_loginController.errorMessage.value.isNotEmpty) {
                 SnackMessages().showErrorSnack(_loginController.errorMessage.value);
               }
               return Column(
                 children: [
+                  
                   Text('account_deletion.confirm_deletion'.tr(), style: theme.textTheme.bodyLarge),
                   context.dynamicHeight(0.02).height,
                   TextFormField(
@@ -58,10 +132,10 @@ class _AccountDeletionViewState extends State<AccountDeletionView> {
                     decoration: InputDecoration(
                       labelText: "account_deletion.current_password".tr(),
                       border: OutlineInputBorder(
-                        borderRadius: context.border.normalBorderRadius,
+                        borderRadius: context.border.lowBorderRadius,
                       ),
                       enabledBorder: OutlineInputBorder(
-                        borderRadius: context.border.normalBorderRadius,
+                        borderRadius: context.border.lowBorderRadius,
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: context.border.normalBorderRadius,
@@ -79,10 +153,10 @@ class _AccountDeletionViewState extends State<AccountDeletionView> {
                     decoration: InputDecoration(
                       labelText: "account_deletion.type_delete".tr(),
                       border: OutlineInputBorder(
-                        borderRadius: context.border.normalBorderRadius,
+                        borderRadius: context.border.lowBorderRadius,
                       ),
                       enabledBorder: OutlineInputBorder(
-                        borderRadius: context.border.normalBorderRadius,
+                        borderRadius: context.border.lowBorderRadius,
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: context.border.normalBorderRadius,

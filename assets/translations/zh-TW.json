@@ -58,6 +58,29 @@
     "terms_of_service_title": "服務條款"
   },
   
+  "auth_errors": {
+    "invalid_email": "無效的電子郵件地址",
+    "email_not_verified": "請確認您的電子郵件",
+    "user_not_found": "找不到使用者",
+    "wrong_password": "密碼錯誤",
+    "login_failed": "登入失敗",
+    "apple_no_identity_token": "Apple 登入失敗：沒有身份權杖",
+    "apple_auth_failed": "Apple 驗證失敗",
+    "google_sign_in_cancelled": "Google 登入已取消",
+    "google_auth_token_error": "無法取得 Google 驗證權杖",
+    "google_firebase_auth_failed": "Firebase 驗證失敗",
+    "google_sign_in_error": "Google 登入錯誤",
+    "google_account_exists_with_different_credential": "此電子郵件已使用其他方式註冊",
+    "google_invalid_credential": "無效的憑證",
+    "google_operation_not_allowed": "尚未啟用 Google 登入",
+    "google_user_disabled": "使用者帳戶已停用",
+    "google_user_not_found": "找不到使用者",
+    "google_network_request_failed": "網路連線錯誤",
+    "google_sign_in_error_with_message": "Google 登入錯誤：{message}",
+    "google_no_internet": "網際網路連線錯誤。請檢查您的連線。",
+    "google_config_error": "Google 登入設定錯誤。請檢查 SHA-1 憑證指紋。"
+  },
+  
   "onboard": {
     "stay_focus_title": "保持專注",
     "stay_focus_desc": "使用番茄工作法保持專注，完成每日任務獲得獎勵！",
@@ -384,7 +407,8 @@
     "cannot_be_undone": "此操作無法復原",
     "warning": "警告",
     "agree_to_deletion": "同意刪除",
-    "warning_message": "此操作無法復原。您的帳戶和所有相關資料將被永久刪除。"
+    "warning_message": "此操作無法復原。您的帳戶和所有相關資料將被永久刪除。",
+    "delete_google_account": "刪除 Google 帳戶"
   },
   
   "widget": {

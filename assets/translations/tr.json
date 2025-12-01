@@ -57,6 +57,29 @@
     "privacy_policy_title": "Gizlilik Politikası",
     "terms_of_service_title": "Hizmet Şartları"
   },
+
+  "auth_errors": {
+    "invalid_email": "Geçersiz e-posta adresi",
+    "email_not_verified": "Lütfen e-postanızı doğrulayın",
+    "user_not_found": "Kullanıcı bulunamadı",
+    "wrong_password": "Hatalı şifre",
+    "login_failed": "Giriş başarısız",
+    "apple_no_identity_token": "Apple ile giriş başarısız: Kimlik belirteci yok",
+    "apple_auth_failed": "Apple kimlik doğrulaması başarısız",
+    "google_sign_in_cancelled": "Google ile giriş iptal edildi",
+    "google_auth_token_error": "Google kimlik doğrulama jetonu alınamadı",
+    "google_firebase_auth_failed": "Firebase kimlik doğrulaması başarısız",
+    "google_sign_in_error": "Google Giriş hatası",
+    "google_account_exists_with_different_credential": "Bu e-posta farklı bir yöntemle kayıtlı",
+    "google_invalid_credential": "Geçersiz kimlik bilgileri",
+    "google_operation_not_allowed": "Google ile giriş etkin değil",
+    "google_user_disabled": "Kullanıcı hesabı devre dışı",
+    "google_user_not_found": "Kullanıcı bulunamadı",
+    "google_network_request_failed": "Ağ bağlantısı hatası",
+    "google_sign_in_error_with_message": "Google Giriş hatası: {message}",
+    "google_no_internet": "İnternet bağlantısı hatası. Lütfen bağlantınızı kontrol edin.",
+    "google_config_error": "Google Giriş yapılandırma hatası. Lütfen SHA-1 sertifika parmak izini kontrol edin."
+  },
   
   "onboard": {
     "stay_focus_title": "Odaklan",
@@ -380,10 +403,12 @@
     "current_password": "Mevcut şifre",
     "type_delete": "Silme işlemini onaylamak için 'delete' yazın",
     "confirm_deletion": "Silme İşlemini Onayla",
+    "are_you_sure": "Hesabınızı silmek istediğinizden emin misiniz?",
     "cannot_be_undone": "Bu işlem geri alınamaz",
     "warning": "Uyarı",
     "agree_to_deletion": "Silme işlemini onaylıyorum",
-    "warning_message": "Bu işlem geri alınamaz. Hesabınız ve tüm ilişkili veriler kalıcı olarak silinecektir."
+    "warning_message": "Bu işlem geri alınamaz. Hesabınız ve tüm ilişkili veriler kalıcı olarak silinecektir.",
+    "delete_google_account": "Google Hesabını Sil"
   },
   
   "widget": {

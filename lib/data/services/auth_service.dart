@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:farmodo/data/models/user_model.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fb;
 import 'package:firebase_auth/firebase_auth.dart';
@@ -57,7 +58,7 @@ class AuthService {
   }) async {
     final emailRegex = RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$');
     if (!emailRegex.hasMatch(email)) {
-      return Future.error('Invalid email');
+      return Future.error('auth_errors.invalid_email'.tr());
     }
     final cred = await _firebaseAuth.createUserWithEmailAndPassword(
       email: email,
@@ -103,7 +104,7 @@ class AuthService {
       final cred = await _firebaseAuth.signInWithEmailAndPassword(email: email, password: password);
       if (!cred.user!.emailVerified) {
         await _firebaseAuth.signOut();
-        return Future.error('Please confirm your email');
+        return Future.error('auth_errors.email_not_verified'.tr());
       }
 
       final user = cred.user;
@@ -133,13 +134,13 @@ class AuthService {
       return userModel;
     } on fb.FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
-        return Future.error('User not found');
+        return Future.error('auth_errors.user_not_found'.tr());
       } else if(e.code == 'wrong-password'){
-        return Future.error('Wrong password');
+        return Future.error('auth_errors.wrong_password'.tr());
       } else if(e.code == 'invalid-email'){
-        return Future.error('Invalid email');
+        return Future.error('auth_errors.invalid_email'.tr());
       } else {
-        return Future.error('Login failed');
+        return Future.error('auth_errors.login_failed'.tr());
       }
     }
   }
@@ -173,7 +174,7 @@ class AuthService {
     );
 
     if(appleCredential.identityToken == null){
-      throw Exception('Apple Sign-In failed: No identity token');
+      throw Exception('auth_errors.apple_no_identity_token'.tr());
     }
 
     final oauthcredential = fb.OAuthProvider("apple.com").credential(
@@ -186,7 +187,7 @@ class AuthService {
     final photoUrl = firebaseUser?.photoURL;
 
     if (user == null) {
-      throw Exception("Apple auth failed");
+      throw Exception('auth_errors.apple_auth_failed'.tr());
     }
 
     final doc = await _firestore.collection('users').doc(user.uid).get();
@@ -227,13 +228,13 @@ class AuthService {
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
       
       if (googleUser == null) {
-        throw Exception('Google Sign-In iptal edildi');
+        throw Exception('auth_errors.google_sign_in_cancelled'.tr());
       }
 
       final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
       
       if (googleAuth.accessToken == null || googleAuth.idToken == null) {
-        throw Exception('Google authentication token alınamadı');
+        throw Exception('auth_errors.google_auth_token_error'.tr());
       }
 
       final credential = fb.GoogleAuthProvider.credential(
@@ -246,7 +247,7 @@ class AuthService {
       final photoUrl = firebaseUser?.photoURL;
 
       if (user == null) {
-        throw Exception('Firebase authentication başarısız');
+        throw Exception('auth_errors.google_firebase_auth_failed'.tr());
       }
 
       final doc = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
@@ -279,42 +280,45 @@ class AuthService {
       return userModel;
       
     } on fb.FirebaseAuthException catch (e) {
-      String errorMessage = 'Google Sign-In hatası';
+      String errorMessage = 'auth_errors.google_sign_in_error'.tr();
       
       switch (e.code) {
         case 'account-exists-with-different-credential':
-          errorMessage = 'Bu email adresi farklı bir yöntemle kayıtlı';
+          errorMessage = 'auth_errors.google_account_exists_with_different_credential'.tr();
           break;
         case 'invalid-credential':
-          errorMessage = 'Geçersiz kimlik bilgileri';
+          errorMessage = 'auth_errors.google_invalid_credential'.tr();
           break;
         case 'operation-not-allowed':
-          errorMessage = 'Google Sign-In etkin değil';
+          errorMessage = 'auth_errors.google_operation_not_allowed'.tr();
           break;
         case 'user-disabled':
-          errorMessage = 'Kullanıcı hesabı devre dışı';
+          errorMessage = 'auth_errors.google_user_disabled'.tr();
           break;
         case 'user-not-found':
-          errorMessage = 'Kullanıcı bulunamadı';
+          errorMessage = 'auth_errors.google_user_not_found'.tr();
           break;
         case 'network-request-failed':
-          errorMessage = 'Ağ bağlantısı hatası';
+          errorMessage = 'auth_errors.google_network_request_failed'.tr();
           break;
         default:
-          errorMessage = 'Google Sign-In hatası: ${e.message}';
+          errorMessage = 'auth_errors.google_sign_in_error_with_message'
+              .tr(namedArgs: {'message': e.message ?? ''});
       }
       
       throw Exception(errorMessage);
     } catch (e) {
       if (e.toString().contains('network')) {
-        throw Exception('İnternet bağlantısı hatası. Lütfen bağlantınızı kontrol edin.');
+        throw Exception('auth_errors.google_no_internet'.tr());
       }
       
       if (e.toString().contains('ApiException: 10')) {
-        throw Exception('Google Sign-In yapılandırma hatası. Lütfen SHA-1 sertifika parmak izini kontrol edin.');
+        throw Exception('auth_errors.google_config_error'.tr());
       }
       
-      throw Exception('Google Sign-In hatası: $e');
+      throw Exception('auth_errors.google_sign_in_error_with_message'.tr(
+        namedArgs: {'message': e.toString()},
+      ));
     }
   }
 
@@ -327,6 +331,25 @@ class AuthService {
 
     final userDoc = FirebaseFirestore.instance.collection("users").doc(userId);
     batch.delete(userDoc);
+  }
+
+  Future<void> deleteGoogleAccount() async {
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+      final googleUser = await _googleSignIn.signInSilently() ?? await _googleSignIn.signIn();
+      final googleAuth = await googleUser?.authentication;
+      final credentianl = GoogleAuthProvider.credential(
+        accessToken: googleAuth?.accessToken,
+        idToken: googleAuth?.idToken,
+      );
+      await user?.reauthenticateWithCredential(credentianl);
+      await user?.delete();
+      signOutGoogle();
+    } catch (e) {
+      if (e is FirebaseAuthException) {
+      rethrow;
+    }
+    }
   }
 
   Future<void> signOutGoogle() async {

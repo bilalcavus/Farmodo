@@ -331,6 +331,34 @@ class TasksController extends GetxController {
     }
   }
 
+  Future<void> deleteUserTask(String taskId) async {
+    if (timerController.isRunning.value) {
+      errorMessage.value = 'Cannot delete task while timer is running. Please pause the timer first.';
+      return;
+    }
+    
+    UserTaskModel? currentlySelectedTask;
+    if (selctedTaskIndex.value >= 0 && selctedTaskIndex.value < activeUserTasks.length) {
+      currentlySelectedTask = activeUserTasks[selctedTaskIndex.value];
+    }
+    
+    setLoading(LoadingType.general, true);
+    try {
+      await firestoreService.deleteTask(taskId);
+      await getActiveTask();
+      await getCompletedTask();
+      
+      if (currentlySelectedTask != null) {
+        _restoreTaskSelection(currentlySelectedTask);
+      }
+      errorMessage.value = '';
+    } catch (e) {
+      errorMessage.value = '$e';
+    } finally {
+      setLoading(LoadingType.general, false);
+    }
+  }
+
 
   Future<void> _fetchTasks({
     required RxList<UserTaskModel> targetList,
@@ -496,6 +524,8 @@ class TasksController extends GetxController {
       debugPrint('Task state clear error: $e');
     }
   }
+
+
 
   @override
   void onClose() {

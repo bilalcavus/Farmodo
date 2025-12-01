@@ -58,6 +58,29 @@
     "terms_of_service_title": "Conditions d'Utilisation"
   },
   
+  "auth_errors": {
+    "invalid_email": "Adresse e-mail invalide",
+    "email_not_verified": "Veuillez confirmer votre e-mail",
+    "user_not_found": "Utilisateur introuvable",
+    "wrong_password": "Mot de passe incorrect",
+    "login_failed": "Échec de connexion",
+    "apple_no_identity_token": "Connexion Apple échouée : aucun jeton d'identité",
+    "apple_auth_failed": "Authentification Apple échouée",
+    "google_sign_in_cancelled": "Connexion Google annulée",
+    "google_auth_token_error": "Impossible de récupérer le jeton d'authentification Google",
+    "google_firebase_auth_failed": "Authentification Firebase échouée",
+    "google_sign_in_error": "Erreur de connexion Google",
+    "google_account_exists_with_different_credential": "Cet e-mail est enregistré avec une autre méthode",
+    "google_invalid_credential": "Identifiants invalides",
+    "google_operation_not_allowed": "La connexion Google n'est pas activée",
+    "google_user_disabled": "Compte utilisateur désactivé",
+    "google_user_not_found": "Utilisateur introuvable",
+    "google_network_request_failed": "Erreur de connexion réseau",
+    "google_sign_in_error_with_message": "Erreur de connexion Google : {message}",
+    "google_no_internet": "Erreur de connexion Internet. Veuillez vérifier votre connexion.",
+    "google_config_error": "Erreur de configuration de Google Sign-In. Veuillez vérifier l'empreinte SHA-1."
+  },
+  
   "onboard": {
     "stay_focus_title": "Restez Concentré",
     "stay_focus_desc": "Restez concentré avec la technique Pomodoro et accomplissez vos tâches quotidiennes pour gagner des récompenses !",
@@ -384,7 +407,8 @@
     "cannot_be_undone": "Cette action ne peut pas être annulée",
     "warning": "Avertissement",
     "agree_to_deletion": "Accepter la suppression",
-    "warning_message": "Cette action ne peut pas être annulée. Votre compte et toutes les données associées seront définitivement supprimés."
+    "warning_message": "Cette action ne peut pas être annulée. Votre compte et toutes les données associées seront définitivement supprimés.",
+    "delete_google_account": "Supprimer le compte Google"
   },
   
   "widget": {
